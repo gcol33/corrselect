@@ -11,8 +11,9 @@ NULL
 #'        Column names (if present) are used to label output variables.
 #' @param threshold A numeric scalar in (0, 1). Maximum allowed absolute pairwise value.
 #'        Defaults to \code{0.7}.
-#' @param method Character. Selection algorithm to use. One of \code{"els"} (default) or
-#'        \code{"bron-kerbosch"}.
+#' @param method Character. Selection algorithm to use. One of \code{"els"} or
+#'        \code{"bron-kerbosch"}. If not specified, the function chooses automatically:
+#'        \code{"els"} when \code{force_in} is provided, otherwise \code{"bron-kerbosch"}.
 #' @param force_in Optional integer vector of 1-based column indices to force into every subset.
 #' @param ... Additional arguments passed to the backend, e.g., \code{use_pivot} (logical)
 #'        for enabling pivoting in Bron–Kerbosch (ignored by ELS).
