@@ -65,24 +65,25 @@ corrSelect <- function(df,
   # Normalize cor_method
   cor_method <- match.arg(cor_method)
 
-  # Convert force_in to integer indices (if it's not already)
-  force_in <- as.integer(force_in %||% integer(0))
-
-  # Conditionally set default method if NULL
-  if (is.null(method)) {
-    method <- if (length(force_in) > 0) "els" else "bron-kerbosch"
-  } else {
-    method <- match.arg(method, choices = c("bron-kerbosch", "els"))
-  }
-
   df <- as.data.frame(df)
   if (!is.data.frame(df)) stop("`df` must be a data frame.")
   if (ncol(df) < 2) stop("`df` must have at least two columns.")
 
+  # Identify numeric columns
   numeric_cols <- vapply(df, is.numeric, logical(1))
   df_num       <- df[, numeric_cols, drop = FALSE]
   used_names   <- names(df_num)
 
+  # Validate character force_in *before* subsetting
+  if (!is.null(force_in) && is.character(force_in)) {
+    if (!all(force_in %in% names(df))) {
+      missing <- setdiff(force_in, names(df))
+      stop("The following `force_in` names are not in the data frame: ",
+           paste(missing, collapse = ", "))
+    }
+  }
+
+  # Remove rows with NA
   n_before <- nrow(df_num)
   df_num   <- df_num[complete.cases(df_num), ]
   n_after  <- nrow(df_num)
@@ -96,6 +97,7 @@ corrSelect <- function(df,
 
   if (ncol(df_num) < 2) stop("Less than two numeric columns remain after preprocessing.")
 
+  # Drop constant variables
   is_const <- vapply(df_num, function(x) sd(x) == 0, logical(1))
   if (any(is_const)) {
     const_vars <- names(df_num)[is_const]
@@ -106,6 +108,7 @@ corrSelect <- function(df,
   }
   if (ncol(df_num) < 2) stop("Less than two numeric columns remain after excluding constants.")
 
+  # Build correlation/association matrix
   mat <- switch(
     cor_method,
     pearson = cor(df_num, use = "everything", method = "pearson"),
@@ -143,19 +146,32 @@ corrSelect <- function(df,
     stop("Correlation matrix contains NA or infinite values. Check your data.")
   }
 
+  # Handle force_in as names or indices
   if (!is.null(force_in)) {
     if (is.character(force_in)) {
       if (!all(force_in %in% colnames(mat))) {
         missing <- setdiff(force_in, colnames(mat))
-        stop("The following columns in `force_in` do not exist: ", paste(missing, collapse = ", "))
+        stop("The following `force_in` columns were excluded from correlation: ",
+             paste(missing, collapse = ", "))
       }
       force_in <- match(force_in, colnames(mat))
     }
+
     if (!is.numeric(force_in) || any(force_in < 1) || any(force_in > ncol(mat))) {
       stop("`force_in` must be valid 1-based column indices or names.")
     }
+  } else {
+    force_in <- integer(0)
   }
 
+  # Conditionally set default method
+  if (is.null(method)) {
+    method <- if (length(force_in) > 0) "els" else "bron-kerbosch"
+  } else {
+    method <- match.arg(method, choices = c("bron-kerbosch", "els"))
+  }
+
+  # Run backend selection
   result <- MatSelect(
     mat       = mat,
     threshold = threshold,

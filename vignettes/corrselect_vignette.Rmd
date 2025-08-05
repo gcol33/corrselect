@@ -100,6 +100,59 @@ res3
 
 ---
 
+## Handling Mixed Data Types
+
+The function `assocSelect()` extends `corrSelect()` to support **mixed data types** — including numeric, factor, and ordered variables — by using appropriate association measures for each variable pair.
+
+Instead of a single correlation matrix, it constructs a **generalized association matrix** using the following logic:
+
+| Variable 1       | Variable 2       | Method Used    |
+|------------------|------------------|----------------|
+| numeric          | numeric          | `pearson` (default; customizable) |
+| numeric          | factor           | `eta` |
+| numeric          | ordered          | `spearman` (default; customizable) |
+| factor           | factor           | `cramersv` |
+| factor           | ordered          | `cramersv` |
+| ordered          | ordered          | `spearman` (default; customizable) |
+
+The defaults for numeric-numeric, numeric-ordered, and ordered-ordered associations can be changed via arguments:
+
+```{r}
+assocSelect(df,
+  method_num_num = "kendall",
+  method_num_ord = "spearman",
+  method_ord_ord = "kendall"
+)
+```
+
+
+All other combinations use fixed methods (`eta` or `cramersv`) appropriate for measuring association strength.
+
+### Example with Mixed Types
+
+```{r}
+df_ass <- data.frame(
+  height = rnorm(10),
+  weight = rnorm(10),
+  group  = factor(sample(c("A", "B"), 10, replace = TRUE)),
+  score  = ordered(sample(1:3, 10, replace = TRUE))
+)
+
+res_ass <- assocSelect(df_ass, threshold = 1, method = "bron-kerbosch", use_pivot = TRUE)
+```
+
+
+This outputs:
+
+```{r}
+res_ass
+```
+
+
+Each pairwise association is bounded to [0,1] and treated analogously to correlation.
+
+---
+
 ## Theory
 
 Given a symmetric correlation matrix \( R \in \mathbb{R}^{p \times p} \), we seek all **maximal subsets** \( S \subseteq \{1, \dots, p\} \) such that:
@@ -193,7 +246,7 @@ head(df_res)
 Extract individual subsets:
 
 ```{r}
-lapply(corrSubset(res, df, which = 1:3), function(x) head(x, 10))
+lapply(corrSubset(res, df, which = 1:2), function(x) head(x, 10))
 ```
 
 Summarize correlation metrics:

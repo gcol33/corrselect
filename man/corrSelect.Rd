@@ -7,7 +7,7 @@
 corrSelect(
   df,
   threshold = 0.7,
-  method = c("els", "bron-kerbosch"),
+  method = NULL,
   force_in = NULL,
   cor_method = c("pearson", "spearman", "kendall", "bicor", "distance", "maximal"),
   ...
@@ -18,8 +18,9 @@ corrSelect(
 
 \item{threshold}{A numeric value in (0, 1). Maximum allowed absolute correlation. Defaults to 0.7.}
 
-\item{method}{Character. Selection algorithm to use. One of \code{"els"} (default) or
-\code{"bron-kerbosch"}.}
+\item{method}{Character. Selection algorithm to use. One of \code{"els"} or
+\code{"bron-kerbosch"}. If not specified, the function chooses automatically:
+\code{"els"} when \code{force_in} is provided, otherwise \code{"bron-kerbosch"}.}
 
 \item{force_in}{Optional character vector or numeric indices of columns to force into all subsets.}
 

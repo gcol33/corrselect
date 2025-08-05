@@ -102,10 +102,10 @@ MatSelect <- function(mat,
 
   ## ---- backend options ----
   dots      <- list(...)
-  use_pivot <- if ("use_pivot" %in% names(dots)) {
-    as.logical(dots$use_pivot[[1]])
-  } else {
-    TRUE
+  use_pivot <- TRUE
+  if ("use_pivot" %in% names(dots)) {
+    tmp <- as.logical(dots$use_pivot)
+    if (length(tmp) > 0 && !is.na(tmp[1])) use_pivot <- tmp[1]
   }
 
   ## ---- dispatch to C/C++ backend ----

@@ -1,17 +1,18 @@
-## corrselect 1.0.1
+# corrselect 2.0.0
 
-### Improvements
+## Major Changes
 
-- `corrSelect()` and `MatSelect()` now **automatically select the best algorithm** based on `force_in`:
-  - Defaults to **ELS** when `force_in` is specified
-  - Defaults to **Bron–Kerbosch** otherwise  
-- Optimized `runELS()`:
-  - Skips seed expansion when `force_in` is non-empty, improving performance up to **5×**
-  - Precomputes a binary compatibility matrix to speed up correlation checks
-  - Explicitly filters seeds to those compatible with `force_in`, reducing overhead
-- Reduced duplicate work and memory use in ELS by hashing only canonical combinations
+- **New Function: `assocSelect()`**  
+  Enables variable subset selection for **mixed data frames** (numeric, ordered, and factor variables) using appropriate association measures (e.g., Cramér's V, Spearman, Eta).  
+  Automatically chooses the correct method for each variable type pair.
 
-### Result
+- **S4 Class Improvements**  
+  The `CorrCombo` object now includes:
+  - `assoc_methods` field for mixed data input
+  - `cor_method = "mixed"` when used with `assocSelect()`
+  - Improved `show()` method with aligned output and better readability
 
-- **ELS now outperforms BK** in constrained cases with forced-in variables  
-- Full backward compatibility with `method = "els"` or `"bron-kerbosch"`
+## Minor Improvements
+
+- Better error messages for unsupported column types or invalid `force_in` entries
+- Cleaner `show()` display with 2-per-row method alignment for `assoc_methods`
