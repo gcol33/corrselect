@@ -1,7 +1,7 @@
 #' Select Variable Subsets with Low Association (Mixed-Type Data Frame Interface)
 #'
-#' Identifies **combinations of variables of any common data type**—numeric,
-#' ordered factors, or unordered factors—whose *pair-wise association* does not
+#' Identifies combinations of variables of any common data type (numeric,
+#' ordered factors, or unordered) factors—whose *pair-wise association* does not
 #' exceed a user-supplied threshold.
 #' The routine wraps \code{\link{MatSelect}()} and handles all pre-processing
 #' (type conversion, missing-row removal, constant-column checks) for typical

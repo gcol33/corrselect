@@ -37,7 +37,7 @@
 #' For \code{"bicor"}, \code{"distance"}, and \code{"maximal"}, the corresponding
 #' package must be installed.
 #'
-#' @seealso [MatSelect()], [corrSubset()]
+#' @seealso [assocSelect()], [MatSelect()], [corrSubset()]
 #'
 #' @examples
 #' df <- data.frame(
