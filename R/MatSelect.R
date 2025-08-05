@@ -27,7 +27,7 @@ NULL
 #' colnames(mat) <- paste0("V", 1:10)
 #' cmat <- cor(mat)
 #'
-#' # Default method (ELS)
+#' # Default method (Bron-Kerbosch)
 #' res1 <- MatSelect(cmat, threshold = 0.5)
 #'
 #' # Bron–Kerbosch without pivot
