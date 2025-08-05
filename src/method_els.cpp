@@ -1,130 +1,162 @@
+// method_els.cpp
+
 #include "method_els.h"
 #include "utils.h"
+#include <Rcpp.h>
+#include <vector>
 #include <unordered_set>
+#include <string>
 #include <algorithm>
+#include <numeric>
+#include <cmath>
 
-// Internal degeneracy-ordering based ELS
-namespace {
+using namespace Rcpp;
 
-// Helper: Degeneracy ordering
-std::vector<int> degeneracy_ordering(const std::vector<std::vector<int>>& adj) {
-  int n = adj.size();
-  std::vector<int> degree(n), order, bucket(n);
-  std::vector<bool> used(n, false);
-
-  for (int i = 0; i < n; ++i) {
-    degree[i] = adj[i].size();
-    bucket[degree[i]]++;
+// Helper to serialize a sorted Combo into a comma-separated string key
+static std::string comboKey(const std::vector<int>& combo) {
+  std::string key;
+  for (size_t i = 0; i < combo.size(); ++i) {
+    if (i > 0) key += ",";
+    key += std::to_string(combo[i]);
   }
-
-  int max_deg = *std::max_element(degree.begin(), degree.end());
-  std::vector<std::vector<int>> bins(max_deg + 1);
-  for (int i = 0; i < n; ++i)
-    bins[degree[i]].push_back(i);
-
-  for (int k = 0; k <= max_deg; ++k) {
-    while (!bins[k].empty()) {
-      int v = bins[k].back();
-      bins[k].pop_back();
-      if (used[v]) continue;
-      used[v] = true;
-      order.push_back(v);
-      for (int u : adj[v]) {
-        if (!used[u] && degree[u] > 0) {
-          bins[degree[u]].erase(std::remove(bins[degree[u]].begin(), bins[degree[u]].end(), u), bins[degree[u]].end());
-          degree[u]--;
-          bins[degree[u]].push_back(u);
-        }
-      }
-    }
-  }
-
-  std::reverse(order.begin(), order.end()); // highest degeneracy first
-  return order;
+  return key;
 }
 
-// ELS expansion with degeneracy ordering
-void els_expand(const std::vector<std::vector<int>>& adj,
-                const std::unordered_set<int>& forcedSet,
-                Combo current,
-                std::unordered_set<int> candidates,
-                ComboList& results) {
-
-  if (candidates.empty()) {
-    // Check if current subset includes forced-in variables
-    for (int f : forcedSet) {
-      if (std::find(current.begin(), current.end(), f) == current.end())
-        return;
-    }
-    if (!current.empty()) results.push_back(current);
-    return;
-  }
-
-  // pick candidate with lowest degeneracy (smallest degree first)
-  int v = *candidates.begin();
-
-  // Exclude v and expand
-  candidates.erase(v);
-  els_expand(adj, forcedSet, current, candidates, results);
-
-  // Include v if valid
-  bool valid = true;
-  for (int u : current) {
-    if (std::find(adj[v].begin(), adj[v].end(), u) == adj[v].end()) {
-      valid = false;
-      break;
-    }
-  }
-  if (!valid) return;
-
-  // Include v and restrict candidates to neighbors of v
-  current.push_back(v);
-  std::unordered_set<int> new_candidates;
-  for (int w : candidates) {
-    if (std::find(adj[v].begin(), adj[v].end(), w) != adj[v].end())
-      new_candidates.insert(w);
-  }
-  els_expand(adj, forcedSet, current, new_candidates, results);
-}
-
-void findMaximalSetsELS(
-    const Rcpp::NumericMatrix& mat,
-    double threshold,
-    const Combo& forcedVec,
-    ComboList& results
-) {
-  int n = mat.ncol();
-
-  // Adjacency list: edge ⇔ abs(corr) ≤ threshold
-  std::vector<std::vector<int>> adj(n);
-  for (int i = 0; i < n; ++i) {
-    for (int j = i + 1; j < n; ++j) {
-      if (std::abs(mat(i, j)) <= threshold) {
-        adj[i].push_back(j);
-        adj[j].push_back(i);
-      }
-    }
-  }
-
-  // Degeneracy ordering
-  std::vector<int> order = degeneracy_ordering(adj);
-
-  // Quick forced-in lookup
-  std::unordered_set<int> forcedSet(forcedVec.begin(), forcedVec.end());
-
-  // Start recursive expansion
-  std::unordered_set<int> candidates(order.begin(), order.end());
-  Combo current;
-  els_expand(adj, forcedSet, current, candidates, results);
-}
-
-} // namespace
-
+// —————————————————————————————————————————————————————————————————————————————
 // [[Rcpp::export]]
-ComboList runELS(const Rcpp::NumericMatrix& corMatrix,
+ComboList runELS(const NumericMatrix& corMatrix,
                  double threshold,
                  const Combo& forcedVec) {
-  ComboList out;
-  findMaximalSetsELS(corMatrix, threshold, forcedVec, out);
-  return out;
+  int n = corMatrix.nrow();
+  if (n != corMatrix.ncol()) stop("Matrix must be square.");
+  if (!validateMatrixStructure(corMatrix))
+    stop("Matrix must be symmetric or upper triangular.");
+
+  // 1. Precompute binary compatibility matrix
+  std::vector<std::vector<bool>> compatible(n, std::vector<bool>(n, false));
+  for (int i = 0; i < n - 1; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+      bool ok = std::abs(corMatrix(i, j)) <= threshold;
+      compatible[i][j] = compatible[j][i] = ok;
+    }
+  }
+
+  std::vector<int> allNodes(n);
+  std::iota(allNodes.begin(), allNodes.end(), 0);
+  std::unordered_set<int> forcedSet(forcedVec.begin(), forcedVec.end());
+
+  std::unordered_set<std::string> seen;
+  ComboList results;
+
+  // ————————————————————————————————
+  // CASE 1: forcedVec is non-empty → expand once, skip seed loop
+  // ————————————————————————————————
+  if (!forcedVec.empty()) {
+    Combo current = forcedVec;
+
+    // Greedily add compatible nodes
+    for (int u : allNodes) {
+      if (forcedSet.count(u)) continue;
+
+      bool ok = true;
+      for (int w : current) {
+        if (!compatible[u][w]) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) current.push_back(u);
+    }
+
+    // Check if current is maximal
+    bool maximal = true;
+    for (int u : allNodes) {
+      if (std::find(current.begin(), current.end(), u) != current.end()) continue;
+
+      bool ok = true;
+      for (int w : current) {
+        if (!compatible[u][w]) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) {
+        maximal = false;
+        break;
+      }
+    }
+
+    if (maximal) {
+      std::sort(current.begin(), current.end());
+      results.push_back(current);
+    }
+
+    return results;
+  }
+
+  // ————————————————————————————————
+  // CASE 2: forcedVec is empty → normal ELS with seeds
+  // ————————————————————————————————
+
+  // Determine valid seeds
+  std::vector<int> seeds;
+  for (int v : allNodes) {
+    bool ok = true;
+    for (int f : forcedVec) {
+      if (!compatible[v][f]) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) seeds.push_back(v);
+  }
+
+  // Main loop over seeds
+  for (int v : seeds) {
+    Combo current = forcedVec;
+    current.push_back(v);
+
+    // Greedily add compatible nodes
+    for (int u : allNodes) {
+      if (forcedSet.count(u) || u == v) continue;
+
+      bool ok = true;
+      for (int w : current) {
+        if (!compatible[u][w]) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) current.push_back(u);
+    }
+
+    // Check if current is maximal
+    bool maximal = true;
+    for (int u : allNodes) {
+      if (std::find(current.begin(), current.end(), u) != current.end()) continue;
+
+      bool ok = true;
+      for (int w : current) {
+        if (!compatible[u][w]) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) {
+        maximal = false;
+        break;
+      }
+    }
+
+    if (maximal) {
+      std::sort(current.begin(), current.end());
+      std::string key = comboKey(current);
+      if (!seen.count(key)) {
+        seen.insert(key);
+        results.push_back(current);
+      }
+    }
+  }
+
+  return results;
 }

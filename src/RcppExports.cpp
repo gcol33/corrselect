@@ -41,12 +41,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // runELS
-ComboList runELS(const Rcpp::NumericMatrix& corMatrix, double threshold, const Combo& forcedVec);
+ComboList runELS(const NumericMatrix& corMatrix, double threshold, const Combo& forcedVec);
 RcppExport SEXP _corrselect_runELS(SEXP corMatrixSEXP, SEXP thresholdSEXP, SEXP forcedVecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type corMatrix(corMatrixSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type corMatrix(corMatrixSEXP);
     Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
     Rcpp::traits::input_parameter< const Combo& >::type forcedVec(forcedVecSEXP);
     rcpp_result_gen = Rcpp::wrap(runELS(corMatrix, threshold, forcedVec));

@@ -56,12 +56,23 @@
 #' @export
 corrSelect <- function(df,
                        threshold = 0.7,
-                       method = c("bron-kerbosch","els"),
+                       method = NULL,
                        force_in = NULL,
                        cor_method = c("pearson", "spearman", "kendall", "bicor", "distance", "maximal"),
                        ...) {
-  method <- match.arg(method)
+
+  # Normalize cor_method
   cor_method <- match.arg(cor_method)
+
+  # Convert force_in to integer indices (if it's not already)
+  force_in <- as.integer(force_in %||% integer(0))
+
+  # Conditionally set default method if NULL
+  if (is.null(method)) {
+    method <- if (length(force_in) > 0) "els" else "bron-kerbosch"
+  } else {
+    method <- match.arg(method, choices = c("bron-kerbosch", "els"))
+  }
 
   df <- as.data.frame(df)
   if (!is.data.frame(df)) stop("`df` must be a data frame.")

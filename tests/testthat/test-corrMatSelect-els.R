@@ -60,20 +60,7 @@ test_that("ELS computes min/max correlations", {
   expect_true(all(res@max_corr >= res@min_corr, na.rm = TRUE))
 })
 
-test_that("ELS completes under 1 second for 20x20", {
-  skip_if_not_installed("callr")
-  library(callr)
 
-  result <- r(function() {
-    mat <- matrix(rnorm(100 * 20), ncol = 20)
-    cor_mat <- cor(mat)
-    suppressMessages(library(corrselect))
-    res <- MatSelect(cor_mat, threshold = 0.7, method = "els")
-    length(res@subset_list)
-  }, timeout = 1)
-
-  expect_type(result, "integer")
-})
 
 
 

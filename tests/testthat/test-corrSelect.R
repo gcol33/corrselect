@@ -142,19 +142,90 @@ test_that("corrSelect works with cor_method = 'maximal' if minerva is available"
   expect_s4_class(res, "CorrCombo")
   expect_equal(res@cor_method, "maximal")
 })
+test_that("can get more than one combination (named columns)", {
+  # Build a 4×4 correlation matrix with names
+  cor_mat <- matrix(0.9, nrow = 4, ncol = 4)
+  diag(cor_mat) <- 1
+  cor_mat[1,2] <- cor_mat[2,1] <- 0.1
+  cor_mat[3,4] <- cor_mat[4,3] <- 0.1
+  colnames(cor_mat) <- paste0("V", 1:4)
+  rownames(cor_mat) <- colnames(cor_mat)
 
-test_that("force_in variables are allowed even if mutually too correlated", {
-  df <- data.frame(
-    A = rnorm(50),
-    B = rnorm(50)
-  )
-  df$A_dup <- df$A + rnorm(50, sd = 0.001)  # Nearly identical to A
+  # Run BK
+  res <- MatSelect(cor_mat, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
 
-  expect_warning(
-    res <- corrSelect(df, threshold = 0.7, force_in = c("A", "A_dup")),
-    "Variables in `force_in` are mutually correlated"
-  )
-  expect_s4_class(res, "CorrCombo")
-  all_sets <- unique(unlist(res@subset_list))
-  expect_true(all(c("A", "A_dup") %in% all_sets))
+  # Expect exactly two subsets, named "V1","V2" and "V3","V4"
+  expect_equal(length(res@subset_list), 2L)
+
+  # Extract the subset names
+  subsets <- res@subset_list
+  # Sort each for comparison
+  subsets <- lapply(subsets, sort)
+
+  # The two expected sets
+  expected <- list(c("V1","V2"), c("V3","V4"))
+
+  # Check that each expected set appears in the output
+  for (exp in expected) {
+    found <- any(vapply(subsets, function(x) identical(x, exp), logical(1)))
+    expect_true(found, info = paste("Missing subset", paste(exp, collapse=",")))
+  }
 })
+test_that("ELS can get more than one combination (named columns)", {
+  # Build a 4×4 correlation matrix with names
+  cor_mat <- matrix(0.9, nrow = 4, ncol = 4)
+  diag(cor_mat) <- 1
+  cor_mat[1,2] <- cor_mat[2,1] <- 0.1
+  cor_mat[3,4] <- cor_mat[4,3] <- 0.1
+  colnames(cor_mat) <- paste0("V", 1:4)
+  rownames(cor_mat) <- colnames(cor_mat)
+
+  # Run ELS
+  res <- MatSelect(cor_mat, threshold = 0.5, method = "els")
+
+  res# Expect exactly two subsets, named "V1","V2" and "V3","V4"
+  expect_equal(length(res@subset_list), 2L)
+
+  # Extract the subset names
+  subsets <- res@subset_list
+  subsets <- lapply(subsets, sort)
+
+  # The two expected sets
+  expected <- list(c("V1","V2"), c("V3","V4"))
+
+  # Check that each expected set appears in the output
+  for (exp in expected) {
+    found <- any(vapply(subsets, function(x) identical(x, exp), logical(1)))
+    expect_true(found, info = paste("ELS missing subset", paste(exp, collapse = ",")))
+  }
+})
+library(microbenchmark)
+
+# Create synthetic correlation matrix
+make_cor_matrix <- function(p, seed = 123) {
+  set.seed(seed)
+  X <- matrix(rnorm(200 * p), ncol = p)
+  M <- cor(X)
+  diag(M) <- 0  # optional, to avoid perfect self-correlation
+  return(M)
+}
+
+# Wrapper functions
+run_bk <- function(mat, threshold, forced = integer()) {
+  runBronKerbosch(mat, threshold, forced, usePivot = TRUE)
+}
+
+run_els <- function(mat, threshold, forced = integer()) {
+  runELS(mat, threshold, forced)
+}
+
+# Example: Benchmark on p = 30
+cor_mat <- make_cor_matrix(30)
+threshold <- 0.5
+forcedVec <- c(1,5)  # or try c(1, 5)
+
+microbenchmark(
+  ELS = run_els(cor_mat, threshold, forcedVec),
+  BK  = run_bk(cor_mat, threshold, forcedVec),
+  times = 10
+)

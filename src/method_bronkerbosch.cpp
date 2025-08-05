@@ -72,14 +72,7 @@ ComboList runBronKerbosch(const NumericMatrix& corMatrix,
   if (!validateMatrixStructure(corMatrix))
     stop("Matrix must be symmetric or upper triangular.");
 
-  // 1) Validate forcedVec itself
-  if (!forcedVec.empty()) {
-    if (!isValidCombination(corMatrix, forcedVec, threshold)) {
-      stop("forced_in variables violate the threshold among themselves.");
-    }
-  }
-
-  // 2) Build adjacency: edge if abs(corr) ≤ threshold
+  // 1) Build adjacency: edge if abs(corr) ≤ threshold
   std::vector<std::vector<int>> graph(n);
   for (int i = 0; i < n - 1; ++i) {
     for (int j = i + 1; j < n; ++j) {
@@ -90,7 +83,7 @@ ComboList runBronKerbosch(const NumericMatrix& corMatrix,
     }
   }
 
-  // 3) Compute initial P = neighbors common to all forcedVec (or all nodes if none forced)
+  // 2) Compute initial P = neighbors common to all forcedVec (or all nodes if none forced)
   std::vector<int> P;
   if (forcedVec.empty()) {
     P.resize(n);
@@ -112,11 +105,11 @@ ComboList runBronKerbosch(const NumericMatrix& corMatrix,
     std::sort(P.begin(), P.end());
   }
 
-  // 4) Initialize R = forcedVec, X = {}
+  // 3) Initialize R = forcedVec, X = {}
   std::vector<int> R = forcedVec;
   std::vector<int> X;
 
-  // 5) Run recursion
+  // 4) Run recursion
   ComboList allMaxCliques;
   bronKerboschRecursive(graph, R, P, X, allMaxCliques, usePivot);
 

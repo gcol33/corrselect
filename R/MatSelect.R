@@ -42,10 +42,18 @@ NULL
 #' @export
 MatSelect <- function(mat,
                       threshold = 0.7,
-                      method = c("bron-kerbosch","els"),
+                      method = NULL,
                       force_in = NULL,
                       ...) {
-  method <- match.arg(method)
+
+  force_in <- as.integer(force_in %||% integer(0))
+
+  # Conditionally select default method
+  if (is.null(method)) {
+    method <- if (length(force_in) > 0) "els" else "bron-kerbosch"
+  } else {
+    method <- match.arg(method, choices = c("bron-kerbosch", "els"))
+  }
 
   ## ---- Input validation ----
   if (!is.matrix(mat) || !is.numeric(mat)) {

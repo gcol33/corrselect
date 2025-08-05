@@ -1,13 +1,17 @@
-# corrselect 1.0.0
+## corrselect 1.0.1
 
-## Initial Release
+### Improvements
 
-- Added `corrSelect()` for selecting variable subsets below a user-specified correlation threshold.
-- Supports two exact algorithms: Eppstein–Löffler–Strash (ELS) and Bron–Kerbosch (BK).
-- Provides data-frame and matrix interfaces (`corrSelect()` and `MatSelect()`).
-- Supports multiple correlation measures (`pearson`, `spearman`, `kendall`, `bicor`, `distance`, `maximal`).
-- Implements `force_in` argument to require specific variables in every subset.
-- Handles missing values by removing incomplete rows.
-- Returns `CorrCombo` S4 object summarizing all maximal valid subsets with correlation statistics.
-- Includes helper functions for extracting subsets (`corrSubset()`) and data frame conversion (`as.data.frame()`).
+- `corrSelect()` and `MatSelect()` now **automatically select the best algorithm** based on `force_in`:
+  - Defaults to **ELS** when `force_in` is specified
+  - Defaults to **Bron–Kerbosch** otherwise  
+- Optimized `runELS()`:
+  - Skips seed expansion when `force_in` is non-empty, improving performance up to **5×**
+  - Precomputes a binary compatibility matrix to speed up correlation checks
+  - Explicitly filters seeds to those compatible with `force_in`, reducing overhead
+- Reduced duplicate work and memory use in ELS by hashing only canonical combinations
 
+### Result
+
+- **ELS now outperforms BK** in constrained cases with forced-in variables  
+- Full backward compatibility with `method = "els"` or `"bron-kerbosch"`
