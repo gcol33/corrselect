@@ -66,10 +66,7 @@
 #' and \code{"maximal"} (\pkg{minerva}); an informative error is thrown if they
 #' are missing.
 #'
-#' @seealso
-#'   \code{\link{corrSelect}} for numeric-only screening,
-#'   \code{\link{MatSelect}} for raw matrix input,
-#'   \code{\link{CorrCombo}} for the result object.
+#'@seealso [corrSelect()], [MatSelect()], [corrSubset()]
 #'
 #' @examples
 #' df <- data.frame(

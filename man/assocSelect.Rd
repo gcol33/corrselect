@@ -58,8 +58,8 @@ The object’s \code{show()} method prints the association metrics that were
 \emph{actually used} for this data set.
 }
 \description{
-Identifies \strong{combinations of variables of any common data type}—numeric,
-ordered factors, or unordered factors—whose \emph{pair-wise association} does not
+Identifies combinations of variables of any common data type (numeric,
+ordered factors, or unordered) factors—whose \emph{pair-wise association} does not
 exceed a user-supplied threshold.
 The routine wraps \code{\link{MatSelect}()} and handles all pre-processing
 (type conversion, missing-row removal, constant-column checks) for typical
@@ -112,7 +112,5 @@ assocSelect(df,
 
 }
 \seealso{
-\code{\link{corrSelect}} for numeric-only screening,
-\code{\link{MatSelect}} for raw matrix input,
-\code{\link{CorrCombo}} for the result object.
+\code{\link[=corrSelect]{corrSelect()}}, \code{\link[=MatSelect]{MatSelect()}}, \code{\link[=corrSubset]{corrSubset()}}
 }

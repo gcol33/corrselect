@@ -59,19 +59,33 @@ For \code{"bicor"}, \code{"distance"}, and \code{"maximal"}, the corresponding
 package must be installed.
 }
 \examples{
-df <- data.frame(
-  A = c(1, 2, 3, 4, 5),
-  B = c(2, 4, 6, 8, 10),  # Highly correlated with A
-  C = c(5, 7, 6, 9, 8),
-  D = c(1, 0, 1, 0, 1),
-  label = factor(c("x", "y", "x", "y", "x"))  # Ignored
-)
+set.seed(42)
+n <- 100
 
-corrSelect(df, threshold = 0.9)
+# Create 20 variables: 5 blocks of correlated variables + some noise
+block1 <- matrix(rnorm(n * 4), ncol = 4)
+block2 <- matrix(rnorm(n), ncol = 1)
+block2 <- matrix(rep(block2, 4), ncol = 4) + matrix(rnorm(n * 4, sd = 0.1), ncol = 4)
+block3 <- matrix(rnorm(n * 4), ncol = 4)
+block4 <- matrix(rnorm(n * 4), ncol = 4)
+block5 <- matrix(rnorm(n * 4), ncol = 4)
+
+df <- as.data.frame(cbind(block1, block2, block3, block4, block5))
+colnames(df) <- paste0("V", 1:20)
+
+# Add a non-numeric column to be ignored
+df$label <- factor(sample(c("A", "B"), n, replace = TRUE))
+
+# Basic usage
+corrSelect(df, threshold = 0.8)
+
+# Try Bron–Kerbosch with pivoting
 corrSelect(df, threshold = 0.6, method = "bron-kerbosch", use_pivot = TRUE)
-corrSelect(df, threshold = 0.6, force_in = "C", cor_method = "spearman")
+
+# Force in a specific variable and use Spearman correlation
+corrSelect(df, threshold = 0.6, force_in = "V10", cor_method = "spearman")
 
 }
 \seealso{
-\code{\link[=MatSelect]{MatSelect()}}, \code{\link[=corrSubset]{corrSubset()}}
+\code{\link[=assocSelect]{assocSelect()}}, \code{\link[=MatSelect]{MatSelect()}}, \code{\link[=corrSubset]{corrSubset()}}
 }
