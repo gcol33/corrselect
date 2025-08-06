@@ -105,17 +105,22 @@ assocSelect <- function(df,
 
   ## ---------- preprocessing ----------
   df <- as.data.frame(df)
-
-  # Auto-convert character to factor, integer to numeric
+  # Auto-convert and drop unused levels
   df[] <- lapply(df, function(col) {
     if (is.character(col)) {
       factor(col)
+    } else if (is.logical(col)) {
+      factor(col)
+    } else if (is.factor(col)) {
+      droplevels(col)
     } else if (is.integer(col)) {
       as.numeric(col)
     } else {
       col
     }
   })
+
+
 
   if (ncol(df) < 2) stop("`df` needs at least two columns.")
 
@@ -173,10 +178,11 @@ assocSelect <- function(df,
            },
            cramersv = {
              tbl <- table(x, y)
+             if (min(dim(tbl)) < 2 || any(tbl == 0)) return(NA_real_)
              suppressWarnings({
                chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE)$statistic)
              })
-             if (length(chi2) == 0 || is.na(chi2)) return(0)
+             if (length(chi2) == 0 || is.na(chi2)) return(NA_real_)
              sqrt(chi2 / (sum(tbl) * (min(dim(tbl)) - 1)))
            },
            eta = {
@@ -219,7 +225,10 @@ assocSelect <- function(df,
       }
 
       a <- get_assoc(df[[i]], df[[j]], meth, tx, ty)
-      a <- max(0, min(1, a))  # normalize to [0,1]
+      if (is.na(a)) {
+        a <- 0  # fallback to 0 if association could not be computed
+      }
+      a <- max(0, min(1, a))
       mat[i, j] <- mat[j, i] <- a
     }
   }
@@ -234,6 +243,9 @@ assocSelect <- function(df,
   }
 
   ## ---------- subset selection ----------
+  if (anyNA(mat)) {
+    stop("Association matrix contains NA values. This may be caused by sparse combinations or unused factor levels.")
+  }
   res <- MatSelect(mat, threshold, method, force_in, ...)
   res@n_rows_used <- nrow(df)
   res@cor_method  <- "mixed"

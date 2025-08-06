@@ -51,12 +51,31 @@ ComboList runELS(const NumericMatrix& corMatrix,
   // ————————————————————————————————
   // CASE 1: forcedVec is non-empty → expand once, skip seed loop
   // ————————————————————————————————
-  if (!forcedVec.empty()) {
-    Combo current = forcedVec;
+if (!forcedVec.empty()) {
+  std::unordered_set<std::string> seen_local;
 
-    // Greedily add compatible nodes
+  // Determine seeds: nodes compatible with all of forcedVec
+  std::vector<int> seeds;
+  for (int v : allNodes) {
+    if (forcedSet.count(v)) continue;
+
+    bool ok = true;
+    for (int f : forcedVec) {
+      if (!compatible[v][f]) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) seeds.push_back(v);
+  }
+
+  // Expand from each compatible seed
+  for (int v : seeds) {
+    Combo current = forcedVec;
+    current.push_back(v);
+
     for (int u : allNodes) {
-      if (forcedSet.count(u)) continue;
+      if (forcedSet.count(u) || u == v) continue;
 
       bool ok = true;
       for (int w : current) {
@@ -88,11 +107,17 @@ ComboList runELS(const NumericMatrix& corMatrix,
 
     if (maximal) {
       std::sort(current.begin(), current.end());
-      results.push_back(current);
+      std::string key = comboKey(current);
+      if (!seen.count(key)) {
+        seen.insert(key);
+        results.push_back(current);
+      }
     }
-
-    return results;
   }
+
+  return results;
+}
+
 
   // ————————————————————————————————
   // CASE 2: forcedVec is empty → normal ELS with seeds

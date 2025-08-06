@@ -1,18 +1,12 @@
-# corrselect 2.0.0
+# corrselect 2.0.1
 
-## Major Changes
+## Bug Fixes
 
-- **New Function: `assocSelect()`**  
-  Enables variable subset selection for **mixed data frames** (numeric, ordered, and factor variables) using appropriate association measures (e.g., Cramér's V, Spearman, Eta).  
-  Automatically chooses the correct method for each variable type pair.
+- `force_in` in `MatSelect()` now correctly accepts character column names.
+- `els` now correctly lists all valid subsets when a single variable is forced in.
+- `corrSelect()` now displays an appropriate warning if only one variable remains after dropping unsupported columns.
+- Association matrix construction in `assocSelect()` now safely falls back to 0 for failed or meaningless associations (e.g. empty chi-squared tables due to sparse combinations or unused factor levels).
 
-- **S4 Class Improvements**  
-  The `CorrCombo` object now includes:
-  - `assoc_methods` field for mixed data input
-  - `cor_method = "mixed"` when used with `assocSelect()`
-  - Improved `show()` method with aligned output and better readability
+## Features Added
 
-## Minor Improvements
-
-- Better error messages for unsupported column types or invalid `force_in` entries
-- Cleaner `show()` display with 2-per-row method alignment for `assoc_methods`
+- `assocSelect()` now supports logical columns by automatically converting them to factors.

@@ -85,9 +85,10 @@ corrSelect <- function(df,
 
   # Remove rows with NA
   n_before <- nrow(df_num)
-  df_num   <- df_num[complete.cases(df_num), ]
+  df_num   <- df_num[complete.cases(df_num), , drop = FALSE]
   n_after  <- nrow(df_num)
-  n_dropped <- n_before - n_after
+  n_dropped <- if (length(n_before) == 1 && length(n_after) == 1) n_before - n_after else 0
+
   if (n_dropped > 0) {
     warning(sprintf("Removed %d row%s with missing values before correlation analysis.",
                     n_dropped, if (n_dropped == 1) "" else "s"))

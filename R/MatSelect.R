@@ -47,7 +47,29 @@ MatSelect <- function(mat,
                       force_in = NULL,
                       ...) {
 
-  force_in <- as.integer(force_in %||% integer(0))
+  # Force-in conversion (names or indices)
+  if (!is.null(force_in)) {
+    if (is.character(force_in)) {
+      if (is.null(colnames(mat))) {
+        stop("`mat` has no column names: cannot use character `force_in`.")
+      }
+      missing_names <- setdiff(force_in, colnames(mat))
+      if (length(missing_names)) {
+        stop("`force_in` names not found in matrix: ",
+             paste(missing_names, collapse = ", "))
+      }
+      force_in <- match(force_in, colnames(mat))
+    }
+    
+    # Now: must be valid 1-based indices
+    if (!is.numeric(force_in) || anyNA(force_in) ||
+        any(force_in < 1) || any(force_in > ncol(mat))) {
+      stop("`force_in` must be valid 1-based column indices or names.")
+    }
+  } else {
+    force_in <- integer(0)
+  }
+  
 
   # Conditionally select default method
   if (is.null(method)) {
