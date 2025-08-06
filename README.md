@@ -11,6 +11,7 @@ Variable selection is a central task in statistics and machine learning, particu
 This package addresses the **admissible set problem**: selecting all maximal subsets of variables such that no pair exceeds a user-defined threshold. It generalizes to mixed-type data, supports multiple association metrics, and allows constrained subset selection via `force_in` (e.g. always include key predictors).
 
 These features make the package useful in domains like:
+
 - ecological and bioclimatic modeling,
 - trait-based species selection,
 - interpretable machine learning pipelines.
@@ -18,17 +19,20 @@ These features make the package useful in domains like:
 ## Features
 
 - Exhaustive and **exact** subset enumeration using graph algorithms:  
-  – Eppstein–Löffler–Strash (ELS)  
-  – Bron–Kerbosch (with optional pivoting)
-  
+  - Eppstein–Löffler–Strash (ELS)  
+  - Bron–Kerbosch (with optional pivoting)
+
+
 - Supports multiple correlation/association metrics:
   - `"pearson"`, `"spearman"`, `"kendall"`
   - `"bicor"` (WGCNA), `"distance"` (energy), `"maximal"` (minerva)
   - `"eta"`, `"cramersv"` for mixed-type associations
 
+
 - Works with:
   - data frames (`corrSelect()` and `assocSelect()`),
   - correlation matrices (`MatSelect()`)
+
 
 - Mixed-type support via `assocSelect()`:
   - numeric–factor → Eta squared
@@ -37,6 +41,7 @@ These features make the package useful in domains like:
   - ordered–ordered → Spearman/Kendall
 
 - `force_in`: specify variables that must be included in every subset
+
 
 - Returns an extensible `CorrCombo` S4 object with:
   - subset metadata,

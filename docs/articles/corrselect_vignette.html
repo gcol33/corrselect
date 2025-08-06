@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
+<li><a class="dropdown-item" href="../articles/corrselect_upcoming.html">Upcoming Features in corrselect 2.1.0</a></li>
+    <li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -70,20 +71,29 @@
 </h2>
 <p><code>corrselect</code> identifies all maximal subsets of variables
 whose pairwise correlations stay below a chosen threshold. This process
-reduces multicollinearity and redundancy before modeling while
+reduces multicollinearity and redundancy before modeling, while
 preserving interpretability. Unlike greedy or stepwise approaches,
 <code>corrselect</code> exhaustively searches for all valid subsets
-using fast, exact algorithms, and is fully model-agnostic, making it
+using fast, exact algorithms. It is fully model-agnostic, making it
 suitable as a preprocessing step for regression, clustering, feature
 selection, and other analyses.</p>
-<p>Given a threshold \(t \in (0,1)\), the functions
-<code><a href="../reference/corrSelect.html">corrSelect()</a></code> (data-frame interface) and
+<p>Given a threshold
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t \in (0,1)</annotation></semantics></math>,
+the functions <code><a href="../reference/corrSelect.html">corrSelect()</a></code> (data-frame interface) and
 <code><a href="../reference/MatSelect.html">MatSelect()</a></code> (matrix interface) enumerate all
-<strong>maximal</strong> subsets \(S\) of variables satisfying</p>
-<p>\[ \forall i,j \in S,\ i \neq j: \ |r_{ij}| &lt; t, \]</p>
-<p>where \(r_{ij}\) denotes the chosen correlation measure between
-variables \(i\) and \(j\). Enumeration relies on two exact
-graph-theoretic algorithms:</p>
+<strong>maximal</strong> subsets
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+of variables satisfying:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>≠</mo><mi>j</mi><mo>:</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">
+\forall i, j \in S,\ i \neq j: \ |r_{ij}| &lt; t
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">r_{ij}</annotation></semantics></math>
+denotes the chosen correlation measure between variables
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>.
+Enumeration relies on two exact graph-theoretic algorithms:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Eppstein–Löffler–Strash (ELS)</strong>, a degeneracy-ordered

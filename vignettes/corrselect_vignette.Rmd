@@ -14,15 +14,15 @@ library(corrselect)
 
 ## Overview
 
-`corrselect` identifies all maximal subsets of variables whose pairwise correlations stay below a chosen threshold. This process reduces multicollinearity and redundancy before modeling while preserving interpretability. Unlike greedy or stepwise approaches, `corrselect` exhaustively searches for all valid subsets using fast, exact algorithms, and is fully model-agnostic, making it suitable as a preprocessing step for regression, clustering, feature selection, and other analyses.
+`corrselect` identifies all maximal subsets of variables whose pairwise correlations stay below a chosen threshold. This process reduces multicollinearity and redundancy before modeling, while preserving interpretability. Unlike greedy or stepwise approaches, `corrselect` exhaustively searches for all valid subsets using fast, exact algorithms. It is fully model-agnostic, making it suitable as a preprocessing step for regression, clustering, feature selection, and other analyses.
 
-Given a threshold \\(t \\in (0,1)\\), the functions `corrSelect()` (data-frame interface) and `MatSelect()` (matrix interface) enumerate all **maximal** subsets \\(S\\) of variables satisfying
+Given a threshold \( t \in (0,1) \), the functions `corrSelect()` (data-frame interface) and `MatSelect()` (matrix interface) enumerate all **maximal** subsets \( S \) of variables satisfying:
 
-\\[
-\\forall i,j \\in S,\\ i \\neq j: \\ |r_{ij}| < t,
-\\]
+\[
+\forall i, j \in S,\ i \neq j: \ |r_{ij}| < t
+\]
 
-where \\(r_{ij}\\) denotes the chosen correlation measure between variables \\(i\\) and \\(j\\). Enumeration relies on two exact graph-theoretic algorithms:
+where \(r_{ij}\) denotes the chosen correlation measure between variables \(i\) and \(j\). Enumeration relies on two exact graph-theoretic algorithms:
 
 1. **Eppstein–Löffler–Strash (ELS)**, a degeneracy-ordered backtracking algorithm optimized for sparse graphs.  
 2. **Bron–Kerbosch (BK)**, a classical recursive clique-finding method, with optional pivoting to reduce search space.
@@ -31,12 +31,12 @@ Results are returned as a `CorrCombo` S4 object containing each subset’s varia
 
 ---
 
-## Quick Start
+## Quick Start (`CorrSelect`)
 
-### Simulated example
+### Simulated numeric example
 
 ```{r}
-set.seed(1)
+set.seed(42)
 n <- 100
 df <- data.frame(
   A = rnorm(n),
@@ -45,17 +45,15 @@ df <- data.frame(
   D = rnorm(n),
   E = rnorm(n)
 )
-df$F <- df$A * 0.9 + rnorm(n, sd = 0.1)  # correlated with A
+df$F <- df$A * 0.9 + rnorm(n, sd = 0.1)  # strongly correlated with A
 ```
+
 
 ### Basic selection
 
 ```{r}
 res <- corrSelect(df, threshold = 0.7)
 res
-```
-
-```{r}
 as.data.frame(res)
 ```
 
@@ -63,13 +61,6 @@ as.data.frame(res)
 corrSubset(res, df, which = 1)[1:10,]
 ```
 
-### Using a correlation matrix directly
-
-```{r}
-mat <- cor(df)
-res_mat <- MatSelect(mat, threshold = 0.7)
-res_mat
-```
 
 ### Forcing variables into all subsets
 
@@ -77,6 +68,53 @@ res_mat
 res2 <- corrSelect(df, threshold = 0.7, force_in = "A")
 res2
 ```
+
+
+### Using a different correlation method
+
+```{r}
+res3 <- corrSelect(df, threshold = 0.6, cor_method = "spearman")
+res3
+```
+
+
+## Matrix Interface (`MatSelect`)
+
+If you already computed a correlation matrix or want to apply the method to precomputed correlations:
+
+```{r}
+mat <- cor(df)
+res4 <- MatSelect(mat, threshold = 0.7)
+res4
+```
+
+Selecting subsets:
+
+```{r}
+MatSelect(mat, threshold = 0.5)
+```
+
+Force variable 1 into every subset:
+
+```{r}
+MatSelect(mat, threshold = 0.5, force_in = 1)
+```
+
+## Mixed Data Types (`assocSelect`)
+
+```{r}
+df_ass <- data.frame(
+  height = rnorm(15, 170, 10),
+  weight = rnorm(15, 70, 12),
+  group  = factor(rep(LETTERS[1:3], each = 5)),
+  score  = ordered(sample(c("low","med","high"), 15, TRUE))
+)
+
+# keep every subset whose internal associations ≤ 0.6
+res5 <- assocSelect(df_ass, threshold = 0.6)
+res5
+```
+
 
 ---
 
@@ -94,8 +132,8 @@ By default, `corrSelect()` uses Pearson correlation. You can choose alternatives
 Example:
 
 ```{r}
-res3 <- corrSelect(df, threshold = 0.7, cor_method = "spearman")
-res3
+res6 <- corrSelect(df, threshold = 0.7, cor_method = "spearman")
+res6
 ```
 
 ---
@@ -118,7 +156,7 @@ Instead of a single correlation matrix, it constructs a **generalized associatio
 The defaults for numeric-numeric, numeric-ordered, and ordered-ordered associations can be changed via arguments:
 
 ```{r}
-assocSelect(df,
+assocSelect(df_ass,
   method_num_num = "kendall",
   method_num_ord = "spearman",
   method_ord_ord = "kendall"
@@ -138,14 +176,8 @@ df_ass <- data.frame(
   score  = ordered(sample(1:3, 10, replace = TRUE))
 )
 
-res_ass <- assocSelect(df_ass, threshold = 1, method = "bron-kerbosch", use_pivot = TRUE)
-```
-
-
-This outputs:
-
-```{r}
-res_ass
+res7 <- assocSelect(df_ass, threshold = 1, method = "bron-kerbosch", use_pivot = TRUE)
+res7
 ```
 
 
@@ -192,7 +224,7 @@ S, & C = \emptyset, \\
 \end{cases}
 \]
 
-ELS avoids redundant exploration, achieving near-optimal performance on typical correlation graphs.
+ELS avoids redundant exploration, achieving good performance on typical correlation graphs.
 
 ### Bron–Kerbosch (with Pivoting)
 
@@ -259,16 +291,6 @@ summary(lengths(res@subset_list))
 # Summaries of within-subset correlations
 summary(res@max_corr)
 summary(res@avg_corr)
-```
-
----
-
-## Advanced Options
-
-Use the matrix interface with pivoting:
-
-```{r}
-MatSelect(cor(df), threshold = 0.7, method = "bron-kerbosch", use_pivot = TRUE)
 ```
 
 ---
