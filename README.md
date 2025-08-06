@@ -1,19 +1,47 @@
 # corrselect
 
-**Exhaustive, Model-Agnostic Variable Subset Selection Based on Pairwise Correlation**
+**Exhaustive, Model-Agnostic Variable Subset Selection Based on Pairwise Correlation or Association**
 
-`corrselect` automatically identifies all maximal subsets of numeric variables in your data whose pairwise correlations remain below a specified threshold. This reduces multicollinearity and redundancy before modeling, while retaining interpretability. The approach is model-agnostic: it operates purely on the data’s correlation structure, making it suitable for regression, clustering, and other analyses.
+The `corrselect` package automatically identifies all *maximal subsets* of variables in your data whose pairwise correlations or associations remain below a user-defined threshold. This helps reduce multicollinearity and redundancy while retaining interpretability. The method is **model-agnostic**, making it applicable to regression, clustering, ecological modeling, and other workflows.
+
+## Statement of Need
+
+Variable selection is a central task in statistics and machine learning, particularly when working with high-dimensional or collinear data. In many applications, users aim to retain sets of variables that are weakly associated with one another to avoid redundancy and reduce overfitting. Common approaches such as greedy filtering or regularized regression either discard useful features or do not guarantee bounded pairwise associations.
+
+This package addresses the **admissible set problem**: selecting all maximal subsets of variables such that no pair exceeds a user-defined threshold. It generalizes to mixed-type data, supports multiple association metrics, and allows constrained subset selection via `force_in` (e.g. always include key predictors).
+
+These features make the package useful in domains like:
+- ecological and bioclimatic modeling,
+- trait-based species selection,
+- interpretable machine learning pipelines.
 
 ## Features
 
-- Exhaustive, exact subset enumeration using graph algorithms (ELS and Bron–Kerbosch).  
-- Multiple correlation measures: `"pearson"`, `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, `"maximal"`.  
-- Works with data frames, tibbles, or correlation matrices.  
-- Supports mixed data (numeric, factor, ordered) via `assocSelect()`.  
-- Automatically applies suitable association metrics to each pair of column types.  
-- Force-in variables required in every subset.  
-- Returns a `CorrCombo` S4 object with subset statistics and automatic print method.  
-- Model-agnostic: feature selection is independent of downstream modeling.
+- Exhaustive and **exact** subset enumeration using graph algorithms:  
+  – Eppstein–Löffler–Strash (ELS)  
+  – Bron–Kerbosch (with optional pivoting)
+  
+- Supports multiple correlation/association metrics:
+  - `"pearson"`, `"spearman"`, `"kendall"`
+  - `"bicor"` (WGCNA), `"distance"` (energy), `"maximal"` (minerva)
+  - `"eta"`, `"cramersv"` for mixed-type associations
+
+- Works with:
+  - data frames (`corrSelect()` and `assocSelect()`),
+  - correlation matrices (`MatSelect()`)
+
+- Mixed-type support via `assocSelect()`:
+  - numeric–factor → Eta squared
+  - numeric–ordered → Spearman/Kendall
+  - factor–factor → Cramér’s V
+  - ordered–ordered → Spearman/Kendall
+
+- `force_in`: specify variables that must be included in every subset
+
+- Returns an extensible `CorrCombo` S4 object with:
+  - subset metadata,
+  - correlation/association summaries,
+  - custom `show()` and `as.data.frame()` methods
 
 ## Installation
 
@@ -27,7 +55,7 @@ remotes::install_github("gcol33/corrselect")
 ```r
 library(corrselect)
 
-# Simulated example
+# Simulated numeric example
 set.seed(1)
 n <- 100
 df <- data.frame(
@@ -39,27 +67,21 @@ df <- data.frame(
 )
 df$F <- df$A * 0.9 + rnorm(n, sd = 0.1)
 
-# Find all maximal low-correlation subsets (default: Pearson, threshold = 0.7)
+# Find all maximal subsets with pairwise Pearson correlation ≤ 0.7
 res <- corrSelect(df, threshold = 0.7)
 show(res)
 
-# Extract the best subset from the original data
+# Extract the top-ranked subset from the original data
 subset1 <- corrSubset(res, df, which = 1)
 head(subset1)
 
-# Convert to data frame
-as.data.frame(subset1)
+# Convert all subsets to a tidy data frame
+as.data.frame(res)
 ```
 
 ## Mixed Data Frames
 
-Use `assocSelect()` to perform subset selection on data frames with numeric, factor, or ordered columns. The function automatically applies the most appropriate association measure to each pair of variables:
-
-- numeric–numeric → Pearson (default)
-- numeric–factor → Eta squared
-- numeric–ordered → Spearman
-- factor–factor → Cramér’s V
-- ordered–ordered → Spearman or Kendall
+Use `assocSelect()` for data frames with numeric, factor, or ordered variables. The function automatically selects the appropriate metric for each pair:
 
 ```r
 df2 <- data.frame(
@@ -69,12 +91,12 @@ df2 <- data.frame(
   rating = ordered(sample(c("low","med","high"), 30, TRUE))     # ordered
 )
 
-# Use association-aware selection
+# Select variable subsets with association ≤ 0.6
 res2 <- assocSelect(df2, threshold = 0.6)
 show(res2)
 ```
 
-Example output:
+## Example Output
 
 ```
 CorrCombo object
@@ -85,9 +107,9 @@ CorrCombo object
   Subsets:     2 valid combinations
   Data Rows:   30 used in correlation
   Pivot:       TRUE
-  AssocMethods: numeric_numeric  → pearson,
-                 numeric_factor  → eta,
-                 numeric_ordered → spearman
+  AssocMethod: numeric_numeric  = pearson,
+               numeric_factor   = eta,
+               numeric_ordered  = spearman
 
 Top combinations:
   No.  Variables                          Avg    Max    Size
@@ -95,6 +117,17 @@ Top combinations:
   [ 1] height, rating                    0.311  0.562     2
   [ 2] weight, rating                    0.317  0.580     2
 ```
+
+## Advanced Use
+
+To use a precomputed correlation matrix (e.g. with MIC or custom metrics):
+
+```r
+mat <- cor(df)
+res <- MatSelect(mat, threshold = 0.7, method = "els", force_in = 1)
+```
+
+You can also extract the full list of subsets and use `corrSubset()` to apply them to your data with or without additional columns.
 
 ## License
 
