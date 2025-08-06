@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   corrselect_vignette: corrselect_vignette.html
-last_built: 2025-08-06T22:08Z
+last_built: 2025-08-06T22:14Z
 urls:
   reference: https://gcol33.github.io/corrselect/reference
   article: https://gcol33.github.io/corrselect/articles
