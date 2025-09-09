@@ -39,7 +39,8 @@ Three user-facing functions cover common workflows:
 - `assocSelect()` handles mixed-type data, computes normalized association measures in $[0,1]$, and selects admissible subsets at threshold $t$.
 - `MatSelect()` provides a lower-level interface for users who already have a precomputed correlation or association matrix.
 
-All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`).
+All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`).  
+For example, `corrSelect(df, t = 0.7)` returns all maximal subsets of numeric variables whose pairwise correlations are below 0.7, while `assocSelect(df, t = 0.7)` extends the maximal subsets to mixed-type variables based on normalized association measures.
 
 Internally, the package implements two algorithms for exhaustive enumeration:
 
