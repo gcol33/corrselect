@@ -1,5 +1,5 @@
 ---
-title: "corrselect: Flexible and exact variable subset selection based on correlation and association matrices"
+title: "corrselect: Exhaustive variable subset selection based on correlation and association matrices"
 authors:
   - name: Gilles Colling
     orcid: 0000-0003-3070-6066
@@ -15,15 +15,15 @@ bibliography: paper.bib
 
 # Summary
 
-`corrselect` [@cran] is an R package that selects variable subsets whose pairwise correlations or associations do not exceed a user-defined threshold. Instead of returning a single heuristic solution, it enumerates all maximal admissible subsets, supporting transparent and reproducible preprocessing when redundancy reduces interpretability or stability.
+`corrselect` [@cran] is an R package for selecting variable subsets whose pairwise correlations or associations do not exceed a user-defined threshold. Instead of returning a single heuristic solution, it enumerates all maximal admissible subsets. This addresses the well-known issues of highly correlated or associated predictors, which inflate variance estimates, destabilize coefficient estimates, and mask the relative importance of variables in statistical models. The package also supports forced inclusion of user-specified predictors (`forced_in`), ensuring that key variables are retained while admissibility constraints govern the remaining predictors.
 
-The package handles both numeric and mixed-type data. For correlation-based workflows, measures such as Pearson, Spearman, Kendall, and biweight midcorrelation [@Langfelder2008] take values in $[-1,1]$. For association-based workflows, measures are normalized to $[0,1]$ for consistent thresholding, including distance correlation [@Szekely2007; @Szekely2009], the maximal information coefficient [@Reshef2011], ANOVA $\eta^2$, and Cramér’s V.
+The package supports both numeric and mixed-type data. For correlation-based workflows, measures such as Pearson, Spearman, Kendall, and biweight midcorrelation [@Langfelder2008] take values in $[-1,1]$. For association-based workflows, measures are normalized to $[0,1]$ for consistent thresholding, including distance correlation [@Szekely2007; @Szekely2009], the maximal information coefficient [@Reshef2011], ANOVA $\eta^2$, and Cramér’s V.
 
 # Statement of Need
 
-Collinearity among predictors is widespread and can degrade model inference and prediction [@Dormann2013]. Popular utilities such as `caret::findCorrelation()` apply greedy, order-dependent filtering and return a single solution. Embedded and wrapper methods like the elastic net [@ZouHastie2005] or recursive feature elimination [@Witten2009] can be powerful but couple selection to a specific model and add opacity.
+Collinearity among predictors is common in applied modeling and can degrade inference and prediction [@Dormann2013]. Popular utilities such as `caret::findCorrelation()` apply greedy, order-dependent filtering and return a single solution. Embedded and wrapper methods like the elastic net [@ZouHastie2005] or recursive feature elimination [@Witten2009] can be powerful but couple selection to a specific model and reduce transparency.
 
-`corrselect` formulates a global admissible set problem. Given variables $X_1,\dots,X_p$ and pairwise measures $r_{ij}$, the goal is to find all maximal subsets $S$ such that
+`corrselect` instead formulates a global admissible set problem. Given variables $X_1,\dots,X_p$ and pairwise measures $r_{ij}$, the goal is to find all maximal subsets $S$ such that
 
 $$
 |r_{ij}| \le t \quad \text{for all } i \ne j \in S ,
@@ -33,28 +33,29 @@ with a user threshold $t \in (0,1)$. The software supports mixed variable types,
 
 # Functionality
 
-Two user functions cover common workflows:
+Three user-facing functions cover common workflows:
 
-- `corrSelect()` takes a precomputed correlation matrix with entries in $[-1,1]$ and selects admissible subsets at threshold $t$.
-- `assocSelect()` computes pairwise associations for a mixed-type data frame, maps them to $[0,1]$, and selects admissible subsets at threshold $t$.
+- `corrSelect()` takes a numeric data frame, computes pairwise correlations, and selects admissible subsets at threshold $t$.
+- `assocSelect()` handles mixed-type data, computes normalized association measures in $[0,1]$, and selects admissible subsets at threshold $t$.
+- `MatSelect()` provides a lower-level interface for users who already have a precomputed correlation or association matrix.
 
-Both return a `CorrCombo` object with the list of maximal subsets and summary statistics, along with `print`, `summary`, and `as.data.frame` methods.
+All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`).
 
-Internally, the package implements two exact algorithms:
+Internally, the package implements two algorithms for exhaustive enumeration:
 
-- Efficient Local Search (ELS): recursive branch-and-bound that grows admissible subsets and prunes early, effective when users supply `forced_in` seeds.
-- Bron–Kerbosch: classical maximal clique enumeration on the complement of the thresholded association graph [@Bron1973], guaranteeing exhaustive coverage and performing well when the graph is sparse.
+- **Efficient Local Search (ELS)**: a recursive branch-and-bound algorithm that expands admissible subsets while pruning early, particularly effective when `forced_in` seeds are specified.  
+- **Bron–Kerbosch**: classical maximal clique enumeration on the complement of the thresholded association graph [@Bron1973], guaranteeing exhaustive coverage and performing well when the graph is sparse.  
 
-Both methods ensure non-redundant and exhaustive enumeration of admissible subsets.
+Both methods ensure non-redundant and complete enumeration of admissible subsets.
 
 # Related Work
 
-Heuristic correlation filters are simple and common but are order dependent and yield a single result. `corrselect` extends this space by providing exhaustive enumeration, support for mixed data, and user control via `forced_in`. Compared with embedded or wrapper selection, it is model agnostic and interpretable. The graph-theoretic basis links admissible subsets to maximal cliques and independent sets, with ELS offering a complementary search strategy.
+Heuristic correlation filters are widely used but are order dependent and return only a single result. `corrselect` extends this space by providing exhaustive enumeration, support for mixed data, and user control via `forced_in`. Compared with embedded or wrapper selection, it is model agnostic and interpretable. Its graph-theoretic foundation links admissible subsets to maximal cliques and independent sets, with ELS offering a complementary search strategy.
 
-Other approaches to feature selection include embedded methods such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based approaches such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, `corrselect` is fast, deterministic, and model agnostic, linking statistical association to well-studied optimization problems.
+Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, `corrselect` is fast, deterministic, and model agnostic, linking statistical association directly to well-studied optimization problems.
 
 # Applications
 
-The approach supports bioclimatic predictor filtering, feature screening in high-dimensional settings, and exploratory mapping of alternative, equally valid predictor sets. The inclusion of biweight midcorrelation [@Langfelder2008], distance correlation [@Szekely2007; @Szekely2009], and the maximal information coefficient [@Reshef2011] further extends its applicability to genomics, network analysis, and large heterogeneous datasets.
+The approach supports bioclimatic predictor filtering, high-dimensional feature screening, and exploratory mapping of alternative, equally valid predictor sets. With support for robust correlation and association measures such as biweight midcorrelation [@Langfelder2008], distance correlation [@Szekely2007; @Szekely2009], and the maximal information coefficient [@Reshef2011], `corrselect` is applicable in genomics, network analysis, and large heterogeneous datasets.
 
 # References
