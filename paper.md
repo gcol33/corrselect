@@ -15,9 +15,9 @@ bibliography: paper.bib
 
 # Summary
 
-`corrselect` [@cran] is an R package for selecting variable subsets whose pairwise correlations or associations do not exceed a user-defined threshold. Instead of returning a single heuristic solution, it enumerates all maximal admissible subsets. This addresses the well-known issues of highly correlated or associated predictors, which inflate variance estimates, destabilize coefficient estimates, and mask the relative importance of variables in statistical models. The package also supports forced inclusion of user-specified predictors (`forced_in`), ensuring that key variables are retained while admissibility constraints govern the remaining predictors.
+`corrselect` [@cran] is a model-agnostic R package for selecting variable subsets whose pairwise correlations or associations do not exceed a user-defined threshold. Instead of returning a single heuristic solution, it enumerates all maximal admissible subsets. This allows users to select subsets before model fitting, avoiding the common problems of highly correlated or associated predictors, which inflate variance estimates, destabilize coefficient estimates, and obscure the relative importance of variables. The package also supports forced inclusion of user-specified predictors (`forced_in`), ensuring that key variables are retained while admissibility constraints govern the remainder.
 
-The package supports both numeric and mixed-type data. For correlation-based workflows, measures such as Pearson, Spearman, Kendall, and biweight midcorrelation [@Langfelder2008] take values in $[-1,1]$. For association-based workflows, measures are normalized to $[0,1]$ for consistent thresholding, including distance correlation [@Szekely2007; @Szekely2009], the maximal information coefficient [@Reshef2011], ANOVA $\eta^2$, and Cramér’s V.
+The package supports both numeric and mixed-type data. Correlation-based workflows include measures such as Pearson, Spearman, Kendall, and biweight midcorrelation [@Langfelder2008], which take values in $[-1,1]$. Association-based workflows use measures normalized to $[0,1]$ for consistent thresholding, including distance correlation [@Szekely2007; @Szekely2009], the maximal information coefficient [@Reshef2011], ANOVA $\eta^2$, and Cramér’s V.
 
 # Statement of Need
 
