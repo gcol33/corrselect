@@ -1,0 +1,587 @@
+
+R version 4.5.1 (2025-06-13 ucrt) -- "Great Square Root"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "corrselect"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> options(pager = "console")
+> base::assign(".ExTimings", "corrselect-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('corrselect')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("CorrCombo")
+> ### * CorrCombo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CorrCombo
+> ### Title: CorrCombo S4 class
+> ### Aliases: CorrCombo CorrCombo-class show,CorrCombo-method
+> 
+> ### ** Examples
+> 
+> show(new("CorrCombo",
++   subset_list = list(c("A", "B"), c("A", "C")),
++   avg_corr = c(0.2, 0.3),
++   min_corr = c(0.1, 0.2),
++   max_corr = c(0.3, 0.4),
++   names = c("A", "B", "C"),
++   threshold = 0.5,
++   forced_in = character(),
++   search_type = "els",
++   cor_method = "mixed",
++   n_rows_used = as.integer(5)
++ ))
+CorrCombo object
+-----------------
+  Method:      els
+  Correlation: mixed
+  Threshold:   0.500
+  Subsets:     2 valid combinations
+  Data Rows:   5 used in correlation
+
+Top combinations:
+  No.  Variables                          Avg    Max    Size
+  ------------------------------------------------------------
+  [ 1] A, B                              0.200  0.300     2
+  [ 2] A, C                              0.300  0.400     2
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("CorrCombo", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("MatSelect")
+> ### * MatSelect
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: MatSelect
+> ### Title: Select Variable Subsets with Low Correlation or Association
+> ###   (Matrix Interface)
+> ### Aliases: MatSelect
+> 
+> ### ** Examples
+> 
+> set.seed(42)
+> mat <- matrix(rnorm(100), ncol = 10)
+> colnames(mat) <- paste0("V", 1:10)
+> cmat <- cor(mat)
+> 
+> # Default method (Bron-Kerbosch)
+> res1 <- MatSelect(cmat, threshold = 0.5)
+> 
+> # Bron–Kerbosch without pivot
+> res2 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = FALSE)
+> 
+> # Bron–Kerbosch with pivoting
+> res3 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
+> 
+> # Force variable 1 into every subset (with warning if too correlated)
+> res4 <- MatSelect(cmat, threshold = 0.5, force_in = 1)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("MatSelect", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("as.data.frame.CorrCombo")
+> ### * as.data.frame.CorrCombo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: as.data.frame.CorrCombo
+> ### Title: Coerce CorrCombo to a Data Frame
+> ### Aliases: as.data.frame.CorrCombo
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> mat <- matrix(rnorm(100), ncol = 10)
+> colnames(mat) <- paste0("V", 1:10)
+> res <- corrSelect(cor(mat), threshold = 0.5)
+> as.data.frame(res)
+                     VarName01 VarName02 VarName03
+Subset01 [avg=0.261]        V3        V7       V10
+Subset02 [avg=0.295]        V1        V7       V10
+Subset03 [avg=0.300]        V8        V9       V10
+Subset04 [avg=0.331]        V2        V7       V10
+Subset05 [avg=0.343]        V9        V7       V10
+Subset06 [avg=0.350]        V3        V8       V10
+Subset07 [avg=0.374]        V2        V8       V10
+Subset08 [avg=0.384]        V6        V7       V10
+Subset09 [avg=0.388]        V6        V8       V10
+Subset10 [avg=0.086]        V3        V4      <NA>
+Subset11 [avg=0.098]        V5        V8      <NA>
+Subset12 [avg=0.208]        V1        V4      <NA>
+Subset13 [avg=0.220]        V2        V4      <NA>
+Subset14 [avg=0.295]        V9        V4      <NA>
+Subset15 [avg=0.319]        V6        V4      <NA>
+Subset16 [avg=0.407]        V5        V7      <NA>
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("as.data.frame.CorrCombo", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("assocSelect")
+> ### * assocSelect
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: assocSelect
+> ### Title: Select Variable Subsets with Low Association (Mixed-Type Data
+> ###   Frame Interface)
+> ### Aliases: assocSelect
+> 
+> ### ** Examples
+> 
+> df <- data.frame(
++   height = rnorm(15, 170, 10),
++   weight = rnorm(15, 70, 12),
++   group  = factor(rep(LETTERS[1:3], each = 5)),
++   score  = ordered(sample(c("low","med","high"), 15, TRUE))
++ )
+> 
+> ## keep every subset whose internal associations <= 0.6
+> assocSelect(df, threshold = 0.6)
+CorrCombo object
+-----------------
+  Method:      bron-kerbosch
+  Correlation: mixed
+  AssocMethod: numeric_numeric = pearson, numeric_factor = eta, numeric_ordered
+               = spearman, factor_ordered = cramersv
+  Threshold:   0.600
+  Subsets:     1 valid combinations
+  Data Rows:   15 used in correlation
+  Pivot:       TRUE
+
+Top combinations:
+  No.  Variables                          Avg    Max    Size
+  ------------------------------------------------------------
+  [ 1] height, weight, group, score      0.146  0.399     4
+> 
+> ## use Kendall for all rank-based comparisons and force 'height' to appear
+> assocSelect(df,
++             threshold       = 0.5,
++             method_num_num  = "kendall",
++             method_num_ord  = "kendall",
++             method_ord_ord  = "kendall",
++             force_in        = "height")
+CorrCombo object
+-----------------
+  Method:      els
+  Correlation: mixed
+  AssocMethod: numeric_numeric = kendall, numeric_factor = eta, numeric_ordered
+               = kendall, factor_ordered = cramersv
+  Threshold:   0.500
+  Subsets:     1 valid combinations
+  Data Rows:   15 used in correlation
+  Forced-in:   height
+
+Top combinations:
+  No.  Variables                          Avg    Max    Size
+  ------------------------------------------------------------
+  [ 1] height, weight, group, score      0.120  0.399     4
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("assocSelect", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("corrSelect")
+> ### * corrSelect
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: corrSelect
+> ### Title: Select Variable Subsets with Low Correlation (Data Frame
+> ###   Interface)
+> ### Aliases: corrSelect
+> 
+> ### ** Examples
+> 
+> set.seed(42)
+> n <- 100
+> 
+> # Create 20 variables: 5 blocks of correlated variables + some noise
+> block1 <- matrix(rnorm(n * 4), ncol = 4)
+> block2 <- matrix(rnorm(n), ncol = 1)
+> block2 <- matrix(rep(block2, 4), ncol = 4) + matrix(rnorm(n * 4, sd = 0.1), ncol = 4)
+> block3 <- matrix(rnorm(n * 4), ncol = 4)
+> block4 <- matrix(rnorm(n * 4), ncol = 4)
+> block5 <- matrix(rnorm(n * 4), ncol = 4)
+> 
+> df <- as.data.frame(cbind(block1, block2, block3, block4, block5))
+> colnames(df) <- paste0("V", 1:20)
+> 
+> # Add a non-numeric column to be ignored
+> df$label <- factor(sample(c("A", "B"), n, replace = TRUE))
+> 
+> # Basic usage
+> corrSelect(df, threshold = 0.8)
+The following variables were excluded from the correlation analysis:
+  - label: unordered factor (excluded)
+CorrCombo object
+-----------------
+  Method:      bron-kerbosch
+  Correlation: pearson
+  Threshold:   0.800
+  Subsets:     4 valid combinations
+  Data Rows:   100 used in correlation
+  Pivot:       TRUE
+
+Top combinations:
+  No.  Variables                          Avg    Max    Size
+  ------------------------------------------------------------
+  [ 1] V1, V2, V3, V4, V7, V9, ...       0.075  0.241    17
+  [ 2] V1, V2, V3, V4, V6, V9, ...       0.075  0.259    17
+  [ 3] V1, V2, V3, V4, V8, V9, ...       0.075  0.269    17
+  [ 4] V1, V2, V3, V4, V5, V9, ...       0.076  0.288    17
+> 
+> # Try Bron–Kerbosch with pivoting
+> corrSelect(df, threshold = 0.6, method = "bron-kerbosch", use_pivot = TRUE)
+The following variables were excluded from the correlation analysis:
+  - label: unordered factor (excluded)
+CorrCombo object
+-----------------
+  Method:      bron-kerbosch
+  Correlation: pearson
+  Threshold:   0.600
+  Subsets:     4 valid combinations
+  Data Rows:   100 used in correlation
+  Pivot:       TRUE
+
+Top combinations:
+  No.  Variables                          Avg    Max    Size
+  ------------------------------------------------------------
+  [ 1] V1, V2, V3, V4, V7, V9, ...       0.075  0.241    17
+  [ 2] V1, V2, V3, V4, V6, V9, ...       0.075  0.259    17
+  [ 3] V1, V2, V3, V4, V8, V9, ...       0.075  0.269    17
+  [ 4] V1, V2, V3, V4, V5, V9, ...       0.076  0.288    17
+> 
+> # Force in a specific variable and use Spearman correlation
+> corrSelect(df, threshold = 0.6, force_in = "V10", cor_method = "spearman")
+The following variables were excluded from the correlation analysis:
+  - label: unordered factor (excluded)
+CorrCombo object
+-----------------
+  Method:      els
+  Correlation: spearman
+  Threshold:   0.600
+  Subsets:     4 valid combinations
+  Data Rows:   100 used in correlation
+  Forced-in:   V10
+
+Top combinations:
+  No.  Variables                          Avg    Max    Size
+  ------------------------------------------------------------
+  [ 1] V1, V2, V3, V4, V7, V9, ...       0.076  0.239    17
+  [ 2] V1, V2, V3, V4, V5, V9, ...       0.076  0.269    17
+  [ 3] V1, V2, V3, V4, V8, V9, ...       0.076  0.246    17
+  [ 4] V1, V2, V3, V4, V6, V9, ...       0.076  0.252    17
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("corrSelect", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("corrSubset")
+> ### * corrSubset
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: corrSubset
+> ### Title: Extract Variable Subsets from a CorrCombo Object
+> ### Aliases: corrSubset
+> 
+> ### ** Examples
+> 
+> # Simulate input data
+> set.seed(123)
+> df <- as.data.frame(matrix(rnorm(100), nrow = 10))
+> colnames(df) <- paste0("V", 1:10)
+> 
+> # Compute correlation matrix
+> cmat <- cor(df)
+> 
+> # Select subsets using corrSelect
+> res <- corrSelect(cmat, threshold = 0.5)
+> 
+> # Extract the best subset (default)
+> corrSubset(res, df)
+           V2          V5        V10          V7
+1   1.2240818 -0.69470698  0.9935039  0.37963948
+2   0.3598138 -0.20791728  0.5483970 -0.50232345
+3   0.4007715 -1.26539635  0.2387317 -0.33320738
+4   0.1106827  2.16895597 -0.6279061 -1.01857538
+5  -0.5558411  1.20796200  1.3606524 -1.07179123
+6   1.7869131 -1.12310858 -0.6002596  0.30352864
+7   0.4978505 -0.40288484  2.1873330  0.44820978
+8  -1.9666172 -0.46665535  1.5326106  0.05300423
+9   0.7013559  0.77996512 -0.2357004  0.92226747
+10 -0.4727914 -0.08336907 -1.0264209  2.05008469
+> 
+> # Extract the second-best subset
+> corrSubset(res, df, which = 2)
+            V1          V5        V10          V7
+1  -0.56047565 -0.69470698  0.9935039  0.37963948
+2  -0.23017749 -0.20791728  0.5483970 -0.50232345
+3   1.55870831 -1.26539635  0.2387317 -0.33320738
+4   0.07050839  2.16895597 -0.6279061 -1.01857538
+5   0.12928774  1.20796200  1.3606524 -1.07179123
+6   1.71506499 -1.12310858 -0.6002596  0.30352864
+7   0.46091621 -0.40288484  2.1873330  0.44820978
+8  -1.26506123 -0.46665535  1.5326106  0.05300423
+9  -0.68685285  0.77996512 -0.2357004  0.92226747
+10 -0.44566197 -0.08336907 -1.0264209  2.05008469
+> 
+> # Extract the first three subsets
+> corrSubset(res, df, which = 1:3)
+$Subset1
+           V2          V5        V10          V7
+1   1.2240818 -0.69470698  0.9935039  0.37963948
+2   0.3598138 -0.20791728  0.5483970 -0.50232345
+3   0.4007715 -1.26539635  0.2387317 -0.33320738
+4   0.1106827  2.16895597 -0.6279061 -1.01857538
+5  -0.5558411  1.20796200  1.3606524 -1.07179123
+6   1.7869131 -1.12310858 -0.6002596  0.30352864
+7   0.4978505 -0.40288484  2.1873330  0.44820978
+8  -1.9666172 -0.46665535  1.5326106  0.05300423
+9   0.7013559  0.77996512 -0.2357004  0.92226747
+10 -0.4727914 -0.08336907 -1.0264209  2.05008469
+
+$Subset2
+            V1          V5        V10          V7
+1  -0.56047565 -0.69470698  0.9935039  0.37963948
+2  -0.23017749 -0.20791728  0.5483970 -0.50232345
+3   1.55870831 -1.26539635  0.2387317 -0.33320738
+4   0.07050839  2.16895597 -0.6279061 -1.01857538
+5   0.12928774  1.20796200  1.3606524 -1.07179123
+6   1.71506499 -1.12310858 -0.6002596  0.30352864
+7   0.46091621 -0.40288484  2.1873330  0.44820978
+8  -1.26506123 -0.46665535  1.5326106  0.05300423
+9  -0.68685285  0.77996512 -0.2357004  0.92226747
+10 -0.44566197 -0.08336907 -1.0264209  2.05008469
+
+$Subset3
+           V2          V5          V6          V7
+1   1.2240818 -0.69470698  0.25331851  0.37963948
+2   0.3598138 -0.20791728 -0.02854676 -0.50232345
+3   0.4007715 -1.26539635 -0.04287046 -0.33320738
+4   0.1106827  2.16895597  1.36860228 -1.01857538
+5  -0.5558411  1.20796200 -0.22577099 -1.07179123
+6   1.7869131 -1.12310858  1.51647060  0.30352864
+7   0.4978505 -0.40288484 -1.54875280  0.44820978
+8  -1.9666172 -0.46665535  0.58461375  0.05300423
+9   0.7013559  0.77996512  0.12385424  0.92226747
+10 -0.4727914 -0.08336907  0.21594157  2.05008469
+
+> 
+> # Extract all subsets
+> corrSubset(res, df, which = "all")
+$Subset1
+           V2          V5        V10          V7
+1   1.2240818 -0.69470698  0.9935039  0.37963948
+2   0.3598138 -0.20791728  0.5483970 -0.50232345
+3   0.4007715 -1.26539635  0.2387317 -0.33320738
+4   0.1106827  2.16895597 -0.6279061 -1.01857538
+5  -0.5558411  1.20796200  1.3606524 -1.07179123
+6   1.7869131 -1.12310858 -0.6002596  0.30352864
+7   0.4978505 -0.40288484  2.1873330  0.44820978
+8  -1.9666172 -0.46665535  1.5326106  0.05300423
+9   0.7013559  0.77996512 -0.2357004  0.92226747
+10 -0.4727914 -0.08336907 -1.0264209  2.05008469
+
+$Subset2
+            V1          V5        V10          V7
+1  -0.56047565 -0.69470698  0.9935039  0.37963948
+2  -0.23017749 -0.20791728  0.5483970 -0.50232345
+3   1.55870831 -1.26539635  0.2387317 -0.33320738
+4   0.07050839  2.16895597 -0.6279061 -1.01857538
+5   0.12928774  1.20796200  1.3606524 -1.07179123
+6   1.71506499 -1.12310858 -0.6002596  0.30352864
+7   0.46091621 -0.40288484  2.1873330  0.44820978
+8  -1.26506123 -0.46665535  1.5326106  0.05300423
+9  -0.68685285  0.77996512 -0.2357004  0.92226747
+10 -0.44566197 -0.08336907 -1.0264209  2.05008469
+
+$Subset3
+           V2          V5          V6          V7
+1   1.2240818 -0.69470698  0.25331851  0.37963948
+2   0.3598138 -0.20791728 -0.02854676 -0.50232345
+3   0.4007715 -1.26539635 -0.04287046 -0.33320738
+4   0.1106827  2.16895597  1.36860228 -1.01857538
+5  -0.5558411  1.20796200 -0.22577099 -1.07179123
+6   1.7869131 -1.12310858  1.51647060  0.30352864
+7   0.4978505 -0.40288484 -1.54875280  0.44820978
+8  -1.9666172 -0.46665535  0.58461375  0.05300423
+9   0.7013559  0.77996512  0.12385424  0.92226747
+10 -0.4727914 -0.08336907  0.21594157  2.05008469
+
+$Subset4
+            V1          V5          V6          V7
+1  -0.56047565 -0.69470698  0.25331851  0.37963948
+2  -0.23017749 -0.20791728 -0.02854676 -0.50232345
+3   1.55870831 -1.26539635 -0.04287046 -0.33320738
+4   0.07050839  2.16895597  1.36860228 -1.01857538
+5   0.12928774  1.20796200 -0.22577099 -1.07179123
+6   1.71506499 -1.12310858  1.51647060  0.30352864
+7   0.46091621 -0.40288484 -1.54875280  0.44820978
+8  -1.26506123 -0.46665535  0.58461375  0.05300423
+9  -0.68685285  0.77996512  0.12385424  0.92226747
+10 -0.44566197 -0.08336907  0.21594157  2.05008469
+
+$Subset5
+            V4          V5        V10
+1   0.42646422 -0.69470698  0.9935039
+2  -0.29507148 -0.20791728  0.5483970
+3   0.89512566 -1.26539635  0.2387317
+4   0.87813349  2.16895597 -0.6279061
+5   0.82158108  1.20796200  1.3606524
+6   0.68864025 -1.12310858 -0.6002596
+7   0.55391765 -0.40288484  2.1873330
+8  -0.06191171 -0.46665535  1.5326106
+9  -0.30596266  0.77996512 -0.2357004
+10 -0.38047100 -0.08336907 -1.0264209
+
+$Subset6
+             V9          V5        V10
+1   0.005764186 -0.69470698  0.9935039
+2   0.385280401 -0.20791728  0.5483970
+3  -0.370660032 -1.26539635  0.2387317
+4   0.644376549  2.16895597 -0.6279061
+5  -0.220486562  1.20796200  1.3606524
+6   0.331781964 -1.12310858 -0.6002596
+7   1.096839013 -0.40288484  2.1873330
+8   0.435181491 -0.46665535  1.5326106
+9  -0.325931586  0.77996512 -0.2357004
+10  1.148807618 -0.08336907 -1.0264209
+
+$Subset7
+           V3          V5        V10
+1  -1.0678237 -0.69470698  0.9935039
+2  -0.2179749 -0.20791728  0.5483970
+3  -1.0260044 -1.26539635  0.2387317
+4  -0.7288912  2.16895597 -0.6279061
+5  -0.6250393  1.20796200  1.3606524
+6  -1.6866933 -1.12310858 -0.6002596
+7   0.8377870 -0.40288484  2.1873330
+8   0.1533731 -0.46665535  1.5326106
+9  -1.1381369  0.77996512 -0.2357004
+10  1.2538149 -0.08336907 -1.0264209
+
+$Subset8
+            V4          V5          V6
+1   0.42646422 -0.69470698  0.25331851
+2  -0.29507148 -0.20791728 -0.02854676
+3   0.89512566 -1.26539635 -0.04287046
+4   0.87813349  2.16895597  1.36860228
+5   0.82158108  1.20796200 -0.22577099
+6   0.68864025 -1.12310858  1.51647060
+7   0.55391765 -0.40288484 -1.54875280
+8  -0.06191171 -0.46665535  0.58461375
+9  -0.30596266  0.77996512  0.12385424
+10 -0.38047100 -0.08336907  0.21594157
+
+$Subset9
+           V8          V6          V7
+1  -0.4910312  0.25331851  0.37963948
+2  -2.3091689 -0.02854676 -0.50232345
+3   1.0057385 -0.04287046 -0.33320738
+4  -0.7092008  1.36860228 -1.01857538
+5  -0.6880086 -0.22577099 -1.07179123
+6   1.0255714  1.51647060  0.30352864
+7  -0.2847730 -1.54875280  0.44820978
+8  -1.2207177  0.58461375  0.05300423
+9   0.1813035  0.12385424  0.92226747
+10 -0.1388914  0.21594157  2.05008469
+
+$Subset10
+             V9          V5          V6
+1   0.005764186 -0.69470698  0.25331851
+2   0.385280401 -0.20791728 -0.02854676
+3  -0.370660032 -1.26539635 -0.04287046
+4   0.644376549  2.16895597  1.36860228
+5  -0.220486562  1.20796200 -0.22577099
+6   0.331781964 -1.12310858  1.51647060
+7   1.096839013 -0.40288484 -1.54875280
+8   0.435181491 -0.46665535  0.58461375
+9  -0.325931586  0.77996512  0.12385424
+10  1.148807618 -0.08336907  0.21594157
+
+> 
+> # Extract best subset and retain additional numeric column
+> df$CopyV1 <- df$V1
+> corrSubset(res, df, which = 1, keepExtra = TRUE)
+           V2          V5        V10          V7      CopyV1
+1   1.2240818 -0.69470698  0.9935039  0.37963948 -0.56047565
+2   0.3598138 -0.20791728  0.5483970 -0.50232345 -0.23017749
+3   0.4007715 -1.26539635  0.2387317 -0.33320738  1.55870831
+4   0.1106827  2.16895597 -0.6279061 -1.01857538  0.07050839
+5  -0.5558411  1.20796200  1.3606524 -1.07179123  0.12928774
+6   1.7869131 -1.12310858 -0.6002596  0.30352864  1.71506499
+7   0.4978505 -0.40288484  2.1873330  0.44820978  0.46091621
+8  -1.9666172 -0.46665535  1.5326106  0.05300423 -1.26506123
+9   0.7013559  0.77996512 -0.2357004  0.92226747 -0.68685285
+10 -0.4727914 -0.08336907 -1.0264209  2.05008469 -0.44566197
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("corrSubset", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> ### * <FOOTER>
+> ###
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  0.19 0.03 0.22 NA NA 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

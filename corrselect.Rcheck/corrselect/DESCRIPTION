@@ -9,19 +9,15 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 LinkingTo: Rcpp
-Imports: 
-    Rcpp,
-    methods,
-    stats
-Suggests:
-    GO.db,
-    WGCNA,
-    preprocessCore,
-    impute,
-    energy,
-    minerva,
-    knitr,
-    rmarkdown
+Imports: Rcpp, methods, stats
+Suggests: GO.db, WGCNA, preprocessCore, impute, energy, minerva, knitr,
+        rmarkdown
 VignetteBuilder: knitr
 URL: https://gillescolling.com/corrselect/
 BugReports: https://github.com/gcol33/corrselect/issues
+NeedsCompilation: yes
+Packaged: 2025-09-02 13:15:57 UTC; Gilles Colling
+Author: Gilles Colling [aut, cre]
+Maintainer: Gilles Colling <gilles.colling051@gmail.com>
+Built: R 4.5.1; x86_64-w64-mingw32; 2025-09-02 13:16:04 UTC; windows
+Archs: x64
