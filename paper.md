@@ -33,14 +33,13 @@ with a user threshold $t \in (0,1)$. The software supports mixed variable types,
 
 # Functionality
 
-Three user-facing functions cover common workflows:
+Three core functions implement the main subset selection tasks:
 
 - `corrSelect()` takes a numeric data frame, computes pairwise correlations, and selects admissible subsets at threshold $t$.
 - `assocSelect()` handles mixed-type data, computes normalized association measures in $[0,1]$, and selects admissible subsets at threshold $t$.
 - `MatSelect()` provides a lower-level interface for users who already have a precomputed correlation or association matrix.
 
-All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`).  
-For example, `corrSelect(df, t = 0.7)` returns all maximal subsets of numeric variables whose pairwise correlations are below 0.7, while `assocSelect(df, t = 0.7)` extends the maximal subsets to mixed-type variables based on normalized association measures.
+All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods `print`, `summary` and `as.data.frame`. For example, given a data frame `df` in wide format (variables in columns, observations in rows), `corrSelect(df, t = 0.7)` returns all maximal subsets of numeric variables whose pairwise correlations are below 0.7. The function `assocSelect(df, t = 0.7)` generalizes this to mixed-type variables (numeric, binary, or categorical) using normalized association measures.
 
 Internally, the package implements two algorithms for exhaustive enumeration:
 
