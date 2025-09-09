@@ -52,7 +52,7 @@ Both methods ensure non-redundant and complete enumeration of admissible subsets
 
 Heuristic correlation filters are widely used but are order dependent and return only a single result. `corrselect` extends this space by providing exhaustive enumeration, support for mixed data, and user control via `forced_in`. Compared with embedded or wrapper selection, it is model agnostic and interpretable. Its graph-theoretic foundation links admissible subsets to maximal cliques and independent sets, with ELS offering a complementary search strategy.
 
-Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, `corrselect` is fast, deterministic, and model agnostic, linking statistical association directly to well-studied optimization problems.
+Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, `corrselect` is fast, deterministic, and model agnostic, formulating subset selection as a well-defined graph optimization problem.
 
 # Applications
 
