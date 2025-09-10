@@ -35,13 +35,15 @@ with a user threshold $t \in (0,1)$. The software supports mixed variable types,
 
 Three core functions implement the main subset selection tasks:
 
-- `corrSelect()` takes a numeric data frame, computes pairwise correlations, and selects admissible subsets at threshold $t$.
+- `corrSelect()` takes a numeric data frame, computes pairwise correlations in $[-1,1]$, and selects admissible subsets at threshold $t$.
 - `assocSelect()` handles mixed-type data, computes normalized association measures in $[0,1]$, and selects admissible subsets at threshold $t$.
-- `MatSelect()` provides a lower-level interface for users who already have a precomputed correlation or association matrix.
+- `MatSelect()` identifies all maximal subsets of variables from a symmetric matrix (typically a correlation or association matrix) such that all pairwise absolute values are below a specified threshold.
 
-All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods `print`, `summary` and `as.data.frame`. For example, given a data frame `df` in wide format (variables in columns, observations in rows), `corrSelect(df, t = 0.7)` returns all maximal subsets of numeric variables whose pairwise correlations are below 0.7. The function `assocSelect(df, t = 0.7)` generalizes this to mixed-type variables (numeric, binary, or categorical) using normalized association measures.
+All return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`). For example, given a data frame `df` in wide format (variables in columns, observations in rows), `corrSelect(df, t = 0.7)` returns all maximal subsets of numeric variables whose pairwise correlations are below 0.7. The function `assocSelect(df, t = 0.7)` generalizes this to mixed-type variables (numeric, binary, or categorical) using normalized association measures.
 
-Internally, the package implements two algorithms for exhaustive enumeration:
+To apply the selected subsets to the original data, `corrSubset()` uses a `CorrCombo` object together with the input data frame `df` to return one or more filtered data frames. By default it returns the “best” subset, defined as the largest subset with the smallest average correlation. Other options allow selecting the nth subset, the top $k$ subsets, or all subsets at once, with the option to retain extra columns. This makes it straightforward to continue with modeling or analysis using only the admissible variable sets.
+
+Internally, the package implements two exact algorithms in C++ for efficient exhaustive enumeration:
 
 - **Efficient Local Search (ELS)**: a recursive branch-and-bound algorithm that expands admissible subsets while pruning early, particularly effective when `forced_in` seeds are specified.  
 - **Bron–Kerbosch**: classical maximal clique enumeration on the complement of the thresholded association graph [@Bron1973], guaranteeing exhaustive coverage and performing well when the graph is sparse.  
