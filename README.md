@@ -134,6 +134,14 @@ res <- MatSelect(mat, threshold = 0.7, method = "els", force_in = 1)
 
 You can also extract the full list of subsets and use `corrSubset()` to apply them to your data with or without additional columns.
 
+## JOSS Paper
+
+This repository includes a short paper prepared for submission to the *Journal of Open Source Software (JOSS)*.  
+You can find the manuscript and references in the [`paper/`](paper) directory:
+
+- [`paper/paper.md`](paper/paper.md) – main text  
+- [`paper/paper.bib`](paper/paper.bib) – bibliography
+
 ## License
 
 MIT (see the LICENSE.md file)
