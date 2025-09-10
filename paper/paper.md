@@ -58,6 +58,6 @@ Other feature selection methods include embedded approaches such as the elastic 
 
 # Applications
 
-The approach supports feature screening in high-dimensional modelling and exploratory mapping of alternative, equally valid predictor sets. With support for correlation and association measures such as biweight midcorrelation [@Langfelder2008], distance correlation [@Szekely2007; @Szekely2009], and the maximal information coefficient [@Reshef2011], `corrselect` is applicable across domains including genomics, network analysis, environmental modeling, and machine learning. 
+The approach supports feature screening in high-dimensional modelling and exploratory mapping of alternative, equally valid predictor sets. With support for correlation and association measures such as biweight midcorrelation [@Langfelder2008], distance correlation [@Szekely2007; @Szekely2009], and the maximal information coefficient [@Reshef2011], `corrselect` is applicable across domains including genomics, network analysis, environmental modeling, and machine learning.
 
 # References
