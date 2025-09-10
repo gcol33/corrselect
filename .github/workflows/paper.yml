@@ -8,16 +8,26 @@ on:
   pull_request:
     paths:
       - "paper/**"
+  workflow_dispatch: {}
 
 jobs:
-  build-paper:
+  paper:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build draft PDF
-        uses: openjournals/openjournals-draft-action@v2
+        # Use master (stable); v2 tag isn't available
+        uses: openjournals/openjournals-draft-action@master
         with:
           journal: joss
-          pdf_name: paper.pdf
-          directory: paper
+          # Your paper is in paper/paper.md
+          paper-path: paper/paper.md
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper
+          # Matches the output path from the build step
+          path: paper/paper.pdf
