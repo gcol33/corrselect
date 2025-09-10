@@ -45,8 +45,8 @@ To apply the selected subsets to the original data, `corrSubset()` uses a `CorrC
 
 Internally, the package implements two exact algorithms in C++ for efficient exhaustive enumeration:
 
-- **Efficient Local Search (ELS)**: a recursive branch-and-bound algorithm that expands admissible subsets while pruning early, particularly effective when `forced_in` seeds are specified.  
-- **Bron–Kerbosch**: classical maximal clique enumeration on the complement of the thresholded association graph [@Bron1973], guaranteeing exhaustive coverage and performing well when the graph is sparse.  
+- **Eppstein-Löffler-Strash (ELS)**: a near-optimal maximal clique enumeration algorithm for sparse graphs [@Eppstein2010], adapted here for admissible subset selection. It is particularly effective when `forced_in` seeds are specified, since the search can be anchored around these variables, pruning the space of possible subsets more efficiently.  
+- **Bron-Kerbosch**: the classical maximal clique enumeration algorithm [@Bron1973], applied to the complement of the thresholded association graph so that admissible subsets correspond to maximal cliques. In practice it is often faster when enumerating all maximal subsets without seeding, while still guaranteeing exhaustive coverage.
 
 Both methods ensure non-redundant and complete enumeration of admissible subsets.
 
