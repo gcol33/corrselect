@@ -3,7 +3,7 @@
 ## Our Pledge
 
 We aim to maintain an open, friendly, and professional environment within the **corrselect** project.  
-Everyone taking part—contributors, maintainers, and users—should feel welcome and respected, regardless of background, identity, or experience level.
+Everyone taking part (contributors, maintainers, and users) should feel welcome and respected, regardless of background, identity, or experience level.
 
 ## Our Standards
 
