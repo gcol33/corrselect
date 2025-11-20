@@ -73,55 +73,6 @@ setClass(
 #' @importMethodsFrom methods show
 #' @exportMethod show
 #' @param object A \code{CorrCombo} object to be printed.
-#' @title CorrCombo Class
-#'
-#' @description
-#' An S4 class that stores the result of correlation-based subset selection.
-#'
-#' @slot subset_list A list of character vectors, each representing a subset of variable names.
-#' @slot avg_corr Numeric vector: average correlation of each subset.
-#' @slot min_corr Numeric vector: minimum correlation of each subset.
-#' @slot max_corr Numeric vector: maximum correlation of each subset.
-#' @slot names Character vector of variable names in the original matrix.
-#' @slot threshold Numeric threshold used for correlation filtering.
-#' @slot forced_in Character vector of variables that were forced into all subsets.
-#' @slot search_type Character: the search algorithm used (e.g., "els", "bron-kerbosch").
-#' @slot cor_method Character: the correlation method used.
-#' @slot n_rows_used Integer: number of rows used to compute correlations.
-#'
-#' @export
-setClass(
-  "CorrCombo",
-  slots = list(
-    subset_list   = "list",
-    avg_corr      = "numeric",
-    min_corr      = "numeric",
-    max_corr      = "numeric",
-    names         = "character",
-    threshold     = "numeric",
-    forced_in     = "character",
-    search_type   = "character",
-    cor_method    = "character",
-    n_rows_used   = "integer"
-  ),
-  validity = function(object) {
-    n <- length(object@subset_list)
-    check_lengths <- function(slot_value) {
-      len <- length(slot_value)
-      len == 0 || len == n
-    }
-    if (!check_lengths(object@avg_corr)) return("avg_corr must match subset_list length or be empty.")
-    if (!check_lengths(object@min_corr)) return("min_corr must match subset_list length or be empty.")
-    if (!check_lengths(object@max_corr)) return("max_corr must match subset_list length or be empty.")
-    TRUE
-  }
-)
-
-#' @rdname CorrCombo
-#' @aliases show,CorrCombo-method
-#' @importMethodsFrom methods show
-#' @exportMethod show
-#' @param object A \code{CorrCombo} object to be printed.
 setMethod("show", "CorrCombo", function(object) {
   n <- length(object@subset_list)
   cat("CorrCombo object\n")

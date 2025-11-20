@@ -2,3 +2,54 @@ url: https://gcol33.github.io/corrselect
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+    - quickstart
+
+  - title: Practical Guides
+    navbar: ~
+    contents:
+    - workflows
+    - comparison
+    - benchmarks
+
+  - title: Advanced
+    navbar: ~
+    contents:
+    - advanced
+    - corrselect_vignette
+
+reference:
+  - title: High-Level Pruning Functions
+    desc: Main functions for predictor pruning
+    contents:
+    - corrPrune
+    - modelPrune
+
+  - title: Exact Subset Enumeration
+    desc: Graph-theoretic algorithms for exhaustive search
+    contents:
+    - corrSelect
+    - assocSelect
+    - MatSelect
+
+  - title: Utility Functions
+    desc: Helper functions for working with results
+    contents:
+    - CorrCombo-class
+    - corrSubset
+
+  - title: Example Datasets
+    desc: Realistic datasets for vignettes
+    contents:
+    - bioclim_example
+    - survey_example
+    - genes_example
+    - longitudinal_example

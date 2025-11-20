@@ -19,8 +19,6 @@ and their correlation statistics.
 This class stores all subsets of variables that meet the specified correlation constraint,
 along with metadata such as the algorithm used, correlation method(s), variables forced into every subset,
 and summary statistics for each combination.
-
-An S4 class that stores the result of correlation-based subset selection.
 }
 \section{Slots}{
 
@@ -44,26 +42,6 @@ An S4 class that stores the result of correlation-based subset selection.
 \item{\code{cor_method}}{Character string. Either a single method (e.g. "pearson") or "mixed" if multiple methods used.}
 
 \item{\code{n_rows_used}}{Integer. Number of rows used for computing the correlation matrix (after removing missing values).}
-
-\item{\code{subset_list}}{A list of character vectors, each representing a subset of variable names.}
-
-\item{\code{avg_corr}}{Numeric vector: average correlation of each subset.}
-
-\item{\code{min_corr}}{Numeric vector: minimum correlation of each subset.}
-
-\item{\code{max_corr}}{Numeric vector: maximum correlation of each subset.}
-
-\item{\code{names}}{Character vector of variable names in the original matrix.}
-
-\item{\code{threshold}}{Numeric threshold used for correlation filtering.}
-
-\item{\code{forced_in}}{Character vector of variables that were forced into all subsets.}
-
-\item{\code{search_type}}{Character: the search algorithm used (e.g., "els", "bron-kerbosch").}
-
-\item{\code{cor_method}}{Character: the correlation method used.}
-
-\item{\code{n_rows_used}}{Integer: number of rows used to compute correlations.}
 }}
 
 \examples{

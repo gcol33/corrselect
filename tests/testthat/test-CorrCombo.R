@@ -74,7 +74,7 @@ test_that("as.data.frame() returns a padded data frame", {
   df <- as.data.frame(combo)
   expect_equal(nrow(df), 2)
   expect_equal(ncol(df), 3)
-  expect_named(df, c("Var1", "Var2", "Var3"))
+  expect_named(df, c("VarName01", "VarName02", "VarName03"))
 })
 
 test_that("as.data.frame() returns empty data frame for empty CorrCombo", {
@@ -119,8 +119,8 @@ test_that("as.data.frame handles variable names with special characters", {
                search_type = "bron-kerbosch",
                n_rows_used = 3L)
   df <- as.data.frame(combo)
-  expect_equal(df$Var1[1], "x_1")
-  expect_equal(df$Var2[1], "x-2")
+  expect_equal(df$VarName01[1], "x_1")
+  expect_equal(df$VarName02[1], "x-2")
 })
 
 test_that("show() truncates long variable strings gracefully", {

@@ -34,7 +34,7 @@ test_that("force_in accepts column names", {
 
 test_that("invalid force_in names trigger error", {
   df <- data.frame(a = rnorm(10), b = rnorm(10))
-  expect_error(corrSelect(df, threshold = 0.9, method = "els", force_in = "z"), "do not exist")
+  expect_error(corrSelect(df, threshold = 0.9, method = "els", force_in = "z"), "not in the data frame")
 })
 
 test_that("works with NAs (rows are dropped)", {
@@ -199,33 +199,3 @@ test_that("ELS can get more than one combination (named columns)", {
     expect_true(found, info = paste("ELS missing subset", paste(exp, collapse = ",")))
   }
 })
-library(microbenchmark)
-
-# Create synthetic correlation matrix
-make_cor_matrix <- function(p, seed = 123) {
-  set.seed(seed)
-  X <- matrix(rnorm(200 * p), ncol = p)
-  M <- cor(X)
-  diag(M) <- 0  # optional, to avoid perfect self-correlation
-  return(M)
-}
-
-# Wrapper functions
-run_bk <- function(mat, threshold, forced = integer()) {
-  runBronKerbosch(mat, threshold, forced, usePivot = TRUE)
-}
-
-run_els <- function(mat, threshold, forced = integer()) {
-  runELS(mat, threshold, forced)
-}
-
-# Example: Benchmark on p = 30
-cor_mat <- make_cor_matrix(30)
-threshold <- 0.5
-forcedVec <- c(1,5)  # or try c(1, 5)
-
-microbenchmark(
-  ELS = run_els(cor_mat, threshold, forcedVec),
-  BK  = run_bk(cor_mat, threshold, forcedVec),
-  times = 10
-)

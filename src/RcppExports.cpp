@@ -53,6 +53,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// greedyPruneBackend
+IntegerVector greedyPruneBackend(NumericMatrix assoc_matrix, double threshold, Nullable<IntegerVector> force_in);
+RcppExport SEXP _corrselect_greedyPruneBackend(SEXP assoc_matrixSEXP, SEXP thresholdSEXP, SEXP force_inSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type assoc_matrix(assoc_matrixSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< Nullable<IntegerVector> >::type force_in(force_inSEXP);
+    rcpp_result_gen = Rcpp::wrap(greedyPruneBackend(assoc_matrix, threshold, force_in));
+    return rcpp_result_gen;
+END_RCPP
+}
 // runSpectral
 ComboList runSpectral(const NumericMatrix& corMatrix, double threshold, const Combo& forcedVec, int lengthLimit, Rcpp::Nullable<int> k_param);
 RcppExport SEXP _corrselect_runSpectral(SEXP corMatrixSEXP, SEXP thresholdSEXP, SEXP forcedVecSEXP, SEXP lengthLimitSEXP, SEXP k_paramSEXP) {
@@ -73,6 +86,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_corrselect_findAllMaxSets", (DL_FUNC) &_corrselect_findAllMaxSets, 5},
     {"_corrselect_runBronKerbosch", (DL_FUNC) &_corrselect_runBronKerbosch, 4},
     {"_corrselect_runELS", (DL_FUNC) &_corrselect_runELS, 3},
+    {"_corrselect_greedyPruneBackend", (DL_FUNC) &_corrselect_greedyPruneBackend, 3},
     {"_corrselect_runSpectral", (DL_FUNC) &_corrselect_runSpectral, 5},
     {NULL, NULL, 0}
 };

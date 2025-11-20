@@ -1,8 +1,23 @@
 # corrselect
 
-**Exhaustive, Model-Agnostic Variable Subset Selection Based on Pairwise Correlation or Association**
+**Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
 
-The `corrselect` package automatically identifies all *maximal subsets* of variables in your data whose pairwise correlations or associations remain below a user-defined threshold. This helps reduce multicollinearity and redundancy while retaining interpretability. The method is **model-agnostic**, making it applicable to regression, clustering, ecological modeling, and other workflows.
+The `corrselect` package provides simple, high-level functions for **predictor pruning** using association-based and model-based approaches. Whether you need to reduce multicollinearity before modeling or clean correlated predictors in your dataset, `corrselect` offers fast, deterministic solutions with minimal code.
+
+## Quick Start
+
+```r
+library(corrselect)
+data(mtcars)
+
+# Association-based pruning (model-free)
+pruned <- corrPrune(mtcars, threshold = 0.7)
+names(pruned)
+
+# Model-based pruning (VIF)
+pruned <- modelPrune(mpg ~ ., data = mtcars, limit = 5)
+attr(pruned, "selected_vars")
+```
 
 ## Statement of Need
 
@@ -18,35 +33,36 @@ These features make the package useful in domains like:
 
 ## Features
 
-- Exhaustive and **exact** subset enumeration using graph algorithms:  
-  - Eppstein–Löffler–Strash (ELS)  
+### High-Level Pruning Functions
+
+- **`corrPrune()`**: Association-based predictor pruning
+  - Model-free, works on raw data
+  - Automatic correlation/association measure selection
+  - Fast greedy mode for large datasets (p > 100)
+  - Exact mode for guaranteed optimal solutions (p ≤ 20)
+  - Protect important variables with `force_in`
+
+- **`modelPrune()`**: Model-based predictor pruning
+  - VIF-based iterative removal
+  - Supports `lm`, `glm`, `lme4`, `glmmTMB` engines
+  - Custom engine support for any modeling package (INLA, mgcv, brms, etc.)
+  - Prunes fixed effects in mixed models
+  - Returns fitted model with pruned predictors
+
+### Advanced Subset Enumeration
+
+- Exhaustive **exact** subset search using graph algorithms:
+  - Eppstein–Löffler–Strash (ELS)
   - Bron–Kerbosch (with optional pivoting)
+  - Used internally by `corrPrune(mode = "exact")`
 
-
-- Supports multiple correlation/association metrics:
+- Multiple association metrics:
   - `"pearson"`, `"spearman"`, `"kendall"`
   - `"bicor"` (WGCNA), `"distance"` (energy), `"maximal"` (minerva)
-  - `"eta"`, `"cramersv"` for mixed-type associations
+  - `"eta"`, `"cramersv"` for mixed-type data
 
-
-- Works with:
-  - data frames (`corrSelect()` and `assocSelect()`),
-  - correlation matrices (`MatSelect()`)
-
-
-- Mixed-type support via `assocSelect()`:
-  - numeric–factor → Eta squared
-  - numeric–ordered → Spearman/Kendall
-  - factor–factor → Cramér’s V
-  - ordered–ordered → Spearman/Kendall
-
-- `force_in`: specify variables that must be included in every subset
-
-
-- Returns an extensible `CorrCombo` S4 object with:
-  - subset metadata,
-  - correlation/association summaries,
-  - custom `show()` and `as.data.frame()` methods
+- `force_in`: protect variables from removal
+- Deterministic tie-breaking for reproducibility
 
 ## Installation
 
@@ -55,84 +71,131 @@ These features make the package useful in domains like:
 remotes::install_github("gcol33/corrselect")
 ```
 
-## Basic Usage
+## Usage Examples
+
+### Association-Based Pruning (`corrPrune`)
 
 ```r
 library(corrselect)
+data(mtcars)
 
-# Simulated numeric example
-set.seed(1)
-n <- 100
-df <- data.frame(
-  A = rnorm(n),
-  B = rnorm(n),
-  C = rnorm(n),
-  D = rnorm(n),
-  E = rnorm(n)
-)
-df$F <- df$A * 0.9 + rnorm(n, sd = 0.1)
+# Basic: Remove correlated predictors
+pruned <- corrPrune(mtcars, threshold = 0.7)
+names(pruned)
 
-# Find all maximal subsets with pairwise Pearson correlation <= 0.7
-res <- corrSelect(df, threshold = 0.7)
+# Protect important variables
+pruned <- corrPrune(mtcars, threshold = 0.7, force_in = "mpg")
+
+# Use exact mode (slower, guaranteed optimal)
+pruned <- corrPrune(mtcars, threshold = 0.7, mode = "exact")
+
+# Use greedy mode (faster for large datasets)
+pruned <- corrPrune(mtcars, threshold = 0.7, mode = "greedy")
+
+# Check what was removed
+attr(pruned, "selected_vars")
+```
+
+### Model-Based Pruning (`modelPrune`)
+
+```r
+# Linear model with VIF threshold
+pruned <- modelPrune(mpg ~ cyl + disp + hp + wt, data = mtcars, limit = 5)
+attr(pruned, "removed_vars")
+
+# GLM with binomial family
+mtcars$am_binary <- as.factor(mtcars$am)
+pruned <- modelPrune(am_binary ~ cyl + disp + hp,
+                     data = mtcars, engine = "glm",
+                     family = binomial(), limit = 5)
+
+# Mixed model (requires lme4)
+if (requireNamespace("lme4", quietly = TRUE)) {
+  df <- data.frame(
+    y = rnorm(100),
+    x1 = rnorm(100),
+    x2 = rnorm(100),
+    group = rep(1:10, each = 10)
+  )
+  pruned <- modelPrune(y ~ x1 + x2 + (1|group),
+                       data = df, engine = "lme4", limit = 5)
+}
+
+# Custom engine (advanced: works with any modeling package)
+# Example: INLA-based pruning
+if (requireNamespace("INLA", quietly = TRUE)) {
+  inla_engine <- list(
+    name = "inla",
+    fit = function(formula, data, ...) {
+      INLA::inla(formula = formula, data = data,
+                 family = "gaussian", ...)
+    },
+    diagnostics = function(model, fixed_effects) {
+      # Use posterior SD as badness metric
+      scores <- model$summary.fixed[, "sd"]
+      names(scores) <- rownames(model$summary.fixed)
+      scores[fixed_effects]
+    }
+  )
+
+  pruned <- modelPrune(y ~ x1 + x2, data = df,
+                       engine = inla_engine, limit = 0.5)
+}
+```
+
+### Exact Subset Enumeration (Advanced)
+
+```r
+# Find ALL maximal subsets
+res <- corrSelect(mtcars, threshold = 0.7)
 show(res)
 
-# Extract the top-ranked subset from the original data
-subset1 <- corrSubset(res, df, which = 1)
-head(subset1)
+# Extract a specific subset
+subset1 <- corrSubset(res, mtcars, which = 1)
 
-# Convert all subsets to a tidy data frame
+# Convert to data frame
 as.data.frame(res)
 ```
 
-## Mixed Data Frames
+## Choosing Between `corrPrune` and `modelPrune`
 
-Use `assocSelect()` for data frames with numeric, factor, or ordered variables. The function automatically selects the appropriate metric for each pair:
+| Feature | `corrPrune()` | `modelPrune()` |
+|---------|---------------|----------------|
+| **Requires model specification?** | No | Yes |
+| **Based on** | Pairwise correlations/associations | Model diagnostics (VIF) |
+| **Speed** | Fast (greedy mode) | Moderate (refits models) |
+| **Works without response?** | Yes | No |
+| **Supports mixed models?** | No | Yes (lme4, glmmTMB) |
+| **Best for** | Exploratory analysis, large p | Regression workflows, VIF reduction |
+
+**Tip**: Use `corrPrune()` first to reduce dimensionality, then `modelPrune()` for final cleanup within a modeling framework.
+
+## Advanced Features
+
+### Mixed-Type Data
+
+Use `assocSelect()` for exact enumeration with mixed data types:
 
 ```r
-df2 <- data.frame(
+df <- data.frame(
   height = rnorm(30, 170, 10),
   weight = rnorm(30, 70, 12),
-  group  = factor(sample(c("A","B"), 30, TRUE)),                # unordered
-  rating = ordered(sample(c("low","med","high"), 30, TRUE))     # ordered
+  group  = factor(sample(c("A","B"), 30, TRUE)),
+  rating = ordered(sample(c("low","med","high"), 30, TRUE))
 )
 
-# Select variable subsets with association <= 0.6
-res2 <- assocSelect(df2, threshold = 0.6)
-show(res2)
+res <- assocSelect(df, threshold = 0.6)
+show(res)
 ```
 
-## Example Output
+### Precomputed Correlation Matrices
 
-```
-CorrCombo object
------------------
-  Method:      bron-kerbosch
-  Correlation: mixed
-  Threshold:   0.600
-  Subsets:     2 valid combinations
-  Data Rows:   30 used in correlation
-  Pivot:       TRUE
-  AssocMethod: numeric_numeric  = pearson,
-               numeric_factor   = eta,
-               numeric_ordered  = spearman
-
-Top combinations:
-  No.  Variables                          Avg    Max    Size
-  ------------------------------------------------------------
-  [ 1] height, rating                    0.311  0.562     2
-  [ 2] weight, rating                    0.317  0.580     2
-```
-
-## Advanced Use
-
-To use a precomputed correlation matrix (e.g. with MIC or custom metrics):
+Work directly with correlation matrices:
 
 ```r
-mat <- cor(df)
-res <- MatSelect(mat, threshold = 0.7, method = "els", force_in = 1)
+mat <- cor(mtcars)
+res <- MatSelect(mat, threshold = 0.7, method = "els")
 ```
-
-You can also extract the full list of subsets and use `corrSubset()` to apply them to your data with or without additional columns.
 
 ## JOSS Paper
 

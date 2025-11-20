@@ -69,6 +69,7 @@
 #'@seealso [corrSelect()], [MatSelect()], [corrSubset()]
 #'
 #' @examples
+#' set.seed(42)
 #' df <- data.frame(
 #'   height = rnorm(15, 170, 10),
 #'   weight = rnorm(15, 70, 12),
@@ -117,9 +118,15 @@ assocSelect <- function(df,
     }
   })
 
-
-
   if (ncol(df) < 2) stop("`df` needs at least two columns.")
+
+  # Validate threshold
+  if (!is.numeric(threshold) || length(threshold) != 1 || is.na(threshold)) {
+    stop("`threshold` must be a single numeric value.")
+  }
+  if (threshold <= 0 || threshold > 1) {
+    stop("`threshold` must be in the range (0, 1].")
+  }
 
   valid_types <- c("numeric", "ordered", "factor")
   types <- vapply(df, function(x) class(x)[1], character(1))
@@ -162,20 +169,22 @@ assocSelect <- function(df,
            spearman = abs(cor(rank(x), rank(y), method = "spearman")),
            kendall  = abs(cor(rank(x), rank(y), method = "kendall")),
            bicor = {
-             requireNamespace("WGCNA")
+             if (!requireNamespace("WGCNA", quietly = TRUE)) stop("Install the 'WGCNA' package for bicor.")
              abs(WGCNA::bicor(cbind(x, y))[1, 2])
            },
            distance = {
-             requireNamespace("energy")
+             if (!requireNamespace("energy", quietly = TRUE)) stop("Install the 'energy' package for distance correlation.")
              abs(energy::dcor(x, y))
            },
            maximal = {
-             requireNamespace("minerva")
+             if (!requireNamespace("minerva", quietly = TRUE)) stop("Install the 'minerva' package for maximal information coefficient.")
              minerva::mine(x, y)$MIC
            },
            cramersv = {
              tbl <- table(x, y)
-             if (min(dim(tbl)) < 2 || any(tbl == 0)) return(NA_real_)
+             # Check if table is valid for chi-squared test
+             # Reject if any row or column is all zeros (not just if table has any zeros)
+             if (min(dim(tbl)) < 2 || any(rowSums(tbl) == 0) || any(colSums(tbl) == 0)) return(NA_real_)
              suppressWarnings({
                chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE)$statistic)
              })

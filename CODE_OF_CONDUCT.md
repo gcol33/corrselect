@@ -42,4 +42,4 @@ This Code of Conduct is adapted from the [Contributor Covenant](https://www.cont
 
 ---
 
-**Contact:** gilles.colling@univie.ac.at
+**Contact:** gilles.colling051@gmail.com

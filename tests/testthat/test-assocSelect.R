@@ -86,7 +86,8 @@ test_that("assocSelect can use cramersv for factor-factor", {
     x = factor(sample(letters[1:3], 10, TRUE)),
     y = factor(sample(letters[1:3], 10, TRUE))
   )
-  res <- assocSelect(df, method_unord_unord = "cramersv", threshold = 1.0)
+  # cramersv is the default for factor-factor, no parameter needed
+  res <- assocSelect(df, threshold = 1.0)
   expect_s4_class(res, "CorrCombo")
 })
 
@@ -95,6 +96,7 @@ test_that("assocSelect can use eta for numeric-factor", {
     x = rnorm(10),
     y = factor(rep(c("a", "b"), 5))
   )
-  res <- assocSelect(df, method_num_unord = "eta", threshold = 1.0)
+  # eta is the default for numeric-factor, no parameter needed
+  res <- assocSelect(df, threshold = 1.0)
   expect_s4_class(res, "CorrCombo")
 })

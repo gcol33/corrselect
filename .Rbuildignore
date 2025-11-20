@@ -10,3 +10,15 @@
 ^corrselect\.Rcheck$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^\.claude$
+^claude$
+^calude$
+^CLAUDE\.md$
+^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
+^vignettes/benchmarks\.Rmd$
+^data-raw$
+^paper$
+^quick_test\.R$
+^test_runner\.R$
+^\.github$

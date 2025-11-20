@@ -84,9 +84,10 @@ test_that("MatSelect allows too-correlated force_in with warning handled in R", 
   mat[1, 2] <- mat[2, 1] <- 0.99  # A and A_dup are too correlated
   colnames(mat) <- c("A", "A_dup", "B")
 
-  expect_silent({
+  # Should warn but still proceed with user's explicit force_in request
+  expect_warning({
     res <- MatSelect(mat, threshold = 0.7, force_in = 1:2)
-  })
+  }, "mutually correlated beyond the threshold")
 
   expect_s4_class(res, "CorrCombo")
   all_sets <- unique(unlist(res@subset_list))

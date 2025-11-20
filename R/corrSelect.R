@@ -83,6 +83,14 @@ corrSelect <- function(df,
   if (!is.data.frame(df)) stop("`df` must be a data frame.")
   if (ncol(df) < 2) stop("`df` must have at least two columns.")
 
+  # Validate threshold
+  if (!is.numeric(threshold) || length(threshold) != 1 || is.na(threshold)) {
+    stop("`threshold` must be a single numeric value.")
+  }
+  if (threshold <= 0 || threshold > 1) {
+    stop("`threshold` must be in the range (0, 1].")
+  }
+
   # Identify numeric columns
   numeric_cols <- vapply(df, is.numeric, logical(1))
   df_num       <- df[, numeric_cols, drop = FALSE]

@@ -92,6 +92,7 @@ and \code{"maximal"} (\pkg{minerva}); an informative error is thrown if they
 are missing.
 }
 \examples{
+set.seed(42)
 df <- data.frame(
   height = rnorm(15, 170, 10),
   weight = rnorm(15, 70, 12),

@@ -1,0 +1,293 @@
+---
+title: "Quick Start: Predictor Pruning with corrselect"
+author: "Gilles Colling"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quick Start: Predictor Pruning with corrselect}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+## Learning Objectives
+
+After reading this 5-minute guide, you will be able to:
+
+- Remove correlated predictors with `corrPrune()`
+- Reduce multicollinearity with `modelPrune()`
+- Understand when to use each approach
+
+## Prerequisites
+
+- Basic R knowledge
+- Familiarity with linear models (helpful but not required)
+
+**Estimated time**: 5 minutes
+
+---
+
+## The Problem
+
+You have many predictors, but some are highly correlated. This causes:
+
+- **Unstable coefficient estimates**
+- **Inflated standard errors**
+- **Poor model interpretability**
+
+**The solution**: Remove redundant predictors before modeling.
+
+---
+
+## Solution 1: Association-Based Pruning with `corrPrune()`
+
+**When to use**: You want to clean your data *before* modeling, or you don't have a specific model in mind yet.
+
+### Example: Ecological Data
+
+Let's use the `bioclim_example` dataset with 50 highly correlated environmental variables:
+
+```{r}
+library(corrselect)
+data(bioclim_example)
+
+# How many variables?
+ncol(bioclim_example) - 1  # Exclude response variable
+```
+
+Many of these 50 bioclimatic variables are redundant. Let's remove variables that correlate > 0.7:
+
+```{r}
+# Remove correlated predictors
+pruned <- corrPrune(
+  data = bioclim_example[, -1],  # Exclude response variable
+  threshold = 0.7                 # Max correlation allowed
+)
+
+# How many variables remain?
+ncol(pruned)
+```
+
+**Result**: Reduced from 50 → ~15 variables, all with pairwise correlations ≤ 0.7.
+
+### Check what was removed
+
+```{r}
+# Variables that were kept
+head(attr(pruned, "selected_vars"))
+
+# Variables that were removed
+head(attr(pruned, "removed_vars"))
+```
+
+### Visualize the improvement
+
+```{r, fig.width=10, fig.height=4}
+par(mfrow = c(1, 2))
+
+# Before pruning
+cor_before <- cor(bioclim_example[, -1])
+hist(cor_before[upper.tri(cor_before)],
+     breaks = 30,
+     main = "Before Pruning",
+     xlab = "Pairwise Correlation",
+     col = "salmon")
+abline(v = 0.7, col = "red", lwd = 2, lty = 2)
+
+# After pruning
+cor_after <- cor(pruned)
+hist(cor_after[upper.tri(cor_after)],
+     breaks = 30,
+     main = "After Pruning",
+     xlab = "Pairwise Correlation",
+     col = "lightblue")
+abline(v = 0.7, col = "red", lwd = 2, lty = 2)
+```
+
+**Key insight**: All correlations are now below the threshold (red dashed line).
+
+---
+
+## Solution 2: Model-Based Pruning with `modelPrune()`
+
+**When to use**: You're building a regression model and want to remove multicollinearity based on VIF (Variance Inflation Factor).
+
+### Example: Predicting Species Richness
+
+Let's build a model predicting species richness, but first remove multicollinear predictors:
+
+```{r}
+# Prune predictors based on VIF
+model_data <- modelPrune(
+  formula = species_richness ~ .,
+  data = bioclim_example,
+  limit = 5  # Max VIF allowed (common threshold)
+)
+
+# How many predictors remain?
+length(attr(model_data, "selected_vars"))
+```
+
+### What happened?
+
+```{r}
+# Predictors removed (high VIF)
+attr(model_data, "removed_vars")
+
+# Final model is ready to use
+final_model <- attr(model_data, "final_model")
+summary(final_model)
+```
+
+### Before/After VIF Comparison
+
+Let's compare VIF values before and after pruning:
+
+```{r}
+# VIF before pruning (fit full model)
+full_model <- lm(species_richness ~ ., data = bioclim_example)
+
+# Compute VIF manually
+X_full <- model.matrix(full_model)[, -1]  # Remove intercept
+vif_before <- sapply(colnames(X_full), function(var) {
+  1 / (1 - summary(lm(X_full[, var] ~ X_full[, -which(colnames(X_full) == var)]))$r.squared)
+})
+
+# VIF after pruning
+X_pruned <- model.matrix(final_model)[, -1]
+vif_after <- sapply(colnames(X_pruned), function(var) {
+  1 / (1 - summary(lm(X_pruned[, var] ~ X_pruned[, -which(colnames(X_pruned) == var)]))$r.squared)
+})
+
+# Visualize
+par(mfrow = c(1, 2))
+barplot(sort(vif_before, decreasing = TRUE)[1:20],
+        las = 2,
+        main = "Before Pruning (top 20)",
+        ylab = "VIF",
+        col = "salmon",
+        cex.names = 0.7)
+abline(h = 5, col = "red", lwd = 2, lty = 2)
+
+barplot(sort(vif_after, decreasing = TRUE),
+        las = 2,
+        main = "After Pruning",
+        ylab = "VIF",
+        col = "lightblue",
+        cex.names = 0.7)
+abline(h = 5, col = "red", lwd = 2, lty = 2)
+```
+
+**Key insight**: All VIF values are now below 5 (red dashed line), indicating acceptable multicollinearity.
+
+---
+
+## Choosing Between `corrPrune()` and `modelPrune()`
+
+| Feature | `corrPrune()` | `modelPrune()` |
+|---------|---------------|----------------|
+| **When to use** | Before modeling | During model building |
+| **Requires response?** | No | Yes |
+| **Based on** | Pairwise correlations | Model diagnostics (VIF) |
+| **Speed** | Very fast | Moderate (refits models) |
+| **Best for** | Exploratory analysis | Regression prep |
+
+**Pro tip**: Use both!
+
+```{r, eval=FALSE}
+# Step 1: Quick correlation cleanup (exploratory)
+data_cleaned <- corrPrune(your_data, threshold = 0.7)
+
+# Step 2: VIF-based pruning (model-specific)
+model_ready <- modelPrune(response ~ ., data = data_cleaned, limit = 5)
+```
+
+---
+
+## Common Pitfalls
+
+### 1. Choosing the wrong threshold
+
+**Too strict** (e.g., threshold = 0.3): May remove too many useful variables
+
+**Too lenient** (e.g., threshold = 0.95): Multicollinearity persists
+
+**Recommendation**: Start with 0.7 for correlations, 5 for VIF
+
+### 2. Forgetting to protect important variables
+
+Use `force_in` to keep key predictors:
+
+```{r, eval=FALSE}
+pruned <- corrPrune(data, threshold = 0.7,
+                    force_in = c("age", "treatment"))
+```
+
+### 3. Pruning the response variable
+
+Always exclude your response variable from `corrPrune()`:
+
+```{r, eval=FALSE}
+# WRONG
+pruned <- corrPrune(my_data, threshold = 0.7)
+
+# RIGHT
+pruned <- corrPrune(my_data[, -which(names(my_data) == "response")],
+                    threshold = 0.7)
+```
+
+---
+
+## Summary
+
+**You've learned**:
+
+- ✅ `corrPrune()` removes correlated predictors (model-free)
+- ✅ `modelPrune()` reduces VIF (model-based)
+- ✅ Use both for a complete workflow
+- ✅ Check results with visualizations
+
+**In 5 minutes, you can now**:
+
+1. Clean your data with `corrPrune()`
+2. Prepare models with `modelPrune()`
+3. Understand when to use each approach
+
+---
+
+## Next Steps
+
+- **More examples**: See `vignette("workflows")` for complete workflows across different domains
+- **Advanced features**: See `vignette("corrselect_vignette")` for exact subset enumeration
+- **Function reference**: See `?corrPrune` and `?modelPrune` for full documentation
+
+---
+
+## Quick Reference
+
+```{r, eval=FALSE}
+# Association-based pruning
+pruned <- corrPrune(
+  data = your_data,
+  threshold = 0.7,       # Max correlation
+  mode = "auto",         # "exact", "greedy", or "auto"
+  force_in = NULL        # Variables to protect
+)
+
+# Model-based pruning
+pruned <- modelPrune(
+  formula = y ~ .,
+  data = your_data,
+  engine = "lm",         # "lm", "glm", "lme4", "glmmTMB"
+  limit = 5,             # Max VIF
+  force_in = NULL        # Variables to protect
+)
+```

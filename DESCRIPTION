@@ -1,13 +1,13 @@
 Package: corrselect
-Title: Correlation-Based Variable Subset Selection
-Version: 2.0.1
-Authors@R: 
+Title: Correlation-Based and Model-Based Predictor Pruning
+Version: 3.0.0
+Authors@R:
     person("Gilles", "Colling", email = "gilles.colling051@gmail.com", role = c("aut", "cre"))
-Description: Provides functions to extract low-correlation variable subsets using exact graph-theoretic algorithms (e.g., Eppstein–Löffler–Strash, Bron–Kerbosch) as well as greedy and spectral heuristics. Supports both numeric and mixed-type data using generalized association measures.
+Description: Provides functions for predictor pruning using association-based and model-based approaches. Includes corrPrune() for fast correlation-based pruning, modelPrune() for VIF-based regression pruning, and exact graph-theoretic algorithms (Eppstein–Löffler–Strash, Bron–Kerbosch) for exhaustive subset enumeration. Supports linear models, GLMs, and mixed models (lme4, glmmTMB).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LinkingTo: Rcpp
 Imports: 
     Rcpp,
@@ -20,8 +20,15 @@ Suggests:
     impute,
     energy,
     minerva,
+    lme4,
+    glmmTMB,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tibble
 VignetteBuilder: knitr
 URL: https://gillescolling.com/corrselect/
 BugReports: https://github.com/gcol33/corrselect/issues
+Depends: 
+    R (>= 3.5)
+LazyData: true
