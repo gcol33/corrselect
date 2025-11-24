@@ -1,38 +1,57 @@
 #' Example Bioclimatic Data for Ecological Modeling
 #'
-#' A simulated dataset representing 50 WorldClim-like bioclimatic variables
-#' measured at 100 geographic locations, with species richness as the response variable.
-#' Variables are organized into correlated blocks representing temperature,
-#' precipitation, seasonality, and elevation.
+#' A simulated dataset with the 19 WorldClim bioclimatic variables
+#' (https://www.worldclim.org/data/bioclim.html) measured at 100 geographic locations,
+#' with species richness as the response variable. Variables are organized into
+#' correlated blocks representing temperature (BIO1-BIO11) and precipitation (BIO12-BIO19).
 #'
-#' @format A data frame with 100 rows and 51 variables:
+#' @format A data frame with 100 rows and 20 variables:
 #' \describe{
 #'   \item{species_richness}{Integer. Number of species observed (response variable)}
-#'   \item{bio1_temp, bio2_temp, bio3_temp, bio4_temp, bio5_temp, bio6_temp, bio7_temp, bio8_temp, bio9_temp, bio10_temp, bio11_temp, bio12_temp, bio13_temp, bio14_temp, bio15_temp}{Numeric. Temperature-related variables (highly correlated, r ≈ 0.85)}
-#'   \item{bio16_precip, bio17_precip, bio18_precip, bio19_precip, bio20_precip, bio21_precip, bio22_precip, bio23_precip, bio24_precip, bio25_precip, bio26_precip, bio27_precip, bio28_precip, bio29_precip, bio30_precip}{Numeric. Precipitation-related variables (moderately correlated, r ≈ 0.70)}
-#'   \item{bio31_season, bio32_season, bio33_season, bio34_season, bio35_season, bio36_season, bio37_season, bio38_season, bio39_season, bio40_season, bio41_season, bio42_season, bio43_season, bio44_season, bio45_season}{Numeric. Seasonality variables (weakly correlated, r ≈ 0.50)}
-#'   \item{bio46_elev, bio47_elev, bio48_elev, bio49_elev, bio50_elev}{Numeric. Elevation variables (independent, r ≈ 0)}
+#'   \item{BIO1}{Numeric. Annual Mean Temperature}
+#'   \item{BIO2}{Numeric. Mean Diurnal Range}
+#'   \item{BIO3}{Numeric. Isothermality}
+#'   \item{BIO4}{Numeric. Temperature Seasonality}
+#'   \item{BIO5}{Numeric. Max Temperature of Warmest Month}
+#'   \item{BIO6}{Numeric. Min Temperature of Coldest Month}
+#'   \item{BIO7}{Numeric. Temperature Annual Range}
+#'   \item{BIO8}{Numeric. Mean Temperature of Wettest Quarter}
+#'   \item{BIO9}{Numeric. Mean Temperature of Driest Quarter}
+#'   \item{BIO10}{Numeric. Mean Temperature of Warmest Quarter}
+#'   \item{BIO11}{Numeric. Mean Temperature of Coldest Quarter}
+#'   \item{BIO12}{Numeric. Annual Precipitation}
+#'   \item{BIO13}{Numeric. Precipitation of Wettest Month}
+#'   \item{BIO14}{Numeric. Precipitation of Driest Month}
+#'   \item{BIO15}{Numeric. Precipitation Seasonality}
+#'   \item{BIO16}{Numeric. Precipitation of Wettest Quarter}
+#'   \item{BIO17}{Numeric. Precipitation of Driest Quarter}
+#'   \item{BIO18}{Numeric. Precipitation of Warmest Quarter}
+#'   \item{BIO19}{Numeric. Precipitation of Coldest Quarter}
 #' }
 #'
 #' @details
-#' This dataset demonstrates a common problem in ecological modeling: many bioclimatic
-#' predictors are highly correlated within groups (e.g., different temperature metrics),
+#' This dataset demonstrates a common problem in ecological modeling: bioclimatic
+#' predictors are highly correlated within groups (temperature variables BIO1-BIO11 are
+#' highly correlated; precipitation variables BIO12-BIO19 are moderately correlated),
 #' leading to multicollinearity issues. The species richness response depends on a subset
-#' of predictors from each group.
+#' of predictors.
 #'
-#' **Use case**: Demonstrating `corrPrune()` for reducing correlated environmental
-#' predictors before fitting species distribution models.
+#' **Use case**: Demonstrating `corrPrune()` and `modelPrune()` for reducing correlated
+#' environmental predictors before fitting species distribution models.
 #'
-#' @source Simulated data based on typical WorldClim variable structures
+#' @source Simulated data based on the 19 WorldClim bioclimatic variables
 #'
 #' @seealso [corrPrune()], [modelPrune()]
 #'
 #' @examples
 #' data(bioclim_example)
 #'
-#' # Remove highly correlated bioclimatic variables
+#' # The 19 WorldClim bioclimatic variables (https://www.worldclim.org/data/bioclim.html)
+#' # Many are highly correlated, making them ideal for pruning
+#'
+#' # Remove highly correlated variables
 #' pruned <- corrPrune(bioclim_example[, -1], threshold = 0.7)
-#' ncol(pruned)  # Reduced from 50 to ~15 variables
+#' ncol(pruned)  # Reduced from 19 to ~8 variables
 #'
 #' # Model-based pruning with VIF
 #' model_data <- modelPrune(species_richness ~ .,
@@ -65,25 +84,28 @@
 #' within each construct are correlated (satisfaction, engagement, loyalty), and
 #' the constructs themselves are inter-correlated.
 #'
-#' **Use case**: Demonstrating `corrPrune()` for identifying redundant questionnaire
-#' items while preserving key demographic variables with `force_in`.
+#' **Use case**: Demonstrating `assocSelect()` for identifying redundant questionnaire
+#' items in mixed-type data (ordered factors + numeric variables).
 #'
 #' @source Simulated data based on typical customer satisfaction survey structures
 #'
-#' @seealso [corrPrune()], [assocSelect()]
+#' @seealso [assocSelect()], [corrPrune()]
 #'
 #' @examples
 #' data(survey_example)
 #'
-#' # Remove redundant survey items (numeric columns only)
-#' # Keep age and overall satisfaction, prune correlated Likert items
-#' numeric_cols <- sapply(survey_example, is.numeric)
-#' pruned <- corrPrune(survey_example[, numeric_cols & names(survey_example) != "respondent_id"],
-#'                     threshold = 0.6,
-#'                     force_in = c("age", "overall_satisfaction"))
+#' # This dataset has mixed types: numeric (age, overall_satisfaction),
+#' # factors (gender, education), and ordered factors (Likert items)
+#' str(survey_example[, 1:10])
 #'
-#' # Check which items were removed
-#' attr(pruned, "removed_vars")
+#' \donttest{
+#' # Use assocSelect() for mixed-type data pruning
+#' # This may take a few seconds with 34 variables
+#' pruned <- assocSelect(survey_example[, -1],  # Exclude respondent_id
+#'                       threshold = 0.8,
+#'                       method_ord_ord = "spearman")
+#' length(attr(pruned, "selected_vars"))
+#' }
 "survey_example"
 
 #' Example Gene Expression Data for Bioinformatics

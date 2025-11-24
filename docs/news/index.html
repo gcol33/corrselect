@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/corrselect_upcoming.html">Upcoming Features in corrselect 2.1.0</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start: Predictor Pruning with corrselect</a></li>
+    <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
     <li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -38,7 +41,113 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.1" id="corrselect-201">corrselect 2.0.1<a class="anchor" aria-label="anchor" href="#corrselect-201"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.0.0" id="corrselect-300">corrselect 3.0.0<a class="anchor" aria-label="anchor" href="#corrselect-300"></a></h2>
+<div class="section level3">
+<h3 id="major-release-predictor-pruning-toolkit-3-0-0">Major Release: Predictor Pruning Toolkit<a class="anchor" aria-label="anchor" href="#major-release-predictor-pruning-toolkit-3-0-0"></a></h3>
+<p>Version 3.0.0 represents a major expansion of corrselect from a specialized subset enumeration tool into a comprehensive predictor pruning toolkit. <strong>Fully backward compatible</strong> with 2.x - all existing code continues to work.</p>
+</div>
+<div class="section level3">
+<h3 id="bug-fixes-3-0-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-3-0-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/modelPrune.html">modelPrune()</a></code></strong>: Fixed infinite loop when VIF computation encountered perfect multicollinearity
+<ul><li>Added proper handling of <code>Inf</code> and <code>NA</code> VIF values in pruning loop</li>
+<li>Clamped extreme R² values (&gt; 0.9999) to prevent division by near-zero</li>
+<li>Added safety checks to prevent removing all variables</li>
+</ul></li>
+<li>
+<strong><code><a href="../reference/modelPrune.html">modelPrune()</a></code></strong>: Fixed design matrix extraction for lme4 and glmmTMB engines
+<ul><li>Now uses <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">stats::model.matrix()</a></code> for all engines (more robust)</li>
+<li>Eliminated “Could not find columns” warnings</li>
+</ul></li>
+<li>
+<strong>Test suite</strong>: All 261 tests pass with zero warnings (CRAN-compliant)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="major-features-3-0-0">Major Features<a class="anchor" aria-label="anchor" href="#major-features-3-0-0"></a></h3>
+<div class="section level4">
+<h4 id="new-functions-3-0-0">New Functions<a class="anchor" aria-label="anchor" href="#new-functions-3-0-0"></a></h4>
+<ul><li>
+<strong><code><a href="../reference/corrPrune.html">corrPrune()</a></code></strong>: High-level association-based predictor pruning
+<ul><li>Model-free pruning using pairwise correlations or associations</li>
+<li>Automatic measure selection (<code>measure = "auto"</code>)</li>
+<li>Supports exact mode (small p), greedy mode (large p), or auto-selection</li>
+<li>
+<code>force_in</code> parameter to protect important predictors</li>
+<li>Returns single pruned data.frame with pairwise associations ≤ threshold</li>
+</ul></li>
+<li>
+<strong><code><a href="../reference/modelPrune.html">modelPrune()</a></code></strong>: Model-based predictor pruning using diagnostics
+<ul><li>VIF-based iterative removal of multicollinear predictors</li>
+<li>Supports multiple engines: <code>lm</code>, <code>glm</code>, <code>lme4</code>, <code>glmmTMB</code>
+</li>
+<li>
+<strong>Custom engine support</strong>: Define your own modeling backends (INLA, mgcv, brms, etc.)</li>
+<li>Prunes fixed effects only (preserves random effects in mixed models)</li>
+<li>
+<code>force_in</code> parameter for protecting important variables</li>
+<li>Returns pruned data.frame with final fitted model</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-c-backend-3-0-0">New C++ Backend<a class="anchor" aria-label="anchor" href="#new-c-backend-3-0-0"></a></h4>
+<ul><li>Fast deterministic greedy pruning algorithm
+<ul><li>Polynomial-time complexity O(p² × k) vs exponential for exact search</li>
+<li>Handles p &gt; 100 efficiently</li>
+<li>Deterministic tie-breaking for reproducibility</li>
+<li>Used by <code>corrPrune(mode = "greedy")</code> and <code>mode = "auto"</code>
+</li>
+</ul></li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="enhancements-3-0-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-3-0-0"></a></h3>
+<ul><li>Exact methods (<code><a href="../reference/corrSelect.html">corrSelect()</a></code>, <code><a href="../reference/assocSelect.html">assocSelect()</a></code>) now integrate seamlessly with <code><a href="../reference/corrPrune.html">corrPrune()</a></code>
+</li>
+<li>Deterministic subset selection when multiple maximal sets exist</li>
+<li>Improved error messages for threshold feasibility checks</li>
+<li>Better handling of edge cases (single predictor, all correlated, etc.)</li>
+<li>
+<strong>Custom engine interface</strong> for <code><a href="../reference/modelPrune.html">modelPrune()</a></code>: Users can define custom modeling backends with <code>fit</code> and <code>diagnostics</code> functions, enabling integration with any R modeling package</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-3-0-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-3-0-0"></a></h3>
+<ul><li>
+<strong>Five new comprehensive vignettes</strong> (~60 minutes of content):
+<ul><li>
+<em>Quick Start</em>: 5-minute introduction to corrPrune() and modelPrune()</li>
+<li>
+<em>Complete Workflows</em>: Real-world examples across 4 domains (ecology, social science, genomics, clinical)</li>
+<li>
+<em>Comparison with Alternatives</em>: When to choose corrselect vs caret, Boruta, glmnet</li>
+<li>
+<em>Performance Benchmarks</em>: Timing comparisons, scalability tests, and optimization guidelines</li>
+<li>
+<em>Advanced Topics</em>: Algorithms, custom engines (INLA, mgcv), performance optimization, troubleshooting</li>
+</ul></li>
+<li>
+<strong>Four new example datasets</strong> with full documentation (bioclim, survey, genes, longitudinal)</li>
+<li>Updated README with quickstart examples and custom engine support</li>
+<li>Full documentation for <code><a href="../reference/corrPrune.html">corrPrune()</a></code> and <code><a href="../reference/modelPrune.html">modelPrune()</a></code>
+</li>
+<li>Usage examples for all modeling engines</li>
+</ul></div>
+<div class="section level3">
+<h3 id="package-changes-3-0-0">Package Changes<a class="anchor" aria-label="anchor" href="#package-changes-3-0-0"></a></h3>
+<ul><li>Added <code>lme4</code> and <code>glmmTMB</code> to Suggests (required for respective engines)</li>
+<li>Version bumped to 3.0.0 (major feature release)</li>
+<li>Updated package description to reflect expanded pruning functionality</li>
+</ul></div>
+<div class="section level3">
+<h3 id="notes-3-0-0">Notes<a class="anchor" aria-label="anchor" href="#notes-3-0-0"></a></h3>
+<ul><li>
+<strong>No breaking changes</strong>: Version 3.0.0 is fully backward compatible with 2.0.1</li>
+<li>For large predictor sets (p &gt; 20), use <code>corrPrune(mode = "auto")</code> for best performance</li>
+<li>Mixed model engines require optional packages: install with <code>install.packages(c("lme4", "glmmTMB"))</code>
+</li>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.1" id="corrselect-201">corrselect 2.0.1<a class="anchor" aria-label="anchor" href="#corrselect-201"></a></h2><p class="text-muted">CRAN release: 2025-09-08</p>
 <div class="section level3">
 <h3 id="bug-fixes-2-0-1">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-0-1"></a></h3>
 <ul><li>

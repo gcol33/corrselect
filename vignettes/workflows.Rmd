@@ -37,7 +37,7 @@ Each workflow shows realistic data, complete code, and interpretation guidance.
 
 ## Scenario
 
-You're building a species distribution model using 50 WorldClim bioclimatic variables. Many variables are highly correlated (e.g., different temperature metrics), causing multicollinearity.
+You're building a species distribution model using the 19 WorldClim bioclimatic variables. Many variables are highly correlated (e.g., different temperature metrics), causing multicollinearity.
 
 **Goal**: Identify a parsimonious set of predictors that:
 - Covers different environmental dimensions
@@ -58,6 +58,25 @@ head(names(bioclim_example))
 summary(bioclim_example$species_richness)
 ```
 
+Visualize the correlation structure:
+
+```{r, fig.width=8, fig.height=6}
+# Correlation matrix
+cor_matrix <- cor(bioclim_example[, -1])
+
+# Histogram of correlations
+hist(cor_matrix[upper.tri(cor_matrix)],
+     breaks = 30,
+     main = "Distribution of Pairwise Correlations",
+     xlab = "Correlation",
+     col = "lightblue",
+     border = "white")
+abline(v = 0.7, col = "red", lwd = 2, lty = 2)
+text(0.7, par("usr")[4] * 0.9, "threshold = 0.7", pos = 4, col = "red")
+```
+
+Many variable pairs exceed the 0.7 threshold, indicating redundancy.
+
 ## Step 2: Quick correlation cleanup with `corrPrune()`
 
 ```{r}
@@ -76,6 +95,34 @@ cat(sprintf("Reduced from %d → %d variables\n",
 # Which variables were kept?
 head(attr(bio_clean, "selected_vars"), 10)
 ```
+
+Visualize the improvement:
+
+```{r, fig.width=10, fig.height=4}
+par(mfrow = c(1, 2))
+
+# Before pruning
+cor_before <- cor(bioclim_example[, -1])
+hist(cor_before[upper.tri(cor_before)],
+     breaks = 30,
+     main = "Before corrPrune()",
+     xlab = "Correlation",
+     col = "salmon",
+     xlim = c(-1, 1))
+abline(v = c(-0.7, 0.7), col = "red", lwd = 2, lty = 2)
+
+# After pruning
+cor_after <- cor(bio_clean)
+hist(cor_after[upper.tri(cor_after)],
+     breaks = 30,
+     main = "After corrPrune()",
+     xlab = "Correlation",
+     col = "lightblue",
+     xlim = c(-1, 1))
+abline(v = c(-0.7, 0.7), col = "red", lwd = 2, lty = 2)
+```
+
+All correlations now fall within the ±0.7 threshold.
 
 ## Step 3: Fit initial model
 
@@ -120,7 +167,7 @@ final_model <- attr(bio_final, "final_model")
 
 # Compare
 comparison <- data.frame(
-  Model = c("Full (50 vars)", "After corrPrune (15 vars)", "After modelPrune (8 vars)"),
+  Model = c("Full model", "After corrPrune", "After modelPrune"),
   R2 = c(
     summary(lm(species_richness ~ ., data = bioclim_example))$r.squared,
     summary(model_initial)$r.squared,
@@ -139,6 +186,28 @@ comparison <- data.frame(
 )
 
 print(comparison)
+```
+
+Visualize model comparison:
+
+```{r, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+
+# Number of predictors
+barplot(c(19, length(attr(bio_clean, "selected_vars")), length(final_vars)),
+        names.arg = c("Full\n(19 vars)", "corrPrune\n(~8 vars)", "modelPrune\n(~6 vars)"),
+        main = "Number of Predictors",
+        ylab = "Count",
+        col = c("salmon", "lightblue", "lightgreen"),
+        ylim = c(0, 20))
+
+# Model quality (Adjusted R²)
+barplot(comparison$Adj_R2,
+        names.arg = c("Full", "corrPrune", "modelPrune"),
+        main = "Adjusted R²",
+        ylab = "Value",
+        col = c("salmon", "lightblue", "lightgreen"),
+        ylim = c(0, 1))
 ```
 
 **Interpretation**:
@@ -160,7 +229,7 @@ common_vars <- intersect(names(coef_full), names(coef_final))
 par(mfrow = c(1, 2))
 barplot(coef_full[common_vars],
         las = 2,
-        main = "Full Model (50 vars)",
+        main = "Full Model",
         ylab = "Coefficient",
         col = "salmon",
         cex.names = 0.6)
@@ -240,6 +309,38 @@ loyalty_kept <- sum(grepl("loyalty_", selected))
 cat(sprintf("Satisfaction: %d/10 items kept\n", satisfaction_kept))
 cat(sprintf("Engagement: %d/10 items kept\n", engagement_kept))
 cat(sprintf("Loyalty: %d/10 items kept\n", loyalty_kept))
+```
+
+Visualize construct coverage:
+
+```{r, fig.width=8, fig.height=5}
+par(mfrow = c(1, 2))
+
+# Items kept per construct
+construct_data <- rbind(
+  c(10, 10, 10),
+  c(satisfaction_kept, engagement_kept, loyalty_kept)
+)
+
+barplot(construct_data,
+        beside = TRUE,
+        names.arg = c("Satisfaction", "Engagement", "Loyalty"),
+        col = c("lightgray", "lightblue"),
+        legend.text = c("Original (10)", "After pruning"),
+        args.legend = list(x = "topright", bty = "n"),
+        main = "Items per Construct",
+        ylab = "Number of Items",
+        ylim = c(0, 12))
+
+# Percentage reduction
+barplot(c(ncol(survey_numeric), ncol(survey_clean)),
+        names.arg = c("Before", "After"),
+        col = c("salmon", "lightgreen"),
+        main = "Total Variables",
+        ylab = "Count",
+        ylim = c(0, max(ncol(survey_numeric)) * 1.2))
+text(0.7, ncol(survey_numeric) + 1, ncol(survey_numeric), pos = 3)
+text(1.9, ncol(survey_clean) + 1, ncol(survey_clean), pos = 3)
 ```
 
 **Interpretation**: Each construct is represented by fewer items, reducing respondent burden while maintaining coverage.
@@ -329,6 +430,22 @@ system.time({
 cat(sprintf("Reduced from %d → %d genes\n",
             ncol(gene_expr),
             ncol(genes_pruned)))
+```
+
+Visualize the dimensionality reduction:
+
+```{r, fig.width=8, fig.height=5}
+# Barplot showing reduction
+reduction_data <- c(ncol(gene_expr), ncol(genes_pruned))
+barplot(reduction_data,
+        names.arg = c("Original", "After Pruning"),
+        main = "Gene Dimensionality Reduction",
+        ylab = "Number of Genes",
+        col = c("salmon", "lightblue"),
+        ylim = c(0, max(reduction_data) * 1.2))
+text(0.7, reduction_data[1] + 10, paste(reduction_data[1], "genes"), pos = 3)
+text(1.9, reduction_data[2] + 10, paste(reduction_data[2], "genes\n(",
+     round(100 * reduction_data[2] / reduction_data[1], 1), "% retained)"), pos = 3)
 ```
 
 **Result**: Completed in < 1 second (vs. hours for exact mode with p=200).

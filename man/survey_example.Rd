@@ -34,23 +34,26 @@ measuring similar constructs lead to redundancy and multicollinearity. Items
 within each construct are correlated (satisfaction, engagement, loyalty), and
 the constructs themselves are inter-correlated.
 
-\strong{Use case}: Demonstrating \code{corrPrune()} for identifying redundant questionnaire
-items while preserving key demographic variables with \code{force_in}.
+\strong{Use case}: Demonstrating \code{assocSelect()} for identifying redundant questionnaire
+items in mixed-type data (ordered factors + numeric variables).
 }
 \examples{
 data(survey_example)
 
-# Remove redundant survey items (numeric columns only)
-# Keep age and overall satisfaction, prune correlated Likert items
-numeric_cols <- sapply(survey_example, is.numeric)
-pruned <- corrPrune(survey_example[, numeric_cols & names(survey_example) != "respondent_id"],
-                    threshold = 0.6,
-                    force_in = c("age", "overall_satisfaction"))
+# This dataset has mixed types: numeric (age, overall_satisfaction),
+# factors (gender, education), and ordered factors (Likert items)
+str(survey_example[, 1:10])
 
-# Check which items were removed
-attr(pruned, "removed_vars")
+\donttest{
+# Use assocSelect() for mixed-type data pruning
+# This may take a few seconds with 34 variables
+pruned <- assocSelect(survey_example[, -1],  # Exclude respondent_id
+                      threshold = 0.8,
+                      method_ord_ord = "spearman")
+length(attr(pruned, "selected_vars"))
+}
 }
 \seealso{
-\code{\link[=corrPrune]{corrPrune()}}, \code{\link[=assocSelect]{assocSelect()}}
+\code{\link[=assocSelect]{assocSelect()}}, \code{\link[=corrPrune]{corrPrune()}}
 }
 \keyword{datasets}

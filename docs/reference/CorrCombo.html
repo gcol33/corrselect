@@ -3,13 +3,11 @@
 and their correlation statistics.
 This class stores all subsets of variables that meet the specified correlation constraint,
 along with metadata such as the algorithm used, correlation method(s), variables forced into every subset,
-and summary statistics for each combination.
-An S4 class that stores the result of correlation-based subset selection."><meta property="og:description" content="Holds the result of corrSelect or MatSelect: a list of valid variable combinations
+and summary statistics for each combination."><meta property="og:description" content="Holds the result of corrSelect or MatSelect: a list of valid variable combinations
 and their correlation statistics.
 This class stores all subsets of variables that meet the specified correlation constraint,
 along with metadata such as the algorithm used, correlation method(s), variables forced into every subset,
-and summary statistics for each combination.
-An S4 class that stores the result of correlation-based subset selection."></head><body>
+and summary statistics for each combination."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +15,7 @@ An S4 class that stores the result of correlation-based subset selection."></hea
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +26,10 @@ An S4 class that stores the result of correlation-based subset selection."></hea
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/corrselect_upcoming.html">Upcoming Features in corrselect 2.1.0</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start: Predictor Pruning with corrselect</a></li>
+    <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
     <li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -54,7 +55,6 @@ and their correlation statistics.</p>
 <p>This class stores all subsets of variables that meet the specified correlation constraint,
 along with metadata such as the algorithm used, correlation method(s), variables forced into every subset,
 and summary statistics for each combination.</p>
-<p>An S4 class that stores the result of correlation-based subset selection.</p>
     </div>
 
     <div class="section level2">
@@ -113,46 +113,6 @@ and summary statistics for each combination.</p>
 
 <dt><code>n_rows_used</code></dt>
 <dd><p>Integer. Number of rows used for computing the correlation matrix (after removing missing values).</p></dd>
-
-
-<dt><code>subset_list</code></dt>
-<dd><p>A list of character vectors, each representing a subset of variable names.</p></dd>
-
-
-<dt><code>avg_corr</code></dt>
-<dd><p>Numeric vector: average correlation of each subset.</p></dd>
-
-
-<dt><code>min_corr</code></dt>
-<dd><p>Numeric vector: minimum correlation of each subset.</p></dd>
-
-
-<dt><code>max_corr</code></dt>
-<dd><p>Numeric vector: maximum correlation of each subset.</p></dd>
-
-
-<dt><code>names</code></dt>
-<dd><p>Character vector of variable names in the original matrix.</p></dd>
-
-
-<dt><code>threshold</code></dt>
-<dd><p>Numeric threshold used for correlation filtering.</p></dd>
-
-
-<dt><code>forced_in</code></dt>
-<dd><p>Character vector of variables that were forced into all subsets.</p></dd>
-
-
-<dt><code>search_type</code></dt>
-<dd><p>Character: the search algorithm used (e.g., "els", "bron-kerbosch").</p></dd>
-
-
-<dt><code>cor_method</code></dt>
-<dd><p>Character: the correlation method used.</p></dd>
-
-
-<dt><code>n_rows_used</code></dt>
-<dd><p>Integer: number of rows used to compute correlations.</p></dd>
 
 
 </dl></div>

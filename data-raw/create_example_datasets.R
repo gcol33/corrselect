@@ -7,58 +7,43 @@ set.seed(42)  # For reproducibility
 # 1. Bioclimatic Data (Ecological Modeling)
 # ==============================================================================
 
-# Simulate 50 WorldClim-like bioclimatic variables for 100 locations
+# Simulate the 19 WorldClim bioclimatic variables for 100 locations
+# https://www.worldclim.org/data/bioclim.html
 # Variables are correlated within groups (temperature, precipitation, seasonality)
 
 n_locations <- 100
-n_vars <- 50
+n_vars <- 19
 
 # Create correlation structure: variables in blocks are correlated
-# Block 1 (vars 1-15): Temperature variables (highly correlated)
-# Block 2 (vars 16-30): Precipitation variables (moderately correlated)
-# Block 3 (vars 31-45): Seasonality variables (weakly correlated)
-# Block 4 (vars 46-50): Elevation variables (independent)
+# Temperature variables (BIO1-BIO11): highly correlated
+# Precipitation variables (BIO12-BIO19): moderately correlated
 
 # Generate correlated normal data
 library(MASS)
 
-# Temperature block (r = 0.85)
+# Temperature block (BIO1-BIO11): r = 0.80
 temp_vars <- mvrnorm(n = n_locations,
-                     mu = rep(15, 15),
-                     Sigma = 0.85^abs(outer(1:15, 1:15, "-")) * 25)
+                     mu = c(15, 10, 8, 200, 30, 5, 25, 20, 18, 22, 10),
+                     Sigma = 0.80^abs(outer(1:11, 1:11, "-")) * 25)
 
-# Precipitation block (r = 0.70)
+# Precipitation block (BIO12-BIO19): r = 0.65
 precip_vars <- mvrnorm(n = n_locations,
-                       mu = rep(1000, 15),
-                       Sigma = 0.70^abs(outer(1:15, 1:15, "-")) * 10000)
-
-# Seasonality block (r = 0.50)
-season_vars <- mvrnorm(n = n_locations,
-                       mu = rep(50, 15),
-                       Sigma = 0.50^abs(outer(1:15, 1:15, "-")) * 100)
-
-# Elevation variables (independent)
-elev_vars <- matrix(rnorm(n_locations * 5, mean = 500, sd = 200),
-                    ncol = 5)
+                       mu = c(1200, 100, 50, 200, 400, 300, 250, 350),
+                       Sigma = 0.65^abs(outer(1:8, 1:8, "-")) * 10000)
 
 # Combine all bioclim variables
-bioclim_matrix <- cbind(temp_vars, precip_vars, season_vars, elev_vars)
+bioclim_matrix <- cbind(temp_vars, precip_vars)
 
-# Create realistic variable names
-var_names <- c(
-  paste0("bio", 1:15, "_temp"),      # Temperature
-  paste0("bio", 16:30, "_precip"),   # Precipitation
-  paste0("bio", 31:45, "_season"),   # Seasonality
-  paste0("bio", 46:50, "_elev")      # Elevation
-)
+# Create WorldClim variable names (BIO1-BIO19)
+var_names <- paste0("BIO", 1:19)
 colnames(bioclim_matrix) <- var_names
 
 # Create response variable: species richness
 # Depends on subset of predictors + noise
 species_richness <-
-  0.5 * bioclim_matrix[, "bio1_temp"] +
-  0.3 * bioclim_matrix[, "bio16_precip"] +
-  0.2 * bioclim_matrix[, "bio31_season"] +
+  0.5 * bioclim_matrix[, "BIO1"] +    # Annual Mean Temperature
+  0.3 * bioclim_matrix[, "BIO12"] +   # Annual Precipitation
+  0.2 * bioclim_matrix[, "BIO15"] +   # Precipitation Seasonality
   rnorm(n_locations, sd = 5)
 
 # Scale to positive integer counts

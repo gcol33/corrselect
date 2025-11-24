@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/corrselect_upcoming.html">Upcoming Features in corrselect 2.1.0</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start: Predictor Pruning with corrselect</a></li>
+    <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
     <li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -37,9 +40,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="high-level-pruning-functions">High-Level Pruning Functions<a class="anchor" aria-label="anchor" href="#high-level-pruning-functions"></a></h2>
 
-
+      <div class="section-desc"><p>Main functions for predictor pruning</p></div>
 
 
     </div><div class="section level2">
@@ -49,10 +52,33 @@
 
       <dl><dt>
 
-          <code><a href="as.data.frame.CorrCombo.html">as.data.frame(<i>&lt;CorrCombo&gt;</i>)</a></code>
+          <code><a href="corrPrune.html">corrPrune()</a></code>
 
         </dt>
-        <dd>Coerce CorrCombo to a Data Frame</dd>
+        <dd>Association-Based Predictor Pruning</dd>
+      </dl><dl><dt>
+
+          <code><a href="modelPrune.html">modelPrune()</a></code>
+
+        </dt>
+        <dd>Model-Based Predictor Pruning</dd>
+      </dl></div><div class="section level2">
+      <h2 id="exact-subset-enumeration">Exact Subset Enumeration<a class="anchor" aria-label="anchor" href="#exact-subset-enumeration"></a></h2>
+
+      <div class="section-desc"><p>Graph-theoretic algorithms for exhaustive search</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="corrSelect.html">corrSelect()</a></code>
+
+        </dt>
+        <dd>Select Variable Subsets with Low Correlation (Data Frame Interface)</dd>
       </dl><dl><dt>
 
           <code><a href="assocSelect.html">assocSelect()</a></code>
@@ -61,30 +87,77 @@
         <dd>Select Variable Subsets with Low Association (Mixed-Type Data Frame Interface)</dd>
       </dl><dl><dt>
 
+          <code><a href="MatSelect.html">MatSelect()</a></code>
+
+        </dt>
+        <dd>Select Variable Subsets with Low Correlation or Association (Matrix Interface)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utility-functions">Utility Functions<a class="anchor" aria-label="anchor" href="#utility-functions"></a></h2>
+
+      <div class="section-desc"><p>Helper functions for working with results</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="CorrCombo.html">show(<i>&lt;CorrCombo&gt;</i>)</a></code>
 
         </dt>
         <dd>CorrCombo S4 class</dd>
       </dl><dl><dt>
 
-          <code><a href="corrSelect.html">corrSelect()</a></code>
+          <code><a href="as.data.frame.CorrCombo.html">as.data.frame(<i>&lt;CorrCombo&gt;</i>)</a></code>
 
         </dt>
-        <dd>Select Variable Subsets with Low Correlation (Data Frame Interface)</dd>
+        <dd>Coerce CorrCombo to a Data Frame</dd>
       </dl><dl><dt>
 
           <code><a href="corrSubset.html">corrSubset()</a></code>
 
         </dt>
         <dd>Extract Variable Subsets from a CorrCombo Object</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="example-datasets">Example Datasets<a class="anchor" aria-label="anchor" href="#example-datasets"></a></h2>
 
-          <code><a href="MatSelect.html">MatSelect()</a></code>
+      <div class="section-desc"><p>Realistic datasets for vignettes</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="bioclim_example.html">bioclim_example</a></code>
 
         </dt>
-        <dd>Select Variable Subsets with Low Correlation or Association (Matrix Interface)</dd>
+        <dd>Example Bioclimatic Data for Ecological Modeling</dd>
+      </dl><dl><dt>
+
+          <code><a href="survey_example.html">survey_example</a></code>
+
+        </dt>
+        <dd>Example Survey Data for Social Science Research</dd>
+      </dl><dl><dt>
+
+          <code><a href="genes_example.html">genes_example</a></code>
+
+        </dt>
+        <dd>Example Gene Expression Data for Bioinformatics</dd>
+      </dl><dl><dt>
+
+          <code><a href="longitudinal_example.html">longitudinal_example</a></code>
+
+        </dt>
+        <dd>Example Longitudinal Data for Clinical Research</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

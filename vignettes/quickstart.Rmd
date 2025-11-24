@@ -53,7 +53,7 @@ You have many predictors, but some are highly correlated. This causes:
 
 ### Example: Ecological Data
 
-Let's use the `bioclim_example` dataset with 50 highly correlated environmental variables:
+Let's use the `bioclim_example` dataset with the 19 WorldClim bioclimatic variables:
 
 ```{r}
 library(corrselect)
@@ -63,7 +63,7 @@ data(bioclim_example)
 ncol(bioclim_example) - 1  # Exclude response variable
 ```
 
-Many of these 50 bioclimatic variables are redundant. Let's remove variables that correlate > 0.7:
+Many of these variables are redundant. Let's remove variables that correlate > 0.7:
 
 ```{r}
 # Remove correlated predictors
@@ -76,7 +76,7 @@ pruned <- corrPrune(
 ncol(pruned)
 ```
 
-**Result**: Reduced from 50 → ~15 variables, all with pairwise correlations ≤ 0.7.
+**Result**: Reduced from 19 → ~8 variables, all with pairwise correlations ≤ 0.7.
 
 ### Check what was removed
 

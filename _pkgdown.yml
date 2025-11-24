@@ -18,7 +18,6 @@ articles:
     contents:
     - workflows
     - comparison
-    - benchmarks
 
   - title: Advanced
     navbar: ~
@@ -44,6 +43,7 @@ reference:
     desc: Helper functions for working with results
     contents:
     - CorrCombo-class
+    - as.data.frame.CorrCombo
     - corrSubset
 
   - title: Example Datasets

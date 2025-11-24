@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,10 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/corrselect_upcoming.html">Upcoming Features in corrselect 2.1.0</a></li>
+<li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start: Predictor Pruning with corrselect</a></li>
+    <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
     <li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
   </ul>
 </li>
@@ -78,13 +81,13 @@ using fast, exact algorithms. It is fully model-agnostic, making it
 suitable as a preprocessing step for regression, clustering, feature
 selection, and other analyses.</p>
 <p>Given a threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t \in (0,1)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t \in (0,1)</annotation></semantics></math>,
 the functions <code><a href="../reference/corrSelect.html">corrSelect()</a></code> (data-frame interface) and
 <code><a href="../reference/MatSelect.html">MatSelect()</a></code> (matrix interface) enumerate all
 <strong>maximal</strong> subsets
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
 of variables satisfying:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>≠</mo><mi>j</mi><mo>:</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>≠</mo><mi>j</mi><mo>:</mo><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">
 \forall i, j \in S,\ i \neq j: \ |r_{ij}| &lt; t
 </annotation></semantics></math></p>
 <p>where
@@ -295,7 +298,7 @@ method to precomputed correlations:</p>
 <span><span class="co">#&gt; Top combinations:</span></span>
 <span><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
 <span><span class="co">#&gt;   ------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   [ 1] height, weight, group, score      0.174  0.332     4</span></span></code></pre></div>
+<span><span class="co">#&gt;   [ 1] height, weight, group, score      0.267  0.554     4</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -424,7 +427,7 @@ ordered-ordered associations can be changed via arguments:</p>
 <span><span class="co">#&gt; Top combinations:</span></span>
 <span><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
 <span><span class="co">#&gt;   ------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   [ 1] height, weight, group, score      0.178  0.332     4</span></span></code></pre></div>
+<span><span class="co">#&gt;   [ 1] height, weight, group, score      0.270  0.554     4</span></span></code></pre></div>
 <p>All other combinations use fixed methods (<code>eta</code> or
 <code>cramersv</code>) appropriate for measuring association
 strength.</p>
@@ -469,11 +472,11 @@ to correlation.</p>
 we seek all <strong>maximal subsets</strong>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S \subseteq \{1, \dots, p\}</annotation></semantics></math>
 such that:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>≠</mo><mi>j</mi><mo>:</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>R</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>≠</mo><mi>j</mi><mo>:</mo><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>R</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">
 \forall i, j \in S,\ i \neq j: \ |R_{ij}| &lt; t
 </annotation></semantics></math></p>
 <p>for a fixed threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t \in (0, 1)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t \in (0, 1)</annotation></semantics></math>.</p>
 <p>This is equivalent to finding all <strong>maximal cliques</strong> in
 the <strong>thresholded correlation graph</strong>, where:</p>
 <ul>
@@ -511,7 +514,7 @@ within candidate set
 added.</li>
 </ol>
 <p>Formally, define:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">extend</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>S</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>C</mi><mo>=</mo><mi>∅</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><munder><mo>⋃</mo><mrow><mi>v</mi><mo>∈</mo><mi>C</mi></mrow></munder><mtext mathvariant="normal">extend</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>C</mi><mo>\</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">extend</mtext><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>S</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>C</mi><mo>=</mo><mi>∅</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><munder><mo>⋃</mo><mrow><mi>v</mi><mo>∈</mo><mi>C</mi></mrow></munder><mtext mathvariant="normal">extend</mtext><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>C</mi><mo>\</mo><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
 \text{extend}(S, C) =
 \begin{cases}
 S, &amp; C = \emptyset, \\
@@ -533,7 +536,7 @@ recursive backtracking with optional pivoting:</p>
 = prospective nodes,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 = excluded nodes. Then:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">BK</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo>,</mo><mi>P</mi><mo>,</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">report</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>P</mi><mo>=</mo><mi>X</mi><mo>=</mo><mi>∅</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for each </mtext><mspace width="0.333em"></mspace></mrow><mi>v</mi><mo>∈</mo><mi>P</mi><mo>\</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="1.0em"></mspace><mtext mathvariant="normal">BK</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>P</mi><mo>∩</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="0.222em"></mspace><mi>X</mi><mo>∩</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="0.222em"></mspace><mspace width="1.0em"></mspace><mi>P</mi><mo>←</mo><mi>P</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>X</mi><mo>←</mo><mi>X</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">BK</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>,</mo><mi>P</mi><mo>,</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">report</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>P</mi><mo>=</mo><mi>X</mi><mo>=</mo><mi>∅</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for each </mtext><mspace width="0.333em"></mspace></mrow><mi>v</mi><mo>∈</mo><mi>P</mi><mo>\</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="1.0em"></mspace><mtext mathvariant="normal">BK</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>P</mi><mo>∩</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>X</mi><mo>∩</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="0.222em"></mspace><mspace width="1.0em"></mspace><mi>P</mi><mo>←</mo><mi>P</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="0.222em"></mspace><mi>X</mi><mo>←</mo><mi>X</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
 \text{BK}(R, P, X) =
 \begin{cases}
 \text{report}(R), &amp; P = X = \emptyset, \\
@@ -545,7 +548,7 @@ recursive backtracking with optional pivoting:</p>
 <p>Choosing a pivot
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>∈</mo><mi>P</mi><mo>∪</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">u \in P \cup X</annotation></semantics></math>
 and iterating over
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>\</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P \setminus N(u)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>\</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P \setminus N(u)</annotation></semantics></math>
 reduces recursive calls.</p>
 <hr>
 </div>
@@ -671,7 +674,7 @@ numeric vectors of correlation metrics<br>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.1 (2025-06-13 ucrt)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
-<span><span class="co">#&gt; Running under: Windows 11 x64 (build 26100)</span></span>
+<span><span class="co">#&gt; Running under: Windows 11 x64 (build 26200)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
@@ -690,16 +693,16 @@ numeric vectors of correlation metrics<br>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] corrselect_2.0.1</span></span>
+<span><span class="co">#&gt; [1] corrselect_3.0.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>
-<span><span class="co">#&gt;  [5] xfun_0.52         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1</span></span>
-<span><span class="co">#&gt;  [9] rmarkdown_2.29    lifecycle_1.0.4   cli_3.6.5         sass_0.4.10      </span></span>
-<span><span class="co">#&gt; [13] pkgdown_2.1.3     textshaping_1.0.1 jquerylib_0.1.4   systemfonts_1.2.3</span></span>
-<span><span class="co">#&gt; [17] compiler_4.5.1    rstudioapi_0.17.1 tools_4.5.1       ragg_1.4.0       </span></span>
-<span><span class="co">#&gt; [21] bslib_0.9.0       evaluate_1.0.4    Rcpp_1.1.0        yaml_2.3.10      </span></span>
-<span><span class="co">#&gt; [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4</span></span></code></pre></div>
+<span><span class="co">#&gt;  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1</span></span>
+<span><span class="co">#&gt;  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         sass_0.4.10      </span></span>
+<span><span class="co">#&gt; [13] pkgdown_2.1.3     textshaping_1.0.3 jquerylib_0.1.4   systemfonts_1.2.3</span></span>
+<span><span class="co">#&gt; [17] compiler_4.5.1    tools_4.5.1       ragg_1.5.0        evaluate_1.0.5   </span></span>
+<span><span class="co">#&gt; [21] bslib_0.9.0       Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   </span></span>
+<span><span class="co">#&gt; [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
