@@ -356,11 +356,11 @@ tryCatch({
 ```
 
 **Validation checks**:
-- ✅ `fit` and `diagnostics` must be functions
-- ✅ `diagnostics` must return numeric vector
-- ✅ Correct length (one value per fixed effect)
-- ✅ Named vector with correct names
-- ✅ No missing values
+- `fit` and `diagnostics` must be functions
+- `diagnostics` must return numeric vector
+- Correct length (one value per fixed effect)
+- Named vector with correct names
+- No missing values
 
 ---
 
@@ -835,24 +835,24 @@ pipeline <- function(data, response) {
 ## Key Takeaways
 
 ### Algorithms
-- ✅ Use **exact mode** for p ≤ 20 (optimal, reproducible)
-- ✅ Use **greedy mode** for p > 20 (fast, near-optimal)
-- ✅ Use **auto mode** to let corrselect decide
+- Use **exact mode** for p ≤ 20 (optimal, reproducible)
+- Use **greedy mode** for p > 20 (fast, near-optimal)
+- Use **auto mode** to let corrselect decide
 
 ### Custom Engines
-- ✅ Integrate any modeling package (INLA, mgcv, brms)
-- ✅ Define custom pruning criteria (AIC, BIC, p-values)
-- ✅ Two required functions: `fit` and `diagnostics`
+- Integrate any modeling package (INLA, mgcv, brms)
+- Define custom pruning criteria (AIC, BIC, p-values)
+- Two required functions: `fit` and `diagnostics`
 
 ### Optimization
-- ✅ Precompute correlation matrices for multiple thresholds
-- ✅ Use greedy mode for large p
-- ✅ Parallelize across analyses, not within
+- Precompute correlation matrices for multiple thresholds
+- Use greedy mode for large p
+- Parallelize across analyses, not within
 
 ### Troubleshooting
-- ✅ Visualize correlation distribution before choosing threshold
-- ✅ Use `force_in` to protect important variables
-- ✅ Two-step pruning (corrPrune → modelPrune) for robustness
+- Visualize correlation distribution before choosing threshold
+- Use `force_in` to protect important variables
+- Two-step pruning (corrPrune → modelPrune) for robustness
 
 ---
 

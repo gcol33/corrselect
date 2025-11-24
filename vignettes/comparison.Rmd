@@ -37,11 +37,11 @@ This vignette compares corrselect with popular alternatives for variable selecti
 
 corrselect is designed for situations where you want to:
 
-✅ **Remove redundant predictors** based on correlation structure
-✅ **Reduce multicollinearity** in regression models
-✅ **Maintain interpretability** (keep predictors, not transform them)
-✅ **Ensure reproducibility** (deterministic results)
-✅ **Control which variables to keep** (via `force_in`)
+- **Remove redundant predictors** based on correlation structure
+- **Reduce multicollinearity** in regression models
+- **Maintain interpretability** (keep predictors, not transform them)
+- **Ensure reproducibility** (deterministic results)
+- **Control which variables to keep** (via `force_in`)
 
 ---
 
@@ -68,11 +68,11 @@ head(high_cor)
 ```
 
 **Problems**:
-- ❌ Manual decision-making (which variable to drop?)
-- ❌ Time-consuming for many variables
-- ❌ Not reproducible (different analysts make different choices)
-- ❌ No guarantee of optimality
-- ❌ Hard to document decision process
+- Manual decision-making (which variable to drop?)
+- Time-consuming for many variables
+- Not reproducible (different analysts make different choices)
+- No guarantee of optimality
+- Hard to document decision process
 
 ## The corrselect Approach
 
@@ -86,11 +86,11 @@ attr(pruned, "selected_vars")
 ```
 
 **Advantages**:
-- ✅ **Fully automated** - no manual decisions
-- ✅ **Reproducible** - same result every time
-- ✅ **Optimal** - maximizes retained variables (exact mode)
-- ✅ **Documented** - clear record of removals
-- ✅ **Fast** - greedy mode for large datasets
+- **Fully automated** - no manual decisions
+- **Reproducible** - same result every time
+- **Optimal** - maximizes retained variables (exact mode)
+- **Documented** - clear record of removals
+- **Fast** - greedy mode for large datasets
 
 ---
 
@@ -125,12 +125,12 @@ cat("corrselect removed:", attr(mtcars_corrselect, "removed_vars"), "\n")
 
 | Feature | `caret::findCorrelation()` | `corrselect::corrPrune()` |
 |---------|---------------------------|---------------------------|
-| **Reproducibility** | ❌ Non-deterministic (varies across runs) | ✅ Deterministic (same result every time) |
+| **Reproducibility** | Non-deterministic (varies across runs) | Deterministic (same result every time) |
 | **Subset size** | Smaller (greedy heuristic) | Larger (optimal in exact mode) |
 | **Algorithm** | Heuristic ordering | Graph-theoretic (exact or greedy) |
 | **Speed** | Fast | Fast (greedy) or moderate (exact) |
-| **force_in** | ❌ Not supported | ✅ Protect important variables |
-| **Mixed data** | ❌ Numeric only | ✅ Handles factors, ordered |
+| **force_in** | Not supported | Protect important variables |
+| **Mixed data** | Numeric only | Handles factors, ordered |
 | **Documentation** | Basic | Detailed attributes |
 
 ## Reproducibility Test
@@ -211,10 +211,10 @@ Boruta and corrselect solve **different problems**:
 |--------|--------|------------|
 | **Question** | "Which variables predict the response?" | "Which variables are redundant?" |
 | **Criterion** | Variable importance | Pairwise correlation |
-| **Requires response?** | ✅ Yes (supervised) | ❌ No (unsupervised) |
-| **Handles multicollinearity?** | ⚠️ Partially | ✅ Yes |
+| **Requires response?** | Yes (supervised) | No (unsupervised) |
+| **Handles multicollinearity?** | Partially | Yes |
 | **Speed** | Slow (random forests) | Fast |
-| **Deterministic?** | ❌ No (stochastic) | ✅ Yes |
+| **Deterministic?** | No (stochastic) | Yes |
 
 ## Workflow: Use Both!
 
@@ -283,10 +283,10 @@ cat("corrselect R²:", round(summary(model_corrselect)$r.squared, 3), "\n")
 |---------|--------|------------|
 | **Goal** | Prediction accuracy | Interpretability + multicollinearity removal |
 | **Method** | Coefficient shrinkage | Hard variable removal |
-| **Multicollinearity** | ⚠️ Handles via shrinkage | ✅ Removes via pruning |
-| **Interpretability** | ⚠️ Coefficients shrunk (biased) | ✅ Unbiased coefficients |
-| **Requires response?** | ✅ Yes (supervised) | ❌ No (unsupervised with corrPrune) |
-| **Cross-validation?** | ✅ Built-in | ❌ Not needed |
+| **Multicollinearity** | Handles via shrinkage | Removes via pruning |
+| **Interpretability** | Coefficients shrunk (biased) | Unbiased coefficients |
+| **Requires response?** | Yes (supervised) | No (unsupervised with corrPrune) |
+| **Cross-validation?** | Built-in | Not needed |
 | **Speed** | Moderate | Fast |
 
 ## When to Use Each
@@ -413,11 +413,11 @@ if (requireNamespace("caret", quietly = TRUE)) {
 ```
 
 **Key findings**:
-- ✅ corrselect (exact) keeps the **most variables** while satisfying threshold
-- ✅ corrselect (greedy) is **fastest** and nearly optimal
-- ✅ Both corrselect modes are **reproducible**
-- ❌ caret is fast but **non-reproducible** and removes more than necessary
-- ❌ Manual approach is extremely **time-consuming**
+- corrselect (exact) keeps the **most variables** while satisfying threshold
+- corrselect (greedy) is **fastest** and nearly optimal
+- Both corrselect modes are **reproducible**
+- caret is fast but **non-reproducible** and removes more than necessary
+- Manual approach is extremely **time-consuming**
 
 ---
 
@@ -511,13 +511,13 @@ interpretable_model <- lm(y ~ ., data = pruned)
 
 Choose **corrselect** when you need to:
 
-1. ✅ **Remove redundant predictors** in a reproducible way
-2. ✅ **Reduce multicollinearity** for stable regression coefficients
-3. ✅ **Maximize retained variables** subject to correlation threshold
-4. ✅ **Protect important variables** from removal (force_in)
-5. ✅ **Work with mixed-type data** (numeric + categorical)
-6. ✅ **Ensure reproducibility** in research
-7. ✅ **Handle large datasets** efficiently (greedy mode)
+1. **Remove redundant predictors** in a reproducible way
+2. **Reduce multicollinearity** for stable regression coefficients
+3. **Maximize retained variables** subject to correlation threshold
+4. **Protect important variables** from removal (force_in)
+5. **Work with mixed-type data** (numeric + categorical)
+6. **Ensure reproducibility** in research
+7. **Handle large datasets** efficiently (greedy mode)
 
 ## When to Choose Alternatives
 

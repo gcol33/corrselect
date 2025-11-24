@@ -168,21 +168,26 @@ vif_after <- sapply(colnames(X_pruned), function(var) {
 })
 
 # Visualize
-par(mfrow = c(1, 2))
-barplot(sort(vif_before, decreasing = TRUE)[1:20],
+par(mfrow = c(1, 2), mar = c(7, 4, 4, 2))
+
+# Before pruning
+barplot(sort(vif_before, decreasing = TRUE)[1:min(20, length(vif_before))],
         las = 2,
-        main = "Before Pruning (top 20)",
+        main = "Before Pruning",
         ylab = "VIF",
         col = "salmon",
-        cex.names = 0.7)
+        cex.names = 0.6,
+        names.arg = names(sort(vif_before, decreasing = TRUE)[1:min(20, length(vif_before))]))
 abline(h = 5, col = "red", lwd = 2, lty = 2)
 
+# After pruning
 barplot(sort(vif_after, decreasing = TRUE),
         las = 2,
         main = "After Pruning",
         ylab = "VIF",
         col = "lightblue",
-        cex.names = 0.7)
+        cex.names = 0.6,
+        names.arg = names(sort(vif_after, decreasing = TRUE)))
 abline(h = 5, col = "red", lwd = 2, lty = 2)
 ```
 
@@ -250,10 +255,10 @@ pruned <- corrPrune(my_data[, -which(names(my_data) == "response")],
 
 **You've learned**:
 
-- ✅ `corrPrune()` removes correlated predictors (model-free)
-- ✅ `modelPrune()` reduces VIF (model-based)
-- ✅ Use both for a complete workflow
-- ✅ Check results with visualizations
+- `corrPrune()` removes correlated predictors (model-free)
+- `modelPrune()` reduces VIF (model-based)
+- Use both for a complete workflow
+- Check results with visualizations
 
 **In 5 minutes, you can now**:
 

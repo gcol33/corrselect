@@ -425,10 +425,10 @@ variables with SD &gt; 0.5</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error: Custom engine missing required fields: diagnostics</span></span>
 <span><span class="co">#&gt; Required: 'fit' and 'diagnostics'</span></span></code></pre></div>
-<p><strong>Validation checks</strong>: - ✅ <code>fit</code> and
-<code>diagnostics</code> must be functions - ✅ <code>diagnostics</code>
-must return numeric vector - ✅ Correct length (one value per fixed
-effect) - ✅ Named vector with correct names - ✅ No missing values</p>
+<p><strong>Validation checks</strong>: - <code>fit</code> and
+<code>diagnostics</code> must be functions - <code>diagnostics</code>
+must return numeric vector - Correct length (one value per fixed effect)
+- Named vector with correct names - No missing values</p>
 <hr>
 </div>
 </div>
@@ -586,7 +586,7 @@ correlation matrix:</p>
 <span>  <span class="va">result3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;       0       0       0</span></span>
+<span><span class="co">#&gt;    0.02    0.00    0.00</span></span>
 <span></span>
 <span><span class="co"># Fast: Compute correlation once, reuse</span></span>
 <span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
@@ -1087,20 +1087,20 @@ plateau.</p>
 <h4 id="algorithms">Algorithms<a class="anchor" aria-label="anchor" href="#algorithms"></a>
 </h4>
 <ul>
-<li>✅ Use <strong>exact mode</strong> for p ≤ 20 (optimal,
+<li>Use <strong>exact mode</strong> for p ≤ 20 (optimal,
 reproducible)</li>
-<li>✅ Use <strong>greedy mode</strong> for p &gt; 20 (fast,
+<li>Use <strong>greedy mode</strong> for p &gt; 20 (fast,
 near-optimal)</li>
-<li>✅ Use <strong>auto mode</strong> to let corrselect decide</li>
+<li>Use <strong>auto mode</strong> to let corrselect decide</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="custom-engines">Custom Engines<a class="anchor" aria-label="anchor" href="#custom-engines"></a>
 </h4>
 <ul>
-<li>✅ Integrate any modeling package (INLA, mgcv, brms)</li>
-<li>✅ Define custom pruning criteria (AIC, BIC, p-values)</li>
-<li>✅ Two required functions: <code>fit</code> and
+<li>Integrate any modeling package (INLA, mgcv, brms)</li>
+<li>Define custom pruning criteria (AIC, BIC, p-values)</li>
+<li>Two required functions: <code>fit</code> and
 <code>diagnostics</code>
 </li>
 </ul>
@@ -1109,18 +1109,18 @@ near-optimal)</li>
 <h4 id="optimization">Optimization<a class="anchor" aria-label="anchor" href="#optimization"></a>
 </h4>
 <ul>
-<li>✅ Precompute correlation matrices for multiple thresholds</li>
-<li>✅ Use greedy mode for large p</li>
-<li>✅ Parallelize across analyses, not within</li>
+<li>Precompute correlation matrices for multiple thresholds</li>
+<li>Use greedy mode for large p</li>
+<li>Parallelize across analyses, not within</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="troubleshooting-1">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting-1"></a>
 </h4>
 <ul>
-<li>✅ Visualize correlation distribution before choosing threshold</li>
-<li>✅ Use <code>force_in</code> to protect important variables</li>
-<li>✅ Two-step pruning (corrPrune → modelPrune) for robustness</li>
+<li>Visualize correlation distribution before choosing threshold</li>
+<li>Use <code>force_in</code> to protect important variables</li>
+<li>Two-step pruning (corrPrune → modelPrune) for robustness</li>
 </ul>
 <hr>
 </div>
