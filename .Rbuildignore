@@ -22,3 +22,9 @@
 ^quick_test\.R$
 ^test_runner\.R$
 ^\.github$
+^debug_.*\.R$
+^test_.*\.R$
+^BUGFIX_.*\.md$
+^FINAL_TEST_REPORT\.md$
+^TEST_SUMMARY\.md$
+^NUL$
