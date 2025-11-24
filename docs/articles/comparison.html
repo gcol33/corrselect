@@ -143,10 +143,14 @@ transform them)</li>
 <span></span>
 <span><span class="co"># Now what? Manually decide which to remove...</span></span>
 <span><span class="co"># This is tedious, subjective, and non-reproducible!</span></span></code></pre></div>
-<p><strong>Problems</strong>: - Manual decision-making (which variable
-to drop?) - Time-consuming for many variables - Not reproducible
-(different analysts make different choices) - No guarantee of optimality
-- Hard to document decision process</p>
+<p><strong>Problems</strong>:</p>
+<ul>
+<li>Manual decision-making (which variable to drop?)</li>
+<li>Time-consuming for many variables</li>
+<li>Not reproducible (different analysts make different choices)</li>
+<li>No guarantee of optimality</li>
+<li>Hard to document decision process</li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="the-corrselect-approach">The corrselect Approach<a class="anchor" aria-label="anchor" href="#the-corrselect-approach"></a>
@@ -160,11 +164,20 @@ to drop?) - Time-consuming for many variables - Not reproducible
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "drat" "qsec" "gear" "carb"</span></span></code></pre></div>
-<p><strong>Advantages</strong>: - <strong>Fully automated</strong> - no
-manual decisions - <strong>Reproducible</strong> - same result every
-time - <strong>Optimal</strong> - maximizes retained variables (exact
-mode) - <strong>Documented</strong> - clear record of removals -
-<strong>Fast</strong> - greedy mode for large datasets</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>
+<strong>Fully automated</strong>: no manual decisions</li>
+<li>
+<strong>Reproducible</strong>: same result every time</li>
+<li>
+<strong>Optimal</strong>: maximizes retained variables (exact
+mode)</li>
+<li>
+<strong>Documented</strong>: clear record of removals</li>
+<li>
+<strong>Fast</strong>: greedy mode for large datasets</li>
+</ul>
 <hr>
 </div>
 </div>
