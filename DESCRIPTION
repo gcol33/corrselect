@@ -22,6 +22,8 @@ Suggests:
     minerva,
     lme4,
     glmmTMB,
+    MASS,
+    caret,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

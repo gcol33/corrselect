@@ -40,10 +40,12 @@ items while preserving key demographic variables with \code{force_in}.
 \examples{
 data(survey_example)
 
-# Remove redundant survey items while keeping demographics
-pruned <- corrPrune(survey_example[, -1],  # Exclude ID column
+# Remove redundant survey items (numeric columns only)
+# Keep age and overall satisfaction, prune correlated Likert items
+numeric_cols <- sapply(survey_example, is.numeric)
+pruned <- corrPrune(survey_example[, numeric_cols & names(survey_example) != "respondent_id"],
                     threshold = 0.6,
-                    force_in = c("age", "gender", "education"))
+                    force_in = c("age", "overall_satisfaction"))
 
 # Check which items were removed
 attr(pruned, "removed_vars")
