@@ -8,3 +8,21 @@ inst/doc
 /doc/
 /Meta/
 claude/
+.claude/
+
+# Temporary debug and test scripts
+debug_*.R
+test_*.R
+quick_test.R
+test_runner.R
+
+# Temporary documentation and reports
+BUGFIX_*.md
+FINAL_TEST_REPORT.md
+TEST_SUMMARY.md
+
+# Windows artifacts
+NUL
+
+# Build artifacts
+vignettes/.build.timestamp
