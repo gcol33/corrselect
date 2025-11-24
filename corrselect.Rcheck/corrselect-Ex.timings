@@ -1,7 +1,0 @@
-name	user	system	elapsed
-CorrCombo	0	0	0	
-MatSelect	0	0	0	
-as.data.frame.CorrCombo	0	0	0	
-assocSelect	0	0	0	
-corrSelect	0	0	0	
-corrSubset	0.01	0.00	0.00	

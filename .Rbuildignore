@@ -8,6 +8,7 @@
 ^pkgdown$
 ^\.\..*$
 ^corrselect\.Rcheck$
+^corrselect.*\.tar\.gz$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^\.claude$
