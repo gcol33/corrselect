@@ -12,7 +12,7 @@ A data frame with 500 rows and 25 variables:
 \item{site}{Factor. Study site identifier (1-5)}
 \item{time}{Integer. Measurement timepoint (1-10)}
 \item{outcome}{Numeric. Continuous outcome variable}
-\item{x1 through x20}{Numeric. Correlated predictor variables}
+\item{x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20}{Numeric. Correlated predictor variables}
 }
 }
 \source{

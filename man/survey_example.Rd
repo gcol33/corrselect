@@ -12,9 +12,9 @@ A data frame with 200 rows and 35 variables:
 \item{gender}{Factor. Gender (Male, Female, Other)}
 \item{education}{Ordered factor. Education level (High School, Bachelor, Master, PhD)}
 \item{overall_satisfaction}{Integer. Overall satisfaction score (0-100)}
-\item{satisfaction_1 through satisfaction_10}{Ordered factor. Satisfaction items (1-7 Likert scale)}
-\item{engagement_1 through engagement_10}{Ordered factor. Engagement items (1-7 Likert scale)}
-\item{loyalty_1 through loyalty_10}{Ordered factor. Loyalty items (1-7 Likert scale)}
+\item{satisfaction_1, satisfaction_2, satisfaction_3, satisfaction_4, satisfaction_5, satisfaction_6, satisfaction_7, satisfaction_8, satisfaction_9, satisfaction_10}{Ordered factor. Satisfaction items (1-7 Likert scale)}
+\item{engagement_1, engagement_2, engagement_3, engagement_4, engagement_5, engagement_6, engagement_7, engagement_8, engagement_9, engagement_10}{Ordered factor. Engagement items (1-7 Likert scale)}
+\item{loyalty_1, loyalty_2, loyalty_3, loyalty_4, loyalty_5, loyalty_6, loyalty_7, loyalty_8, loyalty_9, loyalty_10}{Ordered factor. Loyalty items (1-7 Likert scale)}
 }
 }
 \source{

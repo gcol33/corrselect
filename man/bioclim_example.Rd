@@ -8,10 +8,10 @@
 A data frame with 100 rows and 51 variables:
 \describe{
 \item{species_richness}{Integer. Number of species observed (response variable)}
-\item{bio1_temp through bio15_temp}{Numeric. Temperature-related variables (highly correlated, r ≈ 0.85)}
-\item{bio16_precip through bio30_precip}{Numeric. Precipitation-related variables (moderately correlated, r ≈ 0.70)}
-\item{bio31_season through bio45_season}{Numeric. Seasonality variables (weakly correlated, r ≈ 0.50)}
-\item{bio46_elev through bio50_elev}{Numeric. Elevation variables (independent, r ≈ 0)}
+\item{bio1_temp, bio2_temp, bio3_temp, bio4_temp, bio5_temp, bio6_temp, bio7_temp, bio8_temp, bio9_temp, bio10_temp, bio11_temp, bio12_temp, bio13_temp, bio14_temp, bio15_temp}{Numeric. Temperature-related variables (highly correlated, r ≈ 0.85)}
+\item{bio16_precip, bio17_precip, bio18_precip, bio19_precip, bio20_precip, bio21_precip, bio22_precip, bio23_precip, bio24_precip, bio25_precip, bio26_precip, bio27_precip, bio28_precip, bio29_precip, bio30_precip}{Numeric. Precipitation-related variables (moderately correlated, r ≈ 0.70)}
+\item{bio31_season, bio32_season, bio33_season, bio34_season, bio35_season, bio36_season, bio37_season, bio38_season, bio39_season, bio40_season, bio41_season, bio42_season, bio43_season, bio44_season, bio45_season}{Numeric. Seasonality variables (weakly correlated, r ≈ 0.50)}
+\item{bio46_elev, bio47_elev, bio48_elev, bio49_elev, bio50_elev}{Numeric. Elevation variables (independent, r ≈ 0)}
 }
 }
 \source{

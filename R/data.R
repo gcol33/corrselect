@@ -8,10 +8,10 @@
 #' @format A data frame with 100 rows and 51 variables:
 #' \describe{
 #'   \item{species_richness}{Integer. Number of species observed (response variable)}
-#'   \item{bio1_temp through bio15_temp}{Numeric. Temperature-related variables (highly correlated, r ≈ 0.85)}
-#'   \item{bio16_precip through bio30_precip}{Numeric. Precipitation-related variables (moderately correlated, r ≈ 0.70)}
-#'   \item{bio31_season through bio45_season}{Numeric. Seasonality variables (weakly correlated, r ≈ 0.50)}
-#'   \item{bio46_elev through bio50_elev}{Numeric. Elevation variables (independent, r ≈ 0)}
+#'   \item{bio1_temp, bio2_temp, bio3_temp, bio4_temp, bio5_temp, bio6_temp, bio7_temp, bio8_temp, bio9_temp, bio10_temp, bio11_temp, bio12_temp, bio13_temp, bio14_temp, bio15_temp}{Numeric. Temperature-related variables (highly correlated, r ≈ 0.85)}
+#'   \item{bio16_precip, bio17_precip, bio18_precip, bio19_precip, bio20_precip, bio21_precip, bio22_precip, bio23_precip, bio24_precip, bio25_precip, bio26_precip, bio27_precip, bio28_precip, bio29_precip, bio30_precip}{Numeric. Precipitation-related variables (moderately correlated, r ≈ 0.70)}
+#'   \item{bio31_season, bio32_season, bio33_season, bio34_season, bio35_season, bio36_season, bio37_season, bio38_season, bio39_season, bio40_season, bio41_season, bio42_season, bio43_season, bio44_season, bio45_season}{Numeric. Seasonality variables (weakly correlated, r ≈ 0.50)}
+#'   \item{bio46_elev, bio47_elev, bio48_elev, bio49_elev, bio50_elev}{Numeric. Elevation variables (independent, r ≈ 0)}
 #' }
 #'
 #' @details
@@ -54,9 +54,9 @@
 #'   \item{gender}{Factor. Gender (Male, Female, Other)}
 #'   \item{education}{Ordered factor. Education level (High School, Bachelor, Master, PhD)}
 #'   \item{overall_satisfaction}{Integer. Overall satisfaction score (0-100)}
-#'   \item{satisfaction_1 through satisfaction_10}{Ordered factor. Satisfaction items (1-7 Likert scale)}
-#'   \item{engagement_1 through engagement_10}{Ordered factor. Engagement items (1-7 Likert scale)}
-#'   \item{loyalty_1 through loyalty_10}{Ordered factor. Loyalty items (1-7 Likert scale)}
+#'   \item{satisfaction_1, satisfaction_2, satisfaction_3, satisfaction_4, satisfaction_5, satisfaction_6, satisfaction_7, satisfaction_8, satisfaction_9, satisfaction_10}{Ordered factor. Satisfaction items (1-7 Likert scale)}
+#'   \item{engagement_1, engagement_2, engagement_3, engagement_4, engagement_5, engagement_6, engagement_7, engagement_8, engagement_9, engagement_10}{Ordered factor. Engagement items (1-7 Likert scale)}
+#'   \item{loyalty_1, loyalty_2, loyalty_3, loyalty_4, loyalty_5, loyalty_6, loyalty_7, loyalty_8, loyalty_9, loyalty_10}{Ordered factor. Loyalty items (1-7 Likert scale)}
 #' }
 #'
 #' @details
@@ -95,7 +95,7 @@
 #' \describe{
 #'   \item{sample_id}{Character. Unique sample identifier}
 #'   \item{disease_status}{Factor. Disease status (Healthy, Disease)}
-#'   \item{GENE001 through GENE200}{Numeric. Gene expression values (log-transformed)}
+#'   \item{GENE001, GENE002, GENE003, GENE004, GENE005, GENE006, GENE007, GENE008, GENE009, GENE010, GENE011, GENE012, GENE013, GENE014, GENE015, GENE016, GENE017, GENE018, GENE019, GENE020, GENE021, GENE022, GENE023, GENE024, GENE025, GENE026, GENE027, GENE028, GENE029, GENE030, GENE031, GENE032, GENE033, GENE034, GENE035, GENE036, GENE037, GENE038, GENE039, GENE040, GENE041, GENE042, GENE043, GENE044, GENE045, GENE046, GENE047, GENE048, GENE049, GENE050, GENE051, GENE052, GENE053, GENE054, GENE055, GENE056, GENE057, GENE058, GENE059, GENE060, GENE061, GENE062, GENE063, GENE064, GENE065, GENE066, GENE067, GENE068, GENE069, GENE070, GENE071, GENE072, GENE073, GENE074, GENE075, GENE076, GENE077, GENE078, GENE079, GENE080, GENE081, GENE082, GENE083, GENE084, GENE085, GENE086, GENE087, GENE088, GENE089, GENE090, GENE091, GENE092, GENE093, GENE094, GENE095, GENE096, GENE097, GENE098, GENE099, GENE100, GENE101, GENE102, GENE103, GENE104, GENE105, GENE106, GENE107, GENE108, GENE109, GENE110, GENE111, GENE112, GENE113, GENE114, GENE115, GENE116, GENE117, GENE118, GENE119, GENE120, GENE121, GENE122, GENE123, GENE124, GENE125, GENE126, GENE127, GENE128, GENE129, GENE130, GENE131, GENE132, GENE133, GENE134, GENE135, GENE136, GENE137, GENE138, GENE139, GENE140, GENE141, GENE142, GENE143, GENE144, GENE145, GENE146, GENE147, GENE148, GENE149, GENE150, GENE151, GENE152, GENE153, GENE154, GENE155, GENE156, GENE157, GENE158, GENE159, GENE160, GENE161, GENE162, GENE163, GENE164, GENE165, GENE166, GENE167, GENE168, GENE169, GENE170, GENE171, GENE172, GENE173, GENE174, GENE175, GENE176, GENE177, GENE178, GENE179, GENE180, GENE181, GENE182, GENE183, GENE184, GENE185, GENE186, GENE187, GENE188, GENE189, GENE190, GENE191, GENE192, GENE193, GENE194, GENE195, GENE196, GENE197, GENE198, GENE199, GENE200}{Numeric. Gene expression values (log-transformed)}
 #' }
 #'
 #' @details
@@ -142,7 +142,7 @@
 #'   \item{site}{Factor. Study site identifier (1-5)}
 #'   \item{time}{Integer. Measurement timepoint (1-10)}
 #'   \item{outcome}{Numeric. Continuous outcome variable}
-#'   \item{x1 through x20}{Numeric. Correlated predictor variables}
+#'   \item{x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20}{Numeric. Correlated predictor variables}
 #' }
 #'
 #' @details
