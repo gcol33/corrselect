@@ -8,7 +8,7 @@ template:
 figures:
   dev: svg
   fig.ext: svg
-  bg: "transparent"
+  bg: NA
 
 home:
   title: "corrselect: Correlation-Based Variable Selection in R"

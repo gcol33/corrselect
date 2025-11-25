@@ -746,7 +746,7 @@ of exact methods.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;       0       0       0</span></span>
+<span><span class="co">#&gt;    0.01    0.00    0.02</span></span>
 <span></span>
 <span><span class="co"># Reduction</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Reduced from %d → %d genes\n"</span>,</span>
@@ -805,11 +805,11 @@ widens dramatically as the number of variables increases.</p>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact mode: 11 genes kept (3.7 ms)</span></span>
+<span><span class="co">#&gt; Exact mode: 11 genes kept (3.3 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.4 ms)</span></span>
+<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.5 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 8.4x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 6.3x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
 mode completes in seconds.</p>

@@ -14,8 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 7,
-  fig.height = 5,
-  dev = "svg"
+  fig.height = 5
 )
 ```
 
@@ -202,3 +201,4 @@ For detailed threshold selection strategies including visualization techniques a
 - `vignette("comparison")` - Comparison with caret, Boruta, glmnet
 - `vignette("theory")` - Theoretical foundations and formulation
 - `?corrPrune`, `?modelPrune`, `?corrSelect`, `?assocSelect`, `?MatSelect`
+

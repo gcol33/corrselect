@@ -14,8 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 7,
-  fig.height = 5,
-  dev = "svg"
+  fig.height = 5
 )
 ```
 
@@ -1432,4 +1431,7 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 - `vignette("workflows")` - Real-world workflow examples
 - `vignette("advanced")` - Algorithmic control and custom engines
 - `vignette("comparison")` - Comparison with alternatives
+
+
+
 

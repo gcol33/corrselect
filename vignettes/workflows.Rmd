@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  dev = "svg",
   cache = TRUE  # Cache expensive computations to speed up builds
 )
 ```
@@ -862,4 +861,7 @@ These four workflows demonstrate how **corrselect** integrates into diverse anal
 
 **Methods**:
 - See package documentation and JOSS paper for algorithm details
+
+
+
 
