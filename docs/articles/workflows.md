@@ -155,7 +155,7 @@ legend("topright",
        lwd    = c(NA, NA, 2),
        col    = c(NA, NA, "black"),
        bty    = "o",
-       bg = NA)
+       bg = "white")
 ```
 
 ![Histogram showing distribution of absolute correlations before and
@@ -315,7 +315,7 @@ legend(
   lwd    = 2,
   horiz  = TRUE,
   bty    = "o",
-  bg = NA,
+  bg = "white",
   x.intersp = 0.8
 )
 ```
@@ -402,7 +402,7 @@ legend(
   fill = c(col_full, col_pruned),
   border = "white",
   bty = "o",
-  bg = NA
+  bg = "white"
 )
 ```
 
@@ -1036,7 +1036,7 @@ legend(
   lwd = c(NA, NA, 2),
   col = c(NA, NA, "red"),
   bty = "o",
-  bg = NA
+  bg = "white"
 )
 ```
 
