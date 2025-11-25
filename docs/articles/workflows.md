@@ -154,7 +154,8 @@ legend("topright",
        lty    = c(NA, NA, 2),
        lwd    = c(NA, NA, 2),
        col    = c(NA, NA, "black"),
-       bty    = "n")
+       bty    = "o",
+       bg     = "white")
 ```
 
 ![Histogram showing distribution of absolute correlations before and
@@ -295,12 +296,10 @@ plot(
   ylim = ylim_right
 )
 
-# Right-hand axis ticks (10, 100, 1K, 10K) within range
-kappa_ticks <- c(10, 100, 1000, 10000)
-log_ticks   <- log10(kappa_ticks)
-log_ticks   <- log_ticks[log_ticks >= ylim_right[1] & log_ticks <= ylim_right[2]]
-
-axis(4, at = log_ticks, labels = format(10^log_ticks, scientific = FALSE))
+# Right-hand axis ticks using pretty() on log scale
+log_ticks <- pretty(log_kappa)
+kappa_labels <- round(10^log_ticks)
+axis(4, at = log_ticks, labels = kappa_labels)
 mtext("Condition Number (κ)", side = 4, line = 3)
 
 # Legend centered at top
@@ -402,7 +401,8 @@ legend(
   ),
   fill = c(col_full, col_pruned),
   border = "white",
-  bty = "n"
+  bty = "o",
+  bg = "white"
 )
 ```
 
@@ -489,7 +489,7 @@ cat(sprintf("Reduced from %d → %d variables\n",
 # Which items were kept?
 selected <- attr(survey_clean, "selected_vars")
 print(selected)
-#> [1] "age"            "satisfaction_5" "engagement_1"   "loyalty_5"
+#> [1] "age"            "satisfaction_9" "engagement_1"   "loyalty_3"
 ```
 
 The pruning reduced the questionnaire from 31 items to ~10 items while
@@ -588,22 +588,22 @@ summary(model_survey)
 #> lm(formula = overall_satisfaction ~ ., data = survey_model_data)
 #> 
 #> Residuals:
-#>     Min      1Q  Median      3Q     Max 
-#> -16.463  -4.384   0.374   4.494  17.338 
+#>      Min       1Q   Median       3Q      Max 
+#> -17.0653  -4.1416  -0.1467   4.2400  22.2405 
 #> 
 #> Coefficients:
 #>                Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)    25.13579    2.16083  11.632   <2e-16 ***
-#> age             0.01805    0.04329   0.417    0.677    
-#> satisfaction_5  4.89449    0.35881  13.641   <2e-16 ***
-#> engagement_1    0.45383    0.32950   1.377    0.170    
-#> loyalty_5       0.34698    0.31296   1.109    0.269    
+#> (Intercept)    24.85040    2.03665  12.202   <2e-16 ***
+#> age             0.01951    0.04109   0.475   0.6354    
+#> satisfaction_9  4.96640    0.34387  14.443   <2e-16 ***
+#> engagement_1    0.24937    0.32131   0.776   0.4386    
+#> loyalty_3       0.54190    0.30190   1.795   0.0742 .  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 6.661 on 195 degrees of freedom
-#> Multiple R-squared:  0.6605, Adjusted R-squared:  0.6535 
-#> F-statistic: 94.82 on 4 and 195 DF,  p-value: < 2.2e-16
+#> Residual standard error: 6.372 on 195 degrees of freedom
+#> Multiple R-squared:  0.6893, Adjusted R-squared:  0.683 
+#> F-statistic: 108.2 on 4 and 195 DF,  p-value: < 2.2e-16
 ```
 
 #### Model comparison
@@ -633,7 +633,7 @@ data.frame(
 )
 #>              Model        R2    Adj_R2 Num_Predictors
 #> 1   Full (33 vars) 0.9790144 0.7679931             33
-#> 2 Pruned (10 vars) 0.6604503 0.6534852             10
+#> 2 Pruned (10 vars) 0.6893327 0.6829600             10
 ```
 
 ------------------------------------------------------------------------
@@ -767,9 +767,9 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
 #> Exact mode: 11 genes kept (3.4 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.5 ms)
+#> Greedy mode: 10 genes kept (0.4 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 7.0x faster
+#> Speedup: 7.8x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
@@ -1035,7 +1035,8 @@ legend(
   lty = c(NA, NA, 2),
   lwd = c(NA, NA, 2),
   col = c(NA, NA, "red"),
-  bty = "n"
+  bty = "o",
+  bg = "white"
 )
 ```
 

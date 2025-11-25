@@ -35,7 +35,6 @@ corrselect offers two algorithmic approaches for
 
 ``` r
 
-library(corrselect)
 data(mtcars)
 
 # Exact mode: guaranteed optimal
@@ -139,13 +138,13 @@ benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
 #> 1   10           0.5            0.2
-#> 2   20           0.7            0.4
-#> 3   50           1.5            0.7
-#> 4  100           4.5            1.3
-#> 5  200          22.5            3.4
-#> 6  300          85.0            6.9
-#> 7  500         309.8           16.9
-#> 8 1000            NA           60.2
+#> 2   20           0.8            0.3
+#> 3   50           1.6            0.7
+#> 4  100           4.4            1.4
+#> 5  200          22.3            3.4
+#> 6  300          84.9            6.5
+#> 7  500         307.2           15.5
+#> 8 1000            NA           53.7
 ```
 
 ``` r
@@ -188,7 +187,8 @@ legend("topleft",
        col = c(rgb(0.8, 0.2, 0.2, 1), rgb(0.2, 0.5, 0.8, 1)),
        pch = 19,
        lwd = 2,
-       bty = "n")
+       bty = "o",
+       bg = "white")
 ```
 
 ![Log-scale plot showing runtime (milliseconds) versus number of
@@ -740,11 +740,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 2.1 ms
+#> Recomputing each time: 4.2 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
 #> Precomputed matrix: 2.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 1.0x faster
+#> Speedup: 2.1x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1095,7 +1095,8 @@ hist(abs(cor_vec), breaks = 30,
 abline(v = c(0.5, 0.7, 0.9), col = c("red", "blue", "green"), lwd = 2, lty = 2)
 legend("topright",
        legend = c("0.5 (strict)", "0.7 (moderate)", "0.9 (lenient)"),
-       col = c("red", "blue", "green"), lwd = 2, lty = 2)
+       col = c("red", "blue", "green"), lwd = 2, lty = 2,
+       bty = "o", bg = "white")
 
 # Subset size vs threshold
 thresholds <- seq(0.3, 0.95, by = 0.05)

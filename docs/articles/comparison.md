@@ -48,18 +48,20 @@ cor_matrix <- cor(predictors)
 col_pal <- colorRampPalette(c("#3B4992", "white", "#EE0000"))(100)
 
 par(mar = c(1, 1, 3, 1))
-image(1:ncol(cor_matrix), 1:nrow(cor_matrix), t(cor_matrix[nrow(cor_matrix):1, ]),
+nc <- ncol(cor_matrix)
+nr <- nrow(cor_matrix)
+image(seq_len(nc), seq_len(nr), t(cor_matrix[nr:1, ]),
       col = col_pal,
       xlab = "", ylab = "", axes = FALSE,
       main = "Bioclimatic Variable Correlations (p = 19)",
       zlim = c(-1, 1))
-axis(1, at = 1:ncol(cor_matrix), labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
-axis(2, at = ncol(cor_matrix):1, labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
+axis(1, at = seq_len(nc), labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
+axis(2, at = nc:1, labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
 
-for (i in 1:ncol(cor_matrix)) {
-  for (j in 1:nrow(cor_matrix)) {
+for (i in seq_len(nc)) {
+  for (j in seq_len(nr)) {
     text_col <- if (abs(cor_matrix[j, i]) > 0.6) "white" else "black"
-    text(i, nrow(cor_matrix) - j + 1, sprintf("%.2f", cor_matrix[j, i]),
+    text(i, nr - j + 1, sprintf("%.2f", cor_matrix[j, i]),
          cex = 0.5, col = text_col)
   }
 }
@@ -179,7 +181,8 @@ if (requireNamespace("caret", quietly = TRUE)) {
          lty    = c(NA, NA, NA, 2),
          lwd    = c(NA, NA, NA, 2),
          col    = c(NA, NA, NA, "black"),
-         bty    = "n")
+         bty    = "o",
+         bg     = "white")
 }
 ```
 
@@ -480,154 +483,54 @@ Manual approach: iteratively remove max(VIF) until all VIF \< threshold.
 ``` r
 
 # Manual iterative VIF removal
-manual_vif_removal <- function(formula, data, threshold = 5) {
+manual_vif_removal <- function(formula, data, threshold = 5, max_iter = 10) {
   require(car)
 
+  # Get response variable name
+  response_var <- all.vars(formula)[1]
+
+  # Get predictor names (handles ~ . notation)
   model <- lm(formula, data = data)
+  current_vars <- names(coef(model))[-1]  # Exclude intercept
+
+  removed_vars <- character(0)
   vif_vals <- car::vif(model)
 
-  iterations <- 0
-  while (max(vif_vals) > threshold && iterations < 100) {
-    iterations <- iterations + 1
-
+  while (max(vif_vals) > threshold && length(current_vars) > 1 && length(removed_vars) < max_iter) {
     # Remove variable with highest VIF
     var_to_remove <- names(which.max(vif_vals))
-    cat("Iteration", iterations, ": Removing", var_to_remove, "(VIF =",
-        round(max(vif_vals), 2), ")\n")
+    removed_vars <- c(removed_vars, var_to_remove)
+    cat("Iteration", length(removed_vars), ": Removing", var_to_remove,
+        "(VIF =", round(max(vif_vals), 2), ")\n")
 
-    # Update formula
-    formula_str <- paste(deparse(formula), collapse = "")
-    formula_str <- gsub(paste0("\\+\\s*", var_to_remove), "", formula_str)
-    formula_str <- gsub(paste0(var_to_remove, "\\s*\\+"), "", formula_str)
-    formula <- as.formula(formula_str)
-
-    # Refit model
-    model <- lm(formula, data = data)
+    # Update variable list and refit
+    current_vars <- setdiff(current_vars, var_to_remove)
+    new_formula <- as.formula(paste(response_var, "~", paste(current_vars, collapse = " + ")))
+    model <- lm(new_formula, data = data)
     vif_vals <- car::vif(model)
   }
 
-  list(model = model, iterations = iterations, vif = vif_vals)
+  list(model = model, iterations = length(removed_vars),
+       vif = vif_vals, removed = removed_vars, converged = max(vif_vals) <= threshold)
 }
 
 # Run manual VIF removal
 if (requireNamespace("car", quietly = TRUE)) {
   cat("Manual VIF removal (iterative):\n")
   manual_result <- manual_vif_removal(species_richness ~ ., data = bioclim_example, threshold = 5)
-  cat("\nFinal VIF values:\n")
-  print(round(manual_result$vif, 2))
-  cat("\nTotal iterations:", manual_result$iterations, "\n")
+  cat("\nVariables kept:", length(manual_result$vif), "\n")
+  if (!manual_result$converged) {
+    cat("(Stopped at max_iter = 10; VIF threshold not yet reached)\n")
+  }
 }
 #> Manual VIF removal (iterative):
 #> Loading required package: car
 #> Loading required package: carData
 #> Iteration 1 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 2 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 3 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 4 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 5 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 6 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 7 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 8 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 9 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 10 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 11 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 12 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 13 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 14 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 15 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 16 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 17 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 18 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 19 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 20 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 21 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 22 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 23 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 24 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 25 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 26 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 27 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 28 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 29 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 30 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 31 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 32 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 33 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 34 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 35 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 36 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 37 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 38 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 39 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 40 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 41 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 42 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 43 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 44 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 45 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 46 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 47 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 48 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 49 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 50 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 51 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 52 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 53 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 54 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 55 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 56 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 57 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 58 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 59 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 60 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 61 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 62 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 63 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 64 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 65 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 66 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 67 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 68 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 69 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 70 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 71 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 72 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 73 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 74 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 75 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 76 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 77 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 78 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 79 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 80 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 81 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 82 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 83 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 84 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 85 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 86 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 87 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 88 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 89 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 90 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 91 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 92 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 93 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 94 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 95 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 96 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 97 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 98 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 99 : Removing BIO2 (VIF = 5.83 )
-#> Iteration 100 : Removing BIO2 (VIF = 5.83 )
+#> Iteration 2 : Removing BIO7 (VIF = 5.66 )
+#> Iteration 3 : Removing BIO5 (VIF = 5.03 )
 #> 
-#> Final VIF values:
-#>  BIO1  BIO2  BIO3  BIO4  BIO5  BIO6  BIO7  BIO8  BIO9 BIO10 BIO11 BIO12 BIO13 
-#>  3.42  5.83  5.19  5.09  5.18  4.47  5.74  5.67  4.38  5.00  3.11  1.84  2.61 
-#> BIO14 BIO15 BIO16 BIO17 BIO18 BIO19 
-#>  3.18  3.03  2.59  3.01  3.14  1.80 
-#> 
-#> Total iterations: 100
+#> Variables kept: 16
 ```
 
 ## modelPrune() Comparison
@@ -699,7 +602,8 @@ if (requireNamespace("car", quietly = TRUE)) {
          lty    = c(NA, NA, 2),
          lwd    = c(NA, NA, 2),
          col    = c(NA, NA, "black"),
-         bty    = "n")
+         bty    = "o",
+         bg     = "white")
 }
 ```
 

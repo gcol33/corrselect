@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -223,7 +223,8 @@ below the threshold.</p>
 <span>       lty    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>       lwd    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>       col    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
-<span>       bty    <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
+<span>       bty    <span class="op">=</span> <span class="st">"o"</span>,</span>
+<span>       bg     <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workflows_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="Histogram showing distribution of absolute correlations before and after pruning. Red bars show many correlations exceed 0.7 threshold before pruning. Blue bars show all correlations below 0.7 after pruning." width="672"></p>
 </div>
 <div class="section level4">
@@ -361,12 +362,10 @@ were redundant for prediction.</p>
 <span>  ylim <span class="op">=</span> <span class="va">ylim_right</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right-hand axis ticks (10, 100, 1K, 10K) within range</span></span>
-<span><span class="va">kappa_ticks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span></span>
-<span><span class="va">log_ticks</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">kappa_ticks</span><span class="op">)</span></span>
-<span><span class="va">log_ticks</span>   <span class="op">&lt;-</span> <span class="va">log_ticks</span><span class="op">[</span><span class="va">log_ticks</span> <span class="op">&gt;=</span> <span class="va">ylim_right</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">log_ticks</span> <span class="op">&lt;=</span> <span class="va">ylim_right</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">4</span>, at <span class="op">=</span> <span class="va">log_ticks</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fl">10</span><span class="op">^</span><span class="va">log_ticks</span>, scientific <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Right-hand axis ticks using pretty() on log scale</span></span>
+<span><span class="va">log_ticks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/pretty.html" class="external-link">pretty</a></span><span class="op">(</span><span class="va">log_kappa</span><span class="op">)</span></span>
+<span><span class="va">kappa_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">10</span><span class="op">^</span><span class="va">log_ticks</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">4</span>, at <span class="op">=</span> <span class="va">log_ticks</span>, labels <span class="op">=</span> <span class="va">kappa_labels</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="st">"Condition Number (κ)"</span>, side <span class="op">=</span> <span class="fl">4</span>, line <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Legend centered at top</span></span>
@@ -461,7 +460,8 @@ sizes</li>
 <span>  <span class="op">)</span>,</span>
 <span>  fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">col_full</span>, <span class="va">col_pruned</span><span class="op">)</span>,</span>
 <span>  border <span class="op">=</span> <span class="st">"white"</span>,</span>
-<span>  bty <span class="op">=</span> <span class="st">"n"</span></span>
+<span>  bty <span class="op">=</span> <span class="st">"o"</span>,</span>
+<span>  bg <span class="op">=</span> <span class="st">"white"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -547,7 +547,7 @@ covariates that must not be removed.</p>
 <span><span class="co"># Which items were kept?</span></span>
 <span><span class="va">selected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">survey_clean</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "age"            "satisfaction_5" "engagement_1"   "loyalty_5"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "age"            "satisfaction_9" "engagement_1"   "loyalty_3"</span></span></code></pre></div>
 <p>The pruning reduced the questionnaire from 31 items to ~10 items
 while ensuring age was retained. The remaining items span all three
 constructs, avoiding the loss of entire domains.</p>
@@ -632,22 +632,22 @@ items.</p>
 <span><span class="co">#&gt; lm(formula = overall_satisfaction ~ ., data = survey_model_data)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
-<span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">#&gt; -16.463  -4.384   0.374   4.494  17.338 </span></span>
+<span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
+<span><span class="co">#&gt; -17.0653  -4.1416  -0.1467   4.2400  22.2405 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;                Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)    25.13579    2.16083  11.632   &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; age             0.01805    0.04329   0.417    0.677    </span></span>
-<span><span class="co">#&gt; satisfaction_5  4.89449    0.35881  13.641   &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; engagement_1    0.45383    0.32950   1.377    0.170    </span></span>
-<span><span class="co">#&gt; loyalty_5       0.34698    0.31296   1.109    0.269    </span></span>
+<span><span class="co">#&gt; (Intercept)    24.85040    2.03665  12.202   &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; age             0.01951    0.04109   0.475   0.6354    </span></span>
+<span><span class="co">#&gt; satisfaction_9  4.96640    0.34387  14.443   &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; engagement_1    0.24937    0.32131   0.776   0.4386    </span></span>
+<span><span class="co">#&gt; loyalty_3       0.54190    0.30190   1.795   0.0742 .  </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Residual standard error: 6.661 on 195 degrees of freedom</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.6605, Adjusted R-squared:  0.6535 </span></span>
-<span><span class="co">#&gt; F-statistic: 94.82 on 4 and 195 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div>
+<span><span class="co">#&gt; Residual standard error: 6.372 on 195 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.6893, Adjusted R-squared:  0.683 </span></span>
+<span><span class="co">#&gt; F-statistic: 108.2 on 4 and 195 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="model-comparison-1">Model comparison<a class="anchor" aria-label="anchor" href="#model-comparison-1"></a>
@@ -675,7 +675,7 @@ reducing model complexity.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;              Model        R2    Adj_R2 Num_Predictors</span></span>
 <span><span class="co">#&gt; 1   Full (33 vars) 0.9790144 0.7679931             33</span></span>
-<span><span class="co">#&gt; 2 Pruned (10 vars) 0.6604503 0.6534852             10</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 Pruned (10 vars) 0.6893327 0.6829600             10</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -799,9 +799,9 @@ widens dramatically as the number of variables increases.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Exact mode: 11 genes kept (3.4 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.5 ms)</span></span>
+<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.4 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 7.0x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 7.8x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
 mode completes in seconds.</p>
@@ -1050,7 +1050,8 @@ retained fixed effects:</p>
 <span>  lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  lwd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
-<span>  bty <span class="op">=</span> <span class="st">"n"</span></span>
+<span>  bty <span class="op">=</span> <span class="st">"o"</span>,</span>
+<span>  bg <span class="op">=</span> <span class="st">"white"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>

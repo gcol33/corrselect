@@ -14,8 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 8,
-  fig.height = 5,
-  dev = "svglite"
+  fig.height = 5
 )
 library(corrselect)
 ```

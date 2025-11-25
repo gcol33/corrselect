@@ -15,8 +15,9 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  dev = "svglite"
+  dev = "svg"
 )
+library(corrselect)
 ```
 
 ## Overview
@@ -48,7 +49,6 @@ corrselect offers two algorithmic approaches for `corrPrune()`:
 **Guarantee**: Finds the **largest** maximal independent set
 
 ```{r}
-library(corrselect)
 data(mtcars)
 
 # Exact mode: guaranteed optimal

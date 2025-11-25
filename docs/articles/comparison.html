@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,18 +121,20 @@ characteristics, and appropriate use cases. Evaluations use the
 <span><span class="va">col_pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html" class="external-link">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#3B4992"</span>, <span class="st">"white"</span>, <span class="st">"#EE0000"</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span><span class="op">:</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>,</span>
+<span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span></span>
+<span><span class="va">nr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nr</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">[</span><span class="va">nr</span><span class="op">:</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>,</span>
 <span>      col <span class="op">=</span> <span class="va">col_pal</span>,</span>
 <span>      xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>      main <span class="op">=</span> <span class="st">"Bioclimatic Variable Correlations (p = 19)"</span>,</span>
 <span>      zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1</span>, at <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">2</span>, cex.axis <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">2</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span><span class="op">:</span><span class="fl">1</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">2</span>, cex.axis <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">2</span>, cex.axis <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">2</span>, at <span class="op">=</span> <span class="va">nc</span><span class="op">:</span><span class="fl">1</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">2</span>, cex.axis <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">nr</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">text_col</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">[</span><span class="va">j</span>, <span class="va">i</span><span class="op">]</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.6</span><span class="op">)</span> <span class="st">"white"</span> <span class="kw">else</span> <span class="st">"black"</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">i</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">)</span> <span class="op">-</span> <span class="va">j</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.2f"</span>, <span class="va">cor_matrix</span><span class="op">[</span><span class="va">j</span>, <span class="va">i</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">i</span>, <span class="va">nr</span> <span class="op">-</span> <span class="va">j</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.2f"</span>, <span class="va">cor_matrix</span><span class="op">[</span><span class="va">j</span>, <span class="va">i</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>         cex <span class="op">=</span> <span class="fl">0.5</span>, col <span class="op">=</span> <span class="va">text_col</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -244,7 +246,8 @@ constraint.</p>
 <span>         lty    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>         lwd    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>         col    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
-<span>         bty    <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span>
+<span>         bty    <span class="op">=</span> <span class="st">"o"</span>,</span>
+<span>         bg     <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="comparison_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="Overlaid histogram comparing absolute correlation distributions across three methods: original data (gray bars), caret's findCorrelation (red bars), and corrselect (blue bars). Black vertical dashed line marks the 0.7 threshold. All methods successfully reduce correlations below the threshold, but corrselect retains more variables than caret while still satisfying the constraint, demonstrating the advantage of maximal clique enumeration over greedy removal." width="672"></p>
 </div>
@@ -652,154 +655,54 @@ threshold.</p>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Manual iterative VIF removal</span></span>
-<span><span class="va">manual_vif_removal</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">threshold</span> <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">manual_vif_removal</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">threshold</span> <span class="op">=</span> <span class="fl">5</span>, <span class="va">max_iter</span> <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://r-forge.r-project.org/projects/car/" class="external-link">car</a></span><span class="op">)</span></span>
 <span></span>
+<span>  <span class="co"># Get response variable name</span></span>
+<span>  <span class="va">response_var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/allnames.html" class="external-link">all.vars</a></span><span class="op">(</span><span class="va">formula</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="co"># Get predictor names (handles ~ . notation)</span></span>
 <span>  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="va">current_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>  <span class="co"># Exclude intercept</span></span>
+<span></span>
+<span>  <span class="va">removed_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="va">vif_vals</span> <span class="op">&lt;-</span> <span class="fu">car</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/vif.html" class="external-link">vif</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">iterations</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span>  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">vif_vals</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">threshold</span> <span class="op">&amp;&amp;</span> <span class="va">iterations</span> <span class="op">&lt;</span> <span class="fl">100</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">iterations</span> <span class="op">&lt;-</span> <span class="va">iterations</span> <span class="op">+</span> <span class="fl">1</span></span>
-<span></span>
+<span>  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">vif_vals</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">threshold</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">current_vars</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">removed_vars</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">max_iter</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="co"># Remove variable with highest VIF</span></span>
 <span>    <span class="va">var_to_remove</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">vif_vals</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iteration"</span>, <span class="va">iterations</span>, <span class="st">": Removing"</span>, <span class="va">var_to_remove</span>, <span class="st">"(VIF ="</span>,</span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">vif_vals</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">")\n"</span><span class="op">)</span></span>
+<span>    <span class="va">removed_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">removed_vars</span>, <span class="va">var_to_remove</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iteration"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">removed_vars</span><span class="op">)</span>, <span class="st">": Removing"</span>, <span class="va">var_to_remove</span>,</span>
+<span>        <span class="st">"(VIF ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">vif_vals</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">")\n"</span><span class="op">)</span></span>
 <span></span>
-<span>    <span class="co"># Update formula</span></span>
-<span>    <span class="va">formula_str</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse</a></span><span class="op">(</span><span class="va">formula</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
-<span>    <span class="va">formula_str</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"\\+\\s*"</span>, <span class="va">var_to_remove</span><span class="op">)</span>, <span class="st">""</span>, <span class="va">formula_str</span><span class="op">)</span></span>
-<span>    <span class="va">formula_str</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">var_to_remove</span>, <span class="st">"\\s*\\+"</span><span class="op">)</span>, <span class="st">""</span>, <span class="va">formula_str</span><span class="op">)</span></span>
-<span>    <span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="va">formula_str</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Refit model</span></span>
-<span>    <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<span>    <span class="co"># Update variable list and refit</span></span>
+<span>    <span class="va">current_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">current_vars</span>, <span class="va">var_to_remove</span><span class="op">)</span></span>
+<span>    <span class="va">new_formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">response_var</span>, <span class="st">"~"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">current_vars</span>, collapse <span class="op">=</span> <span class="st">" + "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">new_formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span>    <span class="va">vif_vals</span> <span class="op">&lt;-</span> <span class="fu">car</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/vif.html" class="external-link">vif</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, iterations <span class="op">=</span> <span class="va">iterations</span>, vif <span class="op">=</span> <span class="va">vif_vals</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, iterations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">removed_vars</span><span class="op">)</span>,</span>
+<span>       vif <span class="op">=</span> <span class="va">vif_vals</span>, removed <span class="op">=</span> <span class="va">removed_vars</span>, converged <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">vif_vals</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">threshold</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Run manual VIF removal</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"car"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Manual VIF removal (iterative):\n"</span><span class="op">)</span></span>
 <span>  <span class="va">manual_result</span> <span class="op">&lt;-</span> <span class="fu">manual_vif_removal</span><span class="op">(</span><span class="va">species_richness</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">bioclim_example</span>, threshold <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nFinal VIF values:\n"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">manual_result</span><span class="op">$</span><span class="va">vif</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nTotal iterations:"</span>, <span class="va">manual_result</span><span class="op">$</span><span class="va">iterations</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nVariables kept:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">manual_result</span><span class="op">$</span><span class="va">vif</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">manual_result</span><span class="op">$</span><span class="va">converged</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"(Stopped at max_iter = 10; VIF threshold not yet reached)\n"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Manual VIF removal (iterative):</span></span>
 <span><span class="co">#&gt; Loading required package: car</span></span>
 <span><span class="co">#&gt; Loading required package: carData</span></span>
 <span><span class="co">#&gt; Iteration 1 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 2 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 3 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 4 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 5 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 6 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 7 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 8 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 9 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 10 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 11 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 12 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 13 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 14 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 15 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 16 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 17 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 18 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 19 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 20 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 21 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 22 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 23 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 24 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 25 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 26 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 27 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 28 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 29 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 30 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 31 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 32 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 33 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 34 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 35 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 36 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 37 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 38 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 39 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 40 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 41 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 42 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 43 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 44 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 45 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 46 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 47 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 48 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 49 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 50 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 51 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 52 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 53 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 54 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 55 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 56 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 57 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 58 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 59 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 60 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 61 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 62 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 63 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 64 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 65 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 66 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 67 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 68 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 69 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 70 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 71 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 72 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 73 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 74 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 75 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 76 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 77 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 78 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 79 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 80 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 81 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 82 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 83 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 84 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 85 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 86 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 87 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 88 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 89 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 90 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 91 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 92 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 93 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 94 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 95 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 96 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 97 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 98 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 99 : Removing BIO2 (VIF = 5.83 )</span></span>
-<span><span class="co">#&gt; Iteration 100 : Removing BIO2 (VIF = 5.83 )</span></span>
+<span><span class="co">#&gt; Iteration 2 : Removing BIO7 (VIF = 5.66 )</span></span>
+<span><span class="co">#&gt; Iteration 3 : Removing BIO5 (VIF = 5.03 )</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Final VIF values:</span></span>
-<span><span class="co">#&gt;  BIO1  BIO2  BIO3  BIO4  BIO5  BIO6  BIO7  BIO8  BIO9 BIO10 BIO11 BIO12 BIO13 </span></span>
-<span><span class="co">#&gt;  3.42  5.83  5.19  5.09  5.18  4.47  5.74  5.67  4.38  5.00  3.11  1.84  2.61 </span></span>
-<span><span class="co">#&gt; BIO14 BIO15 BIO16 BIO17 BIO18 BIO19 </span></span>
-<span><span class="co">#&gt;  3.18  3.03  2.59  3.01  3.14  1.80 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Total iterations: 100</span></span></code></pre></div>
+<span><span class="co">#&gt; Variables kept: 16</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -870,7 +773,8 @@ threshold.</p>
 <span>         lty    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>         lwd    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>         col    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
-<span>         bty    <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span>
+<span>         bty    <span class="op">=</span> <span class="st">"o"</span>,</span>
+<span>         bg     <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="comparison_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="Side-by-side barplot showing VIF values before (red bars) and after (blue bars) applying modelPrune() for the top 15 variables ordered by initial VIF. Black horizontal dashed line marks the VIF limit of 5. Before pruning, many variables show high VIF values indicating severe multicollinearity. After modelPrune(), all retained variables have VIF below the threshold, and high-VIF variables are completely removed (shown as red-only bars), demonstrating automated and effective multicollinearity reduction." width="768"></p>
 <div class="section level3">

@@ -219,39 +219,17 @@ pruned_force <- corrPrune(
 
 ## Threshold Selection
 
-Visualize correlation distribution to choose an appropriate threshold:
+Common threshold guidelines:
 
-``` r
+| Threshold | Interpretation | Use Case                             |
+|-----------|----------------|--------------------------------------|
+| 0.5       | Strict         | When multicollinearity is critical   |
+| 0.7       | Moderate       | General-purpose default              |
+| 0.9       | Lenient        | When retaining variables is priority |
 
-cor_mat <- cor(mtcars)
-cor_vec <- cor_mat[upper.tri(cor_mat)]
-
-hist(abs(cor_vec), breaks = 20,
-     main = "Distribution of Absolute Correlations",
-     xlab = "Absolute Correlation",
-     col = rgb(0.2, 0.5, 0.8, 0.6),
-     border = "white",
-     xlim = c(0, 1))
-
-# Threshold lines
-abline(v = c(0.5, 0.7, 0.9),
-       col = c("#d73027", "#4575b4", "#91cf60"),
-       lwd = 2, lty = 2)
-
-legend("topright",
-       legend = c("0.5 (strict)", "0.7 (moderate)", "0.9 (lenient)"),
-       col = c("#d73027", "#4575b4", "#91cf60"),
-       lwd = 2, lty = 2,
-       bty = "o",
-       bg = "white")
-```
-
-![Histogram of absolute correlation distribution with three colored
-vertical dashed lines indicating threshold levels: strict at 0.5 (red),
-moderate at 0.7 (blue), and lenient at 0.9 (green). The distribution
-helps users visualize correlation structure and choose an appropriate
-threshold based on the data's correlation
-characteristics.](quickstart_files/figure-html/unnamed-chunk-9-1.png)
+For detailed threshold selection strategies including visualization
+techniques and sensitivity analysis, see
+[`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md).
 
 ------------------------------------------------------------------------
 
