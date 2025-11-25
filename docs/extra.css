@@ -10,11 +10,3 @@ img.figure-img {
   border: 1px solid var(--bs-border-color);
   background-color: var(--bs-tertiary-bg);
 }
-
-/* Dark mode: invert colors then rotate hue back to preserve data colors */
-[data-bs-theme="dark"] img.r-plt,
-[data-bs-theme="dark"] .figure img,
-[data-bs-theme="dark"] figure img,
-[data-bs-theme="dark"] img.figure-img {
-  filter: invert(1) hue-rotate(180deg);
-}
