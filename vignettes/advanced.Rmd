@@ -112,16 +112,12 @@ benchmark_corrPrune <- function(p_values) {
     cor_mat <- 0.5^abs(outer(1:p, 1:p, "-"))
     data <- as.data.frame(MASS::mvrnorm(n = 100, mu = rep(0, p), Sigma = cor_mat))
 
-    # Exact mode (skip if p too large)
-    exact_time_ms <- if (p <= 25) {
-      median(microbenchmark(
-        corrPrune(data, threshold = 0.7, mode = "exact"),
-        times = 3,  # Few iterations for speed
-        unit = "ms"
-      )$time) / 1e6  # Convert nanoseconds to milliseconds
-    } else {
-      NA
-    }
+    # Exact mode (benchmark all p values)
+    exact_time_ms <- median(microbenchmark(
+      corrPrune(data, threshold = 0.7, mode = "exact"),
+      times = 3,  # Few iterations for speed
+      unit = "ms"
+    )$time) / 1e6  # Convert nanoseconds to milliseconds
 
     # Greedy mode
     greedy_time_ms <- median(microbenchmark(
@@ -140,8 +136,8 @@ benchmark_corrPrune <- function(p_values) {
   results
 }
 
-# Benchmark
-p_values <- c(10, 15, 20, 25, 50, 100)
+# Benchmark (extended range to show scaling behavior)
+p_values <- c(10, 20, 50, 100, 200, 300)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 ```
@@ -182,13 +178,9 @@ legend("topleft",
        pch = 19,
        lwd = 2,
        bty = "n")
-
-# Mark where exact mode becomes impractical
-abline(v = 25, lty = 2, col = "gray50")
-text(25, ylim[2] * 0.5, "Exact mode limit", pos = 4, col = "gray30")
 ```
 
-**Key insight**: Exact mode becomes impractical beyond p ≈ 25. Greedy mode scales linearly.
+**Key insight**: Exact mode shows exponential scaling behavior, while greedy mode scales approximately linearly. Both modes remain practical up to p = 300 for typical correlation structures, with exact mode providing guaranteed optimality and greedy mode offering faster execution.
 
 ## 1.3 Deterministic Tie-Breaking
 
