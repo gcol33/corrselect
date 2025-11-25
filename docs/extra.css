@@ -11,11 +11,12 @@ img.figure-img {
   background-color: #f8f5f0;
 }
 
-/* Dark mode */
+/* Dark mode: invert colors then rotate hue back to preserve data colors */
 [data-bs-theme="dark"] img.r-plt,
 [data-bs-theme="dark"] .figure img,
 [data-bs-theme="dark"] figure img,
 [data-bs-theme="dark"] img.figure-img {
   background-color: #3e3f3a;
   border-color: #56544e;
+  filter: invert(1) hue-rotate(180deg);
 }
