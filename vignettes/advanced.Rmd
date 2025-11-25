@@ -97,11 +97,13 @@ Let's measure runtime scaling:
 
 ```{r}
 # Generate datasets with increasing p
+library(microbenchmark)
+
 benchmark_corrPrune <- function(p_values) {
   results <- data.frame(
     p = integer(),
-    exact_time = numeric(),
-    greedy_time = numeric()
+    exact_time_ms = numeric(),
+    greedy_time_ms = numeric()
   )
 
   for (p in p_values) {
@@ -111,23 +113,27 @@ benchmark_corrPrune <- function(p_values) {
     data <- as.data.frame(MASS::mvrnorm(n = 100, mu = rep(0, p), Sigma = cor_mat))
 
     # Exact mode (skip if p too large)
-    exact_time <- if (p <= 25) {
-      system.time({
-        corrPrune(data, threshold = 0.7, mode = "exact")
-      })["elapsed"]
+    exact_time_ms <- if (p <= 25) {
+      median(microbenchmark(
+        corrPrune(data, threshold = 0.7, mode = "exact"),
+        times = 3,  # Few iterations for speed
+        unit = "ms"
+      )$time) / 1e6  # Convert nanoseconds to milliseconds
     } else {
       NA
     }
 
     # Greedy mode
-    greedy_time <- system.time({
-      corrPrune(data, threshold = 0.7, mode = "greedy")
-    })["elapsed"]
+    greedy_time_ms <- median(microbenchmark(
+      corrPrune(data, threshold = 0.7, mode = "greedy"),
+      times = 3,  # Few iterations for speed
+      unit = "ms"
+    )$time) / 1e6  # Convert nanoseconds to milliseconds
 
     results <- rbind(results, data.frame(
       p = p,
-      exact_time = exact_time,
-      greedy_time = greedy_time
+      exact_time_ms = round(exact_time_ms, 1),
+      greedy_time_ms = round(greedy_time_ms, 1)
     ))
   }
 
@@ -142,18 +148,44 @@ print(benchmark)
 
 ```{r, fig.width=8, fig.height=5}
 # Visualize scaling
-plot(benchmark$p, benchmark$exact_time,
-     type = "b", col = "red", lwd = 2,
+# Separate data for exact mode (only where available) and greedy mode (all points)
+exact_valid <- !is.na(benchmark$exact_time_ms) & benchmark$exact_time_ms > 0
+greedy_valid <- !is.na(benchmark$greedy_time_ms) & benchmark$greedy_time_ms > 0
+
+# Replace any zeros with small positive value for log scale
+exact_times <- benchmark$exact_time_ms
+greedy_times <- benchmark$greedy_time_ms
+exact_times[exact_times <= 0 & !is.na(exact_times)] <- 0.01
+greedy_times[greedy_times <= 0 & !is.na(greedy_times)] <- 0.01
+
+# Determine y-axis limits from valid data
+all_valid_times <- c(exact_times[exact_valid], greedy_times[greedy_valid])
+ylim <- c(min(all_valid_times) * 0.5, max(all_valid_times) * 2)
+
+# Plot greedy mode (all points)
+plot(benchmark$p[greedy_valid], greedy_times[greedy_valid],
+     type = "b", col = rgb(0.2, 0.5, 0.8, 1), pch = 19, lwd = 2,
      xlab = "Number of Predictors (p)",
-     ylab = "Time (seconds)",
+     ylab = "Time (milliseconds, log scale)",
      main = "Exact vs Greedy Scaling",
-     ylim = c(0, max(benchmark$exact_time, na.rm = TRUE) * 1.1),
+     ylim = ylim,
+     xlim = range(benchmark$p),
      log = "y")
-lines(benchmark$p, benchmark$greedy_time, type = "b", col = "blue", lwd = 2)
-legend("topleft", legend = c("Exact", "Greedy"),
-       col = c("red", "blue"), lwd = 2)
-abline(v = 20, lty = 2, col = "gray")
-text(20, max(benchmark$exact_time, na.rm = TRUE), "Auto switches here", pos = 4)
+
+# Add exact mode (only where available)
+lines(benchmark$p[exact_valid], exact_times[exact_valid],
+      type = "b", col = rgb(0.8, 0.2, 0.2, 1), pch = 19, lwd = 2)
+
+legend("topleft",
+       legend = c("Exact", "Greedy"),
+       col = c(rgb(0.8, 0.2, 0.2, 1), rgb(0.2, 0.5, 0.8, 1)),
+       pch = 19,
+       lwd = 2,
+       bty = "n")
+
+# Mark where exact mode becomes impractical
+abline(v = 25, lty = 2, col = "gray50")
+text(25, ylim[2] * 0.5, "Exact mode limit", pos = 4, col = "gray30")
 ```
 
 **Key insight**: Exact mode becomes impractical beyond p ≈ 25. Greedy mode scales linearly.
@@ -467,20 +499,36 @@ if (length(all_subsets@subset_list) > 0) {
 For repeated pruning with different thresholds, precompute the correlation matrix:
 
 ```{r}
-# Slow: Recomputes correlation every time
-system.time({
-  result1 <- corrPrune(mtcars, threshold = 0.7)
-  result2 <- corrPrune(mtcars, threshold = 0.8)
-  result3 <- corrPrune(mtcars, threshold = 0.9)
-})
+# Create larger dataset for meaningful timing comparison
+set.seed(123)
+large_data <- as.data.frame(matrix(rnorm(100 * 50), ncol = 50))
 
-# Fast: Compute correlation once, reuse
-cor_matrix <- cor(mtcars)
-system.time({
-  result1 <- MatSelect(cor_matrix, threshold = 0.7)
-  result2 <- MatSelect(cor_matrix, threshold = 0.8)
-  result3 <- MatSelect(cor_matrix, threshold = 0.9)
-})
+# Benchmark: Recompute correlation every time
+time1 <- median(microbenchmark(
+  {
+    result1 <- corrPrune(large_data, threshold = 0.7)
+    result2 <- corrPrune(large_data, threshold = 0.8)
+    result3 <- corrPrune(large_data, threshold = 0.9)
+  },
+  times = 3,
+  unit = "ms"
+)$time) / 1e6  # Convert nanoseconds to milliseconds
+
+# Benchmark: Compute correlation once, reuse
+cor_matrix <- cor(large_data)
+time2 <- median(microbenchmark(
+  {
+    result1 <- MatSelect(cor_matrix, threshold = 0.7)
+    result2 <- MatSelect(cor_matrix, threshold = 0.8)
+    result3 <- MatSelect(cor_matrix, threshold = 0.9)
+  },
+  times = 3,
+  unit = "ms"
+)$time) / 1e6  # Convert nanoseconds to milliseconds
+
+cat(sprintf("Recomputing each time: %.1f ms\n", time1))
+cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
+cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
 ```
 
 **Use precomputed matrices when**:
