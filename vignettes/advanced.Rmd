@@ -112,16 +112,12 @@ benchmark_corrPrune <- function(p_values) {
     cor_mat <- 0.5^abs(outer(1:p, 1:p, "-"))
     data <- as.data.frame(MASS::mvrnorm(n = 100, mu = rep(0, p), Sigma = cor_mat))
 
-    # Exact mode (skip if p too large)
-    exact_time_ms <- if (p <= 100) {
-      median(microbenchmark(
-        corrPrune(data, threshold = 0.7, mode = "exact"),
-        times = 3,  # Few iterations for speed
-        unit = "ms"
-      )$time) / 1e6  # Convert nanoseconds to milliseconds
-    } else {
-      NA
-    }
+    # Exact mode
+    exact_time_ms <- median(microbenchmark(
+      corrPrune(data, threshold = 0.7, mode = "exact"),
+      times = 3,  # Few iterations for speed
+      unit = "ms"
+    )$time) / 1e6  # Convert nanoseconds to milliseconds
 
     # Greedy mode
     greedy_time_ms <- median(microbenchmark(
@@ -182,13 +178,9 @@ legend("topleft",
        pch = 19,
        lwd = 2,
        bty = "n")
-
-# Mark where exact mode becomes impractical
-abline(v = 100, lty = 2, col = "gray50")
-text(100, ylim[2] * 0.5, "Exact mode limit", pos = 4, col = "gray30")
 ```
 
-**Key insight**: Exact mode shows exponential scaling and becomes impractical beyond p ≈ 100. Greedy mode scales approximately linearly and remains efficient even for p = 300, making it suitable for high-dimensional applications.
+**Key insight**: Both exact and greedy modes scale efficiently for typical correlation structures. For this moderately correlated dataset (ρ = 0.5^|i-j|), both algorithms remain practical up to p = 300. The greedy mode offers a speed advantage, while exact mode provides guaranteed optimality.
 
 ## 1.3 Deterministic Tie-Breaking
 
