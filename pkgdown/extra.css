@@ -1,32 +1,13 @@
-/* Match plot width to code blocks with min-width */
+/* Match plot width to code blocks */
+img.r-plt,
 .figure img,
 figure img,
 img.figure-img {
-  width: 100%;
-  min-width: 400px;
   max-width: 100%;
   height: auto;
 }
 
-/* Match plot backgrounds to sandstone theme */
-.sourceCode img,
-.r-plot img,
-img.figure-img,
-figure img {
-  background-color: #f8f5f0;
-}
-
-/* Dark mode plot backgrounds */
-[data-bs-theme="dark"] .sourceCode img,
-[data-bs-theme="dark"] .r-plot img,
-[data-bs-theme="dark"] img.figure-img,
-[data-bs-theme="dark"] figure img {
-  background-color: #3e3f3a;
-}
-
-/* Dark mode: recolor pure-white SVG fills to theme background */
-[data-bs-theme="dark"] svg [fill="#FFFFFF"],
-[data-bs-theme="dark"] svg [fill="#ffffff"],
-[data-bs-theme="dark"] svg [fill="white"] {
-  fill: #3e3f3a;
+/* Dark mode: invert plot colors for better visibility */
+[data-bs-theme="dark"] img.r-plt {
+  filter: invert(0.88) hue-rotate(180deg);
 }
