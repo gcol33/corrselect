@@ -139,7 +139,7 @@ result has the following attributes:
 4.  Checking feasibility of `force_in` constraints
 
 5.  Iteratively removing the predictor with the worst diagnostic value
-    (excluding `force_in` variables) until all diagnostics ≤ `limit`
+    (excluding `force_in` variables) until all diagnostics \<= `limit`
 
 6.  Returning the pruned data frame
 

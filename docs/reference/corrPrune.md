@@ -44,7 +44,7 @@ corrPrune(
 
   Character string specifying the search algorithm. Options:
 
-  - `"auto"` (default): uses exact search if number of predictors ≤
+  - `"auto"` (default): uses exact search if number of predictors \<=
     `max_exact_p`, otherwise uses greedy search
 
   - `"exact"`: exhaustive search for maximal subsets (may be slow for

@@ -139,13 +139,13 @@ benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
 #> 1   10           0.5            0.2
-#> 2   20           0.6            0.3
-#> 3   50           1.3            0.8
-#> 4  100           4.5            1.4
-#> 5  200          22.8            3.3
-#> 6  300          84.9            6.5
-#> 7  500         312.5           15.1
-#> 8 1000            NA           56.4
+#> 2   20           0.7            0.3
+#> 3   50           1.5            0.7
+#> 4  100           4.6            1.3
+#> 5  200          22.4            3.5
+#> 6  300          85.8            6.6
+#> 7  500         307.6           15.5
+#> 8 1000            NA           53.3
 ```
 
 ``` r
@@ -742,9 +742,9 @@ time2 <- median(microbenchmark(
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
 #> Recomputing each time: 2.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 2.0 ms
+#> Precomputed matrix: 1.9 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 1.0x faster
+#> Speedup: 1.1x faster
 ```
 
 **Use precomputed matrices when**:

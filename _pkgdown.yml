@@ -1,56 +1,96 @@
 url: https://gcol33.github.io/corrselect
+
 template:
   bootstrap: 5
+  bootswatch: sandstone
+  bslib:
+    navbar-bg: "#3e3f3a"
+
+home:
+  title: "corrselect: Correlation-Based Variable Selection in R"
+  description: >
+    Graph-theoretic algorithms for removing redundant predictors based on
+    pairwise correlation or association thresholds.
+
+authors:
+  Gilles Colling:
+    href: https://github.com/gcol33
 
 navbar:
   structure:
     left:  [intro, reference, articles, news]
     right: [search, github]
-
-articles:
-  - title: Getting Started
-    navbar: ~
-    contents:
-    - quickstart
-
-  - title: Practical Guides
-    navbar: ~
-    contents:
-    - workflows
-    - comparison
-
-  - title: Advanced
-    navbar: ~
-    contents:
-    - advanced
-    - theory
+  components:
+    intro:
+      text: Get Started
+      href: articles/quickstart.html
+    articles:
+      text: Articles
+      menu:
+        - text: "Quick Start"
+          href: articles/quickstart.html
+        - text: "Workflows"
+          href: articles/workflows.html
+        - text: "Comparison"
+          href: articles/comparison.html
+        - text: "Advanced"
+          href: articles/advanced.html
+        - text: "Theory"
+          href: articles/theory.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/gcol33/corrselect
+      aria-label: GitHub
 
 reference:
-  - title: High-Level Pruning Functions
-    desc: Main functions for predictor pruning
+  - title: "High-Level Pruning"
+    desc: "Main functions for predictor pruning"
     contents:
-    - corrPrune
-    - modelPrune
+      - corrPrune
+      - modelPrune
 
-  - title: Exact Subset Enumeration
-    desc: Graph-theoretic algorithms for exhaustive search
+  - title: "Exact Subset Enumeration"
+    desc: "Graph-theoretic algorithms for exhaustive search"
     contents:
-    - corrSelect
-    - assocSelect
-    - MatSelect
+      - corrSelect
+      - assocSelect
+      - MatSelect
 
-  - title: Utility Functions
-    desc: Helper functions for working with results
+  - title: "Utility Functions"
+    desc: "Helper functions for working with results"
     contents:
-    - CorrCombo-class
-    - as.data.frame.CorrCombo
-    - corrSubset
+      - CorrCombo-class
+      - as.data.frame.CorrCombo
+      - corrSubset
 
-  - title: Example Datasets
-    desc: Realistic datasets for vignettes
+  - title: "Example Datasets"
+    desc: "Realistic datasets for vignettes"
     contents:
-    - bioclim_example
-    - survey_example
-    - genes_example
-    - longitudinal_example
-    - cor_example
+      - bioclim_example
+      - survey_example
+      - genes_example
+      - longitudinal_example
+      - cor_example
+
+articles:
+  - title: "Getting Started"
+    navbar: ~
+    contents:
+      - quickstart
+
+  - title: "Practical Guides"
+    navbar: ~
+    contents:
+      - workflows
+      - comparison
+
+  - title: "Advanced"
+    navbar: ~
+    contents:
+      - advanced
+      - theory
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with

@@ -1,0 +1,13 @@
+* using log directory 'C:/Users/Gilles Colling/Documents/dev/corrselect/corrselect.Rcheck'
+* using R version 4.5.1 (2025-06-13 ucrt)
+* using platform: x86_64-w64-mingw32
+* R was compiled by
+    gcc.exe (GCC) 14.2.0
+    GNU Fortran (GCC) 14.2.0
+* running under: Windows 11 x64 (build 26200)
+* using session charset: UTF-8
+* using option '--as-cran'
+* checking for file 'corrselect/DESCRIPTION' ... OK
+* this is package 'corrselect' version '3.0.0'
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ...

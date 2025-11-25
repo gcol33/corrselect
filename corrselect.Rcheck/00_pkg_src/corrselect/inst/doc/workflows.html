@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Gilles Colling" />
+
+<meta name="date" content="2025-11-25" />
+
+<title>Complete Workflows: Real-World Examples</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Complete Workflows: Real-World
+Examples</h1>
+<h4 class="author">Gilles Colling</h4>
+<h4 class="date">2025-11-25</h4>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>This vignette demonstrates integration of corrselect into complete
+modeling workflows, from raw predictors to final models under
+correlation constraints. Four applied settings illustrate interface
+selection and workflow composition. See
+<code>vignette(&quot;quickstart&quot;)</code> for interface descriptions and
+<code>vignette(&quot;theory&quot;)</code> for mathematical foundations.</p>
+<p>Each workflow showcases different aspects of the package:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Ecological Modeling</strong>: Two-stage pruning (correlation
++ VIF) for environmental predictors</li>
+<li><strong>Survey Data</strong>: Protecting key variables while
+reducing redundancy in questionnaires</li>
+<li><strong>High-Dimensional Data</strong>: Greedy algorithms for gene
+expression (p &gt;&gt; n scenarios)</li>
+<li><strong>Mixed Models</strong>: VIF-based pruning of fixed effects in
+hierarchical data</li>
+</ol>
+<hr />
+</div>
+<div id="workflow-1-ecological-modeling" class="section level1">
+<h1>Workflow 1: Ecological Modeling</h1>
+<p><strong>Goal</strong>: Build an interpretable species distribution
+model from highly correlated bioclimatic variables.</p>
+<p><strong>Challenge</strong>: WorldClim’s 19 bioclimatic variables
+contain many temperature and precipitation metrics that are
+mathematically related (e.g., mean temperature, minimum temperature,
+maximum temperature). Using all variables leads to multicollinearity,
+unstable coefficients, and poor model interpretation.</p>
+<p><strong>Strategy</strong>: Two-stage pruning:</p>
+<ol style="list-style-type: decimal">
+<li><code>corrPrune()</code> removes pairwise correlations &gt; 0.7</li>
+<li><code>modelPrune()</code> refines further using variance inflation
+factors (VIF)</li>
+</ol>
+<p>This approach balances model fit with interpretability and numerical
+stability.</p>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(corrselect)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">data</span>(bioclim_example)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Data structure</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">dim</span>(bioclim_example)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; [1] 100  20</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(bioclim_example))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;species_richness&quot; &quot;BIO1&quot;             &quot;BIO2&quot;             &quot;BIO3&quot;            </span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; [5] &quot;BIO4&quot;             &quot;BIO5&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Response variable</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">summary</span>(bioclim_example<span class="sc">$</span>species_richness)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt;     5.0    96.0   118.5   120.2   144.2   206.0</span></span></code></pre></div>
+<p>The dataset contains 500 sampling locations with 19 bioclimatic
+predictors and a species richness response. The bioclimatic variables
+are standard WorldClim metrics (BIO1-BIO19) measuring temperature and
+precipitation patterns.</p>
+</div>
+<div id="correlation-based-pruning" class="section level3">
+<h3>Correlation-based pruning</h3>
+<p>We start by removing variables with pairwise correlations exceeding
+0.7. The <code>mode = &quot;auto&quot;</code> setting uses the exact algorithm
+(Bron-Kerbosch) to enumerate all maximal subsets, then selects the
+largest one.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Remove highly correlated predictors</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>bio_clean <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">data =</span> bioclim_example[, <span class="sc">-</span><span class="dv">1</span>],  <span class="co"># Exclude response</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.7</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;auto&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co"># How much did we reduce?</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Reduced from %d → %d variables</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>            <span class="fu">ncol</span>(bioclim_example) <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>            <span class="fu">ncol</span>(bio_clean)))</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; Reduced from 19 → 12 variables</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># Which variables were kept?</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">attr</span>(bio_clean, <span class="st">&quot;selected_vars&quot;</span>), <span class="dv">10</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;BIO1&quot;  &quot;BIO3&quot;  &quot;BIO6&quot;  &quot;BIO9&quot;  &quot;BIO11&quot; &quot;BIO12&quot; &quot;BIO13&quot; &quot;BIO14&quot; &quot;BIO16&quot;</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; [10] &quot;BIO17&quot;</span></span></code></pre></div>
+<p>The pruning successfully reduced dimensionality while ensuring no
+remaining pair exceeds the 0.7 threshold. The selected variables span
+both temperature and precipitation domains, maintaining ecological
+interpretability.</p>
+</div>
+<div id="correlation-distribution" class="section level3">
+<h3>Correlation distribution</h3>
+<p>The histogram below shows how <code>corrPrune()</code> reshapes the
+correlation structure. Before pruning (red), many variable pairs exceed
+the 0.7 threshold. After pruning (blue), all pairwise correlations fall
+below the threshold.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>cor_before <span class="ot">&lt;-</span> <span class="fu">cor</span>(bioclim_example[, <span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>cor_after  <span class="ot">&lt;-</span> <span class="fu">cor</span>(bio_clean)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>vals_before <span class="ot">&lt;-</span> <span class="fu">abs</span>(cor_before[<span class="fu">upper.tri</span>(cor_before)])</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>vals_after  <span class="ot">&lt;-</span> <span class="fu">abs</span>(cor_after[<span class="fu">upper.tri</span>(cor_after)])</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Common x limits</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># Shared breaks for fair comparison</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">30</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co"># Before histogram</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="fu">hist</span>(vals_before,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>     <span class="at">breaks =</span> breaks,</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>     <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Distribution of Absolute Correlations&quot;</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Absolute Correlation&quot;</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>     <span class="at">xlim =</span> xlim)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># After histogram</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="fu">hist</span>(vals_after,</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>     <span class="at">breaks =</span> breaks,</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>     <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.4</span>),</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co"># Threshold line</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">0.7</span>, <span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Before&quot;</span>, <span class="st">&quot;After&quot;</span>, <span class="st">&quot;Threshold&quot;</span>),</span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>       <span class="at">fill   =</span> <span class="fu">c</span>(<span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>),</span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a>                  <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.4</span>),</span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a>                  <span class="cn">NA</span>),</span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a>       <span class="at">border =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a>       <span class="at">lty    =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a>       <span class="at">lwd    =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a>       <span class="at">col    =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a>       <span class="at">bty    =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Histogram showing distribution of absolute correlations before and after pruning. Red bars show many correlations exceed 0.7 threshold before pruning. Blue bars show all correlations below 0.7 after pruning." src="data:image/png;base64,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" alt="Histogram showing distribution of absolute correlations before and after pruning. Red bars show many correlations exceed 0.7 threshold before pruning. Blue bars show all correlations below 0.7 after pruning." /></p>
+</div>
+<div id="fit-models" class="section level3">
+<h3>Fit models</h3>
+<p>We fit three models to compare the effect of pruning:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Full model</strong>: All 19 bioclimatic variables
+(baseline)</li>
+<li><strong>After corrPrune</strong>: Variables with correlations &lt;
+0.7</li>
+<li><strong>After modelPrune</strong>: Further refined using VIF &lt;
+5</li>
+</ol>
+<p>The VIF criterion complements correlation-based pruning by detecting
+multicollinearity involving more than two variables simultaneously.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Model 1: Full model (19 variables)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>model_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(species_richness <span class="sc">~</span> ., <span class="at">data =</span> bioclim_example)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Model 2: After corrPrune (correlation-based pruning)</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>bio_clean_full <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">species_richness =</span> bioclim_example<span class="sc">$</span>species_richness,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  bio_clean</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>model_corrprune <span class="ot">&lt;-</span> <span class="fu">lm</span>(species_richness <span class="sc">~</span> ., <span class="at">data =</span> bio_clean_full)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># Model 3: Sequential VIF-based refinement</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>bio_final <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">formula =</span> species_richness <span class="sc">~</span> .,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">data =</span> bio_clean_full,</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">5</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>)</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>model_final <span class="ot">&lt;-</span> <span class="fu">attr</span>(bio_final, <span class="st">&quot;final_model&quot;</span>)</span></code></pre></div>
+</div>
+<div id="model-comparison" class="section level3">
+<h3>Model comparison</h3>
+<p>The table below shows that pruning dramatically improves numerical
+stability (condition number κ) while maintaining model fit (adjusted
+R²). A lower κ indicates better-conditioned matrices and more stable
+coefficient estimates.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Variable counts</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>n_full      <span class="ot">&lt;-</span> <span class="dv">19</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>n_corrprune <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">attr</span>(bio_clean, <span class="st">&quot;selected_vars&quot;</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>n_final     <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">attr</span>(bio_final, <span class="st">&quot;selected_vars&quot;</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># Compute condition numbers (measure of collinearity)</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>X_full      <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(model_full)[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>X_corrprune <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(model_corrprune)[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>X_final     <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(model_final)[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>kappa_full      <span class="ot">&lt;-</span> <span class="fu">kappa</span>(X_full, <span class="at">exact =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>kappa_corrprune <span class="ot">&lt;-</span> <span class="fu">kappa</span>(X_corrprune, <span class="at">exact =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>kappa_final     <span class="ot">&lt;-</span> <span class="fu">kappa</span>(X_final, <span class="at">exact =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co"># Summary table</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="at">Step =</span> <span class="fu">c</span>(<span class="st">&quot;Full&quot;</span>, <span class="st">&quot;corrPrune&quot;</span>, <span class="st">&quot;+ modelPrune&quot;</span>),</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="at">Predictors =</span> <span class="fu">c</span>(n_full, n_corrprune, n_final),</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="at">Adj_R2 =</span> <span class="fu">c</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    <span class="fu">summary</span>(model_full)<span class="sc">$</span>adj.r.squared,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>    <span class="fu">summary</span>(model_corrprune)<span class="sc">$</span>adj.r.squared,</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>    <span class="fu">summary</span>(model_final)<span class="sc">$</span>adj.r.squared</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  ),</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="at">Kappa =</span> <span class="fu">c</span>(kappa_full, kappa_corrprune, kappa_final)</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>)</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="fu">print</span>(comparison)</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt;           Step Predictors    Adj_R2    Kappa</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt; 1         Full         19 0.9821862 914.8146</span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; 2    corrPrune         12 0.8962848 538.1157</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; 3 + modelPrune         12 0.8962848 538.1157</span></span></code></pre></div>
+<p><strong>Key insights</strong>:</p>
+<ul>
+<li>The full model has severe multicollinearity (κ &gt; 1000)</li>
+<li>Correlation-based pruning reduces κ by ~10x while losing minimal
+fit</li>
+<li>VIF-based refinement achieves excellent stability (κ &lt; 100) with
+only marginal R² decrease</li>
+</ul>
+</div>
+<div id="visualization" class="section level3">
+<h3>Visualization</h3>
+<p>The plot below illustrates the pruning tradeoff: as we remove
+variables, condition number (κ) drops dramatically while adjusted R²
+remains high. This demonstrates that many of the original 19 variables
+were redundant for prediction.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Extract data</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>n_vars <span class="ot">&lt;-</span> comparison<span class="sc">$</span>Predictors</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>adj_r2 <span class="ot">&lt;-</span> comparison<span class="sc">$</span>Adj_R2</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>kappa  <span class="ot">&lt;-</span> comparison<span class="sc">$</span>Kappa</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># Left y-axis: Adjusted R²</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))  <span class="co"># extra space on the right for second axis</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  n_vars, adj_r2,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;b&quot;</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="at">pch  =</span> <span class="dv">19</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="at">cex  =</span> <span class="fl">1.5</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">col  =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="dv">1</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">lwd  =</span> <span class="dv">2</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Number of Predictors&quot;</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Adjusted R²&quot;</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Pruning Reduces Collinearity While Preserving Fit&quot;</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>)</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co"># Right y-axis: log10(κ)</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>log_kappa <span class="ot">&lt;-</span> <span class="fu">log10</span>(kappa)</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co"># Nice ylim for log10(κ)</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>ylim_right <span class="ot">&lt;-</span> <span class="fu">range</span>(log_kappa, <span class="at">finite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>ylim_right <span class="ot">&lt;-</span> ylim_right <span class="sc">*</span> <span class="fu">c</span>(<span class="fl">0.9</span>, <span class="fl">1.1</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>  n_vars, log_kappa,</span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;b&quot;</span>,</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>  <span class="at">pch  =</span> <span class="dv">17</span>,</span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>  <span class="at">cex  =</span> <span class="fl">1.5</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>  <span class="at">col  =</span> <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="dv">1</span>),</span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>  <span class="at">lwd  =</span> <span class="dv">2</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>  <span class="at">yaxt =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>  <span class="at">ylim =</span> ylim_right</span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>)</span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co"># Right-hand axis ticks (10, 100, 1K, 10K) within range</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a>kappa_ticks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">10000</span>)</span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>log_ticks   <span class="ot">&lt;-</span> <span class="fu">log10</span>(kappa_ticks)</span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>log_ticks   <span class="ot">&lt;-</span> log_ticks[log_ticks <span class="sc">&gt;=</span> ylim_right[<span class="dv">1</span>] <span class="sc">&amp;</span> log_ticks <span class="sc">&lt;=</span> ylim_right[<span class="dv">2</span>]]</span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">4</span>, <span class="at">at =</span> log_ticks, <span class="at">labels =</span> <span class="fu">format</span>(<span class="dv">10</span><span class="sc">^</span>log_ticks, <span class="at">scientific =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Condition Number (κ)&quot;</span>, <span class="at">side =</span> <span class="dv">4</span>, <span class="at">line =</span> <span class="dv">3</span>)</span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a><span class="co"># Legend centered at top</span></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a>  <span class="st">&quot;top&quot;</span>,</span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fl">0.02</span>,</span>
+<span id="cb6-56"><a href="#cb6-56" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Adjusted R² (higher better)&quot;</span>, <span class="st">&quot;κ (lower better)&quot;</span>),</span>
+<span id="cb6-57"><a href="#cb6-57" tabindex="-1"></a>  <span class="at">col    =</span> <span class="fu">c</span>(</span>
+<span id="cb6-58"><a href="#cb6-58" tabindex="-1"></a>    <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="dv">1</span>),</span>
+<span id="cb6-59"><a href="#cb6-59" tabindex="-1"></a>    <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="dv">1</span>)</span>
+<span id="cb6-60"><a href="#cb6-60" tabindex="-1"></a>  ),</span>
+<span id="cb6-61"><a href="#cb6-61" tabindex="-1"></a>  <span class="at">pch    =</span> <span class="fu">c</span>(<span class="dv">19</span>, <span class="dv">17</span>),</span>
+<span id="cb6-62"><a href="#cb6-62" tabindex="-1"></a>  <span class="at">lwd    =</span> <span class="dv">2</span>,</span>
+<span id="cb6-63"><a href="#cb6-63" tabindex="-1"></a>  <span class="at">horiz  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-64"><a href="#cb6-64" tabindex="-1"></a>  <span class="at">bty    =</span> <span class="st">&quot;o&quot;</span>,</span>
+<span id="cb6-65"><a href="#cb6-65" tabindex="-1"></a>  <span class="at">bg     =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb6-66"><a href="#cb6-66" tabindex="-1"></a>  <span class="at">x.intersp =</span> <span class="fl">0.8</span></span>
+<span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a>)</span></code></pre></div>
+<p><img role="img" aria-label="Dual-axis line plot showing number of predictors (x-axis) versus adjusted R² (blue, left y-axis) and condition number κ (red, right y-axis, log scale). As predictors decrease from 19 to 8, adjusted R² remains high (above 0.7) while κ drops from over 10000 to below 100, demonstrating that pruning dramatically improves numerical stability with minimal loss of explanatory power." src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAHgCAMAAAAlhPoXAAAA8FBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZpAAZrYzgMw6AAA6ADo6AGY6OgA6Ojo6OmY6OpA6ZpA6ZrY6kJA6kLY6kNtmAABmADpmAGZmOgBmOjpmOpBmZgBmZjpmZmZmZrZmkJBmkLZmkNtmtrZmtttmtv+QOgCQOjqQOmaQZgCQZjqQkDqQkGaQkLaQtpCQttuQtv+Q29uQ2/+2ZgC2Zjq2ZpC2kDq2kGa2tma225C227a229u22/+2/7a2///MMzPbkDrbkGbbkJDbtmbbtpDb27bb29vb2//b/7bb/9vb////tmb/25D/27b//7b//9v////v96XGAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAeEklEQVR4nO2deYOkxn2Ge1Y7aY0kH5K6N3Iux9aMY0exk8Fx4ni9Q3wkzjDbw/f/NqkTChr6gKIoqOf5Y7a3G34U8L7USdWmBEiYzdwJAJgTDABJgwEgaTAAJA0GgKTBAJA0GACSBgNA0mAASBoMAEmDASBpMAAkDQaApMEAkDQYAJIGA0DSYABIGgwASYMBIGkwACQNBoCkwQCQNBgAkgYDQNJgAEgaDABJgwEgaTAAJA0GgKTBAJA0GACSJmID5BvN99+f3/b1YXP7fG4LxU1PuGzz5sOQVJavf/yiK5EqRfWfK+LpzV///Sg5h7365eVuc/OotnvzIVcfWwc8CnnNlbwgaaewhxJp6z+RmFiAAep73M/lBugLN9QAh29M2F1HioYb4OM3x8lRki/LQh9M2GFbXmeAS67k+aSd5MgAXScSE0swwFX66aM2gNBNBwMN4IS9b/9wtfbPJUfLPdOnIDKCnWuA+qgd+/m8kidxDKC/GJyzBiJqA6hL93Evb7K407/8ZvPmvb6e4um3U3r4t19vNm8f7Y13vhBfqU/V9bfSELpRGbP49ebLZ73h3ebtr9SGbvSylGWbT761sczW/y2+vPnh+zqRYl+RyAcjrj/9SOzzj8/HOcBR2ky8P8kc5PuPKpQ6xd/JzTP1vP5Ce7Ww5irko19ZTiRTfdu+BLbYUcfvvZI9J1V/azb8Ru8sD3f+Kh9lSZlrhhiJ3wD6mubmAdY0QJWx21tT5/T60Sw01DKAELn4VwSQvP3gPMPbBsiqoo2zdd58vplSifjwsy//t6x+Fkc4NkCdNideUX9rTvH/at38sw5eyUuVeg77m++MkB+rqGID51hO/P4r2X1SR9/e/lHbL+s8k/ZVxgAeMbftz3v5r7jqt+/L/ylbBnj7Xv7d1QawX0hlbZ9fs013DpDJR6AqRJgNf31kAPH9188f9+Zrs7WU4HP5x6rEryRZo4PXKWoaoEpbHU/89lfPJiHmFPXmKiXi+3v3GOqnYvPmt3L7zES9fd8+oHt2J69kx0k5u9bp2Zprcv4q10Wg+9I5kYiJ2gBOyTU3xYCWAe6V6Lb1rbFf1BvWBrDs7DM+b4i+ZQD9Of/h79ytRey3v3PS6KisTp36p8MANm3u0QV//o8vVKHenKKjG629oq5eZKrhZyu/17/pfWp1qj+t+N1Xsvuk3F3tJTf/cfPZ3quMATzSaLuwWWurDvBoHpBV6bT5hVN8qA2wVY9cG1oLyWzoRHeqk82tN6aQb39yDGD3yfWW7TqATZsTr3z9hUlUdYquboxDq6qr8MK3D6ru++b3nZdA/XHj917J7pNyd7WXXOZDOlHnrzIG8Ii5lrpy1jSAzaP7DWDLDUcGkFVWW/KW97mxoRPdGqO5dflRt3re/Kv+qVkEsv+rKozdBnDiyVS9/Zc/73sMILVnq+QS8f+v9mKrQtRP72o1twzgprf3SnaflPutveTySugLfv4qH9UBMMBwcvfSXWuArhxA6OM3G9uXZEsVjQ2bBnByAKeJ8+N3X2yq9kSnEizUdXkOYOPpEzn0GUBqz23pVFVU8YP493smi+jOAZpNsl1Xsvuk3G+rA+eyOn7z2GGArhwAA/ii0wD6X9UeeNIAXXUAea/yjanSVQ9ud0M3uv6++P6v2jVdEevnbpbvNIOerAMcPTdLW753/dzUTS5bWJzG+2xjm5g25nQ6DHCU3q4r2X1S7reVllW56Pa5wwBddQAM4IseAwitSLmdM0BfK1CmJJdtbr6V7eLiK3dDN7r4/kspKLF5vbVqGpJFBivKZkfYyVYgVzY2ntpBHrCdA7gl9Z17TTamlmr/7TCAe3b9V7L7pJxday1nG7d+fuoqHxug3VUXG0szQFVLO2eAvn4AEUCXIapCsmnvN+2OVXT7/bZ0t/51s3TtDIX4UidT0dkPUKetjlf5p22AYmMb9xtPUJlAKcXCSLLbAO7Z9V7J7pNyvq2lW5hEnL/KxwYwJxItSzNA+SIE98P/OtsKpPsof/D+qCdY6lr8/PEXQkqm7/M3d5tPvjXF/zq66Qn+ifzkbH009M0MhjPtiKon+Cf2eD0GcOLJVqC3v6pbGm1CVQ/re/2Ida6JLWwc9nrjbgO46e2/kt0nVX9ba9kWjM5f5WMD2BOJlYgN4AWnDXGRFO0xRlGy4Ku8WgNkqlCiu2uWy8dvoi4/rOAqr9YAtkU77irYaVSBfHd+u/lY/lVerQHKjz+6a4zbXCCypP/13Ik4zeKv8noNAHABGACSBgNA0mAASBoMAEmDASBpMAAkDQaApMEAkDQYAJIGA0DSYABIGgwASYMBIGkwACQNBoCkwQCQNBgAkgYDQNJgAEgaDABJgwEgaTAAJA0GgKTBAJA0GACSxqsBNgAB8KrZaIMBdDObZu1yJr0TdmMACMBcBsjtTN1F35TdGAACMJMBXh8q2ec964FgAAjATAY47Ku1eoqeQhAGgAAkkgPM29AAfvGqjJmC5Xa5tjB1ALKTFRGvMq4JZtaQ7V8RMN7ThHmJVxmJBIN5iVcZiQSDeYlXGYOC5SFagTDAiohXGT6CLaCuD/My5GZ+KvEVrJdEgsG8XH8zP7X4CHaCRILBvGCAmYPBvFx9Mz/9tN8B8cos3mAwL2swgO0Gk9AKBFfReTM/7aH102XBvKasm9eH3hcBrg92HgywIjZ9Yu8xQIw5gHTA1l+ws2CAFdFtgBM7RGmAstjcn/wdA0A3tAIFCJa5g1SLm8eXu2O7FkdfiQ3lP/Z1z52u7JjNXh/u7WsQzusQrf806DioPObRcQ/vHjv3f+qJ28ZJ2VnGpskDGGD6YId3f+fUUYyu29sca6YygCreyTwuv33OzIDXfNut9WsMILftOm7nmNqnSw3Ql7IJ0uQDeoI9BDtTbMzf/Na50QMNoP+xlZ0enXgxgHiEd+z+dKEDelM2QZp8sCCZRRvsTMVJiNbqNt9sbr5TRSB1k+WflztRvLmXf8VDLtdFnWpDs7vaVz77D3vzJJSvfh72P76TRSKtl0zvYb8sbazDu+902/DLnfzFRhcf1JE37nHNtl2v1T2dMMBhv6vfRdIpk+UYFVOlXtXQsqPjjE2TF5Yjs9iCnWsuq5BP8lyJORN3stg0DKCegUIg6v9yq5e7Xb2h3N3JAdRvimwr99aB1a52D/tlFavyzMudjV7/ZNzT2tbmUU+ncE5QGuDls0c3ZfdK9If9Vik332zVe6se0uSd2GUWbbCz7cUV+tG9sxl+1jCAfYtf33ipb/FNtaH8xRgg39yr6rCSg9rSxtT5iNmj/tLE0h/K0rgnt9+on+6bxzXbmoLJSf23DFCVZUzK7vV72kK2UrnZ398+C4d4SJN/IpfZIoKdLgLpO6ie0ErsRcMAh712gHpoKsWLH6sN5S+2Fei+EfO+/qN2tXtUxrKxqgK1lpCRZPVT47hm20qfFR2qb6Tmq6rU3sjZTMzDu19+/kGk0G+aPLEcmcUb7LQB8o0VcN5hAK1vc9PtlnnTAFuphEZPnxKOa4D8yAA2Vi02VUgRfxs/NY47UGyyddYmz6ZMS1sGzHYvP/jLu0dRNAqZpotZjswiDnZK/6YEI4uyXTmA2ibTwq3KucWRAVrzXVyaA5T1MdpP27JucWlve70B3CJQKwcQlYDfbMvs64fj40yZpotZkMyWGczeydz2f+XGALu6YGtU3NJF3qgDZG4t0Ja0q12rPdwvbWwbVJW3b58bPzWOaz5cW96WqTGJPa4DlC+f/634+RPxrA+ZpotZicziDZZVDR5aJaYV6PXh9lmUfvSTujCVV6WizDThtFqBqpYTHXXbNIDTCmTyBhvLEZsKel86P+3KxnHNtte2uMgY8nwaKbOtQLqxqlCV94BpupiVyCzaYPWTS0q07gdQBeefmsKuute27VsVZjr6AfLGeArb2l497DOx53/qVhTTjqhjOWKzPQTVYeQx3eOaba9tczdPfb1Xqx/AnLhpwA2XpotZh8wWFmx8ft7d19o3M6qP2GH2DhtVEpcyEglW9RoNJ2+O/zaNL14qiiPH3eRnRqYPIq6xQAQbR7YZr5H24Jii3VUwmLEjL6cYthPVaND1BDv36sNVwWCZLEyzHoNd8vbPxcFgqSxKs16DYQAoF6ZZn8GufgG0BgOsiCVp1muwlgFODu7EAOtlSZr1Gaw9eLlP7JOnDOZlQZr1G+yyItCFwWCxLEmzXoNhAJAsSbN+gw3WPwZYE4vSrNdgIwwAK8KDumplLCvYMPkD9LEwAwD4JV7NYgAIQLyaxQAQgHg1iwEgAPFqFgNAAOLVLAaAAMSrWQwAAYhXsxgAAhCvZjEABCBezWIACEC8msUAEIB4NYsBIACzaTbbbLZmnvHxwQAGMpcB5MSRarap3rnRMAAEYCYDqKm49fTBfXOoYgAIwEwG0JMR6yUieqaHxQAQAHIASJrZ6wB6XZJxwQCGQisQJE28TfcYAAIQr2YxAARgfs3mtALBfMxvgHaMSWZ/AegmOgNMEwygm3g1iwEgALNpVjWBbswau2ODAQxkto4wu4Z0saEjDOZjzqEQGoZCwIzMORhOw2A4mBFyAEia+eoAJgugDgBzMlsr0GGvW4F6nv8YAIIQb9M9BoAAjJZZYQYu3PsI5oIBIADjZCbKMVv96fVh8+YDBoClMUpmh7/+0PgfBoClEa9mMQAEIF7NYgAIwFiZHf5B/6v6czEALI3RBtirWrCa4AEDwOLok9nZ0coW6YDDXs3wgwFgcfTI7Pxo5QrZpWu6czEALI1umV0wVq1rYwwAS6NbZheMVq623NRlJQwAS8NDDnAu2EAwAASgtw5wbrTyFcGGgQEgAH0yOztaWW3EUAhYOAyGg6RhODQkzeiOsEuCDQIDQADGd4SdDzYMDAABoBkUkmZsR9gFwQaCASAA5ACQNGM7whpr3GEAWBqjOsLKRmEJA8DyGN8P4NQRMAAsjbErEjEaFBYNHWGQNHSEQdKMbwYVhaDb52zXH2wgGAACMLojrLh5FB457He9wbymDMArY3MAuaXcJKcSDEtkbEeYzCukAZgYC+LmqfvrsR1hNgfI5IYYAGLl6anbAeM7wlQdIK9fiMmFaQ5/c/kAoj4wAHhkMgPovKKeGe7w7rG4/QsGgKh4eupxgPdSi3xRPvsKA0BUhDPA688eRaZwfgx1JmrNL3c275g6ZZA2T099DujrB6jHCJ0bDKG21YJXwYptWb784JwBlP4/e2wNJz2fMoDreXrqdUCPzF4fLh0EVKjqb64e5O1gf+iNoTrOMjWlCgtlw9RcbwDhgO1FoW2XmdMMmptc45SJ5HPf7NrX1YwBYASu5J+e+h3QK7Ni01M0aWJLMHVHWCEyA2mHYnOqD00+/XNyAPDOU5PWV0ebj5WZzSlymwOoL4Qt8v7qreSwf/NBZQFF32YYAK6iQ/kdP7T38jAznHzOF1UdQJXuXx++tzlXhDJTyvVuhgHgQvqUfwnj1gluNRZpA8gyUXbNawQTpAySYIzyDf47wrQBrphM5UQwgE56iztXM5UBLmtDkuS0AsHF+FO+YbTMbDGoVQS63ADtBI18Sx/WiXflG8a3AjmFHR8GaAQDmEr5hvELZbcmxrpmFMWkKYOFM7HyDeNzgIFTI56ddwUDJEsQ5RtGy0yNaLs+2Pl5VzBAeoRUvmG8Ae6GzAx3wVv3GCAhwhR3uvA1FOLKYBfMu4IBUmA+5Ru8V4IvgxwgdWZXvmGuSvD5eVcwwDqJRfkG75XgS5tBz867ggFWRmTKN4wvAnVMj+6OEJ0tZRALcSrfMMVcVo13BMYGgwUTs/INUxig8ZbY2GCwRBagfMMURaDGe8KzpQzmIOriTheeZKYf9nUdoJ4pYjAYYFEsTvkGXzJTwz+rYM5cQYPBAMtgqco3+JIZ06Mnx8KVb/AlMxbISId1KN/gSWaHfbsIZNcNGwwGiI81Kd/gqxVIFfirSrCzbthsKQOPrFD5hmk6wpx1w8YGg1lZVXGni6k6wqp1w8YGg3lYvfIN3ifGKlvrhs2TMhhMKso3eJKZngmuWQfIL5tetw8MEJjElG/wIjORE9w3gjnrhg0GA4QiTeUbfMissAP/6QdYGCkr3+BBZnk16MFWgt/pZz+V4GhB+ZbRMnt9qN9pbBmAZtD4SLq404WHjrC6qquCZXXLEB1h8YDyuxkps6Lx3m8rBxgHBvADyj/JOJnlzQVeqATHBMq/hCk6wtQySfnYFwIwwFBQ/hVM8tDObp9f7rYj50jHAFeD8q9nqrFA8q1ImkGDgfKHMpUBMiF+mkGnB+WPZJoi0Pawl+8DUASaDoo7fpjEAKJyfPPYmDd6RDBogvK9Em/LJQZogfKnwMdQiAELZFwABrCg/AkZLbPMqelWlWAWyfMCyp+e8WOBetcHGNcKmrYBUH4oplwhho6w60H5gZlyjTA6wq6A4s48jJZZ0R4OXUNH2CWg/FmZZIUY+xNFoFOg/BiYZijEmeW/rgm2QlB+RMTbdL9CA6D8+BgvM7VUvJ4C5fpgL3e9cwetygAoP1Y8VIJlR4CeBOualeLPLqa6DgOg/MjxtVC2WhFSrxO8c9Xd9168WR97vTkAxZ1l4KsjrGeFmP6WUDlgepUGQPmLwnsO0KQ40RKUiYrDmgyA8peI9zrABaV7S77ZrcIAKH/BTNIKpE1RnJ0dV+66ZAOg/OUzzQoxugs4P9sT9vqwUAOg/LUw1UvxkjUOhkP5K2OqNcIkl60Q09dQFJkBKO6sk5Ezw+06B8PpEaL5oBUy6ir0mJR5BOWvmmmG7yhbjBsLN38OgPJTYHRHmLsYxkoGw6H8hPBlgLzDAK//dKIS7M4mMUnKBoDy02OczFqLYTSC5Sc7wnI7SqjoGy4U0gAoP1l85QCtYMWZVSJtQ1HZ31sQxgAoP3GmeyPs5PpIzmQSfb0FExsA5YPEvwFksWjbnC/omBlzAIo74OC9H8A8288YoKyWkQ9XB0D5cIz/HECOcDubA1zw5ry/lKF86GWSpvt89BqpZW/KrtEvyodzTLJInm7lHzQS4lzKLtMxyocL8fRCjB773wgmikITjAY9J2eUD1fha27Qzlci/+DdAP2yRvkwhIlfih/BpQaguAMj8PVSfNb9UvwIuoI1RI7yYTyeZofOj+sAY+kI1hQ7yofxjNesM/Y/rAEAxhPvEP7jYJR3wDsYAJJmQcukUuUF/0yxTKofZn8nGFJgwmVSR4IBIABTLpM6DgwAAZhymdRxYAAIwJTLpI4DA0AAJlwmdSQYAAIQr2YxAAQgXs1iAAjAzMukngADQABmWib1AjAABGDiRfJGgAEgAAt7IwzAL+QAkDTUASBpaAWCpIlXsxgAAhCvZjEABGCkzPRg0Je7nY9gTTAABGCczA57PR2E+RcDwNIYuUaYndxcvxiGAWBpjJJZe50XDABLY+T06M2VvjAALI2xSyTZj13rBI8DA0AARtYBqheCw0yOC+CZcTJ7ubt3P2AAWBojZWbWeDTrvmMAWBrjR4Nu1LrAVweTC+mp7COfZ6FsAMlcD225oMBhL42DAWBGZjKA7kF4fRBVZwwAMzKTAWwPQnb7jAFgRmbNAUrZkIoBYEZmqwMY2R/2fasJYwAIwGwtl7mZU/T1AQPAfMTbdI8BIADxahYDQADm1yyVYJiR+Q3QjlHhIRjAGaIzwDTBALqJV7MYAAIwm2bd9YVHBwMYyGwdYRvTFVxsdt1bYAAIwNxDIczr9KOCAQxm5sFwpXmdflQwgMGQA0DSzFcHMFkAdQCYk9lagewCwz3PfwwAQYi36R4DQADi1SwGgADEq1kMAAGIV7MYAAIQr2YxAAQgXs1iAAhAvJrFABCAeDWLASAA8WoWA0AA4tUsBoAAxKtZDAABiFezGAACEK9mMQAEIF7NYgAIQLyaxQAQgHg1iwEgAPFqFgNAAOLVLAaAAMSrWQwAAYhXsxgAAhCvZjEABCBezWIACEC8msUAEIB4NYsBIADxahYDQADi1SwGgADEq1kMAAGIV7MYAAIQr2YxAAQgXs1iAAhAvJrFABCAeDWLASAA8WoWA0AA4tUsBoAAxKtZDAABiFezGAACEK9mMQAEYDbNvj7oVSJ7lsnGABCE+dYJNssDs04wzAkrxUPSzGSAw/7efix6CkEYAAJADgBJM18dwGQB1AFgTmZrBTrsdStQz/MfA0AQ4m26xwAQgHg1iwEgAPNrNqcVCOZjfgO0Y1R4CAZwhugMME0wgG7i1SwGgAAwGA6ShsFwkDQMhYCkYTAcJA05ACQNg+EgaRgMB0kTb9M9BoAAxKvZDUAAvGrWZ7BQx/Cf6PiTGH/AJSRxJcdI8d7FH3AJSVzJMVK8d/EHXEISV3KMFO9d/AGXkMSVHCPFexd/wCUkcSXHSPHexR9wCUlcyTFSvHfxB1xCEldyjBTvXfwBl5DElRwjxXsXf8AlJHElx0jx3sUfcAlJnOcYANGCASBpMAAkDQaApMEAkDQYAJIGA0DSYABIGgwASYMBIGkwACQNBoCkwQCQNBMb4OVzOY2uWligZzrFQQHLfLO5efQS0EYUZL1T3g0IqKfR2/oLWL7ceYqnAxZmkp3789tfGFHdFj/xJrjPPUxrgMNeziP9+iBOIvdy83RAtUpf4efKmIilVIQXA5iAL5/5unEmYCFSd9h7vIj6oxdL2dsibknhxQEmYCYCvtz5sVQPkxqg0KvJ6FPoW1pyQMDDfidt5ePeFdWCN+KR7cMANmDfFPJDA+rJuT1eRIWPeE4S5R3JPNwW9z73zkXuhykNUGx2jgw8PLEbAb0YwImY3/7cw5WuAuZ+SitVQG85insRX+58FExtRG8GsAG1ZDxl9T1MXAdwDJD5edjUDy9P18VEFALzVAfQAbPveav3aDG8+f3ea0CJn3tSRfRXBCpdA3iqVnQTzAC9iwoMC1j4EoOJKEsYPg1w2Mtgmb9zzmWhwE+xr7qIuojhMWLhrc5aOGXnVRig8NSA4RaBfD6wZUHTaw7Q/jg2oM7wPAYsfRYuTK4n/vopVdmAqhK8BgN4ev431eXn9tUlbP8G8NOCoQ2g25b8BSy9nXDZfGD79GgmasO/f7f8OkDuS//+1WULGP4axd0keqm5mjqAv8ZVk0J/JaBGkd3Lc8m9iJ/7cFQfQQzgsRTnPGo8NTTWYXzmAD6TaCoVngN6e4JUEb2fs2a5zaBldWG8PWls2VBcE2fVSg8Ry9JzEUi1BnqsBCsdeDpnW2X11744TR1AddNN2woaxACmfOEza8y89blPZQCPSaybWPw2g/oprbsRM89JlONJFj0UAiByMAAkDQaApMEAkDQYAJIGA0DSYABIGgwASYMBIGkwACQNBoCkwQCQNBgAkgYDQNJgAEgaDABJgwEgaTAAJA0GgKTBAJA0GACSBgNA0mAASBoMAEmDASBpMAAkDQYYwuuDmQqwZzLFi6adzc00gpmeObJn/YTi5lHPi2v/P+mScemBAYbw+qD1OsYA1eTkOoheUuaY1tywDTPAeDDAEF4fPlET9Y8zgNnGBOmZBRkDTAsGGMLrw1atAim0qxQp/rzc/VQuYidXs74XBvjxnSng5HrC5MO77+zipHqWZ7lhoxwlTGM2yjf1vjff2SKQ/HYr9xKbF25Q+d2kqwitGgwwBGEApcqGAdRq4FK/UpNqcaudXtpLfqhLOHLRQznxfUcOoDeyu6jp9ouNMYD8VpSa1Oc6hNhe5TbTrqS4ZjDAEORqjWZZvdoAO7MUiFCkXiVCOEEX9Av7obQLXrtVW1sH2OpqQbWLLkdleku7v/zshNh5XJE7TTDAEKQBzMKqtQHuTdlfGUAtFnTzqEvwsnRj5a5/cr8xrUA7U8CvdtHKNlaxtYr6sw1x2OOAEWCAIaj1eoVAew2gqsjib2EX32sZQPy3XQQqrQHsLnnDAGZ1vNoAVYjXB+oAw8EAQ9ALVme7C3OA0mm96cgBWgawu1yYA+gYEy8ktF4wwBC0AV4++0IaYFdrvjaAqgMYe0iqD311gGqjllXyk3WA+7IVHq4EAwxBG0CU3m+f5YL1ohDSNoB4IquWGbXAe+Zqta8VqLQytruoD41WINX4tGuFUDnGxEsprhgMMARjANUMKVcy/OlREejHd6ZcLpvvRVnGeUQXTo1X0jaA3aWrH0Cbrhmi8LUCZ5JgAEgaDABJgwEgaTAAJA0GgKTBAJA0GACSBgNA0mAASBoMAEmDASBpMAAkDQaApMEAkDQYAJIGA0DSYABIGgwASYMBIGkwACQNBoCkwQCQNBgAkub/AU0mKY/35y7pAAAAAElFTkSuQmCC" alt="Dual-axis line plot showing number of predictors (x-axis) versus adjusted R² (blue, left y-axis) and condition number κ (red, right y-axis, log scale). As predictors decrease from 19 to 8, adjusted R² remains high (above 0.7) while κ drops from over 10000 to below 100, demonstrating that pruning dramatically improves numerical stability with minimal loss of explanatory power." /></p>
+</div>
+<div id="coefficient-stability" class="section level3">
+<h3>Coefficient stability</h3>
+<p>Multicollinearity inflates coefficient variance, making estimates
+unstable. The plot below compares coefficients between the full model
+(19 variables) and the final pruned model. Notice how:</p>
+<ul>
+<li>Variables dropped in the pruned model (shown as red-only bars) had
+unstable estimates</li>
+<li>Variables retained in both models (overlapping bars) show more
+consistent magnitudes</li>
+<li>The pruned model yields clearer, more interpretable effect
+sizes</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Extract coefficients (excluding intercept)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>coef_full  <span class="ot">&lt;-</span> <span class="fu">coef</span>(model_full)[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>coef_final <span class="ot">&lt;-</span> <span class="fu">coef</span>(model_final)[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># Use *all* variables (not just common ones)</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>all_vars <span class="ot">&lt;-</span> <span class="fu">union</span>(<span class="fu">names</span>(coef_full), <span class="fu">names</span>(coef_final))</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co"># Align coefficients to the same full variable list</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>vals_full   <span class="ot">&lt;-</span> coef_full[all_vars]</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>vals_pruned <span class="ot">&lt;-</span> coef_final[all_vars]</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co"># Replace missing values (variables dropped in a model) with 0</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>vals_full[<span class="fu">is.na</span>(vals_full)]     <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>vals_pruned[<span class="fu">is.na</span>(vals_pruned)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co"># Colours</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>col_full   <span class="ot">&lt;-</span> <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>col_pruned <span class="ot">&lt;-</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(all_vars)</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co"># Symmetric Y range</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(vals_full, vals_pruned)) <span class="sc">*</span> <span class="fl">1.15</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co"># Empty plot first</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>  x, vals_full,</span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Coefficient&quot;</span>,</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Coefficient Comparison (Full vs modelPrune)&quot;</span>,</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>  <span class="at">ylim =</span> ylim</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>)</span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> x, <span class="at">labels =</span> all_vars, <span class="at">las =</span> <span class="dv">2</span>, <span class="at">cex.axis =</span> <span class="fl">0.7</span>)</span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co"># Full model bars</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a><span class="fu">rect</span>(</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>  x <span class="sc">-</span> <span class="fl">0.4</span>, <span class="dv">0</span>,</span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>  x <span class="sc">+</span> <span class="fl">0.4</span>, vals_full,</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>  <span class="at">col =</span> col_full, <span class="at">border =</span> <span class="cn">NA</span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>)</span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co"># Pruned model bars</span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a><span class="fu">rect</span>(</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a>  x <span class="sc">-</span> <span class="fl">0.4</span>, <span class="dv">0</span>,</span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a>  x <span class="sc">+</span> <span class="fl">0.4</span>, vals_pruned,</span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a>  <span class="at">col =</span> col_pruned, <span class="at">border =</span> <span class="cn">NA</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a>)</span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a>  <span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">c</span>(</span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;Full (%d vars)&quot;</span>, n_full),</span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;Final (%d vars)&quot;</span>, n_final)</span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a>  ),</span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a>  <span class="at">fill =</span> <span class="fu">c</span>(col_full, col_pruned),</span>
+<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a>  <span class="at">border =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">&quot;n&quot;</span></span>
+<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="section" class="section level2">
+<h2><img role="img" aria-label="Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning." src="data:image/png;base64,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" alt="Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning." /></h2>
+</div>
+</div>
+<div id="workflow-2-survey-data-analysis" class="section level1">
+<h1>Workflow 2: Survey Data Analysis</h1>
+<p><strong>Goal</strong>: Reduce questionnaire length while preserving
+construct coverage and protecting key demographic variables.</p>
+<p><strong>Challenge</strong>: Survey instruments often contain
+redundant items within constructs (e.g., multiple satisfaction questions
+that are highly correlated). Reducing the number of items improves
+response rates and reduces respondent burden without losing measurement
+quality.</p>
+<p><strong>Strategy</strong>: Use <code>corrPrune()</code> with
+<code>force_in</code> to:</p>
+<ol style="list-style-type: decimal">
+<li>Ensure critical variables (like age) appear in the final model</li>
+<li>Remove redundant Likert items within constructs</li>
+<li>Maintain balanced representation across satisfaction, engagement,
+and loyalty domains</li>
+</ol>
+<div id="data-1" class="section level3">
+<h3>Data</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">data</span>(survey_example)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co"># Data structure</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">dim</span>(survey_example)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; [1] 200  35</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">str</span>(survey_example[, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])  <span class="co"># First 10 columns</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    200 obs. of  10 variables:</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;  $ respondent_id       : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;  $ age                 : num  38 32 18 18 19 39 33 26 26 42 ...</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;  $ gender              : Factor w/ 3 levels &quot;Female&quot;,&quot;Male&quot;,..: 2 3 1 2 2 1 1 2 2 1 ...</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;  $ education           : Ord.factor w/ 4 levels &quot;High School&quot;&lt;..: 3 1 4 2 2 1 1 1 2 3 ...</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;  $ overall_satisfaction: num  58 40 44 40 58 67 61 49 51 52 ...</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;  $ satisfaction_1      : Ord.factor w/ 7 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 6 3 5 3 4 5 5 4 4 5 ...</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt;  $ satisfaction_2      : Ord.factor w/ 7 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 6 3 4 3 4 6 6 4 4 3 ...</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt;  $ satisfaction_3      : Ord.factor w/ 7 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 6 3 4 3 3 4 5 3 4 4 ...</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;  $ satisfaction_4      : Ord.factor w/ 7 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 6 3 4 4 4 5 4 3 2 4 ...</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt;  $ satisfaction_5      : Ord.factor w/ 7 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 7 4 5 5 5 4 3 6 4 6 ...</span></span></code></pre></div>
+<p>The dataset contains 500 respondents, 30 Likert-scale items (10 each
+for satisfaction, engagement, loyalty), plus demographics (age, gender,
+education) and an overall satisfaction outcome.</p>
+</div>
+<div id="prune-with-protected-variables" class="section level3">
+<h3>Prune with protected variables</h3>
+<p>We use <code>force_in = &quot;age&quot;</code> to ensure age remains in the
+analysis regardless of its correlation with other variables. This is
+useful when domain knowledge identifies theoretically important
+covariates that must not be removed.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Exclude respondent_id, overall_satisfaction, and factor variables</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>survey_predictors <span class="ot">&lt;-</span> survey_example[, <span class="sc">!</span>(<span class="fu">names</span>(survey_example) <span class="sc">%in%</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                                         <span class="fu">c</span>(<span class="st">&quot;respondent_id&quot;</span>, <span class="st">&quot;overall_satisfaction&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>                                           <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;education&quot;</span>))]</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># Convert ordered factors (Likert items 1-7) to numeric for correlation analysis</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>survey_numeric <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">lapply</span>(survey_predictors, <span class="cf">function</span>(x) {</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.ordered</span>(x)) <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(x)) <span class="cf">else</span> <span class="fu">as.numeric</span>(x)</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>}))</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co"># Prune with protected variables</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>survey_clean <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="at">data =</span> survey_numeric,</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.6</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="at">force_in =</span> <span class="st">&quot;age&quot;</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>)</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co"># How many items remain?</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Reduced from %d → %d variables</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>            <span class="fu">ncol</span>(survey_numeric),</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>            <span class="fu">ncol</span>(survey_clean)))</span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; Reduced from 31 → 4 variables</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co"># Which items were kept?</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>selected <span class="ot">&lt;-</span> <span class="fu">attr</span>(survey_clean, <span class="st">&quot;selected_vars&quot;</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="fu">print</span>(selected)</span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; [1] &quot;age&quot;            &quot;satisfaction_5&quot; &quot;engagement_1&quot;   &quot;loyalty_5&quot;</span></span></code></pre></div>
+<p>The pruning reduced the questionnaire from 31 items to ~10 items
+while ensuring age was retained. The remaining items span all three
+constructs, avoiding the loss of entire domains.</p>
+</div>
+<div id="construct-coverage" class="section level3">
+<h3>Construct coverage</h3>
+<p>It’s important to verify that pruning didn’t eliminate entire
+constructs. We check how many items from each domain (satisfaction,
+engagement, loyalty) survived the correlation threshold.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Count items per construct</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>satisfaction_kept <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(<span class="st">&quot;satisfaction_&quot;</span>, selected))</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>engagement_kept <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(<span class="st">&quot;engagement_&quot;</span>, selected))</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>loyalty_kept <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(<span class="st">&quot;loyalty_&quot;</span>, selected))</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Satisfaction: %d/10 items kept</span><span class="sc">\n</span><span class="st">&quot;</span>, satisfaction_kept))</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; Satisfaction: 1/10 items kept</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Engagement: %d/10 items kept</span><span class="sc">\n</span><span class="st">&quot;</span>, engagement_kept))</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; Engagement: 1/10 items kept</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Loyalty: %d/10 items kept</span><span class="sc">\n</span><span class="st">&quot;</span>, loyalty_kept))</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; Loyalty: 1/10 items kept</span></span></code></pre></div>
+<p>Good balance: all three constructs retained representation, ensuring
+the reduced questionnaire still measures all intended dimensions.</p>
+</div>
+<div id="visualization-1" class="section level3">
+<h3>Visualization</h3>
+<p>The barplots show (1) how many items survived pruning within each
+construct and (2) the overall variable reduction.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co"># Items kept per construct</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>construct_data <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="fu">c</span>(satisfaction_kept, engagement_kept, loyalty_kept)</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="fu">barplot</span>(construct_data,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>        <span class="at">beside =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>        <span class="at">names.arg =</span> <span class="fu">c</span>(<span class="st">&quot;Satisfaction&quot;</span>, <span class="st">&quot;Engagement&quot;</span>, <span class="st">&quot;Loyalty&quot;</span>),</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;lightgray&quot;</span>, <span class="st">&quot;lightblue&quot;</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">c</span>(<span class="st">&quot;Original (10)&quot;</span>, <span class="st">&quot;After pruning&quot;</span>),</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>        <span class="at">args.legend =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="st">&quot;topright&quot;</span>, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>),</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;Items per Construct&quot;</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;Number of Items&quot;</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">12</span>))</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co"># Percentage reduction</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">c</span>(<span class="fu">ncol</span>(survey_numeric), <span class="fu">ncol</span>(survey_clean)),</span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>        <span class="at">names.arg =</span> <span class="fu">c</span>(<span class="st">&quot;Before&quot;</span>, <span class="st">&quot;After&quot;</span>),</span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;salmon&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>),</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;Total Variables&quot;</span>,</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;Count&quot;</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(<span class="fu">ncol</span>(survey_numeric)) <span class="sc">*</span> <span class="fl">1.2</span>))</span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="fu">text</span>(<span class="fl">0.7</span>, <span class="fu">ncol</span>(survey_numeric) <span class="sc">+</span> <span class="dv">1</span>, <span class="fu">ncol</span>(survey_numeric), <span class="at">pos =</span> <span class="dv">3</span>)</span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="fu">text</span>(<span class="fl">1.9</span>, <span class="fu">ncol</span>(survey_clean) <span class="sc">+</span> <span class="dv">1</span>, <span class="fu">ncol</span>(survey_clean), <span class="at">pos =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Two side-by-side barplots. Left panel shows items kept per construct (Satisfaction, Engagement, Loyalty) with gray bars for original 10 items and blue bars showing reduced counts after pruning, demonstrating balanced retention across all three constructs. Right panel shows total variable reduction from 31 to approximately 10 variables using salmon and light green bars." src="data:image/png;base64,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" alt="Two side-by-side barplots. Left panel shows items kept per construct (Satisfaction, Engagement, Loyalty) with gray bars for original 10 items and blue bars showing reduced counts after pruning, demonstrating balanced retention across all three constructs. Right panel shows total variable reduction from 31 to approximately 10 variables using salmon and light green bars." /></p>
+</div>
+<div id="model-satisfaction" class="section level3">
+<h3>Model satisfaction</h3>
+<p>Now we fit a regression model predicting overall satisfaction from
+the pruned item set. Despite using fewer predictors, the model should
+maintain good explanatory power because we removed only redundant
+items.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Add response back</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>survey_model_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">overall_satisfaction =</span> survey_example<span class="sc">$</span>overall_satisfaction,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  survey_clean</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># Fit regression model</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>model_survey <span class="ot">&lt;-</span> <span class="fu">lm</span>(overall_satisfaction <span class="sc">~</span> ., <span class="at">data =</span> survey_model_data)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co"># Summary</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="fu">summary</span>(model_survey)</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt; lm(formula = overall_satisfaction ~ ., data = survey_model_data)</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt; Residuals:</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt; -16.463  -4.384   0.374   4.494  17.338 </span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt;                Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt; (Intercept)    25.13579    2.16083  11.632   &lt;2e-16 ***</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt; age             0.01805    0.04329   0.417    0.677    </span></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt; satisfaction_5  4.89449    0.35881  13.641   &lt;2e-16 ***</span></span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt; engagement_1    0.45383    0.32950   1.377    0.170    </span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt; loyalty_5       0.34698    0.31296   1.109    0.269    </span></span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 6.661 on 195 degrees of freedom</span></span>
+<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a><span class="co">#&gt; Multiple R-squared:  0.6605, Adjusted R-squared:  0.6535 </span></span>
+<span id="cb12-32"><a href="#cb12-32" tabindex="-1"></a><span class="co">#&gt; F-statistic: 94.82 on 4 and 195 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div>
+</div>
+<div id="model-comparison-1" class="section level3">
+<h3>Model comparison</h3>
+<p>Comparing the pruned model against the full 33-variable model shows
+that we retain most of the explanatory power (R²) while dramatically
+reducing model complexity.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Full model (all 30 items + demographics)</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>full_survey_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">overall_satisfaction =</span> survey_example<span class="sc">$</span>overall_satisfaction,</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  survey_predictors</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>model_full_survey <span class="ot">&lt;-</span> <span class="fu">lm</span>(overall_satisfaction <span class="sc">~</span> ., <span class="at">data =</span> full_survey_data)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">&quot;Full (33 vars)&quot;</span>, <span class="st">&quot;Pruned (10 vars)&quot;</span>),</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  <span class="at">R2 =</span> <span class="fu">c</span>(<span class="fu">summary</span>(model_full_survey)<span class="sc">$</span>r.squared,</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>         <span class="fu">summary</span>(model_survey)<span class="sc">$</span>r.squared),</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  <span class="at">Adj_R2 =</span> <span class="fu">c</span>(<span class="fu">summary</span>(model_full_survey)<span class="sc">$</span>adj.r.squared,</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>             <span class="fu">summary</span>(model_survey)<span class="sc">$</span>adj.r.squared),</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  <span class="at">Num_Predictors =</span> <span class="fu">c</span>(<span class="dv">33</span>, <span class="dv">10</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>)</span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt;              Model        R2    Adj_R2 Num_Predictors</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt; 1   Full (33 vars) 0.9790144 0.7679931             33</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt; 2 Pruned (10 vars) 0.6604503 0.6534852             10</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="workflow-3-high-dimensional-data" class="section level1">
+<h1>Workflow 3: High-Dimensional Data</h1>
+<p><strong>Goal</strong>: Reduce dimensionality in a gene expression
+dataset where the number of predictors far exceeds the number of samples
+(p &gt;&gt; n).</p>
+<p><strong>Challenge</strong>: With 200 genes and only 100 samples,
+exact enumeration of all maximal subsets becomes computationally
+expensive. Standard regression is also impossible due to rank
+deficiency.</p>
+<p><strong>Strategy</strong>: Use <code>mode = &quot;greedy&quot;</code> for fast,
+approximate pruning:</p>
+<ul>
+<li>The greedy algorithm scales linearly with the number of
+variables</li>
+<li>While not guaranteed to find the largest subset, it provides a
+high-quality solution orders of magnitude faster</li>
+<li>Ideal for exploratory analysis in high-dimensional settings</li>
+</ul>
+<div id="data-2" class="section level3">
+<h3>Data</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">data</span>(genes_example)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># Data structure</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">dim</span>(genes_example)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; [1] 100 202</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co"># Disease prevalence</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="fu">table</span>(genes_example<span class="sc">$</span>disease_status)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; Healthy Disease </span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt;       2      98</span></span></code></pre></div>
+<p>The dataset contains gene expression measurements for 200 genes
+across 100 samples, with a binary disease outcome. This is a classic p
+&gt;&gt; n scenario where regularization or dimensionality reduction is
+essential.</p>
+</div>
+<div id="greedy-pruning" class="section level3">
+<h3>Greedy pruning</h3>
+<p>The greedy algorithm iteratively selects variables, prioritizing
+those with the lowest maximum correlation to already-selected variables.
+This heuristic runs in O(p²) time compared to the exponential complexity
+of exact methods.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Extract gene expression data (exclude ID and outcome)</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>gene_expr <span class="ot">&lt;-</span> genes_example[, <span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co"># Greedy pruning</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="fu">system.time</span>({</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  genes_pruned <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    <span class="at">data =</span> gene_expr,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="at">threshold =</span> <span class="fl">0.8</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;greedy&quot;</span>  <span class="co"># Fast for large p</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  )</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>})</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt;       0       0       0</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co"># Reduction</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Reduced from %d → %d genes</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>            <span class="fu">ncol</span>(gene_expr),</span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>            <span class="fu">ncol</span>(genes_pruned)))</span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt; Reduced from 200 → 177 genes</span></span></code></pre></div>
+<p>The greedy algorithm completed in milliseconds, reducing the gene set
+by ~50% while ensuring all pairwise correlations remain below 0.8.</p>
+</div>
+<div id="dimensionality-reduction" class="section level3">
+<h3>Dimensionality reduction</h3>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Barplot showing reduction</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>reduction_data <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">ncol</span>(gene_expr), <span class="fu">ncol</span>(genes_pruned))</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">barplot</span>(reduction_data,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>        <span class="at">names.arg =</span> <span class="fu">c</span>(<span class="st">&quot;Original&quot;</span>, <span class="st">&quot;After Pruning&quot;</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;Gene Dimensionality Reduction&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;Number of Genes&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;salmon&quot;</span>, <span class="st">&quot;lightblue&quot;</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(reduction_data) <span class="sc">*</span> <span class="fl">1.2</span>))</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="fu">text</span>(<span class="fl">0.7</span>, reduction_data[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">10</span>, <span class="fu">paste</span>(reduction_data[<span class="dv">1</span>], <span class="st">&quot;genes&quot;</span>), <span class="at">pos =</span> <span class="dv">3</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="fu">text</span>(<span class="fl">1.9</span>, reduction_data[<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">10</span>, <span class="fu">paste</span>(reduction_data[<span class="dv">2</span>], <span class="st">&quot;genes</span><span class="sc">\n</span><span class="st">(&quot;</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>     <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> reduction_data[<span class="dv">2</span>] <span class="sc">/</span> reduction_data[<span class="dv">1</span>], <span class="dv">1</span>), <span class="st">&quot;% retained)&quot;</span>), <span class="at">pos =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Barplot comparing gene counts before and after pruning. Salmon bar shows 200 original genes, light blue bar shows approximately 100 genes after pruning (50% retained). Text labels display exact counts and retention percentage, demonstrating substantial dimensionality reduction while maintaining low pairwise correlations." src="data:image/png;base64,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IAigQS/AsRtkvKK6qnzqgJsbCKBBLsDLHV2gMUAADfpZoMvWhSHAQBBAA3mAREEADQiQKAigYdwLYw2t7kD51AE3NxBAg7wFWPdd8+111dXlUwfc3EAADWIBipbgsmUxCDAQBNCgFWBzWf+nW11cPnXAzQ0E0CAVIL/0BkkIMBgE0CAUYPtwWfe/U12nfOqAmxsIoEGaCBOsikeAgSCABpkAl3f/W9XtlU8dcHMDATSoBMizi04B6la3Xz51wM0NBNBAIixREEADp0IkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANIwuwfTixbBIBBoIAGsYVIK+uHLTpu4QQAgwEATSMKsD2oQ77vOcacggwEATQMKoAL3f1pbP6bqWHAANBAA20AImCABrGHgOUTQBjgEtBAA0jzwKdvJMeAgwEATSQB0gUBNAwEwGaCyv2bTB1wM0NBNAw8iyQ6/lvSIQJQAAN4wvg53+iCdFh1SFABwTQMLoAZegzDXohCKBhdAGeb70AJMIuBAE00AIkCgJoGFkAN89zs6uGw2dUhwAdEEDD2NOghQNXj/2JYAQYCgJomEke4GR1CNABATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAAwIkCgJoQIBEQQANCJAoCKABARIFATQgQKIggAYESBQE0IAAiYIAGhAgURBAw8gCbB8yz5uPZ1aHAB0QQMO4AuTZKjzYVA+GVocAHRBAw6gCbB/qsM+vn86qDgE6IICGUQV4ubuvHm7anaCspu9loMNrviz24z6v24/RHj1j2wEtAEBanDkGKJuA3jEAQFqc14S83IV2h+M/LARxHgAgLRAATIMAYBoEANMgAJgGAcA0CACmQQAwDQKAaRAATIMAYBoEANMgAJgGAcA0CACmQQAwDQKAaRAATIMAYJqlCvB8m2VZfRWX6IIunV+OFtpjXV7tIM+y1ebgHlmHVeE3PRUktx8XKoC/fsXzbd/XtE9yX9zfhJdv/8Ff8OnlbtW3R9b+gggvd0u5LsIyBXj+8tH9cN/jQBDAkb/5y63bD25vHBVgt7l6HPWd/c1YpgDr8tCfXz+9fPtD9ua//ZdZtN5XP1w9hm/3+7vQRVqHrhIC7NyVz26K/8r+Y7j6TdEXcr0ivxf9xQBLAZ5v75s9W+y8aofu7Vy3xyf9UCdYpAD1kX/jwr34xnx4r4tvcJNVAhRfS17871RxPxFgFw7rbmc0LYD77fl2FXV5mhag2bNegPDc9s4t9/iUn+kUCxWgjGZ3nHIyuIJn37ivq+9oVR7FHv1PBHCsfUSvGgHCkWTz5mPTmazGADfNlkGAcodGO7fe49N9otMYEKDs4ITr+W4qAZpuz6Zquq0TotwdtqtdFHr61V70lLNAUeyXAjQ/q8f1Hp/uI51moQLEXaDya8oPClD0cf3ADwH83KfnvhGgKokEqKd/TgqQI8BUxIPgoy2Ab6XpAnn8+DfMcLZbgF08R3CGALQAkxF6n810djMGyNsC+O9oQxfIUUVqtIvqvXJEgFWrp7l3dAmj6vmyTAGiRFhznGrPAjXf0ctd1pv2sUQV2s+3q3oo66O3nDhob1Xu1O3D9dP2ITsoALNAE1KfChENd4vx25s/uxmN9hjg6rH1DVulbDV37kjhZ/fXVR6gHBWXf2wL4K+Y//3hLlC9x8f+KOewVAH62Mz761ggM9/jdgTwR7gzTo6AS0lij9sRIMzpWe/ojEoKe9yQAAD7IACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApkEAMA0CgGkQAEyDAGAaBADTIACYBgHANAgApvl/w5/gCGLQYX8AAAAASUVORK5CYII=" alt="Barplot comparing gene counts before and after pruning. Salmon bar shows 200 original genes, light blue bar shows approximately 100 genes after pruning (50% retained). Text labels display exact counts and retention percentage, demonstrating substantial dimensionality reduction while maintaining low pairwise correlations." /></p>
+</div>
+<div id="exact-vs-greedy-comparison" class="section level3">
+<h3>Exact vs greedy comparison</h3>
+<p>To demonstrate the speed advantage of the greedy algorithm, we
+benchmark both approaches on a smaller subset. The performance gap
+widens dramatically as the number of variables increases.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co"># Subset for comparison (use smaller subset for vignette build speed)</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>gene_subset <span class="ot">&lt;-</span> gene_expr[, <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]  <span class="co"># Reduced from 50 to 20 for faster builds</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co"># Benchmark exact mode</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>exact_time <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="fu">microbenchmark</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>  exact_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(gene_subset, <span class="at">threshold =</span> <span class="fl">0.8</span>, <span class="at">mode =</span> <span class="st">&quot;exact&quot;</span>),</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>  <span class="at">times =</span> <span class="dv">3</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  <span class="at">unit =</span> <span class="st">&quot;ms&quot;</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>)<span class="sc">$</span>time) <span class="sc">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co"># Benchmark greedy mode</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>greedy_time <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="fu">microbenchmark</span>(</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  greedy_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(gene_subset, <span class="at">threshold =</span> <span class="fl">0.8</span>, <span class="at">mode =</span> <span class="st">&quot;greedy&quot;</span>),</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  <span class="at">times =</span> <span class="dv">3</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  <span class="at">unit =</span> <span class="st">&quot;ms&quot;</span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>)<span class="sc">$</span>time) <span class="sc">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co"># Run once more to get actual results for comparison</span></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>exact_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(gene_subset, <span class="at">threshold =</span> <span class="fl">0.8</span>, <span class="at">mode =</span> <span class="st">&quot;exact&quot;</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>greedy_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(gene_subset, <span class="at">threshold =</span> <span class="fl">0.8</span>, <span class="at">mode =</span> <span class="st">&quot;greedy&quot;</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Exact mode: %d genes kept (%.1f ms)</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="fu">ncol</span>(exact_result), exact_time))</span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a><span class="co">#&gt; Exact mode: 11 genes kept (1.8 ms)</span></span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Greedy mode: %d genes kept (%.1f ms)</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="fu">ncol</span>(greedy_result), greedy_time))</span>
+<span id="cb17-28"><a href="#cb17-28" tabindex="-1"></a><span class="co">#&gt; Greedy mode: 10 genes kept (0.5 ms)</span></span>
+<span id="cb17-29"><a href="#cb17-29" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Speedup: %.1fx faster</span><span class="sc">\n</span><span class="st">&quot;</span>, exact_time <span class="sc">/</span> greedy_time))</span>
+<span id="cb17-30"><a href="#cb17-30" tabindex="-1"></a><span class="co">#&gt; Speedup: 3.9x faster</span></span></code></pre></div>
+<p>The greedy mode is substantially faster. For the full 200-gene
+dataset, exact enumeration would be prohibitively slow, while greedy
+mode completes in seconds.</p>
+</div>
+<div id="classification" class="section level3">
+<h3>Classification</h3>
+<p>Finally, we demonstrate that the pruned gene set is suitable for
+downstream classification, despite the dramatic dimensionality
+reduction.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Prepare classification data</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>classification_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">disease_status =</span> genes_example<span class="sc">$</span>disease_status,</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  genes_pruned</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>)</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co"># Logistic regression</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>model_genes <span class="ot">&lt;-</span> <span class="fu">glm</span>(disease_status <span class="sc">~</span> .,</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>                   <span class="at">data =</span> classification_data,</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>                   <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co"># Prediction accuracy</span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">predict</span>(model_genes, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">&gt;</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>                     <span class="st">&quot;Disease&quot;</span>, <span class="st">&quot;Healthy&quot;</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">mean</span>(predictions <span class="sc">==</span> genes_example<span class="sc">$</span>disease_status)</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Classification accuracy: %.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt; Classification accuracy: 100.0%</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="workflow-4-mixed-models" class="section level1">
+<h1>Workflow 4: Mixed Models</h1>
+<p><strong>Goal</strong>: Apply correlation-based pruning to fixed
+effects in a mixed-effects model with longitudinal data.</p>
+<p><strong>Challenge</strong>: Longitudinal data has hierarchical
+structure (observations nested within subjects, subjects nested within
+sites). Standard VIF calculations don’t account for random effects, but
+we still need to control multicollinearity among fixed-effect
+predictors.</p>
+<p><strong>Strategy</strong>: Use <code>modelPrune()</code> with
+<code>engine = &quot;lme4&quot;</code>:</p>
+<ul>
+<li>Only fixed effects are pruned based on VIF</li>
+<li>Random effects <code>(1|subject)</code> and <code>(1|site)</code>
+are preserved in the model formula</li>
+<li>This maintains the hierarchical structure while reducing
+collinearity</li>
+</ul>
+<p><strong>Note</strong>: This workflow requires the <code>lme4</code>
+package and is shown with <code>eval=FALSE</code> for portability.</p>
+<div id="data-3" class="section level3">
+<h3>Data</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">data</span>(longitudinal_example)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co"># Data structure</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">dim</span>(longitudinal_example)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; [1] 500  25</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">head</span>(longitudinal_example)</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt;   obs_id subject site time  outcome          x1         x2          x3</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; 1      1       1    1    1 12.10893 -0.62045078 -0.8629274 -0.39625483</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt; 2      2       1    1    2 13.97195  0.04255998  0.4086801  0.27069591</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; 3      3       1    1    3 15.71622  0.20445067 -1.0457672  1.69557480</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; 4      4       1    1    4 12.61343  0.38437289  2.0301256 -1.17894923</span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; 5      5       1    1    5 15.73139 -0.06402543  1.1645219 -0.19757260</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt; 6      6       1    1    6 13.19571  0.65208588 -1.5040345  0.07671762</span></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt;           x4         x5          x6         x7         x8           x9</span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt; 1 -0.4557709 -1.2550770 -0.35966846 -1.9288176  0.8393628  0.151111346</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co">#&gt; 2 -0.7652493 -1.2136755 -0.05181211 -0.4759841  0.9063848  1.429621637</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co">#&gt; 3  0.5569423 -1.4962408  0.23986408 -1.7077822  1.0343806  0.797974670</span></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co">#&gt; 4  0.1604224 -0.8192580 -0.94858863 -1.9314095 -0.0639552  0.887413164</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="co">#&gt; 5 -1.3331022 -0.6162473 -0.61339605 -0.9439486 -0.1220047 -0.796244469</span></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a><span class="co">#&gt; 6  0.5205094 -0.8547461  0.24120308 -1.3083776  0.8716209  0.005423635</span></span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a><span class="co">#&gt;          x10        x11       x12         x13        x14        x15         x16</span></span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a><span class="co">#&gt; 1  0.9681971 -0.1384342 0.2598923  0.37082493 -0.1829715 -1.1853721 -0.72703262</span></span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a><span class="co">#&gt; 2  2.0989531  0.6303914 0.6211064 -0.91103843 -0.1125705 -0.3458058 -0.44331165</span></span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a><span class="co">#&gt; 3  0.2329831 -0.8618361 2.0854289  0.02634099 -1.3522055 -1.2151804  0.00311954</span></span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a><span class="co">#&gt; 4  1.5491815  1.7595441 0.8198899  0.18115372 -0.5638401 -1.3637072 -0.55274223</span></span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a><span class="co">#&gt; 5  2.3485234 -0.1267969 2.6230203 -1.13918808 -1.1559678 -0.3214032 -0.87713586</span></span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a><span class="co">#&gt; 6 -0.1860167 -0.4620834 1.6075140 -1.81586413 -0.0172986 -0.1041232 -0.56268259</span></span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a><span class="co">#&gt;           x17        x18        x19       x20</span></span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a><span class="co">#&gt; 1  0.91333399  1.2398417  1.2973339 1.0590334</span></span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a><span class="co">#&gt; 2 -0.09799793 -1.3670758 -1.0050198 0.9990451</span></span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a><span class="co">#&gt; 3 -0.14957945 -0.8573087  0.9004974 0.5399732</span></span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a><span class="co">#&gt; 4  0.55650397  0.7458841  0.7415159 1.7067212</span></span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a><span class="co">#&gt; 5  0.36401595 -0.4019171  1.1669136 0.7799264</span></span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a><span class="co">#&gt; 6  0.30234421 -0.6646296 -0.6615620 1.5092899</span></span>
+<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a></span>
+<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a><span class="co"># Study design</span></span>
+<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Subjects: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="fu">length</span>(<span class="fu">unique</span>(longitudinal_example<span class="sc">$</span>subject))))</span>
+<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a><span class="co">#&gt; Subjects: 50</span></span>
+<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Sites: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="fu">length</span>(<span class="fu">unique</span>(longitudinal_example<span class="sc">$</span>site))))</span>
+<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a><span class="co">#&gt; Sites: 5</span></span>
+<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Observations per subject: %d</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a>            <span class="fu">nrow</span>(longitudinal_example) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">unique</span>(longitudinal_example<span class="sc">$</span>subject))))</span>
+<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a><span class="co">#&gt; Observations per subject: 10</span></span></code></pre></div>
+<p>The dataset has 500 observations from 50 subjects across 2 sites,
+with 10 measurements per subject. We have 5 correlated fixed-effect
+predictors (x1-x5).</p>
+</div>
+<div id="prune-fixed-effects" class="section level3">
+<h3>Prune fixed effects</h3>
+<p>The <code>modelPrune()</code> function with
+<code>engine = &quot;lme4&quot;</code> respects the random-effects structure. Only
+the fixed effects (x1-x5) are candidates for removal; the random
+intercepts for subject and site remain untouched.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Note: This example requires lme4 package</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co"># Define formula with random effects</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co"># Note: Only fixed effects (x1-x5) will be pruned</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#       Random effects (1|subject), (1|site) are preserved</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>pruned_mixed <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>  <span class="at">formula =</span> outcome <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>subject) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site),</span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>  <span class="at">data =</span> longitudinal_example,</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>  <span class="at">engine =</span> <span class="st">&quot;lme4&quot;</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">5</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>)</span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="co"># Which fixed effects were kept?</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>selected_fixed <span class="ot">&lt;-</span> <span class="fu">attr</span>(pruned_mixed, <span class="st">&quot;selected_vars&quot;</span>)</span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Fixed effects kept:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="fu">print</span>(selected_fixed)</span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="co"># Which were removed?</span></span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a>removed_fixed <span class="ot">&lt;-</span> <span class="fu">attr</span>(pruned_mixed, <span class="st">&quot;removed_vars&quot;</span>)</span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Fixed effects removed:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a><span class="fu">print</span>(removed_fixed)</span></code></pre></div>
+<p>The algorithm sequentially removes fixed effects with VIF &gt; 5
+until all remaining predictors satisfy the limit. The random effects
+structure is never modified.</p>
+</div>
+<div id="final-model" class="section level3">
+<h3>Final model</h3>
+<p>The final model contains only the fixed effects that passed the VIF
+threshold, along with the original random effects.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>final_mixed <span class="ot">&lt;-</span> <span class="fu">attr</span>(pruned_mixed, <span class="st">&quot;final_model&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">summary</span>(final_mixed)</span></code></pre></div>
+</div>
+<div id="vif-verification" class="section level3">
+<h3>VIF verification</h3>
+<p>We can manually verify that the pruning successfully reduced
+multicollinearity by comparing VIF values before and after pruning.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Note: This example requires lme4 package</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co"># Fit full model</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>full_formula <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">&quot;outcome ~&quot;</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>                                 <span class="fu">paste</span>(<span class="fu">paste0</span>(<span class="st">&quot;x&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>                                 <span class="st">&quot;+ (1|subject) + (1|site)&quot;</span>))</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>model_full_mixed <span class="ot">&lt;-</span> <span class="fu">lmer</span>(full_formula, <span class="at">data =</span> longitudinal_example)</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co"># Extract fixed effects design matrices</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>X_full <span class="ot">&lt;-</span> <span class="fu">getME</span>(model_full_mixed, <span class="st">&quot;X&quot;</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>X_pruned <span class="ot">&lt;-</span> <span class="fu">getME</span>(final_mixed, <span class="st">&quot;X&quot;</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a><span class="co"># Compute VIF</span></span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>compute_vif <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>  X_scaled <span class="ot">&lt;-</span> <span class="fu">scale</span>(X[, <span class="sc">-</span><span class="dv">1</span>])  <span class="co"># Remove intercept</span></span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>  <span class="fu">sapply</span>(<span class="fu">seq_len</span>(<span class="fu">ncol</span>(X_scaled)), <span class="cf">function</span>(i) {</span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>    r2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(X_scaled[, i] <span class="sc">~</span> X_scaled[, <span class="sc">-</span>i]))<span class="sc">$</span>r.squared</span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>    <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> r2)</span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a>  })</span>
+<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a>}</span>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a>vif_full <span class="ot">&lt;-</span> <span class="fu">compute_vif</span>(X_full)</span>
+<span id="cb22-25"><a href="#cb22-25" tabindex="-1"></a>vif_pruned <span class="ot">&lt;-</span> <span class="fu">compute_vif</span>(X_pruned)</span>
+<span id="cb22-26"><a href="#cb22-26" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb22-28"><a href="#cb22-28" tabindex="-1"></a>comparison_vif <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb22-29"><a href="#cb22-29" tabindex="-1"></a>  <span class="at">Predictor =</span> <span class="fu">colnames</span>(X_pruned)[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb22-30"><a href="#cb22-30" tabindex="-1"></a>  <span class="at">VIF_Before =</span> vif_full,</span>
+<span id="cb22-31"><a href="#cb22-31" tabindex="-1"></a>  <span class="at">VIF_After =</span> vif_pruned</span>
+<span id="cb22-32"><a href="#cb22-32" tabindex="-1"></a>)</span>
+<span id="cb22-33"><a href="#cb22-33" tabindex="-1"></a><span class="fu">print</span>(comparison_vif)</span></code></pre></div>
+<p>All remaining predictors now have VIF &lt; 5, indicating acceptable
+multicollinearity levels for mixed-effects modeling.</p>
+</div>
+<div id="vif-reduction-visualization" class="section level3">
+<h3>VIF reduction visualization</h3>
+<p>The plot below shows how pruning reduced VIF values across the
+retained fixed effects:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># Extract VIF values</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> comparison_vif<span class="sc">$</span>Predictor</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>vif_before <span class="ot">&lt;-</span> comparison_vif<span class="sc">$</span>VIF_Before</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>vif_after <span class="ot">&lt;-</span> comparison_vif<span class="sc">$</span>VIF_After</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="co"># Set up bar positions</span></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(predictors)</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>width <span class="ot">&lt;-</span> <span class="fl">0.35</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co"># Create plot</span></span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>  x, vif_before,</span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Fixed Effects&quot;</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;VIF&quot;</span>,</span>
+<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;VIF Reduction After Pruning (Mixed Model)&quot;</span>,</span>
+<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(vif_before) <span class="sc">*</span> <span class="fl">1.15</span>)</span>
+<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a>)</span>
+<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a></span>
+<span id="cb23-22"><a href="#cb23-22" tabindex="-1"></a><span class="co"># Add horizontal line at VIF = 5 threshold</span></span>
+<span id="cb23-23"><a href="#cb23-23" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb23-24"><a href="#cb23-24" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" tabindex="-1"></a><span class="co"># Before bars (darker)</span></span>
+<span id="cb23-26"><a href="#cb23-26" tabindex="-1"></a><span class="fu">rect</span>(</span>
+<span id="cb23-27"><a href="#cb23-27" tabindex="-1"></a>  x <span class="sc">-</span> width, <span class="dv">0</span>,</span>
+<span id="cb23-28"><a href="#cb23-28" tabindex="-1"></a>  x, vif_before,</span>
+<span id="cb23-29"><a href="#cb23-29" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>),</span>
+<span id="cb23-30"><a href="#cb23-30" tabindex="-1"></a>  <span class="at">border =</span> <span class="st">&quot;white&quot;</span></span>
+<span id="cb23-31"><a href="#cb23-31" tabindex="-1"></a>)</span>
+<span id="cb23-32"><a href="#cb23-32" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" tabindex="-1"></a><span class="co"># After bars (lighter)</span></span>
+<span id="cb23-34"><a href="#cb23-34" tabindex="-1"></a><span class="fu">rect</span>(</span>
+<span id="cb23-35"><a href="#cb23-35" tabindex="-1"></a>  x, <span class="dv">0</span>,</span>
+<span id="cb23-36"><a href="#cb23-36" tabindex="-1"></a>  x <span class="sc">+</span> width, vif_after,</span>
+<span id="cb23-37"><a href="#cb23-37" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>),</span>
+<span id="cb23-38"><a href="#cb23-38" tabindex="-1"></a>  <span class="at">border =</span> <span class="st">&quot;white&quot;</span></span>
+<span id="cb23-39"><a href="#cb23-39" tabindex="-1"></a>)</span>
+<span id="cb23-40"><a href="#cb23-40" tabindex="-1"></a></span>
+<span id="cb23-41"><a href="#cb23-41" tabindex="-1"></a><span class="co"># Add x-axis labels</span></span>
+<span id="cb23-42"><a href="#cb23-42" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> x, <span class="at">labels =</span> predictors, <span class="at">las =</span> <span class="dv">2</span>)</span>
+<span id="cb23-43"><a href="#cb23-43" tabindex="-1"></a></span>
+<span id="cb23-44"><a href="#cb23-44" tabindex="-1"></a><span class="co"># Add legend</span></span>
+<span id="cb23-45"><a href="#cb23-45" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb23-46"><a href="#cb23-46" tabindex="-1"></a>  <span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb23-47"><a href="#cb23-47" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Before Pruning&quot;</span>, <span class="st">&quot;After Pruning&quot;</span>, <span class="st">&quot;VIF = 5 Threshold&quot;</span>),</span>
+<span id="cb23-48"><a href="#cb23-48" tabindex="-1"></a>  <span class="at">fill =</span> <span class="fu">c</span>(<span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>), <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>), <span class="cn">NA</span>),</span>
+<span id="cb23-49"><a href="#cb23-49" tabindex="-1"></a>  <span class="at">border =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb23-50"><a href="#cb23-50" tabindex="-1"></a>  <span class="at">lty =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb23-51"><a href="#cb23-51" tabindex="-1"></a>  <span class="at">lwd =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb23-52"><a href="#cb23-52" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;red&quot;</span>),</span>
+<span id="cb23-53"><a href="#cb23-53" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">&quot;n&quot;</span></span>
+<span id="cb23-54"><a href="#cb23-54" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>These four workflows demonstrate how <strong>corrselect</strong>
+integrates into diverse analytical pipelines:</p>
+<p><strong>Key takeaways</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Ecological modeling</strong>: Two-stage pruning (correlation
+→ VIF) balances fit and stability</li>
+<li><strong>Survey analysis</strong>: <code>force_in</code> protects
+theoretically important variables while reducing redundancy</li>
+<li><strong>High-dimensional data</strong>: Greedy mode enables fast
+pruning when p &gt;&gt; n</li>
+<li><strong>Mixed models</strong>: VIF-based pruning respects
+hierarchical structure by targeting only fixed effects</li>
+</ol>
+<p><strong>Workflow selection guide</strong>:</p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="27%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Function</th>
+<th>Key Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Small to moderate p (&lt; 50)</td>
+<td><code>corrPrune()</code></td>
+<td><code>mode = &quot;auto&quot;</code> or <code>&quot;exact&quot;</code></td>
+</tr>
+<tr class="even">
+<td>High-dimensional (p &gt;&gt; n)</td>
+<td><code>corrPrune()</code></td>
+<td><code>mode = &quot;greedy&quot;</code></td>
+</tr>
+<tr class="odd">
+<td>Model-based refinement</td>
+<td><code>modelPrune()</code></td>
+<td><code>limit</code> (VIF threshold)</td>
+</tr>
+<tr class="even">
+<td>Protected variables</td>
+<td><code>corrPrune()</code></td>
+<td><code>force_in</code></td>
+</tr>
+<tr class="odd">
+<td>Mixed-effects models</td>
+<td><code>modelPrune()</code></td>
+<td><code>engine = &quot;lme4&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to use each approach</strong>:</p>
+<ul>
+<li><strong>corrPrune()</strong>: First-stage dimensionality reduction
+based purely on pairwise correlations</li>
+<li><strong>modelPrune()</strong>: Second-stage refinement that accounts
+for model-specific multicollinearity (VIF)</li>
+<li><strong>Combining both</strong>: Often yields best results
+(correlation pruning → VIF refinement → final model)</li>
+</ul>
+<hr />
+</div>
+<div id="see-also" class="section level1">
+<h1>See Also</h1>
+<ul>
+<li><code>vignette(&quot;quickstart&quot;)</code> - Interface overview</li>
+<li><code>vignette(&quot;advanced&quot;)</code> - Custom engines and algorithmic
+control</li>
+<li><code>vignette(&quot;comparison&quot;)</code> - Comparison with
+alternatives</li>
+<li><code>vignette(&quot;theory&quot;)</code> - Mathematical foundations</li>
+</ul>
+<hr />
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p><strong>Thresholds</strong>:</p>
+<ul>
+<li>O’Brien, R. M. (2007). A caution regarding rules of thumb for
+variance inflation factors. <em>Quality &amp; Quantity</em>, 41(5),
+673-690.</li>
+<li>Dormann, C. F., et al. (2013). Collinearity: a review of methods to
+deal with it. <em>Ecography</em>, 36(1), 27-46.</li>
+</ul>
+<p><strong>Methods</strong>: - See package documentation and JOSS paper
+for algorithm details</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

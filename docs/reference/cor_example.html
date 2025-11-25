@@ -7,7 +7,7 @@ examples in vignettes."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
@@ -19,19 +19,20 @@ examples in vignettes."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/quickstart.html">Get Started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start</a></li>
-    <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
-    <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
-    <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
-    <li><a class="dropdown-item" href="../articles/theory.html">Theory and Formulation</a></li>
+    <li><a class="dropdown-item" href="../articles/workflows.html">Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">Comparison</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced.html">Advanced</a></li>
+    <li><a class="dropdown-item" href="../articles/theory.html">Theory</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/gcol33/corrselect/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/gcol33/corrselect" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
       </ul></div>
 
 
@@ -87,13 +88,13 @@ seed 20250125.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This dataset provides a controlled correlation structure useful for:</p><ul><li><p>Threshold sensitivity analysis (comparing results at
-τ = 0.5, 0.7, 0.9)</p></li>
+tau = 0.5, 0.7, 0.9)</p></li>
 <li><p>Algorithm comparison (exact vs greedy modes)</p></li>
 <li><p>Visualization examples (heatmaps, correlation distributions)</p></li>
 <li><p>Reproducible benchmarks across vignettes</p></li>
-</ul><p>Expected behavior with different thresholds:</p><ul><li><p>τ = 0.5: Block 1 requires pruning (all pairs &gt; 0.75)</p></li>
-<li><p>τ = 0.7: Blocks 1-2 require pruning</p></li>
-<li><p>τ = 0.9: Only Block 1 requires pruning</p></li>
+</ul><p>Expected behavior with different thresholds:</p><ul><li><p>tau = 0.5: Block 1 requires pruning (all pairs &gt; 0.75)</p></li>
+<li><p>tau = 0.7: Blocks 1-2 require pruning</p></li>
+<li><p>tau = 0.9: Only Block 1 requires pruning</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -146,7 +147,7 @@ seed 20250125.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Gilles Colling.</p>
+  <p>Developed by <a href="https://github.com/gcol33" class="external-link">Gilles Colling</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -42,7 +42,7 @@ Generated with `data-raw/create_cor_example.R` using seed 20250125.
 
 This dataset provides a controlled correlation structure useful for:
 
-- Threshold sensitivity analysis (comparing results at τ = 0.5, 0.7,
+- Threshold sensitivity analysis (comparing results at tau = 0.5, 0.7,
   0.9)
 
 - Algorithm comparison (exact vs greedy modes)
@@ -53,11 +53,11 @@ This dataset provides a controlled correlation structure useful for:
 
 Expected behavior with different thresholds:
 
-- τ = 0.5: Block 1 requires pruning (all pairs \> 0.75)
+- tau = 0.5: Block 1 requires pruning (all pairs \> 0.75)
 
-- τ = 0.7: Blocks 1-2 require pruning
+- tau = 0.7: Blocks 1-2 require pruning
 
-- τ = 0.9: Only Block 1 requires pruning
+- tau = 0.9: Only Block 1 requires pruning
 
 ## Examples
 

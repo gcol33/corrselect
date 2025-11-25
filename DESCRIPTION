@@ -36,7 +36,7 @@ Suggests:
     testthat (>= 3.0.0),
     tibble
 VignetteBuilder: knitr
-URL: https://gillescolling.com/corrselect/, https://gcol33.github.io/corrselect
+URL: https://gillescolling.com/corrselect/
 BugReports: https://github.com/gcol33/corrselect/issues
 Depends: 
     R (>= 3.5)

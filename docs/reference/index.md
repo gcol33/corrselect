@@ -1,6 +1,6 @@
 # Package index
 
-## High-Level Pruning Functions
+## High-Level Pruning
 
 Main functions for predictor pruning
 

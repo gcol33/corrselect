@@ -250,9 +250,8 @@ Open `docs/index.html` in your browser to view it.
 ## Pull request checklist
 
 Tests pass
-([`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
-and
-[`devtools::check()`](https://devtools.r-lib.org/reference/check.html))
+([`devtools::test()`](https://rdrr.io/pkg/devtools/man/test.html) and
+[`devtools::check()`](https://rdrr.io/pkg/devtools/man/check.html))
 
 Documentation updated (roxygen + `NEWS.md`)
 

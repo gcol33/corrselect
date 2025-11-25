@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Gilles Colling**. Author, maintainer.
+- **[Gilles Colling](https://github.com/gcol33)**. Author, maintainer.
 
 ## Citation
 

@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Gilles Colling" />
+
+<meta name="date" content="2025-11-25" />
+
+<title>Advanced Topics</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Advanced Topics</h1>
+<h4 class="author">Gilles Colling</h4>
+<h4 class="date">2025-11-25</h4>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>This vignette covers advanced topics for power users, researchers,
+and method developers:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Understanding the Algorithms</strong> - Exact vs greedy,
+complexity analysis</li>
+<li><strong>Custom Engines</strong> - Integrate any modeling package
+(INLA, mgcv, brms)</li>
+<li><strong>Exact Subset Enumeration</strong> - Multiple maximal
+subsets</li>
+<li><strong>Performance Optimization</strong> - Speed and memory
+considerations</li>
+<li><strong>Troubleshooting</strong> - Common issues and solutions</li>
+</ol>
+<p><strong>Target audience</strong>: Users comfortable with R
+programming and statistical methods</p>
+<p><strong>Estimated time</strong>: 15-20 minutes</p>
+<hr />
+</div>
+<div id="understanding-the-algorithms" class="section level1">
+<h1>1. Understanding the Algorithms</h1>
+<div id="exact-vs-greedy-when-to-use-each" class="section level2">
+<h2>1.1 Exact vs Greedy: When to Use Each</h2>
+<p>corrselect offers two algorithmic approaches for
+<code>corrPrune()</code>:</p>
+<div id="exact-mode-graph-theoretic" class="section level3">
+<h3>Exact Mode (Graph-Theoretic)</h3>
+<p><strong>Algorithm</strong>: Eppstein–Löffler–Strash (ELS) or
+Bron–Kerbosch <strong>Complexity</strong>: O(2^p) - exponential in
+number of predictors <strong>Guarantee</strong>: Finds the
+<strong>largest</strong> maximal independent set</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(corrselect)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Exact mode: guaranteed optimal</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>exact_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;exact&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Exact mode kept:&quot;</span>, <span class="fu">ncol</span>(exact_result), <span class="st">&quot;variables</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; Exact mode kept: 5 variables</span></span></code></pre></div>
+<p><strong>Use exact mode when</strong>:</p>
+<ul>
+<li>p ≤ 20 (feasible runtime)</li>
+<li>You need guaranteed optimal solution</li>
+<li>Reproducibility is critical</li>
+<li>You’re writing a paper (justify optimality)</li>
+</ul>
+</div>
+<div id="greedy-mode-heuristic" class="section level3">
+<h3>Greedy Mode (Heuristic)</h3>
+<p><strong>Algorithm</strong>: Deterministic iterative removal
+<strong>Complexity</strong>: O(p² × k) where k = iterations
+<strong>Guarantee</strong>: Near-optimal, deterministic</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Greedy mode: fast approximation</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>greedy_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;greedy&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Greedy mode kept:&quot;</span>, <span class="fu">ncol</span>(greedy_result), <span class="st">&quot;variables</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Greedy mode kept: 5 variables</span></span></code></pre></div>
+<p><strong>Use greedy mode when</strong>:</p>
+<ul>
+<li>p &gt; 20 (exact becomes slow)</li>
+<li>Speed is priority</li>
+<li>Near-optimal is acceptable</li>
+<li>High-dimensional data (p &gt; 100)</li>
+</ul>
+</div>
+<div id="auto-mode-recommended" class="section level3">
+<h3>Auto Mode (Recommended)</h3>
+<p>Automatically selects based on p:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Auto mode: smart switching (exact if p ≤ 20, greedy otherwise)</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>auto_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;auto&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Auto mode kept:&quot;</span>, <span class="fu">ncol</span>(auto_result), <span class="st">&quot;variables</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Auto mode kept: 5 variables</span></span></code></pre></div>
+</div>
+</div>
+<div id="complexity-analysis-with-benchmarks" class="section level2">
+<h2>1.2 Complexity Analysis with Benchmarks</h2>
+<p>Let’s measure runtime scaling:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Generate datasets with increasing p</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>benchmark_corrPrune <span class="ot">&lt;-</span> <span class="cf">function</span>(p_values) {</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">integer</span>(),</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="at">exact_time_ms =</span> <span class="fu">numeric</span>(),</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="at">greedy_time_ms =</span> <span class="fu">numeric</span>()</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  )</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="cf">for</span> (p <span class="cf">in</span> p_values) {</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="co"># Generate correlated data</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    cor_mat <span class="ot">&lt;-</span> <span class="fl">0.5</span><span class="sc">^</span><span class="fu">abs</span>(<span class="fu">outer</span>(<span class="dv">1</span><span class="sc">:</span>p, <span class="dv">1</span><span class="sc">:</span>p, <span class="st">&quot;-&quot;</span>))</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, p), <span class="at">Sigma =</span> cor_mat))</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>    <span class="co"># Exact mode (skip if p too large)</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    exact_time_ms <span class="ot">&lt;-</span> <span class="cf">if</span> (p <span class="sc">&lt;=</span> <span class="dv">500</span>) {</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>      <span class="fu">median</span>(<span class="fu">microbenchmark</span>(</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>        <span class="fu">corrPrune</span>(data, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;exact&quot;</span>),</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>        <span class="at">times =</span> <span class="dv">3</span>,  <span class="co"># Few iterations for speed</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>        <span class="at">unit =</span> <span class="st">&quot;ms&quot;</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>      )<span class="sc">$</span>time) <span class="sc">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>      <span class="cn">NA</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    }</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>    <span class="co"># Greedy mode</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>    greedy_time_ms <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="fu">microbenchmark</span>(</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>      <span class="fu">corrPrune</span>(data, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;greedy&quot;</span>),</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>      <span class="at">times =</span> <span class="dv">3</span>,  <span class="co"># Few iterations for speed</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>      <span class="at">unit =</span> <span class="st">&quot;ms&quot;</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>    )<span class="sc">$</span>time) <span class="sc">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results, <span class="fu">data.frame</span>(</span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>      <span class="at">p =</span> p,</span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>      <span class="at">exact_time_ms =</span> <span class="fu">round</span>(exact_time_ms, <span class="dv">1</span>),</span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>      <span class="at">greedy_time_ms =</span> <span class="fu">round</span>(greedy_time_ms, <span class="dv">1</span>)</span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>    ))</span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>  }</span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a>  results</span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a>}</span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co"># Benchmark (extended range to show comprehensive scaling behavior)</span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a>p_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>, <span class="dv">500</span>, <span class="dv">1000</span>)</span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a>benchmark <span class="ot">&lt;-</span> <span class="fu">benchmark_corrPrune</span>(p_values)</span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a><span class="fu">print</span>(benchmark)</span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a><span class="co">#&gt; 1   10           0.4            0.2</span></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a><span class="co">#&gt; 2   20           0.8            0.3</span></span>
+<span id="cb4-52"><a href="#cb4-52" tabindex="-1"></a><span class="co">#&gt; 3   50           1.0            0.9</span></span>
+<span id="cb4-53"><a href="#cb4-53" tabindex="-1"></a><span class="co">#&gt; 4  100           1.8            1.3</span></span>
+<span id="cb4-54"><a href="#cb4-54" tabindex="-1"></a><span class="co">#&gt; 5  200           5.0            3.5</span></span>
+<span id="cb4-55"><a href="#cb4-55" tabindex="-1"></a><span class="co">#&gt; 6  300          11.7            5.7</span></span>
+<span id="cb4-56"><a href="#cb4-56" tabindex="-1"></a><span class="co">#&gt; 7  500          32.6           12.8</span></span>
+<span id="cb4-57"><a href="#cb4-57" tabindex="-1"></a><span class="co">#&gt; 8 1000            NA           44.0</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Visualize scaling</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>exact_valid <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(benchmark<span class="sc">$</span>exact_time_ms) <span class="sc">&amp;</span> benchmark<span class="sc">$</span>exact_time_ms <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>greedy_valid <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(benchmark<span class="sc">$</span>greedy_time_ms) <span class="sc">&amp;</span> benchmark<span class="sc">$</span>greedy_time_ms <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># Replace any zeros with small positive value for log scale</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>exact_times <span class="ot">&lt;-</span> benchmark<span class="sc">$</span>exact_time_ms</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>greedy_times <span class="ot">&lt;-</span> benchmark<span class="sc">$</span>greedy_time_ms</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>exact_times[exact_times <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(exact_times)] <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>greedy_times[greedy_times <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(greedy_times)] <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co"># Determine y-axis limits from valid data</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>all_valid_times <span class="ot">&lt;-</span> <span class="fu">c</span>(exact_times[exact_valid], greedy_times[greedy_valid])</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">min</span>(all_valid_times) <span class="sc">*</span> <span class="fl">0.5</span>, <span class="fu">max</span>(all_valid_times) <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co"># Plot greedy mode (all points)</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="fu">plot</span>(benchmark<span class="sc">$</span>p[greedy_valid], greedy_times[greedy_valid],</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;b&quot;</span>, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="dv">1</span>), <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Number of Predictors (p)&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Time (milliseconds, log scale)&quot;</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Exact vs Greedy Scaling&quot;</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>     <span class="at">ylim =</span> ylim,</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">range</span>(benchmark<span class="sc">$</span>p),</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>     <span class="at">log =</span> <span class="st">&quot;y&quot;</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co"># Add exact mode (only where available)</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="fu">lines</span>(benchmark<span class="sc">$</span>p[exact_valid], exact_times[exact_valid],</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>      <span class="at">type =</span> <span class="st">&quot;b&quot;</span>, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="dv">1</span>), <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co"># Mark exact mode limit</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">500</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;gray50&quot;</span>)</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">500</span>, ylim[<span class="dv">2</span>] <span class="sc">*</span> <span class="fl">0.5</span>, <span class="st">&quot;Exact mode limit&quot;</span>, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">&quot;gray30&quot;</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>,</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Exact&quot;</span>, <span class="st">&quot;Greedy&quot;</span>),</span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="dv">1</span>), <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="dv">1</span>)),</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a>       <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." src="data:image/png;base64,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" alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." /></p>
+<p><strong>Key insight</strong>: The scaling behavior depends heavily on
+correlation structure. For this moderately correlated dataset (ρ =
+0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy
+mode scales efficiently beyond p = 1000. The exact mode provides
+guaranteed optimality at the cost of computational complexity, while
+greedy mode offers substantial speed advantages for large p with
+near-optimal results in most practical scenarios.</p>
+</div>
+<div id="deterministic-tie-breaking" class="section level2">
+<h2>1.3 Deterministic Tie-Breaking</h2>
+<p>When multiple variables have identical correlation profiles,
+corrselect uses deterministic tie-breaking:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Create data with identical correlations</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">0.1</span>)  <span class="co"># Almost identical to x1</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>x3 <span class="ot">&lt;-</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">0.1</span>)  <span class="co"># Also almost identical to x1</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>x4 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)                  <span class="co"># Independent</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>data_ties <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(x1, x2, x3, x4)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co"># Run multiple times - always same result</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>result1 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(data_ties, <span class="at">threshold =</span> <span class="fl">0.95</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(data_ties, <span class="at">threshold =</span> <span class="fl">0.95</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Run 1 selected:&quot;</span>, <span class="fu">names</span>(result1), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; Run 1 selected: x2 x4</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Run 2 selected:&quot;</span>, <span class="fu">names</span>(result2), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; Run 2 selected: x2 x4</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Identical:&quot;</span>, <span class="fu">identical</span>(<span class="fu">names</span>(result1), <span class="fu">names</span>(result2)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; Identical: TRUE</span></span></code></pre></div>
+<p><strong>Tie-breaking rules</strong>: 1. Prefer variables with lower
+<strong>mean absolute correlation</strong> with others 2. If still tied,
+prefer <strong>lexicographically first</strong> (alphabetical)</p>
+<p>This ensures reproducibility across runs, machines, and R
+versions.</p>
+<hr />
+</div>
+</div>
+<div id="custom-engines-for-modelprune" class="section level1">
+<h1>2. Custom Engines for modelPrune()</h1>
+<div id="understanding-custom-engines" class="section level2">
+<h2>2.1 Understanding Custom Engines</h2>
+<div id="what-is-a-custom-engine" class="section level3">
+<h3>What is a Custom Engine?</h3>
+<p>A custom engine allows you to integrate <strong>any</strong> modeling
+framework with <code>modelPrune()</code>, not just base R’s
+<code>lm()</code> or <code>lme4</code>. This enables VIF-based pruning
+for:</p>
+<ul>
+<li><strong>Bayesian models</strong> (INLA, brms, Stan)</li>
+<li><strong>Additive models</strong> (mgcv GAMs)</li>
+<li><strong>Survival models</strong> (coxph, flexsurv)</li>
+<li><strong>Custom metrics</strong> (AIC, BIC, posterior
+uncertainty)</li>
+</ul>
+</div>
+<div id="how-custom-engines-work" class="section level3">
+<h3>How Custom Engines Work</h3>
+<p>The <code>modelPrune()</code> algorithm follows this iterative
+process:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Fit</strong> the model with current predictors</li>
+<li><strong>Diagnose</strong> each predictor (compute a “badness”
+metric)</li>
+<li><strong>Identify</strong> the worst predictor (highest diagnostic
+value)</li>
+<li><strong>Remove</strong> if it exceeds the <code>limit</code>
+threshold</li>
+<li><strong>Repeat</strong> until all predictors satisfy the limit</li>
+</ol>
+<p>Your custom engine defines steps 1 and 2; <code>modelPrune()</code>
+handles the iteration logic.</p>
+</div>
+<div id="engine-structure-requirements" class="section level3">
+<h3>Engine Structure Requirements</h3>
+<p>A custom engine is a named list with two required functions:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>my_engine <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="co"># Required: How to fit the model</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cf">function</span>(formula, data, ...) {</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="co"># Your model fitting code</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="co"># Must return a fitted model object</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  },</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="co"># Required: How to compute diagnostics</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cf">function</span>(model, fixed_effects) {</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>    <span class="co"># Compute diagnostic scores for each fixed effect</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    <span class="co"># Higher values = worse (more likely to be removed)</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>    <span class="co"># Must return a named numeric vector</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  },</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="co"># Optional: Name for error messages</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;my_custom_engine&quot;</span>  <span class="co"># Defaults to &quot;custom&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>Key principle</strong>: The <code>diagnostics</code> function
+must return <strong>higher values for worse predictors</strong>. This
+inverted metric ensures the algorithm removes the most problematic
+variables first.</p>
+</div>
+</div>
+<div id="example-inla-engine-bayesian-spatial-models" class="section level2">
+<h2>2.2 Example: INLA Engine (Bayesian Spatial Models)</h2>
+<div id="background" class="section level3">
+<h3>Background</h3>
+<p>INLA (Integrated Nested Laplace Approximations) is a popular package
+for fast Bayesian inference, especially for spatial and temporal models.
+Unlike traditional VIF, we can use <strong>posterior
+uncertainty</strong> as a pruning criterion: variables with high
+posterior standard deviation contribute less information to the
+model.</p>
+</div>
+<div id="implementation" class="section level3">
+<h3>Implementation</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Custom engine for INLA</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>inla_engine <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;inla&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cf">function</span>(formula, data, ...) {</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="co"># Fit INLA model</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    INLA<span class="sc">::</span><span class="fu">inla</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>      <span class="at">formula =</span> formula,</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>      <span class="at">data =</span> data,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">list</span>(...)<span class="sc">$</span>family <span class="sc">%||%</span> <span class="st">&quot;gaussian&quot;</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>      <span class="at">control.compute =</span> <span class="fu">list</span>(<span class="at">config =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>      ...</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>    )</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>  },</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cf">function</span>(model, fixed_effects) {</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>    <span class="co"># Use posterior SD as &quot;badness&quot; metric</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>    <span class="co"># Higher SD = more uncertain = candidate for removal</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    summary_fixed <span class="ot">&lt;-</span> model<span class="sc">$</span>summary.fixed</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    scores <span class="ot">&lt;-</span> summary_fixed[, <span class="st">&quot;sd&quot;</span>]</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="fu">names</span>(scores) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(summary_fixed)</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>    <span class="co"># Return scores for fixed effects only</span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>    scores[fixed_effects]</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>  }</span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>)</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="co"># Usage example</span></span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>pruned <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>  y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4,</span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>  <span class="at">data =</span> my_data,</span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>  <span class="at">engine =</span> inla_engine,</span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a>  <span class="at">limit =</span> <span class="fl">0.5</span>  <span class="co"># Remove if posterior SD &gt; 0.5</span></span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="how-it-works" class="section level3">
+<h3>How It Works</h3>
+<ol style="list-style-type: decimal">
+<li><strong>fit</strong>: Calls <code>INLA::inla()</code> to compute
+posterior distributions</li>
+<li><strong>diagnostics</strong>: Extracts posterior standard deviations
+from <code>model$summary.fixed</code></li>
+<li><strong>limit</strong>: Threshold for acceptable uncertainty (e.g.,
+0.5 means remove predictors with posterior SD &gt; 0.5)</li>
+</ol>
+<p><strong>Interpretation</strong>: Variables with high posterior SD
+have coefficients that are uncertain given the data. Removing them
+reduces model complexity without losing much information.</p>
+<p><strong>When to use</strong>: Spatial models, hierarchical models,
+disease mapping, ecological modeling with INLA.</p>
+</div>
+</div>
+<div id="example-mgcv-engine-gams" class="section level2">
+<h2>2.3 Example: mgcv Engine (GAMs)</h2>
+<div id="background-1" class="section level3">
+<h3>Background</h3>
+<p>Generalized Additive Models (GAMs) allow non-linear relationships via
+smooth terms. When pruning GAMs, we want to remove <strong>parametric
+(linear) terms</strong> with weak evidence while preserving smooth terms
+that model non-linear patterns.</p>
+</div>
+<div id="implementation-1" class="section level3">
+<h3>Implementation</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Custom engine for mgcv GAMs</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>mgcv_engine <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;mgcv_gam&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cf">function</span>(formula, data, ...) {</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    mgcv<span class="sc">::</span><span class="fu">gam</span>(formula, <span class="at">data =</span> data, ...)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  },</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cf">function</span>(model, fixed_effects) {</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="co"># Use p-values as badness metric</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="co"># Higher p-value = less significant = candidate for removal</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>    summary_obj <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>    <span class="co"># Extract parametric term p-values</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>    pvals <span class="ot">&lt;-</span> summary_obj<span class="sc">$</span>p.pv</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>    <span class="co"># Return p-values for fixed effects</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>    pvals[fixed_effects]</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  }</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>)</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co"># Usage example</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>pruned <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(</span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>  y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> <span class="fu">s</span>(x3),  <span class="co"># s() for smooth terms</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>  <span class="at">data =</span> my_data,</span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>  <span class="at">engine =</span> mgcv_engine,</span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>  <span class="at">limit =</span> <span class="fl">0.05</span>  <span class="co"># Remove if p &gt; 0.05</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="how-it-works-1" class="section level3">
+<h3>How It Works</h3>
+<ol style="list-style-type: decimal">
+<li><strong>fit</strong>: Calls <code>mgcv::gam()</code> to fit the
+additive model</li>
+<li><strong>diagnostics</strong>: Extracts p-values for
+<strong>parametric terms only</strong> (not smooth terms)</li>
+<li><strong>limit</strong>: Significance threshold (e.g., 0.05 for
+traditional α = 0.05)</li>
+</ol>
+<p><strong>Important</strong>: <code>modelPrune()</code> only removes
+parametric (linear) terms. Smooth terms specified with <code>s()</code>,
+<code>te()</code>, etc. are <strong>never removed</strong>
+automatically, as they’re part of the model structure.</p>
+<p><strong>When to use</strong>: Non-linear regression, ecological
+response curves, time series with trends.</p>
+</div>
+</div>
+<div id="example-custom-criterion-aic-based" class="section level2">
+<h2>2.4 Example: Custom Criterion (AIC-Based)</h2>
+<div id="background-2" class="section level3">
+<h3>Background</h3>
+<p>Sometimes you want to prune based on <strong>model comparison
+metrics</strong> rather than coefficient-level diagnostics. This example
+shows how to remove variables that don’t improve model fit according to
+AIC.</p>
+</div>
+<div id="implementation-2" class="section level3">
+<h3>Implementation</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># AIC-based pruning engine</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>aic_engine <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;aic_pruner&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cf">function</span>(formula, data, ...) {</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="fu">lm</span>(formula, <span class="at">data =</span> data)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  },</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cf">function</span>(model, fixed_effects) {</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>    <span class="co"># For each predictor, compute ΔAIC if removed</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>    full_aic <span class="ot">&lt;-</span> <span class="fu">AIC</span>(model)</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>    scores <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(fixed_effects))</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>    <span class="fu">names</span>(scores) <span class="ot">&lt;-</span> fixed_effects</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>    <span class="cf">for</span> (var <span class="cf">in</span> fixed_effects) {</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>      <span class="co"># Refit without this variable</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>      reduced_formula <span class="ot">&lt;-</span> <span class="fu">update</span>(<span class="fu">formula</span>(model), <span class="fu">paste</span>(<span class="st">&quot;~ . -&quot;</span>, var))</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>      reduced_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(reduced_formula, <span class="at">data =</span> model<span class="sc">$</span>model)</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>      <span class="co"># ΔAIC: negative means removing improves model</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>      <span class="co"># We negate so &quot;higher = worse&quot; convention holds</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>      scores[var] <span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="fu">AIC</span>(reduced_model) <span class="sc">-</span> full_aic)</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>    }</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>    scores</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>  }</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>)</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co"># Usage: Remove predictors with ΔAIC &lt; -2 (improve AIC by &gt; 2 when removed)</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>pruned <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>  y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3,</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>  <span class="at">data =</span> my_data,</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>  <span class="at">engine =</span> aic_engine,</span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a>  <span class="at">limit =</span> <span class="sc">-</span><span class="dv">2</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="how-it-works-2" class="section level3">
+<h3>How It Works</h3>
+<ol style="list-style-type: decimal">
+<li><strong>fit</strong>: Standard linear model</li>
+<li><strong>diagnostics</strong>: For each variable, refit the model
+<strong>without</strong> that variable and compute ΔAIC</li>
+<li><strong>limit</strong>: Threshold for ΔAIC (e.g., -2 means “remove
+if AIC improves by more than 2 points”)</li>
+</ol>
+<p><strong>Key insight</strong>: The score is <strong>negated</strong>
+(multiplied by -1) to maintain the “higher is worse” convention. A
+variable with score &gt; -2 means removing it would worsen AIC by more
+than 2, so it’s kept.</p>
+<p><strong>When to use</strong>: Model selection focused on parsimony,
+comparing nested models, when VIF isn’t the right metric.</p>
+<p><strong>Alternative metrics</strong>: You can adapt this pattern for
+BIC, likelihood ratio tests, or any other model comparison
+criterion.</p>
+</div>
+</div>
+<div id="validation-and-error-handling" class="section level2">
+<h2>2.5 Validation and Error Handling</h2>
+<div id="automatic-validation" class="section level3">
+<h3>Automatic Validation</h3>
+<p><code>modelPrune()</code> automatically validates custom engines to
+catch common errors early:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Invalid engine: missing &#39;diagnostics&#39;</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>bad_engine <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cf">function</span>(formula, data, ...) <span class="fu">lm</span>(formula, <span class="at">data =</span> data)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="co"># Missing &#39;diagnostics&#39;</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">modelPrune</span>(mpg <span class="sc">~</span> ., <span class="at">data =</span> mtcars, <span class="at">engine =</span> bad_engine, <span class="at">limit =</span> <span class="dv">5</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Error:&quot;</span>, e<span class="sc">$</span>message, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>})</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt; Error: Custom engine missing required fields: diagnostics</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt; Required: &#39;fit&#39; and &#39;diagnostics&#39;</span></span></code></pre></div>
+</div>
+<div id="validation-checklist" class="section level3">
+<h3>Validation Checklist</h3>
+<p>Your custom engine must satisfy these requirements:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Structure</strong>: Named list with <code>fit</code> and
+<code>diagnostics</code> functions</li>
+<li><strong>fit returns model object</strong>: Must return something the
+<code>diagnostics</code> function can consume</li>
+<li><strong>diagnostics returns numeric vector</strong>: No characters,
+factors, or other types</li>
+<li><strong>Correct length</strong>: One diagnostic value per fixed
+effect (excluding intercept)</li>
+<li><strong>Named vector</strong>: Names must match variable names
+exactly</li>
+<li><strong>No missing values</strong>: NA, NaN, or Inf will cause
+errors</li>
+<li><strong>Higher = worse</strong>: Diagnostic values must increase for
+more problematic predictors</li>
+</ol>
+</div>
+<div id="debugging-tips" class="section level3">
+<h3>Debugging Tips</h3>
+<p>If your custom engine fails, check:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Test your fit function in isolation</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>test_model <span class="ot">&lt;-</span> my_engine<span class="sc">$</span><span class="fu">fit</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> my_data)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">summary</span>(test_model)  <span class="co"># Does it work?</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co"># Test your diagnostics function</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>test_diag <span class="ot">&lt;-</span> my_engine<span class="sc">$</span><span class="fu">diagnostics</span>(test_model, <span class="fu">c</span>(<span class="st">&quot;x1&quot;</span>, <span class="st">&quot;x2&quot;</span>))</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="fu">print</span>(test_diag)  <span class="co"># Numeric? Named? Correct length?</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co"># Check that &quot;higher = worse&quot; convention is satisfied</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co"># The variable with the highest score should be the one you&#39;d remove first</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+</div>
+<div id="exact-subset-enumeration" class="section level1">
+<h1>3. Exact Subset Enumeration</h1>
+<div id="when-you-need-all-maximal-subsets" class="section level2">
+<h2>3.1 When You Need ALL Maximal Subsets</h2>
+<p><code>corrPrune()</code> returns a <strong>single</strong> subset.
+Sometimes you want <strong>all</strong> maximal subsets:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># corrPrune: Single subset</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>single <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.7</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;corrPrune returned:&quot;</span>, <span class="fu">ncol</span>(single), <span class="st">&quot;variables</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; corrPrune returned: 5 variables</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># corrSelect: ALL maximal subsets (use higher threshold to ensure subsets exist)</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>all_subsets <span class="ot">&lt;-</span> <span class="fu">corrSelect</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.9</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="fu">show</span>(all_subsets)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; CorrCombo object</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; -----------------</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;   Correlation: pearson</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;   Threshold:   0.900</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt;   Subsets:     2 valid combinations</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt;   Pivot:       TRUE</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt; Top combinations:</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt;   ------------------------------------------------------------</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt;   [ 1] mpg, disp, hp, drat, wt, qsec...  0.527  0.888    10</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="co">#&gt;   [ 2] mpg, cyl, hp, drat, wt, qsec,...  0.531  0.868    10</span></span></code></pre></div>
+</div>
+<div id="exploring-multiple-subsets" class="section level2">
+<h2>3.2 Exploring Multiple Subsets</h2>
+<p>When multiple maximal subsets exist, you can explore them:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(all_subsets<span class="sc">@</span>subset_list) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="co"># Display first few subsets</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;First few maximal subsets:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">min</span>(<span class="dv">3</span>, <span class="fu">length</span>(all_subsets<span class="sc">@</span>subset_list)))) {</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Subset %d (avg corr = %.3f):</span><span class="sc">\n</span><span class="st">&quot;</span>, i, all_subsets<span class="sc">@</span>avg_corr[i]))</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot; &quot;</span>, <span class="fu">paste</span>(all_subsets<span class="sc">@</span>subset_list[[i]], <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  }</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="co"># Analyze subset characteristics</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  subset_sizes <span class="ot">&lt;-</span> <span class="fu">lengths</span>(all_subsets<span class="sc">@</span>subset_list)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Subset sizes:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">table</span>(subset_sizes))</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Average correlations:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">summary</span>(all_subsets<span class="sc">@</span>avg_corr))</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;No subsets found at threshold 0.9</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>}</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; First few maximal subsets:</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; Subset 1 (avg corr = 0.527):</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt;   mpg, disp, hp, drat, wt, qsec, vs, am, gear, carb </span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt; Subset 2 (avg corr = 0.531):</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co">#&gt;   mpg, cyl, hp, drat, wt, qsec, vs, am, gear, carb </span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; Subset sizes:</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt; subset_sizes</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co">#&gt; 10 </span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt;  2 </span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co">#&gt; Average correlations:</span></span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co">#&gt;  0.5269  0.5280  0.5290  0.5290  0.5301  0.5311</span></span></code></pre></div>
+</div>
+<div id="extracting-specific-subsets" class="section level2">
+<h2>3.3 Extracting Specific Subsets</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(all_subsets<span class="sc">@</span>subset_list) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="co"># Extract subset with lowest average correlation</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  best_idx <span class="ot">&lt;-</span> <span class="fu">which.min</span>(all_subsets<span class="sc">@</span>avg_corr)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  best_subset <span class="ot">&lt;-</span> <span class="fu">corrSubset</span>(all_subsets, mtcars, <span class="at">which =</span> best_idx)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Best subset (lowest avg correlation):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">names</span>(best_subset))</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  <span class="co"># Extract subset with most predictors</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  subset_sizes <span class="ot">&lt;-</span> <span class="fu">lengths</span>(all_subsets<span class="sc">@</span>subset_list)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>  largest_idx <span class="ot">&lt;-</span> <span class="fu">which.max</span>(subset_sizes)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>  largest_subset <span class="ot">&lt;-</span> <span class="fu">corrSubset</span>(all_subsets, mtcars, <span class="at">which =</span> largest_idx)</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Largest subset:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">names</span>(largest_subset))</span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;No subsets to extract at threshold 0.9</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>}</span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt; Best subset (lowest avg correlation):</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;mpg&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a><span class="co">#&gt; Largest subset:</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;mpg&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span></span></code></pre></div>
+</div>
+<div id="advanced-domain-specific-subset-selection" class="section level2">
+<h2>3.4 Advanced: Domain-Specific Subset Selection</h2>
+<p>You can define custom criteria for choosing among multiple
+subsets:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(all_subsets<span class="sc">@</span>subset_list) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="co"># Custom criterion: Prefer subsets with specific variables</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  preferred_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;wt&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="co"># Compute score: number of preferred variables in each subset</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  scores <span class="ot">&lt;-</span> <span class="fu">sapply</span>(all_subsets<span class="sc">@</span>subset_list, <span class="cf">function</span>(vars) {</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    <span class="fu">sum</span>(preferred_vars <span class="sc">%in%</span> vars)</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  })</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  <span class="co"># Select subset with most preferred variables</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  best_idx <span class="ot">&lt;-</span> <span class="fu">which.max</span>(scores)</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Subset with most preferred variables (score:&quot;</span>, scores[best_idx], <span class="st">&quot;):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(all_subsets<span class="sc">@</span>subset_list[[best_idx]], <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>  <span class="co"># Extract as data frame</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>  preferred_subset <span class="ot">&lt;-</span> <span class="fu">corrSubset</span>(all_subsets, mtcars, <span class="at">which =</span> best_idx)</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">head</span>(preferred_subset))</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;No subsets available for custom selection</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a>}</span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt; Subset with most preferred variables (score: 3 ):</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt; mpg, disp, hp, drat, wt, qsec, vs, am, gear, carb </span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt;                    mpg disp  hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt; Mazda RX4         21.0  160 110 3.90 2.620 16.46  0  1    4    4</span></span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a><span class="co">#&gt; Mazda RX4 Wag     21.0  160 110 3.90 2.875 17.02  0  1    4    4</span></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co">#&gt; Datsun 710        22.8  108  93 3.85 2.320 18.61  1  1    4    1</span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a><span class="co">#&gt; Hornet 4 Drive    21.4  258 110 3.08 3.215 19.44  1  0    3    1</span></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a><span class="co">#&gt; Hornet Sportabout 18.7  360 175 3.15 3.440 17.02  0  0    3    2</span></span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co">#&gt; Valiant           18.1  225 105 2.76 3.460 20.22  1  0    3    1</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="performance-optimization" class="section level1">
+<h1>4. Performance Optimization</h1>
+<div id="precomputed-correlation-matrices" class="section level2">
+<h2>4.1 Precomputed Correlation Matrices</h2>
+<p>For repeated pruning with different thresholds, precompute the
+correlation matrix:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Create larger dataset for meaningful timing comparison</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="dv">50</span>), <span class="at">ncol =</span> <span class="dv">50</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co"># Benchmark: Recompute correlation every time</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>time1 <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="fu">microbenchmark</span>(</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>  {</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>    result1 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(large_data, <span class="at">threshold =</span> <span class="fl">0.7</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>    result2 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(large_data, <span class="at">threshold =</span> <span class="fl">0.8</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>    result3 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(large_data, <span class="at">threshold =</span> <span class="fl">0.9</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>  },</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>  <span class="at">times =</span> <span class="dv">3</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>  <span class="at">unit =</span> <span class="st">&quot;ms&quot;</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>)<span class="sc">$</span>time) <span class="sc">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a><span class="co"># Benchmark: Compute correlation once, reuse</span></span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(large_data)</span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>time2 <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="fu">microbenchmark</span>(</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  {</span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>    result1 <span class="ot">&lt;-</span> <span class="fu">MatSelect</span>(cor_matrix, <span class="at">threshold =</span> <span class="fl">0.7</span>)</span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>    result2 <span class="ot">&lt;-</span> <span class="fu">MatSelect</span>(cor_matrix, <span class="at">threshold =</span> <span class="fl">0.8</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>    result3 <span class="ot">&lt;-</span> <span class="fu">MatSelect</span>(cor_matrix, <span class="at">threshold =</span> <span class="fl">0.9</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a>  },</span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a>  <span class="at">times =</span> <span class="dv">3</span>,</span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a>  <span class="at">unit =</span> <span class="st">&quot;ms&quot;</span></span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a>)<span class="sc">$</span>time) <span class="sc">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Recomputing each time: %.1f ms</span><span class="sc">\n</span><span class="st">&quot;</span>, time1))</span>
+<span id="cb17-29"><a href="#cb17-29" tabindex="-1"></a><span class="co">#&gt; Recomputing each time: 1.9 ms</span></span>
+<span id="cb17-30"><a href="#cb17-30" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Precomputed matrix: %.1f ms</span><span class="sc">\n</span><span class="st">&quot;</span>, time2))</span>
+<span id="cb17-31"><a href="#cb17-31" tabindex="-1"></a><span class="co">#&gt; Precomputed matrix: 0.8 ms</span></span>
+<span id="cb17-32"><a href="#cb17-32" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Speedup: %.1fx faster</span><span class="sc">\n</span><span class="st">&quot;</span>, time1 <span class="sc">/</span> time2))</span>
+<span id="cb17-33"><a href="#cb17-33" tabindex="-1"></a><span class="co">#&gt; Speedup: 2.2x faster</span></span></code></pre></div>
+<p><strong>Use precomputed matrices when</strong>:</p>
+<ul>
+<li>Testing multiple thresholds</li>
+<li>Cross-validation workflows</li>
+<li>Sensitivity analysis</li>
+</ul>
+</div>
+<div id="memory-considerations-for-large-data" class="section level2">
+<h2>4.2 Memory Considerations for Large Data</h2>
+<p>For large datasets (n &gt; 10,000, p &gt; 500):</p>
+<div id="memory-efficient-correlation-computation" class="section level3">
+<h3>Memory-Efficient Correlation Computation</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Standard (memory-intensive for large n)</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(large_data)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># Memory-efficient alternative (for very large n)</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># Process in chunks if needed</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>compute_cor_chunked <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">chunk_size =</span> <span class="dv">1000</span>) {</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>  n_chunks <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(n <span class="sc">/</span> chunk_size)</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>  <span class="co"># Use online algorithm or chunked computation</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>  <span class="co"># (Implementation depends on your data size)</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="sparse-correlation-matrices" class="section level3">
+<h3>Sparse Correlation Matrices</h3>
+<p>If most correlations are low, consider sparse storage:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># Convert to sparse format (requires Matrix package)</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co"># Compute correlation</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>cor_mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(data)</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co"># Threshold and convert to sparse</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>cor_sparse <span class="ot">&lt;-</span> cor_mat</span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>cor_sparse[<span class="fu">abs</span>(cor_sparse) <span class="sc">&lt;</span> <span class="fl">0.3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span>  <span class="co"># Set low correlations to 0</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>cor_sparse <span class="ot">&lt;-</span> <span class="fu">Matrix</span>(cor_sparse, <span class="at">sparse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co"># Memory savings</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="fu">object.size</span>(cor_mat)</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="fu">object.size</span>(cor_sparse)</span></code></pre></div>
+</div>
+</div>
+<div id="parallel-processing-strategies" class="section level2">
+<h2>4.3 Parallel Processing Strategies</h2>
+<p>For multiple independent pruning operations:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># Create cluster</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(<span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co"># Export functions to cluster</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="fu">clusterEvalQ</span>(cl, <span class="fu">library</span>(corrselect))</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co"># Parallel pruning with different thresholds</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>thresholds <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.5</span>, <span class="fl">0.9</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">parLapply</span>(cl, thresholds, <span class="cf">function</span>(thresh) {</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>  <span class="fu">corrPrune</span>(my_data, <span class="at">threshold =</span> thresh)</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>})</span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="co"># Clean up</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code></pre></div>
+<p><strong>Note</strong>: corrselect itself doesn’t parallelize
+internally (for reproducibility), but you can parallelize
+<strong>across</strong> multiple analyses.</p>
+</div>
+<div id="choosing-the-right-mode" class="section level2">
+<h2>4.4 Choosing the Right Mode</h2>
+<p>Decision tree for mode selection:</p>
+<pre><code>p ≤ 15:  Use &quot;exact&quot; (fast enough, guaranteed optimal)
+15 &lt; p ≤ 25:  Use &quot;exact&quot; if time permits, &quot;greedy&quot; if speed critical
+p &gt; 25:  Use &quot;greedy&quot; or &quot;auto&quot;
+p &gt; 100: Always use &quot;greedy&quot;</code></pre>
+<hr />
+</div>
+</div>
+<div id="troubleshooting" class="section level1">
+<h1>5. Troubleshooting</h1>
+<div id="common-errors-and-solutions" class="section level2">
+<h2>5.1 Common Errors and Solutions</h2>
+<div id="error-no-valid-subsets-found" class="section level3">
+<h3>Error: “No valid subsets found”</h3>
+<p><strong>Cause</strong>: Threshold too strict - all variables exceed
+it</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Example: All correlations &gt; 0.9</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>high_cor_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="at">x1 =</span> x,</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>  <span class="at">x2 =</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">0.01</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>  <span class="at">x3 =</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">0.01</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>)</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  <span class="fu">corrPrune</span>(high_cor_data, <span class="at">threshold =</span> <span class="fl">0.5</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Error:&quot;</span>, e<span class="sc">$</span>message, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>})</span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a><span class="co">#&gt; Error: No valid subsets found that satisfy the threshold constraint</span></span></code></pre></div>
+<p><strong>Solutions</strong>: 1. Increase threshold 2. Use
+<code>force_in</code> to keep at least one variable 3. Check data for
+near-duplicates</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># Solution 1: Increase threshold</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(high_cor_data, <span class="at">threshold =</span> <span class="fl">0.95</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; Error in corrPrune(high_cor_data, threshold = 0.95): No valid subsets found that satisfy the threshold constraint</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(result))</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;result&#39; not found</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co"># Solution 2: Force keep one variable</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(high_cor_data, <span class="at">threshold =</span> <span class="fl">0.5</span>, <span class="at">force_in =</span> <span class="st">&quot;x1&quot;</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; Error in corrPrune(high_cor_data, threshold = 0.5, force_in = &quot;x1&quot;): No valid subsets found that satisfy the threshold constraint</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(result))</span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;result&#39; not found</span></span></code></pre></div>
+</div>
+<div id="error-force_in-variables-conflict-with-threshold" class="section level3">
+<h3>Error: force_in variables conflict with threshold</h3>
+<p><strong>Cause</strong>: Variables in <code>force_in</code> have
+|correlation| &gt; threshold</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># x1 and x2 are highly correlated</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="fu">corrPrune</span>(high_cor_data, <span class="at">threshold =</span> <span class="fl">0.5</span>, <span class="at">force_in =</span> <span class="fu">c</span>(<span class="st">&quot;x1&quot;</span>, <span class="st">&quot;x2&quot;</span>))</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Error:&quot;</span>, e<span class="sc">$</span>message, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>})</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; Error: Variables in &#39;force_in&#39; violate the threshold constraint. Example: &#39;x1&#39; and &#39;x2&#39; have association 1.000 &gt; 0.500</span></span></code></pre></div>
+<p><strong>Solution</strong>: Either increase threshold or reduce
+<code>force_in</code> set</p>
+</div>
+<div id="error-vif-computation-fails-in-modelprune" class="section level3">
+<h3>Error: VIF computation fails in modelPrune()</h3>
+<p><strong>Cause</strong>: Perfect multicollinearity (R² = 1)</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># Create perfect multicollinearity</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>perfect_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>)</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>perfect_data<span class="sc">$</span>x3 <span class="ot">&lt;-</span> perfect_data<span class="sc">$</span>x1 <span class="sc">+</span> perfect_data<span class="sc">$</span>x2  <span class="co"># Perfect collinearity</span></span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>  <span class="fu">modelPrune</span>(y <span class="sc">~</span> ., <span class="at">data =</span> perfect_data, <span class="at">limit =</span> <span class="dv">5</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Error:&quot;</span>, e<span class="sc">$</span>message, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a>})</span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="co">#&gt; Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable</span></span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="co">#&gt; Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable</span></span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a><span class="co">#&gt; Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable</span></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a><span class="co">#&gt;               y          x1          x2</span></span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a><span class="co">#&gt; 1   -0.71524219 -0.07355602 -0.60189285</span></span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a><span class="co">#&gt; 2   -0.75268897 -1.16865142 -0.99369859</span></span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="co">#&gt; 3   -0.93853870 -0.63474826  1.02678506</span></span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a><span class="co">#&gt; 4   -1.05251328 -0.02884155  0.75106130</span></span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a><span class="co">#&gt; 5   -0.43715953  0.67069597 -1.50916654</span></span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a><span class="co">#&gt; 6    0.33117917 -1.65054654 -0.09514745</span></span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a><span class="co">#&gt; 7   -2.01421050 -0.34975424 -0.89594782</span></span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a><span class="co">#&gt; 8    0.21198043  0.75640644 -2.07075107</span></span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a><span class="co">#&gt; 9    1.23667505 -0.53880916  0.15012013</span></span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a><span class="co">#&gt; 10   2.03757402  0.22729192 -0.07921171</span></span>
+<span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a><span class="co">#&gt; 11   1.30117599  0.49222857 -0.09736927</span></span>
+<span id="cb25-29"><a href="#cb25-29" tabindex="-1"></a><span class="co">#&gt; 12   0.75677476  0.26783502  0.21615254</span></span>
+<span id="cb25-30"><a href="#cb25-30" tabindex="-1"></a><span class="co">#&gt; 13  -1.72673040  0.65325768  0.88246516</span></span>
+<span id="cb25-31"><a href="#cb25-31" tabindex="-1"></a><span class="co">#&gt; 14  -0.60150671 -0.12270866  0.20559750</span></span>
+<span id="cb25-32"><a href="#cb25-32" tabindex="-1"></a><span class="co">#&gt; 15  -0.35204646 -0.41367651 -0.61643584</span></span>
+<span id="cb25-33"><a href="#cb25-33" tabindex="-1"></a><span class="co">#&gt; 16   0.70352390 -2.64314895 -0.73479925</span></span>
+<span id="cb25-34"><a href="#cb25-34" tabindex="-1"></a><span class="co">#&gt; 17  -0.10567133 -0.09294102 -0.13180279</span></span>
+<span id="cb25-35"><a href="#cb25-35" tabindex="-1"></a><span class="co">#&gt; 18  -1.25864863  0.43028470  0.31001699</span></span>
+<span id="cb25-36"><a href="#cb25-36" tabindex="-1"></a><span class="co">#&gt; 19   1.68443571  0.53539884 -1.03968035</span></span>
+<span id="cb25-37"><a href="#cb25-37" tabindex="-1"></a><span class="co">#&gt; 20   0.91139129 -0.55527835 -0.18430887</span></span>
+<span id="cb25-38"><a href="#cb25-38" tabindex="-1"></a><span class="co">#&gt; 21   0.23743027  1.77950291  0.96726726</span></span>
+<span id="cb25-39"><a href="#cb25-39" tabindex="-1"></a><span class="co">#&gt; 22   1.21810861  0.28642442 -0.10828009</span></span>
+<span id="cb25-40"><a href="#cb25-40" tabindex="-1"></a><span class="co">#&gt; 23  -1.33877429  0.12631586 -0.69842067</span></span>
+<span id="cb25-41"><a href="#cb25-41" tabindex="-1"></a><span class="co">#&gt; 24   0.66082030  1.27226678 -0.27594517</span></span>
+<span id="cb25-42"><a href="#cb25-42" tabindex="-1"></a><span class="co">#&gt; 25  -0.52291238 -0.71846622  1.11464855</span></span>
+<span id="cb25-43"><a href="#cb25-43" tabindex="-1"></a><span class="co">#&gt; 26   0.68374552 -0.45033862  0.55004396</span></span>
+<span id="cb25-44"><a href="#cb25-44" tabindex="-1"></a><span class="co">#&gt; 27  -0.06082195  2.39745248  1.23667580</span></span>
+<span id="cb25-45"><a href="#cb25-45" tabindex="-1"></a><span class="co">#&gt; 28   0.63296071  0.01112919  0.13909786</span></span>
+<span id="cb25-46"><a href="#cb25-46" tabindex="-1"></a><span class="co">#&gt; 29   1.33551762  1.63356842  0.41027510</span></span>
+<span id="cb25-47"><a href="#cb25-47" tabindex="-1"></a><span class="co">#&gt; 30   0.00729009 -1.43850664 -0.55845691</span></span>
+<span id="cb25-48"><a href="#cb25-48" tabindex="-1"></a><span class="co">#&gt; 31   1.01755864 -0.19051680  0.60537067</span></span>
+<span id="cb25-49"><a href="#cb25-49" tabindex="-1"></a><span class="co">#&gt; 32  -1.18843404  0.37842390 -0.50633354</span></span>
+<span id="cb25-50"><a href="#cb25-50" tabindex="-1"></a><span class="co">#&gt; 33  -0.72160444  0.30003855 -1.42056550</span></span>
+<span id="cb25-51"><a href="#cb25-51" tabindex="-1"></a><span class="co">#&gt; 34   1.51921771 -1.00563626  0.12799297</span></span>
+<span id="cb25-52"><a href="#cb25-52" tabindex="-1"></a><span class="co">#&gt; 35   0.37738797  0.01925927  1.94585122</span></span>
+<span id="cb25-53"><a href="#cb25-53" tabindex="-1"></a><span class="co">#&gt; 36  -2.05222282 -1.07742065  0.80091434</span></span>
+<span id="cb25-54"><a href="#cb25-54" tabindex="-1"></a><span class="co">#&gt; 37  -1.36403745  0.71270333  1.16525339</span></span>
+<span id="cb25-55"><a href="#cb25-55" tabindex="-1"></a><span class="co">#&gt; 38  -0.20078102  1.08477509  0.35885572</span></span>
+<span id="cb25-56"><a href="#cb25-56" tabindex="-1"></a><span class="co">#&gt; 39   0.86577940 -2.22498770 -0.60855718</span></span>
+<span id="cb25-57"><a href="#cb25-57" tabindex="-1"></a><span class="co">#&gt; 40  -0.10188326  1.23569346 -0.20224086</span></span>
+<span id="cb25-58"><a href="#cb25-58" tabindex="-1"></a><span class="co">#&gt; 41   0.62418747 -1.24104450 -0.27324811</span></span>
+<span id="cb25-59"><a href="#cb25-59" tabindex="-1"></a><span class="co">#&gt; 42   0.95900538  0.45476927 -0.46869978</span></span>
+<span id="cb25-60"><a href="#cb25-60" tabindex="-1"></a><span class="co">#&gt; 43   1.67105483  0.65990264  0.70416728</span></span>
+<span id="cb25-61"><a href="#cb25-61" tabindex="-1"></a><span class="co">#&gt; 44   0.05601673 -0.19988983 -1.19736350</span></span>
+<span id="cb25-62"><a href="#cb25-62" tabindex="-1"></a><span class="co">#&gt; 45  -0.05198191 -0.64511396  0.86636613</span></span>
+<span id="cb25-63"><a href="#cb25-63" tabindex="-1"></a><span class="co">#&gt; 46  -1.75323736  0.16532102  0.86415249</span></span>
+<span id="cb25-64"><a href="#cb25-64" tabindex="-1"></a><span class="co">#&gt; 47   0.09932759  0.43881870 -1.19862236</span></span>
+<span id="cb25-65"><a href="#cb25-65" tabindex="-1"></a><span class="co">#&gt; 48  -0.57185006  0.88330282  0.63949200</span></span>
+<span id="cb25-66"><a href="#cb25-66" tabindex="-1"></a><span class="co">#&gt; 49  -0.97400958 -2.05233698  2.43022665</span></span>
+<span id="cb25-67"><a href="#cb25-67" tabindex="-1"></a><span class="co">#&gt; 50  -0.17990623 -1.63637927 -0.55721548</span></span>
+<span id="cb25-68"><a href="#cb25-68" tabindex="-1"></a><span class="co">#&gt; 51   1.01494317  1.43040234  0.84490424</span></span>
+<span id="cb25-69"><a href="#cb25-69" tabindex="-1"></a><span class="co">#&gt; 52  -1.99274849  1.04662885 -0.78220185</span></span>
+<span id="cb25-70"><a href="#cb25-70" tabindex="-1"></a><span class="co">#&gt; 53  -0.42727929  0.43528895  1.11071142</span></span>
+<span id="cb25-71"><a href="#cb25-71" tabindex="-1"></a><span class="co">#&gt; 54   0.11663728  0.71517841  0.24982472</span></span>
+<span id="cb25-72"><a href="#cb25-72" tabindex="-1"></a><span class="co">#&gt; 55  -0.89320757  0.91717492  1.65191539</span></span>
+<span id="cb25-73"><a href="#cb25-73" tabindex="-1"></a><span class="co">#&gt; 56   0.33390294 -2.66092280 -1.45897073</span></span>
+<span id="cb25-74"><a href="#cb25-74" tabindex="-1"></a><span class="co">#&gt; 57   0.41142992  1.11027710 -0.05129789</span></span>
+<span id="cb25-75"><a href="#cb25-75" tabindex="-1"></a><span class="co">#&gt; 58  -0.03303616 -0.48498760 -0.52692518</span></span>
+<span id="cb25-76"><a href="#cb25-76" tabindex="-1"></a><span class="co">#&gt; 59  -2.46589819  0.23061683 -0.19726487</span></span>
+<span id="cb25-77"><a href="#cb25-77" tabindex="-1"></a><span class="co">#&gt; 60   2.57145815 -0.29515780 -0.62957874</span></span>
+<span id="cb25-78"><a href="#cb25-78" tabindex="-1"></a><span class="co">#&gt; 61  -0.20529926  0.87196495 -0.83384358</span></span>
+<span id="cb25-79"><a href="#cb25-79" tabindex="-1"></a><span class="co">#&gt; 62   0.65119328 -0.34847245  0.57872237</span></span>
+<span id="cb25-80"><a href="#cb25-80" tabindex="-1"></a><span class="co">#&gt; 63   0.27376649  0.51850377 -1.08758071</span></span>
+<span id="cb25-81"><a href="#cb25-81" tabindex="-1"></a><span class="co">#&gt; 64   1.02467323 -0.39068498  1.48403093</span></span>
+<span id="cb25-82"><a href="#cb25-82" tabindex="-1"></a><span class="co">#&gt; 65   0.81765945 -1.09278721 -1.18620659</span></span>
+<span id="cb25-83"><a href="#cb25-83" tabindex="-1"></a><span class="co">#&gt; 66  -0.20979317  1.21001051  0.10107915</span></span>
+<span id="cb25-84"><a href="#cb25-84" tabindex="-1"></a><span class="co">#&gt; 67   0.37816777  0.74090001  0.53298929</span></span>
+<span id="cb25-85"><a href="#cb25-85" tabindex="-1"></a><span class="co">#&gt; 68  -0.94540883  1.72426224  0.58673534</span></span>
+<span id="cb25-86"><a href="#cb25-86" tabindex="-1"></a><span class="co">#&gt; 69   0.85692301  0.06515393 -0.30174666</span></span>
+<span id="cb25-87"><a href="#cb25-87" tabindex="-1"></a><span class="co">#&gt; 70  -0.46103834  1.12500275  0.07950200</span></span>
+<span id="cb25-88"><a href="#cb25-88" tabindex="-1"></a><span class="co">#&gt; 71   2.41677335  1.97541905  0.96126415</span></span>
+<span id="cb25-89"><a href="#cb25-89" tabindex="-1"></a><span class="co">#&gt; 72  -1.65104890 -0.28148212 -1.45646592</span></span>
+<span id="cb25-90"><a href="#cb25-90" tabindex="-1"></a><span class="co">#&gt; 73  -0.46398724 -1.32295111 -0.78173971</span></span>
+<span id="cb25-91"><a href="#cb25-91" tabindex="-1"></a><span class="co">#&gt; 74   0.82537986 -0.23935157  0.32040231</span></span>
+<span id="cb25-92"><a href="#cb25-92" tabindex="-1"></a><span class="co">#&gt; 75   0.51013255 -0.21404124 -0.44478198</span></span>
+<span id="cb25-93"><a href="#cb25-93" tabindex="-1"></a><span class="co">#&gt; 76  -0.58948104  0.15168050  1.37000399</span></span>
+<span id="cb25-94"><a href="#cb25-94" tabindex="-1"></a><span class="co">#&gt; 77  -0.99678074  1.71230498  0.67325386</span></span>
+<span id="cb25-95"><a href="#cb25-95" tabindex="-1"></a><span class="co">#&gt; 78   0.14447570 -0.32614389  0.07216675</span></span>
+<span id="cb25-96"><a href="#cb25-96" tabindex="-1"></a><span class="co">#&gt; 79  -0.01430741  0.37300466 -1.50775732</span></span>
+<span id="cb25-97"><a href="#cb25-97" tabindex="-1"></a><span class="co">#&gt; 80  -1.79028124 -0.22768406  0.02610023</span></span>
+<span id="cb25-98"><a href="#cb25-98" tabindex="-1"></a><span class="co">#&gt; 81   0.03455107  0.02045071 -0.31641587</span></span>
+<span id="cb25-99"><a href="#cb25-99" tabindex="-1"></a><span class="co">#&gt; 82   0.19023032  0.31405766 -0.10234651</span></span>
+<span id="cb25-100"><a href="#cb25-100" tabindex="-1"></a><span class="co">#&gt; 83   0.17472640  1.32821470 -1.18155923</span></span>
+<span id="cb25-101"><a href="#cb25-101" tabindex="-1"></a><span class="co">#&gt; 84  -1.05501704  0.12131838  0.49865804</span></span>
+<span id="cb25-102"><a href="#cb25-102" tabindex="-1"></a><span class="co">#&gt; 85   0.47613328  0.71284232 -1.03895644</span></span>
+<span id="cb25-103"><a href="#cb25-103" tabindex="-1"></a><span class="co">#&gt; 86   1.37857014  0.77886003 -0.22622198</span></span>
+<span id="cb25-104"><a href="#cb25-104" tabindex="-1"></a><span class="co">#&gt; 87   0.45623640  0.91477327  0.38142583</span></span>
+<span id="cb25-105"><a href="#cb25-105" tabindex="-1"></a><span class="co">#&gt; 88  -1.13558847 -0.57439455 -0.78351579</span></span>
+<span id="cb25-106"><a href="#cb25-106" tabindex="-1"></a><span class="co">#&gt; 89  -0.43564547  1.62688121  0.58299141</span></span>
+<span id="cb25-107"><a href="#cb25-107" tabindex="-1"></a><span class="co">#&gt; 90   0.34610362 -0.38095674 -1.31651040</span></span>
+<span id="cb25-108"><a href="#cb25-108" tabindex="-1"></a><span class="co">#&gt; 91  -0.64704563 -0.10578417 -2.80977468</span></span>
+<span id="cb25-109"><a href="#cb25-109" tabindex="-1"></a><span class="co">#&gt; 92  -2.15764634  1.40405027  0.46496799</span></span>
+<span id="cb25-110"><a href="#cb25-110" tabindex="-1"></a><span class="co">#&gt; 93   0.88425082  1.29408391  0.84053983</span></span>
+<span id="cb25-111"><a href="#cb25-111" tabindex="-1"></a><span class="co">#&gt; 94  -0.82947761 -1.08999187 -0.28584542</span></span>
+<span id="cb25-112"><a href="#cb25-112" tabindex="-1"></a><span class="co">#&gt; 95  -0.57356027 -0.87307100  0.50412625</span></span>
+<span id="cb25-113"><a href="#cb25-113" tabindex="-1"></a><span class="co">#&gt; 96   1.50390061 -1.35807906 -1.15591653</span></span>
+<span id="cb25-114"><a href="#cb25-114" tabindex="-1"></a><span class="co">#&gt; 97  -0.77414493  0.18184719 -0.12714861</span></span>
+<span id="cb25-115"><a href="#cb25-115" tabindex="-1"></a><span class="co">#&gt; 98   0.84573154  0.16484087 -1.94151838</span></span>
+<span id="cb25-116"><a href="#cb25-116" tabindex="-1"></a><span class="co">#&gt; 99  -1.26068288  0.36411469  1.18118089</span></span>
+<span id="cb25-117"><a href="#cb25-117" tabindex="-1"></a><span class="co">#&gt; 100 -0.35454240  0.55215771  1.85991086</span></span></code></pre></div>
+<p><strong>Solution</strong>: Use <code>corrPrune()</code> first to
+remove perfect collinearity:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Two-step approach</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>step1 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(perfect_data[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">threshold =</span> <span class="fl">0.99</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>step2_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> perfect_data<span class="sc">$</span>y, step1)</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(y <span class="sc">~</span> ., <span class="at">data =</span> step2_data, <span class="at">limit =</span> <span class="dv">5</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#&gt; Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt; Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">attr</span>(result, <span class="st">&quot;selected_vars&quot;</span>))</span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;x1&quot; &quot;x2&quot;</span></span></code></pre></div>
+</div>
+</div>
+<div id="threshold-selection-guidance" class="section level2">
+<h2>5.2 Threshold Selection Guidance</h2>
+<div id="for-corrprune-correlation-threshold" class="section level3">
+<h3>For corrPrune() (Correlation Threshold)</h3>
+<p><strong>Conservative (strict)</strong>:</p>
+<ul>
+<li>threshold = 0.5: Very low redundancy, may lose information</li>
+<li>Use when: Interpretability is critical, small sample size</li>
+</ul>
+<p><strong>Moderate (recommended)</strong>:</p>
+<ul>
+<li>threshold = 0.7: Balances redundancy and information retention</li>
+<li>Use when: Standard regression, general analysis</li>
+</ul>
+<p><strong>Lenient</strong>:</p>
+<ul>
+<li>threshold = 0.9: Only removes near-duplicates</li>
+<li>Use when: Large sample size, prediction focus</li>
+</ul>
+</div>
+<div id="for-modelprune-vif-limit" class="section level3">
+<h3>For modelPrune() (VIF Limit)</h3>
+<p><strong>Strict</strong>:</p>
+<ul>
+<li>limit = 2: Very low multicollinearity, may over-prune</li>
+<li>Use when: Small sample size, interpretability critical</li>
+</ul>
+<p><strong>Moderate (recommended)</strong>:</p>
+<ul>
+<li>limit = 5: Standard threshold in literature</li>
+<li>Use when: General regression analysis</li>
+</ul>
+<p><strong>Lenient</strong>:</p>
+<ul>
+<li>limit = 10: Tolerates more multicollinearity</li>
+<li>Use when: Large sample size, prediction focus</li>
+</ul>
+</div>
+<div id="empirical-approach-visualize-first" class="section level3">
+<h3>Empirical Approach: Visualize First</h3>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="co"># Visualize correlation distribution</span></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>cor_mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(mtcars)</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>cor_vec <span class="ot">&lt;-</span> cor_mat[<span class="fu">upper.tri</span>(cor_mat)]</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a><span class="co"># Histogram of correlations</span></span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">abs</span>(cor_vec), <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Distribution of |Correlations|&quot;</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;|Correlation|&quot;</span>,</span>
+<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;lightblue&quot;</span>)</span>
+<span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;green&quot;</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;0.5 (strict)&quot;</span>, <span class="st">&quot;0.7 (moderate)&quot;</span>, <span class="st">&quot;0.9 (lenient)&quot;</span>),</span>
+<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;green&quot;</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a></span>
+<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a><span class="co"># Subset size vs threshold</span></span>
+<span id="cb27-20"><a href="#cb27-20" tabindex="-1"></a>thresholds <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.3</span>, <span class="fl">0.95</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb27-21"><a href="#cb27-21" tabindex="-1"></a>sizes <span class="ot">&lt;-</span> <span class="fu">sapply</span>(thresholds, <span class="cf">function</span>(t) {</span>
+<span id="cb27-22"><a href="#cb27-22" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
+<span id="cb27-23"><a href="#cb27-23" tabindex="-1"></a>    <span class="fu">ncol</span>(<span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> t))</span>
+<span id="cb27-24"><a href="#cb27-24" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
+<span id="cb27-25"><a href="#cb27-25" tabindex="-1"></a>})</span>
+<span id="cb27-26"><a href="#cb27-26" tabindex="-1"></a></span>
+<span id="cb27-27"><a href="#cb27-27" tabindex="-1"></a><span class="fu">plot</span>(thresholds, sizes, <span class="at">type =</span> <span class="st">&quot;b&quot;</span>,</span>
+<span id="cb27-28"><a href="#cb27-28" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Threshold&quot;</span>,</span>
+<span id="cb27-29"><a href="#cb27-29" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Number of Variables Retained&quot;</span>,</span>
+<span id="cb27-30"><a href="#cb27-30" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Threshold Sensitivity&quot;</span>,</span>
+<span id="cb27-31"><a href="#cb27-31" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb27-32"><a href="#cb27-32" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">ncol</span>(mtcars), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;gray&quot;</span>)</span>
+<span id="cb27-33"><a href="#cb27-33" tabindex="-1"></a><span class="fu">text</span>(<span class="fl">0.3</span>, <span class="fu">ncol</span>(mtcars), <span class="st">&quot;Original&quot;</span>, <span class="at">pos =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." src="data:image/png;base64,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" alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." /></p>
+<p><strong>Strategy</strong>: Choose threshold where curve begins to
+plateau.</p>
+</div>
+</div>
+<div id="handling-edge-cases" class="section level2">
+<h2>5.3 Handling Edge Cases</h2>
+<div id="single-predictor-after-pruning" class="section level3">
+<h3>Single Predictor After Pruning</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># Very strict threshold may leave only 1 variable</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>strict_result <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.3</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Variables remaining:&quot;</span>, <span class="fu">ncol</span>(strict_result), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="co">#&gt; Variables remaining: 2</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="co"># Check if result is usable</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">ncol</span>(strict_result) <span class="sc">&lt;</span> <span class="dv">2</span>) {</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Warning: Only 1 variable remaining. Consider:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;  1. Increasing threshold</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;  2. Using force_in to keep important variables</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="all-variables-removed" class="section level3">
+<h3>All Variables Removed</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co"># Impossible threshold</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="fu">corrPrune</span>(mtcars, <span class="at">threshold =</span> <span class="fl">0.0</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Error:&quot;</span>, e<span class="sc">$</span>message, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>})</span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="co">#&gt; Error: `threshold` must be in the range (0, 1].</span></span></code></pre></div>
+</div>
+<div id="mixed-type-data" class="section level3">
+<h3>Mixed-Type Data</h3>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># Create mixed data</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>mixed_data <span class="ot">&lt;-</span> mtcars</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>mixed_data<span class="sc">$</span>cyl <span class="ot">&lt;-</span> <span class="fu">factor</span>(mixed_data<span class="sc">$</span>cyl)</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>mixed_data<span class="sc">$</span>am <span class="ot">&lt;-</span> <span class="fu">factor</span>(mixed_data<span class="sc">$</span>am)</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="co"># Use assocSelect for mixed types</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">assocSelect</span>(mixed_data, <span class="at">threshold =</span> <span class="fl">0.6</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="fu">show</span>(result)</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="co">#&gt; CorrCombo object</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="co">#&gt; -----------------</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a><span class="co">#&gt;   Correlation: mixed</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a><span class="co">#&gt;   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a><span class="co">#&gt;                = eta, factor_factor = cramersv</span></span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="co">#&gt;   Threshold:   0.600</span></span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a><span class="co">#&gt;   Subsets:     20 valid combinations</span></span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a><span class="co">#&gt;   Pivot:       TRUE</span></span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a><span class="co">#&gt; Top combinations:</span></span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
+<span id="cb30-22"><a href="#cb30-22" tabindex="-1"></a><span class="co">#&gt;   ------------------------------------------------------------</span></span>
+<span id="cb30-23"><a href="#cb30-23" tabindex="-1"></a><span class="co">#&gt;   [ 1] wt, vs, gear, carb                0.436  0.583     4</span></span>
+<span id="cb30-24"><a href="#cb30-24" tabindex="-1"></a><span class="co">#&gt;   [ 2] vs, am, carb                      0.265  0.570     3</span></span>
+<span id="cb30-25"><a href="#cb30-25" tabindex="-1"></a><span class="co">#&gt;   [ 3] wt, qsec, gear                    0.324  0.583     3</span></span>
+<span id="cb30-26"><a href="#cb30-26" tabindex="-1"></a><span class="co">#&gt;   [ 4] disp, carb, am                    0.348  0.591     3</span></span>
+<span id="cb30-27"><a href="#cb30-27" tabindex="-1"></a><span class="co">#&gt;   [ 5] drat, vs, carb                    0.367  0.570     3</span></span>
+<span id="cb30-28"><a href="#cb30-28" tabindex="-1"></a><span class="co">#&gt;   ... (15 more combinations)</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+</div>
+<div id="best-practices" class="section level1">
+<h1>6. Best Practices</h1>
+<div id="workflow-recommendations" class="section level2">
+<h2>6.1 Workflow Recommendations</h2>
+<div id="for-exploratory-analysis" class="section level3">
+<h3>For Exploratory Analysis</h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co"># 1. Visualize correlations</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>corrplot<span class="sc">::</span><span class="fu">corrplot</span>(<span class="fu">cor</span>(data), <span class="at">method =</span> <span class="st">&quot;circle&quot;</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co"># 2. Try multiple thresholds</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>), <span class="cf">function</span>(t) {</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>  <span class="fu">corrPrune</span>(data, <span class="at">threshold =</span> t)</span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>})</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="co"># 3. Compare subset sizes</span></span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="fu">sapply</span>(results, ncol)</span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="co"># 4. Choose based on your needs</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>final_data <span class="ot">&lt;-</span> results[[<span class="dv">2</span>]]  <span class="co"># threshold = 0.7</span></span></code></pre></div>
+</div>
+<div id="for-publication-quality-analysis" class="section level3">
+<h3>For Publication-Quality Analysis</h3>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># 1. Use exact mode for reproducibility and optimality</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>data_pruned <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(data, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;exact&quot;</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co"># 2. Document in methods section</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>  <span class="st">&quot;Variables were pruned using corrselect::corrPrune() with threshold = 0.7, &quot;</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>  <span class="st">&quot;exact mode, retaining %d of %d original predictors.&quot;</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>  <span class="fu">ncol</span>(data_pruned), <span class="fu">ncol</span>(data)</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>))</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="co"># 3. Report which variables were removed</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>removed <span class="ot">&lt;-</span> <span class="fu">attr</span>(data_pruned, <span class="st">&quot;removed_vars&quot;</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Removed variables:&quot;</span>, <span class="fu">paste</span>(removed, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="combining-with-other-methods" class="section level2">
+<h2>6.2 Combining with Other Methods</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co"># Comprehensive variable selection pipeline</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>pipeline <span class="ot">&lt;-</span> <span class="cf">function</span>(data, response) {</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>  <span class="co"># Step 1: Remove correlations</span></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>  step1 <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(data, <span class="at">threshold =</span> <span class="fl">0.7</span>, <span class="at">mode =</span> <span class="st">&quot;auto&quot;</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>  <span class="co"># Step 2: VIF cleanup</span></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>  step2_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">response =</span> response, step1)</span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>  step2 <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(response <span class="sc">~</span> ., <span class="at">data =</span> step2_data, <span class="at">limit =</span> <span class="dv">5</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>  <span class="co"># Step 3: Feature importance (optional)</span></span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">requireNamespace</span>(<span class="st">&quot;Boruta&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>    boruta_result <span class="ot">&lt;-</span> Boruta<span class="sc">::</span><span class="fu">Boruta</span>(response <span class="sc">~</span> ., <span class="at">data =</span> step2)</span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>    important <span class="ot">&lt;-</span> Boruta<span class="sc">::</span><span class="fu">getSelectedAttributes</span>(boruta_result)</span>
+<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a>    final_data <span class="ot">&lt;-</span> step2[, <span class="fu">c</span>(<span class="st">&quot;response&quot;</span>, important)]</span>
+<span id="cb33-15"><a href="#cb33-15" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb33-16"><a href="#cb33-16" tabindex="-1"></a>    final_data <span class="ot">&lt;-</span> step2</span>
+<span id="cb33-17"><a href="#cb33-17" tabindex="-1"></a>  }</span>
+<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a></span>
+<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a>  final_data</span>
+<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>7. Summary</h1>
+<div id="key-takeaways" class="section level2">
+<h2>Key Takeaways</h2>
+<div id="algorithms" class="section level3">
+<h3>Algorithms</h3>
+<ul>
+<li>Use <strong>exact mode</strong> for p ≤ 20 (optimal,
+reproducible)</li>
+<li>Use <strong>greedy mode</strong> for p &gt; 20 (fast,
+near-optimal)</li>
+<li>Use <strong>auto mode</strong> to let corrselect decide</li>
+</ul>
+</div>
+<div id="custom-engines" class="section level3">
+<h3>Custom Engines</h3>
+<ul>
+<li>Integrate any modeling package (INLA, mgcv, brms)</li>
+<li>Define custom pruning criteria (AIC, BIC, p-values)</li>
+<li>Two required functions: <code>fit</code> and
+<code>diagnostics</code></li>
+</ul>
+</div>
+<div id="optimization" class="section level3">
+<h3>Optimization</h3>
+<ul>
+<li>Precompute correlation matrices for multiple thresholds</li>
+<li>Use greedy mode for large p</li>
+<li>Parallelize across analyses, not within</li>
+</ul>
+</div>
+<div id="troubleshooting-1" class="section level3">
+<h3>Troubleshooting</h3>
+<ul>
+<li>Visualize correlation distribution before choosing threshold</li>
+<li>Use <code>force_in</code> to protect important variables</li>
+<li>Two-step pruning (corrPrune → modelPrune) for robustness</li>
+</ul>
+<hr />
+</div>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>8. References</h1>
+<p><strong>Algorithms</strong>:</p>
+<ul>
+<li>Eppstein, D., Löffler, M., &amp; Strash, D. (2010). Listing all
+maximal cliques in sparse graphs in near-optimal time. <em>Symposium on
+Algorithms and Computation</em>.</li>
+<li>Bron, C., &amp; Kerbosch, J. (1973). Algorithm 457: Finding all
+cliques of an undirected graph. <em>Communications of the ACM</em>,
+16(9), 575-577.</li>
+</ul>
+<p><strong>Multicollinearity</strong>:</p>
+<ul>
+<li>O’Brien, R. M. (2007). A caution regarding rules of thumb for
+variance inflation factors. <em>Quality &amp; Quantity</em>, 41(5),
+673-690.</li>
+<li>Belsley, D. A., Kuh, E., &amp; Welsch, R. E. (1980). <em>Regression
+Diagnostics</em>. Wiley.</li>
+</ul>
+<p><strong>Software</strong>:</p>
+<ul>
+<li>INLA: Rue, H., Martino, S., &amp; Chopin, N. (2009). Approximate
+Bayesian inference for latent Gaussian models. <em>Journal of the Royal
+Statistical Society: Series B</em>, 71(2), 319-392.</li>
+<li>mgcv: Wood, S. N. (2017). <em>Generalized Additive Models: An
+Introduction with R</em> (2nd ed.). Chapman and Hall/CRC.</li>
+</ul>
+<hr />
+<div id="see-also" class="section level2">
+<h2>See Also</h2>
+<ul>
+<li><code>vignette(&quot;quickstart&quot;)</code> - 5-minute introduction</li>
+<li><code>vignette(&quot;workflows&quot;)</code> - Real-world examples</li>
+<li><code>vignette(&quot;comparison&quot;)</code> - vs caret, Boruta, glmnet</li>
+<li><code>vignette(&quot;corrselect_vignette&quot;)</code> - Original exact
+methods vignette</li>
+<li><code>?corrPrune</code> - Association-based pruning</li>
+<li><code>?modelPrune</code> - Model-based pruning</li>
+<li><code>?corrSelect</code> - Exact subset enumeration</li>
+</ul>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
