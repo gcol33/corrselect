@@ -223,13 +223,13 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
 <span><span class="co">#&gt; 1   10           0.5            0.2</span></span>
-<span><span class="co">#&gt; 2   20           0.6            0.3</span></span>
-<span><span class="co">#&gt; 3   50           1.4            0.7</span></span>
-<span><span class="co">#&gt; 4  100           4.5            1.3</span></span>
-<span><span class="co">#&gt; 5  200          22.6            3.5</span></span>
-<span><span class="co">#&gt; 6  300          84.5            6.9</span></span>
-<span><span class="co">#&gt; 7  500         308.2           15.5</span></span>
-<span><span class="co">#&gt; 8 1000            NA           56.2</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   20           0.7            0.4</span></span>
+<span><span class="co">#&gt; 3   50           1.3            0.8</span></span>
+<span><span class="co">#&gt; 4  100           4.6            1.4</span></span>
+<span><span class="co">#&gt; 5  200          22.6            3.3</span></span>
+<span><span class="co">#&gt; 6  300          85.5            6.6</span></span>
+<span><span class="co">#&gt; 7  500         312.8           15.9</span></span>
+<span><span class="co">#&gt; 8 1000            NA           55.2</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -271,7 +271,7 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>       bty <span class="op">=</span> <span class="st">"o"</span>,</span>
 <span>       bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="advanced_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." width="768"></p>
+<p><img src="advanced_files/figure-html/unnamed-chunk-5-1.svg" class="r-plt" alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." width="768"></p>
 <p><strong>Key insight</strong>: The scaling behavior depends heavily on
 correlation structure. For this moderately correlated dataset (ρ =
 0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy
@@ -850,11 +850,11 @@ correlation matrix:</p>
 <span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 4.0 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 4.4 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Precomputed matrix: 2.0 ms</span></span>
+<span><span class="co">#&gt; Precomputed matrix: 2.1 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 2.0x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 2.1x faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li>Testing multiple thresholds</li>
@@ -1214,7 +1214,7 @@ remove perfect collinearity:</p>
 <span>     col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, <span class="st">"Original"</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="advanced_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." width="960"></p>
+<p><img src="advanced_files/figure-html/unnamed-chunk-26-1.svg" class="r-plt" alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." width="960"></p>
 <p><strong>Strategy</strong>: Choose threshold where curve begins to
 plateau.</p>
 </div>

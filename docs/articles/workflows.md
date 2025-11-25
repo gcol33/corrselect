@@ -161,7 +161,7 @@ legend("topright",
 ![Histogram showing distribution of absolute correlations before and
 after pruning. Red bars show many correlations exceed 0.7 threshold
 before pruning. Blue bars show all correlations below 0.7 after
-pruning.](workflows_files/figure-html/unnamed-chunk-3-1.png)
+pruning.](workflows_files/figure-html/unnamed-chunk-3-1.svg)
 
 #### Fit models
 
@@ -326,7 +326,7 @@ y-axis, log scale). As predictors decrease from 19 to 8, adjusted R²
 remains high (above 0.7) while κ drops from over 10000 to below 100,
 demonstrating that pruning dramatically improves numerical stability
 with minimal loss of explanatory
-power.](workflows_files/figure-html/unnamed-chunk-6-1.png)
+power.](workflows_files/figure-html/unnamed-chunk-6-1.svg)
 
 #### Coefficient stability
 
@@ -406,7 +406,7 @@ legend(
 )
 ```
 
-### ![Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning.](workflows_files/figure-html/unnamed-chunk-7-1.png)
+### ![Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning.](workflows_files/figure-html/unnamed-chunk-7-1.svg)
 
 ## Workflow 2: Survey Data Analysis
 
@@ -562,7 +562,7 @@ and blue bars showing reduced counts after pruning, demonstrating
 balanced retention across all three constructs. Right panel shows total
 variable reduction from 31 to approximately 10 variables using salmon
 and light green
-bars.](workflows_files/figure-html/unnamed-chunk-11-1.png)
+bars.](workflows_files/figure-html/unnamed-chunk-11-1.svg)
 
 #### Model satisfaction
 
@@ -730,7 +730,7 @@ shows 200 original genes, light blue bar shows approximately 100 genes
 after pruning (50% retained). Text labels display exact counts and
 retention percentage, demonstrating substantial dimensionality reduction
 while maintaining low pairwise
-correlations.](workflows_files/figure-html/unnamed-chunk-16-1.png)
+correlations.](workflows_files/figure-html/unnamed-chunk-16-1.svg)
 
 #### Exact vs greedy comparison
 
@@ -767,9 +767,9 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
 #> Exact mode: 11 genes kept (3.4 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.4 ms)
+#> Greedy mode: 10 genes kept (0.5 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 7.8x faster
+#> Speedup: 6.3x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,

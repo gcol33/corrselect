@@ -379,7 +379,7 @@ below 0.7 threshold. Red labels on edges show actual correlation values.
 Large red circles highlight nodes, with white labels. The graph
 structure reveals two maximal cliques: {V1,V3} and {V2,V4},
 corresponding to maximal subsets where all pairwise correlations remain
-below threshold.](theory_files/figure-html/unnamed-chunk-3-1.png)
+below threshold.](theory_files/figure-html/unnamed-chunk-3-1.svg)
 
 **Graph interpretation**:
 
@@ -483,7 +483,7 @@ force-directed layout clusters highly correlated variables together,
 revealing the block structure. Variables within blocks have few
 connections (high correlation), while variables across blocks have many
 connections (low correlation), illustrating which combinations can form
-maximal cliques.](theory_files/figure-html/unnamed-chunk-4-1.png)
+maximal cliques.](theory_files/figure-html/unnamed-chunk-4-1.svg)
 
 **Interpretation**:
 
@@ -839,7 +839,7 @@ blue edges connecting variables where absolute correlation is below 0.7.
 The dual visualization demonstrates how correlation matrix structure
 translates to threshold graph topology, revealing maximal cliques within
 and across correlation
-blocks.](theory_files/figure-html/unnamed-chunk-7-1.png)
+blocks.](theory_files/figure-html/unnamed-chunk-7-1.svg)
 
 ``` r
 

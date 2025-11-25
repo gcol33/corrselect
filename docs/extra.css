@@ -7,7 +7,12 @@ img.figure-img {
   height: auto;
 }
 
-/* Dark mode: invert plot colors for better visibility */
-[data-bs-theme="dark"] img.r-plt {
-  filter: invert(0.88) hue-rotate(180deg);
+/* SVG plot backgrounds - sandstone light theme */
+img.r-plt[src$=".svg"] {
+  background-color: #f8f5f0;
+}
+
+/* Dark mode: sandstone dark background for SVG plots */
+[data-bs-theme="dark"] img.r-plt[src$=".svg"] {
+  background-color: #3e3f3a;
 }

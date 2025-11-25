@@ -5,6 +5,10 @@ template:
   bootswatch: sandstone
   light-switch: true
 
+figures:
+  dev: svg
+  fig.ext: svg
+
 home:
   title: "corrselect: Correlation-Based Variable Selection in R"
   description: >

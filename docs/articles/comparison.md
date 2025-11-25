@@ -74,7 +74,7 @@ correlations. Numerical correlation values are overlaid on each cell.
 The heatmap reveals block structure with correlations ranging from -0.15
 to 0.97, showing strong correlations among temperature-related variables
 and precipitation-related
-variables.](comparison_files/figure-html/unnamed-chunk-2-1.png)
+variables.](comparison_files/figure-html/unnamed-chunk-2-1.svg)
 
 Block structure present: correlations range from -0.15 to 0.97.
 
@@ -193,7 +193,7 @@ bars), and corrselect (blue bars). Black vertical dashed line marks the
 threshold, but corrselect retains more variables than caret while still
 satisfying the constraint, demonstrating the advantage of maximal clique
 enumeration over greedy
-removal.](comparison_files/figure-html/unnamed-chunk-5-1.png)
+removal.](comparison_files/figure-html/unnamed-chunk-5-1.svg)
 
 ### Comparison
 
@@ -428,7 +428,7 @@ toward zero. Right panel shows corrselect's unbiased OLS coefficients on
 pruned variables with preserved effect sizes. The comparison illustrates
 the tradeoff between prediction-focused shrinkage and
 interpretation-focused hard
-selection.](comparison_files/figure-html/unnamed-chunk-11-1.png)
+selection.](comparison_files/figure-html/unnamed-chunk-11-1.svg)
 
 Left: L1 penalty shrinks coefficients toward zero (biased). Right: OLS
 on pruned variables (unbiased). glmnet optimizes prediction with
@@ -615,7 +615,7 @@ multicollinearity. After modelPrune(), all retained variables have VIF
 below the threshold, and high-VIF variables are completely removed
 (shown as red-only bars), demonstrating automated and effective
 multicollinearity
-reduction.](comparison_files/figure-html/unnamed-chunk-14-1.png)
+reduction.](comparison_files/figure-html/unnamed-chunk-14-1.svg)
 
 ### Comparison
 
