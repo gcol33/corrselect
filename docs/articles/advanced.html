@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2025-11-25</h4>
+            <h4 data-toc-skip class="date">2025-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -222,14 +222,14 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu">benchmark_corrPrune</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
-<span><span class="co">#&gt; 1   10           0.5            0.2</span></span>
-<span><span class="co">#&gt; 2   20           0.7            0.4</span></span>
-<span><span class="co">#&gt; 3   50           1.5            0.7</span></span>
+<span><span class="co">#&gt; 1   10           0.5            0.3</span></span>
+<span><span class="co">#&gt; 2   20           0.6            0.6</span></span>
+<span><span class="co">#&gt; 3   50           1.4            1.0</span></span>
 <span><span class="co">#&gt; 4  100           4.4            1.4</span></span>
-<span><span class="co">#&gt; 5  200          22.5            3.3</span></span>
-<span><span class="co">#&gt; 6  300          85.5            6.7</span></span>
-<span><span class="co">#&gt; 7  500         309.4           15.1</span></span>
-<span><span class="co">#&gt; 8 1000            NA           54.2</span></span></code></pre></div>
+<span><span class="co">#&gt; 5  200          22.6            3.3</span></span>
+<span><span class="co">#&gt; 6  300          86.2            7.0</span></span>
+<span><span class="co">#&gt; 7  500         312.7           15.8</span></span>
+<span><span class="co">#&gt; 8 1000            NA           54.7</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -850,11 +850,11 @@ correlation matrix:</p>
 <span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 4.1 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 4.3 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Precomputed matrix: 2.0 ms</span></span>
+<span><span class="co">#&gt; Precomputed matrix: 2.2 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 2.0x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 1.9x faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li>Testing multiple thresholds</li>

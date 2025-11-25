@@ -1,4 +1,4 @@
-/* Match plot styling to code blocks */
+/* Plot styling */
 img.r-plt,
 .figure img,
 figure img,
@@ -6,7 +6,4 @@ img.figure-img {
   max-width: 100%;
   width: 100%;
   height: auto;
-  border-radius: 0.375rem;
-  border: 1px solid var(--bs-border-color);
-  background-color: var(--bs-tertiary-bg);
 }
