@@ -33,3 +33,4 @@
 ^check_dois\.py$
 ^check_dois_thorough\.py$
 ^figure$
+^build_site\.R$
