@@ -20,31 +20,46 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-This vignette demonstrates complete end-to-end workflows using `corrselect` across four different research domains:
+This vignette demonstrates workflows using corrselect across four domains:
 
-1. **Ecological Modeling**: Predicting species distribution with bioclimatic variables
-2. **Survey Data Analysis**: Analyzing questionnaires with redundant items
-3. **High-Dimensional Data**: Gene expression analysis
-4. **Mixed Models**: Longitudinal studies with random effects
+1. Ecological modeling with bioclimatic variables
+2. Survey data with redundant items
+3. High-dimensional gene expression data
+4. Longitudinal data with mixed models
 
-Each workflow shows realistic data, complete code, and interpretation guidance.
+---
 
-**Estimated time**: 15-20 minutes
+## Interface Hierarchy
+
+corrselect provides three interface levels:
+
+**Level 1: corrPrune() / modelPrune()**
+
+- Returns a single pruned dataset
+- `corrPrune()`: Based on pairwise correlation
+- `modelPrune()`: Based on VIF in regression models
+
+**Level 2: corrSelect() / assocSelect()**
+
+- Returns all maximal subsets satisfying the threshold
+- Provides metadata for each subset
+- `corrSelect()`: Numeric data
+- `assocSelect()`: Mixed-type data (numeric, factor, ordered)
+
+**Level 3: MatSelect()**
+
+- Accepts precomputed correlation/association matrices
+- No data preprocessing overhead
 
 ---
 
 # Workflow 1: Ecological Modeling
 
-## Scenario
+## Ecological Modeling
 
-You're building a species distribution model using the 19 WorldClim bioclimatic variables. Many variables are highly correlated (e.g., different temperature metrics), causing multicollinearity.
+Species distribution model using 19 WorldClim bioclimatic variables. Many variables are correlated (e.g., different temperature metrics).
 
-**Goal**: Identify a parsimonious set of predictors that:
-- Covers different environmental dimensions
-- Has low multicollinearity
-- Predicts species richness well
-
-## Step 1: Load and explore data
+### Load data
 
 ```{r}
 library(corrselect)
@@ -75,9 +90,7 @@ abline(v = 0.7, col = "red", lwd = 2, lty = 2)
 text(0.7, par("usr")[4] * 0.9, "threshold = 0.7", pos = 4, col = "red")
 ```
 
-Many variable pairs exceed the 0.7 threshold, indicating redundancy.
-
-## Step 2: Quick correlation cleanup with `corrPrune()`
+### Correlation-based pruning
 
 ```{r}
 # Remove highly correlated predictors
@@ -96,35 +109,37 @@ cat(sprintf("Reduced from %d → %d variables\n",
 head(attr(bio_clean, "selected_vars"), 10)
 ```
 
-Visualize the improvement:
+Correlation distribution:
 
-```{r, fig.width=10, fig.height=4}
-par(mfrow = c(1, 2))
-
-# Before pruning
+```{r, fig.width=7, fig.height=5}
+# Before and after correlations
 cor_before <- cor(bioclim_example[, -1])
-hist(cor_before[upper.tri(cor_before)],
-     breaks = 30,
-     main = "Before corrPrune()",
-     xlab = "Correlation",
-     col = "salmon",
-     xlim = c(-1, 1))
-abline(v = c(-0.7, 0.7), col = "red", lwd = 2, lty = 2)
-
-# After pruning
 cor_after <- cor(bio_clean)
-hist(cor_after[upper.tri(cor_after)],
+
+# Overlaid histogram
+hist(abs(cor_before[upper.tri(cor_before)]),
      breaks = 30,
-     main = "After corrPrune()",
-     xlab = "Correlation",
-     col = "lightblue",
-     xlim = c(-1, 1))
-abline(v = c(-0.7, 0.7), col = "red", lwd = 2, lty = 2)
+     main = "Distribution of Absolute Correlations",
+     xlab = "Absolute Correlation",
+     col = rgb(0.8, 0.2, 0.2, 0.5),
+     xlim = c(0, 1))
+
+hist(abs(cor_after[upper.tri(cor_after)]),
+     breaks = 30,
+     col = rgb(0.2, 0.5, 0.8, 0.5),
+     add = TRUE)
+
+abline(v = 0.7, col = "black", lwd = 2, lty = 2)
+legend("topright",
+       legend = c("Before", "After", "Threshold"),
+       fill = c(rgb(0.8, 0.2, 0.2, 0.5), rgb(0.2, 0.5, 0.8, 0.5), NA),
+       border = c("black", "black", NA),
+       lty = c(NA, NA, 2),
+       lwd = c(NA, NA, 2),
+       bty = "n")
 ```
 
-All correlations now fall within the ±0.7 threshold.
-
-## Step 3: Fit initial model
+### Fit model
 
 ```{r}
 # Add response back
@@ -141,9 +156,7 @@ cat(sprintf("R² = %.3f\n", summary(model_initial)$r.squared))
 cat(sprintf("Adj R² = %.3f\n", summary(model_initial)$adj.r.squared))
 ```
 
-## Step 4: VIF cleanup with `modelPrune()`
-
-Even after correlation pruning, some multicollinearity may remain. Let's remove predictors with VIF > 5:
+### VIF-based pruning
 
 ```{r}
 # Further pruning based on VIF
@@ -159,7 +172,7 @@ cat(sprintf("Final model: %d predictors\n", length(final_vars)))
 print(final_vars)
 ```
 
-## Step 5: Compare models
+### Model comparison
 
 ```{r}
 # Get final model
@@ -188,7 +201,7 @@ comparison <- data.frame(
 print(comparison)
 ```
 
-Visualize model comparison:
+Predictor reduction and model quality:
 
 ```{r, fig.width=10, fig.height=5}
 par(mfrow = c(1, 2))
@@ -210,13 +223,7 @@ barplot(comparison$Adj_R2,
         ylim = c(0, 1))
 ```
 
-**Interpretation**:
-- R² decreased slightly (expected - we removed predictors)
-- **Adjusted R² improved** (better parsimony)
-- **AIC improved** (better model fit penalized for complexity)
-- **Multicollinearity eliminated** (all VIF < 5)
-
-## Visualize coefficient stability
+### Coefficient stability
 
 ```{r, fig.width=10, fig.height=6}
 # Extract coefficients (excluding intercept)
@@ -242,19 +249,15 @@ barplot(coef_final[common_vars],
         cex.names = 0.6)
 ```
 
-**Key insight**: Coefficients are more stable and interpretable in the pruned model.
-
 ---
 
 # Workflow 2: Survey Data Analysis
 
-## Scenario
+## Survey Data Analysis
 
-You have a questionnaire with 30 Likert-scale items measuring satisfaction, engagement, and loyalty. Many items are redundant (asking similar questions). You want to identify which items to keep for a parsimonious model.
+Questionnaire with 30 Likert-scale items measuring satisfaction, engagement, and loyalty. Many items are redundant.
 
-**Goal**: Reduce questionnaire length while retaining construct coverage and protecting key demographic variables.
-
-## Step 1: Load data
+### Load data
 
 ```{r}
 data(survey_example)
@@ -264,11 +267,7 @@ dim(survey_example)
 str(survey_example[, 1:10])  # First 10 columns
 ```
 
-## Step 2: Prune redundant items with `force_in`
-
-We want to:
-- Remove redundant Likert items (correlation > 0.6)
-- **Always keep** age (key covariate)
+### Prune with protected variables
 
 ```{r}
 # Exclude respondent_id, overall_satisfaction, and factor variables
@@ -298,7 +297,7 @@ selected <- attr(survey_clean, "selected_vars")
 print(selected)
 ```
 
-## Step 3: Verify construct coverage
+### Construct coverage
 
 ```{r}
 # Count items per construct
@@ -311,7 +310,7 @@ cat(sprintf("Engagement: %d/10 items kept\n", engagement_kept))
 cat(sprintf("Loyalty: %d/10 items kept\n", loyalty_kept))
 ```
 
-Visualize construct coverage:
+Items per construct:
 
 ```{r, fig.width=8, fig.height=5}
 par(mfrow = c(1, 2))
@@ -343,9 +342,7 @@ text(0.7, ncol(survey_numeric) + 1, ncol(survey_numeric), pos = 3)
 text(1.9, ncol(survey_clean) + 1, ncol(survey_clean), pos = 3)
 ```
 
-**Interpretation**: Each construct is represented by fewer items, reducing respondent burden while maintaining coverage.
-
-## Step 4: Model overall satisfaction
+### Model satisfaction
 
 ```{r}
 # Add response back
@@ -361,7 +358,7 @@ model_survey <- lm(overall_satisfaction ~ ., data = survey_model_data)
 summary(model_survey)
 ```
 
-## Step 5: Compare with full model
+### Model comparison
 
 ```{r}
 # Full model (all 30 items + demographics)
@@ -383,21 +380,15 @@ data.frame(
 )
 ```
 
-**Key insight**: Similar predictive power with 70% fewer items - much more practical for future surveys!
-
 ---
 
 # Workflow 3: High-Dimensional Data
 
-## Scenario
+## High-Dimensional Data
 
-You have gene expression data: 200 genes measured across 100 samples. You want to identify genes associated with disease while removing redundant (co-expressed) genes.
+Gene expression data: 200 genes across 100 samples (p >> n).
 
-**Challenge**: p >> n scenario with high correlation structure.
-
-**Goal**: Reduce dimensionality efficiently using greedy mode.
-
-## Step 1: Load data
+### Load data
 
 ```{r}
 data(genes_example)
@@ -409,9 +400,7 @@ dim(genes_example)
 table(genes_example$disease_status)
 ```
 
-## Step 2: Greedy pruning for large p
-
-With 200 genes, exact mode would be too slow. Use greedy mode:
+### Greedy pruning
 
 ```{r}
 # Extract gene expression data (exclude ID and outcome)
@@ -432,7 +421,7 @@ cat(sprintf("Reduced from %d → %d genes\n",
             ncol(genes_pruned)))
 ```
 
-Visualize the dimensionality reduction:
+Dimensionality reduction:
 
 ```{r, fig.width=8, fig.height=5}
 # Barplot showing reduction
@@ -448,11 +437,7 @@ text(1.9, reduction_data[2] + 10, paste(reduction_data[2], "genes\n(",
      round(100 * reduction_data[2] / reduction_data[1], 1), "% retained)"), pos = 3)
 ```
 
-**Result**: Completed in < 1 second (vs. hours for exact mode with p=200).
-
-## Step 3: Compare exact vs greedy for subset
-
-Let's verify greedy performance on a smaller subset (first 50 genes):
+### Exact vs greedy comparison
 
 ```{r}
 # Subset for comparison
@@ -473,9 +458,7 @@ cat(sprintf("Exact mode: %d genes kept\n", ncol(exact_result)))
 cat(sprintf("Greedy mode: %d genes kept\n", ncol(greedy_result)))
 ```
 
-**Key insight**: Greedy mode is faster and produces solutions close to optimal.
-
-## Step 4: Use pruned genes for classification
+### Classification
 
 ```{r}
 # Prepare classification data
@@ -499,15 +482,13 @@ cat(sprintf("Classification accuracy: %.1f%%\n", accuracy * 100))
 
 ---
 
-# Workflow 4: Mixed Models (Longitudinal Data)
+# Workflow 4: Mixed Models
 
-## Scenario
+## Mixed Models
 
-You have longitudinal data: 50 subjects measured at 10 timepoints each, with 20 correlated predictors. You want to prune fixed effects while preserving random effects structure (subject and site).
+Longitudinal data: 50 subjects, 10 timepoints each, 20 correlated predictors.
 
-**Goal**: Remove multicollinear fixed effects using `modelPrune()` with `lme4` engine.
-
-## Step 1: Load data
+### Load data
 
 ```{r}
 data(longitudinal_example)
@@ -523,7 +504,7 @@ cat(sprintf("Observations per subject: %d\n",
             nrow(longitudinal_example) / length(unique(longitudinal_example$subject))))
 ```
 
-## Step 2: Prune fixed effects with mixed model engine
+### Prune fixed effects
 
 ```{r, eval=FALSE}
 # Note: This example requires lme4 package
@@ -551,16 +532,14 @@ cat("\nFixed effects removed:\n")
 print(removed_fixed)
 ```
 
-## Step 3: Examine final model
+### Final model
 
 ```{r, eval=FALSE}
 final_mixed <- attr(pruned_mixed, "final_model")
 summary(final_mixed)
 ```
 
-**Key insight**: Random effects `(1|subject)` and `(1|site)` were preserved - only problematic fixed effects were removed.
-
-## Step 4: Verify VIF reduction
+### VIF verification
 
 ```{r, eval=FALSE}
 # Note: This example requires lme4 package
@@ -597,115 +576,32 @@ data.frame(
 )
 ```
 
-**Result**: All VIF values now below the limit of 5.
+---
+
+# Summary
+
+| Domain | Functions Used |
+|--------|----------------|
+| Ecology | corrPrune(), modelPrune() |
+| Survey | corrPrune() with force_in |
+| Genomics | corrPrune(mode = "greedy") |
+| Mixed models | modelPrune(engine = "lme4") |
 
 ---
 
-# Comparison Summary
+# See Also
 
-## When to use each workflow
-
-| Domain | Primary Function | Key Feature |
-|--------|------------------|-------------|
-| **Ecology** | `corrPrune()` → `modelPrune()` | Two-step pruning for dimensionality reduction |
-| **Survey Research** | `corrPrune()` with `force_in` | Protect key covariates while removing redundancy |
-| **Genomics** | `corrPrune(mode = "greedy")` | Fast pruning for high-dimensional data |
-| **Longitudinal Studies** | `modelPrune(engine = "lme4")` | Prune fixed effects, preserve random effects |
-
-## Choosing thresholds
-
-### For `corrPrune()` (correlation threshold)
-
-- **0.5**: Strict (low redundancy, may lose information)
-- **0.7**: Moderate (recommended starting point)
-- **0.9**: Lenient (only remove near-duplicates)
-
-### For `modelPrune()` (VIF limit)
-
-- **5**: Standard threshold (moderate multicollinearity)
-- **10**: Lenient (tolerate more multicollinearity)
-- **2**: Strict (very low multicollinearity, may over-prune)
-
-**Pro tip**: Visualize correlation/VIF distributions before choosing!
-
----
-
-# Common Patterns
-
-## Pattern 1: Two-Step Pruning
-
-```{r, eval=FALSE}
-# Step 1: Fast correlation cleanup
-data_cleaned <- corrPrune(raw_data, threshold = 0.7)
-
-# Step 2: Model-specific VIF cleanup
-model_ready <- modelPrune(response ~ ., data = data_cleaned, limit = 5)
-```
-
-**Use when**: You have many predictors (p > 30) and want computational efficiency.
-
-## Pattern 2: Protected Variables
-
-```{r, eval=FALSE}
-# Always keep age, gender, treatment
-pruned <- corrPrune(data, threshold = 0.6,
-                    force_in = c("age", "gender", "treatment"))
-```
-
-**Use when**: Some predictors must remain for scientific/policy reasons.
-
-## Pattern 3: Mixed Model Workflow
-
-```{r, eval=FALSE}
-# Prune only fixed effects
-pruned <- modelPrune(
-  y ~ x1 + x2 + x3 + (1|subject) + (1|site),
-  data = longitudinal_data,
-  engine = "lme4",
-  limit = 5
-)
-```
-
-**Use when**: You have hierarchical/repeated measures data.
-
----
-
-# Troubleshooting
-
-## Problem: "No valid subsets found"
-
-**Cause**: Threshold too strict - all variables exceed it.
-
-**Solution**: Increase threshold or use `mode = "greedy"` for best-effort solution.
-
-## Problem: Too many variables removed
-
-**Cause**: Threshold too lenient, or limit too low.
-
-**Solution**:
-- Decrease correlation threshold (e.g., 0.7 → 0.8)
-- Increase VIF limit (e.g., 5 → 10)
-- Use `force_in` to protect important variables
-
-## Problem: Pruning takes too long
-
-**Cause**: Using `mode = "exact"` with large p.
-
-**Solution**: Use `mode = "greedy"` or `mode = "auto"` (auto-switches at p > 20).
-
----
-
-# Next Steps
-
-- **Advanced features**: See `vignette("corrselect_vignette")` for exact subset enumeration
-- **Custom engines**: See `?modelPrune` for integrating custom modeling packages (INLA, mgcv, etc.)
-- **Function reference**: Full documentation at `?corrPrune` and `?modelPrune`
+- `vignette("quickstart")` - Interface overview
+- `vignette("advanced")` - Custom engines and algorithmic control
+- `vignette("comparison")` - Comparison with alternatives
+- `vignette("theory")` - Mathematical foundations
 
 ---
 
 # References
 
 **Thresholds**:
+
 - O'Brien, R. M. (2007). A caution regarding rules of thumb for variance inflation factors. *Quality & Quantity*, 41(5), 673-690.
 - Dormann, C. F., et al. (2013). Collinearity: a review of methods to deal with it. *Ecography*, 36(1), 27-46.
 

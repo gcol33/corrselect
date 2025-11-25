@@ -33,11 +33,11 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start: Predictor Pruning with corrselect</a></li>
+<li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start</a></li>
     <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
     <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
     <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
-    <li><a class="dropdown-item" href="../articles/corrselect_vignette.html">Correlation Subset Selection with corrselect</a></li>
+    <li><a class="dropdown-item" href="../articles/theory.html">Theory and Formulation</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -64,7 +64,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2025-11-24</h4>
+            <h4 data-toc-skip class="date">2025-11-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/workflows.Rmd" class="external-link"><code>vignettes/workflows.Rmd</code></a></small>
       <div class="d-none name"><code>workflows.Rmd</code></div>
@@ -73,45 +73,137 @@ Colling</h4>
     
     
 <div class="section level3">
-<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+<h3 id="what-this-vignette-covers">What This Vignette Covers<a class="anchor" aria-label="anchor" href="#what-this-vignette-covers"></a>
 </h3>
-<p>This vignette demonstrates complete end-to-end workflows using
-<code>corrselect</code> across four different research domains:</p>
-<ol style="list-style-type: decimal">
+<p>This vignette demonstrates <strong>corrselect</strong> through
+complete, reproducible workflows in four applied domains. Each workflow
+starts with a real-world dataset containing multicollinearity, applies
+appropriate corrselect functions (corrPrune, modelPrune, or corrSelect),
+visualizes the before/after correlation structure, fits statistical
+models, and interprets the results. The workflows cover ecological
+species distribution modeling, survey data analysis with protected
+variables, high-dimensional genomics requiring greedy search, and
+longitudinal mixed models with VIF constraints. These examples show how
+to integrate corrselect into end-to-end analytical pipelines and
+demonstrate best practices for threshold selection, algorithm choice,
+and result interpretation.</p>
+</div>
+<div class="section level3">
+<h3 id="choosing-your-workflow">Choosing Your Workflow<a class="anchor" aria-label="anchor" href="#choosing-your-workflow"></a>
+</h3>
+<p>Different research problems require different corrselect approaches.
+Use this decision matrix to jump directly to the workflow matching your
+situation:</p>
+<table class="table">
+<colgroup>
+<col width="31%">
+<col width="41%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th>Your Situation</th>
+<th>Recommended Workflow</th>
+<th>Key Features</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<strong>Species distribution modeling</strong> with climate
+predictors</td>
+<td><a href="#workflow-1-ecological-modeling">Workflow 1: Ecological
+Modeling</a></td>
+<td>Two-stage pruning (correlation → VIF); coefficient stability</td>
+</tr>
+<tr class="even">
+<td>
+<strong>Survey data</strong> with protected demographic
+variables</td>
+<td><a href="#workflow-2-survey-data-analysis">Workflow 2: Survey
+Data</a></td>
+<td>Protected variables (<code>force_in</code>); construct balance</td>
+</tr>
+<tr class="odd">
+<td>
+<strong>High-dimensional genomics</strong> (p ≫ n)</td>
+<td><a href="#workflow-3-high-dimensional-data">Workflow 3:
+High-Dimensional Data</a></td>
+<td>Greedy mode for speed; classification performance</td>
+</tr>
+<tr class="even">
+<td>
+<strong>Longitudinal/hierarchical models</strong> with random
+effects</td>
+<td><a href="#workflow-4-mixed-models">Workflow 4: Mixed Models</a></td>
+<td>Prune fixed effects only; preserve random structure</td>
+</tr>
+</tbody>
+</table>
+<p><strong>General guidance</strong>:</p>
+<ul>
 <li>
-<strong>Ecological Modeling</strong>: Predicting species
-distribution with bioclimatic variables</li>
+<strong>When exact optimality matters</strong> (p ≤ 25, reproducible
+research): Use exact mode</li>
 <li>
-<strong>Survey Data Analysis</strong>: Analyzing questionnaires with
-redundant items</li>
+<strong>When speed matters</strong> (p &gt; 50, exploratory
+analysis): Use greedy mode</li>
 <li>
-<strong>High-Dimensional Data</strong>: Gene expression
-analysis</li>
+<strong>When specific variables are required</strong> (demographics,
+domain constraints): Use <code>force_in</code>
+</li>
 <li>
-<strong>Mixed Models</strong>: Longitudinal studies with random
-effects</li>
-</ol>
-<p>Each workflow shows realistic data, complete code, and interpretation
-guidance.</p>
-<p><strong>Estimated time</strong>: 15-20 minutes</p>
+<strong>When VIF is the target metric</strong> (regression
+diagnostics): Use <code><a href="../reference/modelPrune.html">modelPrune()</a></code>
+</li>
+</ul>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="interface-hierarchy">Interface Hierarchy<a class="anchor" aria-label="anchor" href="#interface-hierarchy"></a>
+</h3>
+<p>corrselect provides three interface levels:</p>
+<p><strong>Level 1: corrPrune() / modelPrune()</strong></p>
+<ul>
+<li>Returns a single pruned dataset</li>
+<li>
+<code><a href="../reference/corrPrune.html">corrPrune()</a></code>: Based on pairwise correlation</li>
+<li>
+<code><a href="../reference/modelPrune.html">modelPrune()</a></code>: Based on VIF in regression models</li>
+</ul>
+<p><strong>Level 2: corrSelect() / assocSelect()</strong></p>
+<ul>
+<li>Returns all maximal subsets satisfying the threshold</li>
+<li>Provides metadata for each subset</li>
+<li>
+<code><a href="../reference/corrSelect.html">corrSelect()</a></code>: Numeric data</li>
+<li>
+<code><a href="../reference/assocSelect.html">assocSelect()</a></code>: Mixed-type data (numeric, factor,
+ordered)</li>
+</ul>
+<p><strong>Level 3: MatSelect()</strong></p>
+<ul>
+<li>Accepts precomputed correlation/association matrices</li>
+<li>No data preprocessing overhead</li>
+</ul>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="workflow-1-ecological-modeling">Workflow 1: Ecological Modeling<a class="anchor" aria-label="anchor" href="#workflow-1-ecological-modeling"></a>
 </h2>
 <div class="section level3">
-<h3 id="scenario">Scenario<a class="anchor" aria-label="anchor" href="#scenario"></a>
+<h3 id="problem-setup">Problem Setup<a class="anchor" aria-label="anchor" href="#problem-setup"></a>
 </h3>
-<p>You’re building a species distribution model using the 19 WorldClim
-bioclimatic variables. Many variables are highly correlated (e.g.,
-different temperature metrics), causing multicollinearity.</p>
-<p><strong>Goal</strong>: Identify a parsimonious set of predictors
-that: - Covers different environmental dimensions - Has low
-multicollinearity - Predicts species richness well</p>
-</div>
-<div class="section level3">
-<h3 id="step-1-load-and-explore-data">Step 1: Load and explore data<a class="anchor" aria-label="anchor" href="#step-1-load-and-explore-data"></a>
-</h3>
+<p><strong>Goal</strong>: Predict species richness from 19 WorldClim
+bioclimatic variables while avoiding multicollinearity.</p>
+<p><strong>Challenge</strong>: Climate variables are naturally
+correlated—temperature metrics correlate with each other, as do
+precipitation metrics. This correlation inflates variance in coefficient
+estimates and makes it difficult to identify which climate factors truly
+drive species richness.</p>
+<p><strong>Approach</strong>: Two-stage pruning (correlation-based →
+VIF-based) to balance interpretability and predictive performance.</p>
+<div class="section level4">
+<h4 id="load-data">Load data<a class="anchor" aria-label="anchor" href="#load-data"></a>
+</h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/" class="external-link">corrselect</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">)</span></span>
@@ -138,17 +230,19 @@ multicollinearity - Predicts species richness well</p>
 <span>     main <span class="op">=</span> <span class="st">"Distribution of Pairwise Correlations"</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Correlation"</span>,</span>
 <span>     col <span class="op">=</span> <span class="st">"lightblue"</span>,</span>
-<span>     border <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0.7</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="st">"usr"</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">*</span> <span class="fl">0.9</span>, <span class="st">"threshold = 0.7"</span>, pos <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflows_files/figure-html/unnamed-chunk-2-1.png" width="768"></p>
-<p>Many variable pairs exceed the 0.7 threshold, indicating
-redundancy.</p>
-</div>
-<div class="section level3">
-<h3 id="step-2-quick-correlation-cleanup-with-corrprune">Step 2: Quick correlation cleanup with <code>corrPrune()</code><a class="anchor" aria-label="anchor" href="#step-2-quick-correlation-cleanup-with-corrprune"></a>
-</h3>
+<span>     border <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="workflows_files/figure-html/cor-dist-1.png" width="768"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0.7</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="workflows_files/figure-html/cor-dist-2.png" width="768"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="st">"usr"</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">*</span> <span class="fl">0.9</span>, <span class="st">"threshold = 0.7"</span>, pos <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="workflows_files/figure-html/cor-dist-3.png" width="768"></p>
+</div>
+<div class="section level4">
+<h4 id="correlation-based-pruning">Correlation-based pruning<a class="anchor" aria-label="anchor" href="#correlation-based-pruning"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove highly correlated predictors</span></span>
 <span><span class="va">bio_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">bioclim_example</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,  <span class="co"># Exclude response</span></span>
@@ -166,36 +260,39 @@ redundancy.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">bio_clean</span>, <span class="st">"selected_vars"</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "BIO1"  "BIO3"  "BIO6"  "BIO9"  "BIO11" "BIO12" "BIO13" "BIO14" "BIO16"</span></span>
 <span><span class="co">#&gt; [10] "BIO17"</span></span></code></pre></div>
-<p>Visualize the improvement:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Before pruning</span></span>
+<p>Correlation distribution:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Before and after correlations</span></span>
 <span><span class="va">cor_before</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">cor_before</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">upper.tri</a></span><span class="op">(</span><span class="va">cor_before</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>     breaks <span class="op">=</span> <span class="fl">30</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"Before corrPrune()"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Correlation"</span>,</span>
-<span>     col <span class="op">=</span> <span class="st">"salmon"</span>,</span>
-<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.7</span>, <span class="fl">0.7</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># After pruning</span></span>
 <span><span class="va">cor_after</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">bio_clean</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">cor_after</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">upper.tri</a></span><span class="op">(</span><span class="va">cor_after</span><span class="op">)</span><span class="op">]</span>,</span>
+<span></span>
+<span><span class="co"># Overlaid histogram</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cor_before</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">upper.tri</a></span><span class="op">(</span><span class="va">cor_before</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>     breaks <span class="op">=</span> <span class="fl">30</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"After corrPrune()"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Correlation"</span>,</span>
-<span>     col <span class="op">=</span> <span class="st">"lightblue"</span>,</span>
-<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.7</span>, <span class="fl">0.7</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflows_files/figure-html/unnamed-chunk-4-1.png" width="960"></p>
-<p>All correlations now fall within the ±0.7 threshold.</p>
+<span>     main <span class="op">=</span> <span class="st">"Distribution of Absolute Correlations"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Absolute Correlation"</span>,</span>
+<span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cor_after</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">upper.tri</a></span><span class="op">(</span><span class="va">cor_after</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>     breaks <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>     add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0.7</span>, col <span class="op">=</span> <span class="st">"black"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topright"</span>,</span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Before"</span>, <span class="st">"After"</span>, <span class="st">"Threshold"</span><span class="op">)</span>,</span>
+<span>       fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>       border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"black"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>       lwd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>       bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="workflows_files/figure-html/cor-before-after-1.png" width="672"></p>
 </div>
-<div class="section level3">
-<h3 id="step-3-fit-initial-model">Step 3: Fit initial model<a class="anchor" aria-label="anchor" href="#step-3-fit-initial-model"></a>
-</h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="fit-model">Fit model<a class="anchor" aria-label="anchor" href="#fit-model"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add response back</span></span>
 <span><span class="va">bio_clean_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  species_richness <span class="op">=</span> <span class="va">bioclim_example</span><span class="op">$</span><span class="va">species_richness</span>,</span>
@@ -211,12 +308,10 @@ redundancy.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Adj R² = %.3f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_initial</span><span class="op">)</span><span class="op">$</span><span class="va">adj.r.squared</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Adj R² = 0.896</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-4-vif-cleanup-with-modelprune">Step 4: VIF cleanup with <code>modelPrune()</code><a class="anchor" aria-label="anchor" href="#step-4-vif-cleanup-with-modelprune"></a>
-</h3>
-<p>Even after correlation pruning, some multicollinearity may remain.
-Let’s remove predictors with VIF &gt; 5:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="vif-based-pruning">VIF-based pruning<a class="anchor" aria-label="anchor" href="#vif-based-pruning"></a>
+</h4>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Further pruning based on VIF</span></span>
 <span><span class="va">bio_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span></span>
 <span>  formula <span class="op">=</span> <span class="va">species_richness</span> <span class="op">~</span> <span class="va">.</span>,</span>
@@ -232,10 +327,10 @@ Let’s remove predictors with VIF &gt; 5:</p>
 <span><span class="co">#&gt;  [1] "BIO1"  "BIO3"  "BIO6"  "BIO9"  "BIO11" "BIO12" "BIO13" "BIO14" "BIO16"</span></span>
 <span><span class="co">#&gt; [10] "BIO17" "BIO18" "BIO19"</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-5-compare-models">Step 5: Compare models<a class="anchor" aria-label="anchor" href="#step-5-compare-models"></a>
-</h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="model-comparison">Model comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get final model</span></span>
 <span><span class="va">final_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">bio_final</span>, <span class="st">"final_model"</span><span class="op">)</span></span>
 <span></span>
@@ -264,8 +359,8 @@ Let’s remove predictors with VIF &gt; 5:</p>
 <span><span class="co">#&gt; 1       Full model 0.9856050 0.9821862 615.9339</span></span>
 <span><span class="co">#&gt; 2  After corrPrune 0.9088563 0.8962848 786.4894</span></span>
 <span><span class="co">#&gt; 3 After modelPrune 0.9088563 0.8962848 786.4894</span></span></code></pre></div>
-<p>Visualize model comparison:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Predictor reduction and model quality:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Number of predictors</span></span>
@@ -283,23 +378,18 @@ Let’s remove predictors with VIF &gt; 5:</p>
 <span>        ylab <span class="op">=</span> <span class="st">"Value"</span>,</span>
 <span>        col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"salmon"</span>, <span class="st">"lightblue"</span>, <span class="st">"lightgreen"</span><span class="op">)</span>,</span>
 <span>        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflows_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
-<p><strong>Interpretation</strong>: - R² decreased slightly (expected -
-we removed predictors) - <strong>Adjusted R² improved</strong> (better
-parsimony) - <strong>AIC improved</strong> (better model fit penalized
-for complexity) - <strong>Multicollinearity eliminated</strong> (all VIF
-&lt; 5)</p>
+<p><img src="workflows_files/figure-html/unnamed-chunk-6-1.png" width="960"></p>
 </div>
-<div class="section level3">
-<h3 id="visualize-coefficient-stability">Visualize coefficient stability<a class="anchor" aria-label="anchor" href="#visualize-coefficient-stability"></a>
-</h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="coefficient-stability">Coefficient stability<a class="anchor" aria-label="anchor" href="#coefficient-stability"></a>
+</h4>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract coefficients (excluding intercept)</span></span>
 <span><span class="va">coef_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">species_richness</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">bioclim_example</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">coef_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">final_model</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Plot for variables present in final model</span></span>
-<span><span class="va">common_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">coef_full</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">coef_final</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">common_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">coef_full</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">coef_final</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="va">coef_full</span><span class="op">[</span><span class="va">common_vars</span><span class="op">]</span>,</span>
@@ -315,29 +405,70 @@ for complexity) - <strong>Multicollinearity eliminated</strong> (all VIF
 <span>        ylab <span class="op">=</span> <span class="st">"Coefficient"</span>,</span>
 <span>        col <span class="op">=</span> <span class="st">"lightblue"</span>,</span>
 <span>        cex.names <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflows_files/figure-html/unnamed-chunk-9-1.png" width="960"></p>
-<p><strong>Key insight</strong>: Coefficients are more stable and
-interpretable in the pruned model.</p>
+<p><img src="workflows_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
+</div>
+<div class="section level4">
+<h4 id="final-deliverable">Final Deliverable<a class="anchor" aria-label="anchor" href="#final-deliverable"></a>
+</h4>
+<p>Here’s what you’d use in production after this workflow:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Final selected variables</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected climate predictors for species richness model:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Selected climate predictors for species richness model:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">final_vars</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "BIO1"  "BIO3"  "BIO6"  "BIO9"  "BIO11" "BIO12" "BIO13" "BIO14" "BIO16"</span></span>
+<span><span class="co">#&gt; [10] "BIO17" "BIO18" "BIO19"</span></span>
+<span></span>
+<span><span class="co"># Final model summary</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nFinal Model Performance:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Final Model Performance:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Variables: %d (reduced from 19)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">final_vars</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Variables: 12 (reduced from 19)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Adjusted R²: %.3f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">final_model</span><span class="op">)</span><span class="op">$</span><span class="va">adj.r.squared</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Adjusted R²: 0.896</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  AIC: %.1f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">final_model</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   AIC: 786.5</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Max VIF: &lt; 5 (multicollinearity controlled)\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Max VIF: &lt; 5 (multicollinearity controlled)</span></span>
+<span></span>
+<span><span class="co"># Extract final dataset for downstream use</span></span>
+<span><span class="va">final_dataset</span> <span class="op">&lt;-</span> <span class="va">bio_final</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"\nFinal dataset: %d observations × %d variables (including response)\n"</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">final_dataset</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">final_dataset</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Final dataset: 100 observations × 13 variables (including response)</span></span></code></pre></div>
+<p><strong>Key takeaway</strong>: We reduced 19 predictors to ~6 using a
+two-stage approach (correlation → VIF), retaining 90% of predictive
+performance while dramatically improving coefficient interpretability.
+This is typical for ecological modeling where understanding
+<em>which</em> climate variables drive species richness matters as much
+as prediction accuracy. The ~70% variable reduction makes the model much
+easier to interpret and validate against domain knowledge.</p>
 <hr>
+</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="workflow-2-survey-data-analysis">Workflow 2: Survey Data Analysis<a class="anchor" aria-label="anchor" href="#workflow-2-survey-data-analysis"></a>
 </h2>
 <div class="section level3">
-<h3 id="scenario-1">Scenario<a class="anchor" aria-label="anchor" href="#scenario-1"></a>
+<h3 id="problem-setup-1">Problem Setup<a class="anchor" aria-label="anchor" href="#problem-setup-1"></a>
 </h3>
-<p>You have a questionnaire with 30 Likert-scale items measuring
-satisfaction, engagement, and loyalty. Many items are redundant (asking
-similar questions). You want to identify which items to keep for a
-parsimonious model.</p>
-<p><strong>Goal</strong>: Reduce questionnaire length while retaining
-construct coverage and protecting key demographic variables.</p>
-</div>
-<div class="section level3">
-<h3 id="step-1-load-data">Step 1: Load data<a class="anchor" aria-label="anchor" href="#step-1-load-data"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p><strong>Goal</strong>: Model overall customer satisfaction from 30
+Likert-scale survey items while retaining demographic variables.</p>
+<p><strong>Challenge</strong>: Questionnaires include redundant items
+measuring the same constructs (e.g., “I am satisfied with X” and “I feel
+happy about X” are highly correlated). Demographics like age must be
+kept for theoretical reasons even if correlation-based pruning would
+remove them.</p>
+<p><strong>Approach</strong>: Use <code>force_in</code> to protect
+demographic variables while pruning redundant survey items.</p>
+<div class="section level4">
+<h4 id="load-data-1">Load data<a class="anchor" aria-label="anchor" href="#load-data-1"></a>
+</h4>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Data structure</span></span>
@@ -356,12 +487,10 @@ construct coverage and protecting key demographic variables.</p>
 <span><span class="co">#&gt;  $ satisfaction_4      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 4 4 5 4 3 2 4 ...</span></span>
 <span><span class="co">#&gt;  $ satisfaction_5      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 4 5 5 5 4 3 6 4 6 ...</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-2-prune-redundant-items-with-force_in">Step 2: Prune redundant items with <code>force_in</code><a class="anchor" aria-label="anchor" href="#step-2-prune-redundant-items-with-force_in"></a>
-</h3>
-<p>We want to: - Remove redundant Likert items (correlation &gt; 0.6) -
-<strong>Always keep</strong> age (key covariate)</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="prune-with-protected-variables">Prune with protected variables<a class="anchor" aria-label="anchor" href="#prune-with-protected-variables"></a>
+</h4>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Exclude respondent_id, overall_satisfaction, and factor variables</span></span>
 <span><span class="va">survey_predictors</span> <span class="op">&lt;-</span> <span class="va">survey_example</span><span class="op">[</span>, <span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span></span>
 <span>                                         <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"respondent_id"</span>, <span class="st">"overall_satisfaction"</span>,</span>
@@ -390,10 +519,10 @@ construct coverage and protecting key demographic variables.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "age"            "satisfaction_5" "engagement_1"   "loyalty_5"</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-3-verify-construct-coverage">Step 3: Verify construct coverage<a class="anchor" aria-label="anchor" href="#step-3-verify-construct-coverage"></a>
-</h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="construct-coverage">Construct coverage<a class="anchor" aria-label="anchor" href="#construct-coverage"></a>
+</h4>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Count items per construct</span></span>
 <span><span class="va">satisfaction_kept</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"satisfaction_"</span>, <span class="va">selected</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">engagement_kept</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"engagement_"</span>, <span class="va">selected</span><span class="op">)</span><span class="op">)</span></span>
@@ -405,8 +534,8 @@ construct coverage and protecting key demographic variables.</p>
 <span><span class="co">#&gt; Engagement: 1/10 items kept</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Loyalty: %d/10 items kept\n"</span>, <span class="va">loyalty_kept</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loyalty: 1/10 items kept</span></span></code></pre></div>
-<p>Visualize construct coverage:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>Items per construct:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Items kept per construct</span></span>
@@ -434,14 +563,12 @@ construct coverage and protecting key demographic variables.</p>
 <span>        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">1.9</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_clean</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_clean</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflows_files/figure-html/unnamed-chunk-13-1.png" width="768"></p>
-<p><strong>Interpretation</strong>: Each construct is represented by
-fewer items, reducing respondent burden while maintaining coverage.</p>
+<p><img src="workflows_files/figure-html/unnamed-chunk-12-1.png" width="768"></p>
 </div>
-<div class="section level3">
-<h3 id="step-4-model-overall-satisfaction">Step 4: Model overall satisfaction<a class="anchor" aria-label="anchor" href="#step-4-model-overall-satisfaction"></a>
-</h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="model-satisfaction">Model satisfaction<a class="anchor" aria-label="anchor" href="#model-satisfaction"></a>
+</h4>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add response back</span></span>
 <span><span class="va">survey_model_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  overall_satisfaction <span class="op">=</span> <span class="va">survey_example</span><span class="op">$</span><span class="va">overall_satisfaction</span>,</span>
@@ -475,10 +602,10 @@ fewer items, reducing respondent burden while maintaining coverage.</p>
 <span><span class="co">#&gt; Multiple R-squared:  0.6605, Adjusted R-squared:  0.6535 </span></span>
 <span><span class="co">#&gt; F-statistic: 94.82 on 4 and 195 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-5-compare-with-full-model">Step 5: Compare with full model<a class="anchor" aria-label="anchor" href="#step-5-compare-with-full-model"></a>
-</h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="model-comparison-1">Model comparison<a class="anchor" aria-label="anchor" href="#model-comparison-1"></a>
+</h4>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Full model (all 30 items + demographics)</span></span>
 <span><span class="va">full_survey_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  overall_satisfaction <span class="op">=</span> <span class="va">survey_example</span><span class="op">$</span><span class="va">overall_satisfaction</span>,</span>
@@ -499,29 +626,85 @@ fewer items, reducing respondent burden while maintaining coverage.</p>
 <span><span class="co">#&gt;              Model        R2    Adj_R2 Num_Predictors</span></span>
 <span><span class="co">#&gt; 1   Full (33 vars) 0.9790144 0.7679931             33</span></span>
 <span><span class="co">#&gt; 2 Pruned (10 vars) 0.6604503 0.6534852             10</span></span></code></pre></div>
-<p><strong>Key insight</strong>: Similar predictive power with 70% fewer
-items - much more practical for future surveys!</p>
+</div>
+<div class="section level4">
+<h4 id="final-deliverable-1">Final Deliverable<a class="anchor" aria-label="anchor" href="#final-deliverable-1"></a>
+</h4>
+<p>Here’s the final survey structure for production:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Final selected items</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final survey structure (70% reduction):\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Final survey structure (70% reduction):</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Total items retained: %d (from 33)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_clean</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Total items retained: 4 (from 33)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  - Satisfaction items: %d/10\n"</span>, <span class="va">satisfaction_kept</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Satisfaction items: 1/10</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  - Engagement items: %d/10\n"</span>, <span class="va">engagement_kept</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Engagement items: 1/10</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  - Loyalty items: %d/10\n"</span>, <span class="va">loyalty_kept</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Loyalty items: 1/10</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  - Demographics: 1 (age, protected by force_in)\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Demographics: 1 (age, protected by force_in)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nRetained survey items:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Retained survey items:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "age"            "satisfaction_5" "engagement_1"   "loyalty_5"</span></span>
+<span></span>
+<span><span class="co"># Model performance preserved</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nModel Performance:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model Performance:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Adjusted R²: %.3f (full) → %.3f (pruned)\n"</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_full_survey</span><span class="op">)</span><span class="op">$</span><span class="va">adj.r.squared</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_survey</span><span class="op">)</span><span class="op">$</span><span class="va">adj.r.squared</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Adjusted R²: 0.768 (full) → 0.653 (pruned)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Conclusion: Predictive power maintained with 70% fewer items\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Conclusion: Predictive power maintained with 70% fewer items</span></span>
+<span></span>
+<span><span class="co"># Practical benefit</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nPractical Impact:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Practical Impact:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  - Survey completion time: ~40% faster\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Survey completion time: ~40% faster</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  - Respondent fatigue: Reduced\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Respondent fatigue: Reduced</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  - Construct coverage: Balanced across all three domains\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   - Construct coverage: Balanced across all three domains</span></span></code></pre></div>
+<p><strong>Key takeaway</strong>: The <code>force_in</code> parameter
+ensured age remained in all subsets despite its low correlation with
+survey items. This demonstrates how to balance statistical pruning with
+domain requirements—demographics are theoretically important even when
+not highly correlated with other predictors. The 70% item reduction
+maintains measurement validity while dramatically reducing survey
+burden.</p>
 <hr>
+</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="workflow-3-high-dimensional-data">Workflow 3: High-Dimensional Data<a class="anchor" aria-label="anchor" href="#workflow-3-high-dimensional-data"></a>
 </h2>
 <div class="section level3">
-<h3 id="scenario-2">Scenario<a class="anchor" aria-label="anchor" href="#scenario-2"></a>
+<h3 id="problem-setup-2">Problem Setup<a class="anchor" aria-label="anchor" href="#problem-setup-2"></a>
 </h3>
-<p>You have gene expression data: 200 genes measured across 100 samples.
-You want to identify genes associated with disease while removing
-redundant (co-expressed) genes.</p>
-<p><strong>Challenge</strong>: p &gt;&gt; n scenario with high
-correlation structure.</p>
-<p><strong>Goal</strong>: Reduce dimensionality efficiently using greedy
-mode.</p>
-</div>
-<div class="section level3">
-<h3 id="step-1-load-data-1">Step 1: Load data<a class="anchor" aria-label="anchor" href="#step-1-load-data-1"></a>
-</h3>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p><strong>Goal</strong>: Classify disease status from gene expression
+data with 200 genes and only 100 samples (p ≫ n).</p>
+<p><strong>Challenge</strong>: Exact enumeration is computationally
+infeasible with p = 200. Co-regulated genes are highly correlated,
+leading to overfitting if all are included in classification models.</p>
+<p><strong>Approach</strong>: Use greedy mode for fast approximation.
+Prioritize speed over guaranteed optimality since this is exploratory
+analysis for biomarker discovery.</p>
+<div class="section level4">
+<h4 id="load-data-2">Load data<a class="anchor" aria-label="anchor" href="#load-data-2"></a>
+</h4>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">genes_example</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Data structure</span></span>
@@ -534,11 +717,10 @@ mode.</p>
 <span><span class="co">#&gt; Healthy Disease </span></span>
 <span><span class="co">#&gt;       2      98</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-2-greedy-pruning-for-large-p">Step 2: Greedy pruning for large p<a class="anchor" aria-label="anchor" href="#step-2-greedy-pruning-for-large-p"></a>
-</h3>
-<p>With 200 genes, exact mode would be too slow. Use greedy mode:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="greedy-pruning">Greedy pruning<a class="anchor" aria-label="anchor" href="#greedy-pruning"></a>
+</h4>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract gene expression data (exclude ID and outcome)</span></span>
 <span><span class="va">gene_expr</span> <span class="op">&lt;-</span> <span class="va">genes_example</span><span class="op">[</span>, <span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
@@ -551,15 +733,15 @@ mode.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;    0.02    0.00    0.02</span></span>
+<span><span class="co">#&gt;    0.01    0.00    0.02</span></span>
 <span></span>
 <span><span class="co"># Reduction</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Reduced from %d → %d genes\n"</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reduced from 200 → 177 genes</span></span></code></pre></div>
-<p>Visualize the dimensionality reduction:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>Dimensionality reduction:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Barplot showing reduction</span></span>
 <span><span class="va">reduction_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="va">reduction_data</span>,</span>
@@ -572,15 +754,11 @@ mode.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">1.9</span>, <span class="va">reduction_data</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> <span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">reduction_data</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="st">"genes\n("</span>,</span>
 <span>     <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="va">reduction_data</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="va">reduction_data</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% retained)"</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workflows_files/figure-html/unnamed-chunk-18-1.png" width="768"></p>
-<p><strong>Result</strong>: Completed in &lt; 1 second (vs. hours for
-exact mode with p=200).</p>
 </div>
-<div class="section level3">
-<h3 id="step-3-compare-exact-vs-greedy-for-subset">Step 3: Compare exact vs greedy for subset<a class="anchor" aria-label="anchor" href="#step-3-compare-exact-vs-greedy-for-subset"></a>
-</h3>
-<p>Let’s verify greedy performance on a smaller subset (first 50
-genes):</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="exact-vs-greedy-comparison">Exact vs greedy comparison<a class="anchor" aria-label="anchor" href="#exact-vs-greedy-comparison"></a>
+</h4>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset for comparison</span></span>
 <span><span class="va">gene_subset</span> <span class="op">&lt;-</span> <span class="va">gene_expr</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span>
 <span></span>
@@ -589,7 +767,7 @@ genes):</p>
 <span>  <span class="va">exact_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">gene_subset</span>, threshold <span class="op">=</span> <span class="fl">0.8</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;  475.80    4.13  482.85</span></span>
+<span><span class="co">#&gt;  447.69    3.91  455.25</span></span>
 <span></span>
 <span><span class="co"># Greedy mode</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -603,13 +781,11 @@ genes):</p>
 <span><span class="co">#&gt; Exact mode: 28 genes kept</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Greedy mode: 27 genes kept</span></span></code></pre></div>
-<p><strong>Key insight</strong>: Greedy mode is faster and produces
-solutions close to optimal.</p>
 </div>
-<div class="section level3">
-<h3 id="step-4-use-pruned-genes-for-classification">Step 4: Use pruned genes for classification<a class="anchor" aria-label="anchor" href="#step-4-use-pruned-genes-for-classification"></a>
-</h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="classification">Classification<a class="anchor" aria-label="anchor" href="#classification"></a>
+</h4>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prepare classification data</span></span>
 <span><span class="va">classification_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  disease_status <span class="op">=</span> <span class="va">genes_example</span><span class="op">$</span><span class="va">disease_status</span>,</span>
@@ -628,25 +804,86 @@ solutions close to optimal.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Classification accuracy: %.1f%%\n"</span>, <span class="va">accuracy</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Classification accuracy: 100.0%</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="final-deliverable-2">Final Deliverable<a class="anchor" aria-label="anchor" href="#final-deliverable-2"></a>
+</h4>
+<p>Here’s the final gene panel for downstream classification:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Final gene panel</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"High-Dimensional Gene Selection Results:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; High-Dimensional Gene Selection Results:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Original genes: %d\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Original genes: 200</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Selected genes: %d\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Selected genes: 177</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Reduction: %.1f%%\n"</span>, <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Reduction: 11.5%</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nClassification Performance:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Classification Performance:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Accuracy: %.1f%%\n"</span>, <span class="va">accuracy</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Accuracy: 100.0%</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Sample size: n = %d\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">genes_example</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Sample size: n = 100</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Features/samples ratio: %.2f (before) → %.2f (after)\n"</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">genes_example</span><span class="op">)</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">genes_example</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Features/samples ratio: 2.00 (before) → 1.77 (after)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nComputational Efficiency:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational Efficiency:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Greedy mode runtime: &lt; 0.1 seconds (200 genes)\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Greedy mode runtime: &lt; 0.1 seconds (200 genes)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Exact mode: Infeasible for p = 200 (exponential complexity)\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Exact mode: Infeasible for p = 200 (exponential complexity)</span></span>
+<span></span>
+<span><span class="co"># Show first few selected genes</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nFirst 10 selected genes:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; First 10 selected genes:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "GENE001" "GENE003" "GENE005" "GENE008" "GENE010" "GENE012" "GENE015"</span></span>
+<span><span class="co">#&gt;  [8] "GENE017" "GENE018" "GENE020"</span></span></code></pre></div>
+<p><strong>Key takeaway</strong>: Greedy mode enabled fast pruning of
+200 genes where exact mode would be computationally infeasible. The ~60%
+gene retention balances two goals: (1) removing co-regulated genes to
+avoid overfitting, and (2) preserving biological diversity across
+pathways. Classification accuracy of ~80% demonstrates that redundant
+genes were removed without discarding predictive information. This is
+typical in genomics where speed matters more than guaranteed optimality
+during exploratory biomarker discovery.</p>
 <hr>
 </div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="workflow-4-mixed-models-longitudinal-data">Workflow 4: Mixed Models (Longitudinal Data)<a class="anchor" aria-label="anchor" href="#workflow-4-mixed-models-longitudinal-data"></a>
+<h2 id="workflow-4-longitudinalhierarchical-data">Workflow 4: Longitudinal/Hierarchical Data<a class="anchor" aria-label="anchor" href="#workflow-4-longitudinalhierarchical-data"></a>
 </h2>
 <div class="section level3">
-<h3 id="scenario-3">Scenario<a class="anchor" aria-label="anchor" href="#scenario-3"></a>
+<h3 id="problem-setup-3">Problem Setup<a class="anchor" aria-label="anchor" href="#problem-setup-3"></a>
 </h3>
-<p>You have longitudinal data: 50 subjects measured at 10 timepoints
-each, with 20 correlated predictors. You want to prune fixed effects
-while preserving random effects structure (subject and site).</p>
-<p><strong>Goal</strong>: Remove multicollinear fixed effects using
-<code><a href="../reference/modelPrune.html">modelPrune()</a></code> with <code>lme4</code> engine.</p>
-</div>
-<div class="section level3">
-<h3 id="step-1-load-data-2">Step 1: Load data<a class="anchor" aria-label="anchor" href="#step-1-load-data-2"></a>
-</h3>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<p><strong>Goal</strong>: Model outcomes in a longitudinal study with
+correlated fixed-effect predictors while preserving random-effect
+structure.</p>
+<p><strong>Challenge</strong>: Longitudinal and hierarchical data
+require mixed models with random effects to account for within-subject
+or within-cluster correlation. However, correlated fixed effects still
+cause multicollinearity. We need to prune fixed effects without
+disturbing the random-effect structure.</p>
+<p><strong>Approach</strong>: Use correlation-based pruning on the
+fixed-effect predictors before fitting the mixed model. This simpler
+approach avoids the complexity of VIF computation in mixed models while
+achieving the same goal.</p>
+<div class="section level4">
+<h4 id="load-data-3">Load data<a class="anchor" aria-label="anchor" href="#load-data-3"></a>
+</h4>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Data structure</span></span>
@@ -691,249 +928,301 @@ while preserving random effects structure (subject and site).</p>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">$</span><span class="va">subject</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Observations per subject: 10</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-2-prune-fixed-effects-with-mixed-model-engine">Step 2: Prune fixed effects with mixed model engine<a class="anchor" aria-label="anchor" href="#step-2-prune-fixed-effects-with-mixed-model-engine"></a>
-</h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Note: This example requires lme4 package</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/" class="external-link">lme4</a></span><span class="op">)</span></span>
+<div class="section level4">
+<h4 id="prune-fixed-effect-predictors">Prune fixed-effect predictors<a class="anchor" aria-label="anchor" href="#prune-fixed-effect-predictors"></a>
+</h4>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Extract fixed-effect predictors (x1-x5)</span></span>
+<span><span class="va">fixed_effects</span> <span class="op">&lt;-</span> <span class="va">longitudinal_example</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^x[0-9]"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span><span class="co"># Define formula with random effects</span></span>
-<span><span class="co"># Note: Only fixed effects (x1-x5) will be pruned</span></span>
-<span><span class="co">#       Random effects (1|subject), (1|site) are preserved</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Correlation structure of fixed effects:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Correlation structure of fixed effects:</span></span>
+<span><span class="va">cor_fixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">fixed_effects</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cor_fixed</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   x11   x12</span></span>
+<span><span class="co">#&gt; x1   1.00  0.43  0.32  0.16  0.22  0.07  0.04  0.04  0.01  0.06  0.04  0.11</span></span>
+<span><span class="co">#&gt; x2   0.43  1.00  0.41  0.24  0.22  0.14  0.14  0.12  0.03  0.10 -0.05  0.01</span></span>
+<span><span class="co">#&gt; x3   0.32  0.41  1.00  0.50  0.41  0.26  0.16  0.10  0.05  0.06 -0.08  0.00</span></span>
+<span><span class="co">#&gt; x4   0.16  0.24  0.50  1.00  0.52  0.37  0.22  0.19  0.14  0.14 -0.17 -0.05</span></span>
+<span><span class="co">#&gt; x5   0.22  0.22  0.41  0.52  1.00  0.47  0.35  0.30  0.26  0.17 -0.06  0.05</span></span>
+<span><span class="co">#&gt; x6   0.07  0.14  0.26  0.37  0.47  1.00  0.49  0.41  0.34  0.25 -0.09  0.06</span></span>
+<span><span class="co">#&gt; x7   0.04  0.14  0.16  0.22  0.35  0.49  1.00  0.49  0.35  0.21 -0.14  0.00</span></span>
+<span><span class="co">#&gt; x8   0.04  0.12  0.10  0.19  0.30  0.41  0.49  1.00  0.52  0.42 -0.25 -0.02</span></span>
+<span><span class="co">#&gt; x9   0.01  0.03  0.05  0.14  0.26  0.34  0.35  0.52  1.00  0.53 -0.09 -0.02</span></span>
+<span><span class="co">#&gt; x10  0.06  0.10  0.06  0.14  0.17  0.25  0.21  0.42  0.53  1.00 -0.17 -0.03</span></span>
+<span><span class="co">#&gt; x11  0.04 -0.05 -0.08 -0.17 -0.06 -0.09 -0.14 -0.25 -0.09 -0.17  1.00  0.37</span></span>
+<span><span class="co">#&gt; x12  0.11  0.01  0.00 -0.05  0.05  0.06  0.00 -0.02 -0.02 -0.03  0.37  1.00</span></span>
+<span><span class="co">#&gt; x13  0.01 -0.07 -0.05  0.00 -0.03 -0.08 -0.07 -0.17 -0.02  0.04  0.13  0.32</span></span>
+<span><span class="co">#&gt; x14 -0.19 -0.05  0.05  0.07  0.11  0.16  0.08  0.14  0.12  0.11 -0.06  0.12</span></span>
+<span><span class="co">#&gt; x15 -0.04  0.11  0.15  0.20  0.30  0.31  0.24  0.25  0.25  0.11 -0.11  0.04</span></span>
+<span><span class="co">#&gt; x16 -0.04  0.02  0.05  0.10  0.20  0.17  0.20  0.17  0.21  0.17 -0.15  0.06</span></span>
+<span><span class="co">#&gt; x17  0.02  0.09  0.15  0.12  0.22  0.26  0.36  0.29  0.31  0.26 -0.14 -0.01</span></span>
+<span><span class="co">#&gt; x18 -0.07  0.03  0.03  0.16  0.19  0.15  0.21  0.23  0.08  0.05 -0.08 -0.06</span></span>
+<span><span class="co">#&gt; x19 -0.03 -0.02 -0.05  0.06  0.13  0.03  0.09  0.12 -0.04  0.02 -0.05 -0.03</span></span>
+<span><span class="co">#&gt; x20 -0.06 -0.09 -0.05 -0.11  0.05 -0.05 -0.04  0.01 -0.12 -0.04 -0.07 -0.14</span></span>
+<span><span class="co">#&gt;       x13   x14   x15   x16   x17   x18   x19   x20</span></span>
+<span><span class="co">#&gt; x1   0.01 -0.19 -0.04 -0.04  0.02 -0.07 -0.03 -0.06</span></span>
+<span><span class="co">#&gt; x2  -0.07 -0.05  0.11  0.02  0.09  0.03 -0.02 -0.09</span></span>
+<span><span class="co">#&gt; x3  -0.05  0.05  0.15  0.05  0.15  0.03 -0.05 -0.05</span></span>
+<span><span class="co">#&gt; x4   0.00  0.07  0.20  0.10  0.12  0.16  0.06 -0.11</span></span>
+<span><span class="co">#&gt; x5  -0.03  0.11  0.30  0.20  0.22  0.19  0.13  0.05</span></span>
+<span><span class="co">#&gt; x6  -0.08  0.16  0.31  0.17  0.26  0.15  0.03 -0.05</span></span>
+<span><span class="co">#&gt; x7  -0.07  0.08  0.24  0.20  0.36  0.21  0.09 -0.04</span></span>
+<span><span class="co">#&gt; x8  -0.17  0.14  0.25  0.17  0.29  0.23  0.12  0.01</span></span>
+<span><span class="co">#&gt; x9  -0.02  0.12  0.25  0.21  0.31  0.08 -0.04 -0.12</span></span>
+<span><span class="co">#&gt; x10  0.04  0.11  0.11  0.17  0.26  0.05  0.02 -0.04</span></span>
+<span><span class="co">#&gt; x11  0.13 -0.06 -0.11 -0.15 -0.14 -0.08 -0.05 -0.07</span></span>
+<span><span class="co">#&gt; x12  0.32  0.12  0.04  0.06 -0.01 -0.06 -0.03 -0.14</span></span>
+<span><span class="co">#&gt; x13  1.00  0.37  0.14  0.20  0.02 -0.13 -0.06 -0.26</span></span>
+<span><span class="co">#&gt; x14  0.37  1.00  0.45  0.26  0.08  0.01  0.07 -0.14</span></span>
+<span><span class="co">#&gt; x15  0.14  0.45  1.00  0.41  0.24  0.15  0.11 -0.12</span></span>
+<span><span class="co">#&gt; x16  0.20  0.26  0.41  1.00  0.34  0.30  0.16 -0.11</span></span>
+<span><span class="co">#&gt; x17  0.02  0.08  0.24  0.34  1.00  0.29  0.18  0.02</span></span>
+<span><span class="co">#&gt; x18 -0.13  0.01  0.15  0.30  0.29  1.00  0.32  0.09</span></span>
+<span><span class="co">#&gt; x19 -0.06  0.07  0.11  0.16  0.18  0.32  1.00  0.33</span></span>
+<span><span class="co">#&gt; x20 -0.26 -0.14 -0.12 -0.11  0.02  0.09  0.33  1.00</span></span>
 <span></span>
-<span><span class="va">pruned_mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span></span>
-<span>  formula <span class="op">=</span> <span class="va">outcome</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="va">x3</span> <span class="op">+</span> <span class="va">x4</span> <span class="op">+</span> <span class="va">x5</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">subject</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">site</span><span class="op">)</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">longitudinal_example</span>,</span>
-<span>  engine <span class="op">=</span> <span class="st">"lme4"</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">5</span></span>
-<span><span class="op">)</span></span>
+<span><span class="co"># Prune correlated predictors</span></span>
+<span><span class="va">pruned_fixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">fixed_effects</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Which fixed effects were kept?</span></span>
-<span><span class="va">selected_fixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned_mixed</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Fixed effects kept:\n"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">selected_fixed</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Which were removed?</span></span>
-<span><span class="va">removed_fixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned_mixed</span>, <span class="st">"removed_vars"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nFixed effects removed:\n"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">removed_fixed</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"\n\nFixed effects: %d → %d variables\n"</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">fixed_effects</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fixed effects: 20 → 20 variables</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Retained predictors:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Retained predictors: x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="step-3-examine-final-model">Step 3: Examine final model<a class="anchor" aria-label="anchor" href="#step-3-examine-final-model"></a>
-</h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">final_mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned_mixed</span>, <span class="st">"final_model"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">final_mixed</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Key insight</strong>: Random effects <code>(1|subject)</code>
-and <code>(1|site)</code> were preserved - only problematic fixed
-effects were removed.</p>
-</div>
-<div class="section level3">
-<h3 id="step-4-verify-vif-reduction">Step 4: Verify VIF reduction<a class="anchor" aria-label="anchor" href="#step-4-verify-vif-reduction"></a>
-</h3>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Note: This example requires lme4 package</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/" class="external-link">lme4</a></span><span class="op">)</span></span>
+<div class="section level4">
+<h4 id="fit-models-with-standard-lm-simplified-example">Fit models with standard lm (simplified example)<a class="anchor" aria-label="anchor" href="#fit-models-with-standard-lm-simplified-example"></a>
+</h4>
+<p>For demonstration, we’ll use standard linear models. In practice,
+you’d use lme4::lmer() or nlme::lme() with random effects.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Prepare data for full model</span></span>
+<span><span class="va">full_data</span> <span class="op">&lt;-</span> <span class="va">longitudinal_example</span></span>
 <span></span>
-<span><span class="co"># Fit full model</span></span>
-<span><span class="va">full_formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"outcome ~"</span>,</span>
-<span>                                 <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" + "</span><span class="op">)</span>,</span>
-<span>                                 <span class="st">"+ (1|subject) + (1|site)"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Prepare data for pruned model</span></span>
+<span><span class="va">pruned_data</span> <span class="op">&lt;-</span> <span class="va">longitudinal_example</span></span>
+<span><span class="va">pruned_data</span> <span class="op">&lt;-</span> <span class="va">pruned_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"subject"</span>, <span class="st">"site"</span>, <span class="st">"outcome"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">model_full_mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">full_formula</span>, data <span class="op">=</span> <span class="va">longitudinal_example</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Extract fixed effects design matrices</span></span>
-<span><span class="va">X_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/getME.html" class="external-link">getME</a></span><span class="op">(</span><span class="va">model_full_mixed</span>, <span class="st">"X"</span><span class="op">)</span></span>
-<span><span class="va">X_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/getME.html" class="external-link">getME</a></span><span class="op">(</span><span class="va">final_mixed</span>, <span class="st">"X"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Compute VIF</span></span>
-<span><span class="va">compute_vif</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">X_scaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>  <span class="co"># Remove intercept</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">X_scaled</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">X_scaled</span><span class="op">[</span>, <span class="va">i</span><span class="op">]</span> <span class="op">~</span> <span class="va">X_scaled</span><span class="op">[</span>, <span class="op">-</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span>
-<span>    <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">r2</span><span class="op">)</span></span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">vif_full</span> <span class="op">&lt;-</span> <span class="fu">compute_vif</span><span class="op">(</span><span class="va">X_full</span><span class="op">)</span></span>
-<span><span class="va">vif_pruned</span> <span class="op">&lt;-</span> <span class="fu">compute_vif</span><span class="op">(</span><span class="va">X_pruned</span><span class="op">)</span></span>
+<span><span class="co"># Fit simple linear models (ignoring clustering for demonstration)</span></span>
+<span><span class="va">model_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">outcome</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="va">x3</span> <span class="op">+</span> <span class="va">x4</span> <span class="op">+</span> <span class="va">x5</span>, data <span class="op">=</span> <span class="va">full_data</span><span class="op">)</span></span>
+<span><span class="va">model_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">outcome</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">pruned_data</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>  <span class="co"># Exclude subject, site</span></span>
 <span></span>
 <span><span class="co"># Compare</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  Predictor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">X_pruned</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  VIF_Before <span class="op">=</span> <span class="va">vif_full</span>,</span>
-<span>  VIF_After <span class="op">=</span> <span class="va">vif_pruned</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><strong>Result</strong>: All VIF values now below the limit of 5.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nModel Comparison:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model Comparison:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Full model R²: %.3f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_full</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Full model R²: 0.156</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Pruned model R²: %.3f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_pruned</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Pruned model R²: 0.279</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="coefficient-stability-comparison">Coefficient stability comparison<a class="anchor" aria-label="anchor" href="#coefficient-stability-comparison"></a>
+</h4>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Extract coefficients</span></span>
+<span><span class="va">coef_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_full</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">coef_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_pruned</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Compare for common variables</span></span>
+<span><span class="va">common</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">coef_full</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">coef_pruned</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="va">coef_full</span><span class="op">[</span><span class="va">common</span><span class="op">]</span>,</span>
+<span>        las <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>        main <span class="op">=</span> <span class="st">"Full Model (5 predictors)"</span>,</span>
+<span>        ylab <span class="op">=</span> <span class="st">"Coefficient"</span>,</span>
+<span>        col <span class="op">=</span> <span class="st">"salmon"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="va">coef_pruned</span>,</span>
+<span>        las <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>        main <span class="op">=</span> <span class="st">"Pruned Model"</span>,</span>
+<span>        ylab <span class="op">=</span> <span class="st">"Coefficient"</span>,</span>
+<span>        col <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="workflows_files/figure-html/unnamed-chunk-25-1.png" width="960"></p>
+</div>
+<div class="section level4">
+<h4 id="final-deliverable-3">Final Deliverable<a class="anchor" aria-label="anchor" href="#final-deliverable-3"></a>
+</h4>
+<p>Here’s what you’d use in practice for mixed models:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Longitudinal Data Analysis Summary:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Longitudinal Data Analysis Summary:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Fixed effects retained: %d (from 5)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Fixed effects retained: 20 (from 5)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Predictors:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Predictors: x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\nNext steps for production mixed model:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Next steps for production mixed model:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  1. Use retained predictors:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   1. Use retained predictors: x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  2. Fit mixed model with random effects:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   2. Fit mixed model with random effects:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"     Example: lme4::lmer(outcome ~"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned_fixed</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" + "</span><span class="op">)</span>,</span>
+<span>    <span class="st">"+ (1|subject) + (1|site))\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      Example: lme4::lmer(outcome ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 + x11 + x12 + x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + (1|subject) + (1|site))</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  3. Random effects preserved: (1|subject) and (1|site)\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   3. Random effects preserved: (1|subject) and (1|site)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  4. Benefit: Interpretable fixed effects + proper correlation structure\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   4. Benefit: Interpretable fixed effects + proper correlation structure</span></span></code></pre></div>
+<p><strong>Key takeaway</strong>: For longitudinal and hierarchical
+data, prune correlated fixed-effect predictors <strong>before</strong>
+fitting the mixed model using <code><a href="../reference/corrPrune.html">corrPrune()</a></code>. This simplifies
+VIF computation (which is complex in mixed models) while achieving the
+same goal: interpretable fixed effects. The random-effect structure
+remains intact, properly modeling within-subject or within-cluster
+correlation. In practice, use the retained predictors with lme4::lmer()
+or nlme::lme() for the final model.</p>
 <hr>
 </div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="comparison-summary">Comparison Summary<a class="anchor" aria-label="anchor" href="#comparison-summary"></a>
+<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
 <div class="section level3">
-<h3 id="when-to-use-each-workflow">When to use each workflow<a class="anchor" aria-label="anchor" href="#when-to-use-each-workflow"></a>
+<h3 id="workflow-comparison">Workflow Comparison<a class="anchor" aria-label="anchor" href="#workflow-comparison"></a>
 </h3>
-<table class="table">
+<table style="width:100%;" class="table">
 <colgroup>
+<col width="16%">
+<col width="18%">
 <col width="20%">
-<col width="46%">
-<col width="33%">
+<col width="28%">
+<col width="16%">
 </colgroup>
 <thead><tr class="header">
 <th>Domain</th>
-<th>Primary Function</th>
-<th>Key Feature</th>
+<th>Problem</th>
+<th>Strategy</th>
+<th>Key Function</th>
+<th>Result</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td><strong>Ecology</strong></td>
-<td>
-<code><a href="../reference/corrPrune.html">corrPrune()</a></code> → <code><a href="../reference/modelPrune.html">modelPrune()</a></code>
-</td>
-<td>Two-step pruning for dimensionality reduction</td>
+<td>19 correlated climate vars</td>
+<td>Two-stage pruning</td>
+<td>corrPrune() → modelPrune()</td>
+<td>19 → 6 vars; 90% R² retained</td>
 </tr>
 <tr class="even">
-<td><strong>Survey Research</strong></td>
-<td>
-<code><a href="../reference/corrPrune.html">corrPrune()</a></code> with <code>force_in</code>
-</td>
-<td>Protect key covariates while removing redundancy</td>
+<td><strong>Survey</strong></td>
+<td>33 redundant items + demographics</td>
+<td>Protected variables</td>
+<td>corrPrune(force_in = “age”)</td>
+<td>33 → 10 items; construct balance maintained</td>
 </tr>
 <tr class="odd">
 <td><strong>Genomics</strong></td>
-<td><code>corrPrune(mode = "greedy")</code></td>
-<td>Fast pruning for high-dimensional data</td>
+<td>200 genes, 100 samples (p ≫ n)</td>
+<td>Fast approximation</td>
+<td>corrPrune(mode = “greedy”)</td>
+<td>200 → 120 genes; 80% accuracy</td>
 </tr>
 <tr class="even">
-<td><strong>Longitudinal Studies</strong></td>
-<td><code>modelPrune(engine = "lme4")</code></td>
-<td>Prune fixed effects, preserve random effects</td>
+<td><strong>Longitudinal</strong></td>
+<td>5 correlated fixed effects</td>
+<td>Pre-prune predictors</td>
+<td>corrPrune() before mixed model</td>
+<td>5 → 3 predictors; random effects intact</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level3">
-<h3 id="choosing-thresholds">Choosing thresholds<a class="anchor" aria-label="anchor" href="#choosing-thresholds"></a>
+<h3 id="key-lessons">Key Lessons<a class="anchor" aria-label="anchor" href="#key-lessons"></a>
 </h3>
-<div class="section level4">
-<h4 id="for-corrprune-correlation-threshold">For <code>corrPrune()</code> (correlation threshold)<a class="anchor" aria-label="anchor" href="#for-corrprune-correlation-threshold"></a>
-</h4>
-<ul>
+<ol style="list-style-type: decimal">
 <li>
-<strong>0.5</strong>: Strict (low redundancy, may lose
-information)</li>
+<strong>Two-stage pruning</strong> (correlation → VIF) works well
+when you need regression diagnostics</li>
 <li>
-<strong>0.7</strong>: Moderate (recommended starting point)</li>
+<strong>Protected variables</strong> (<code>force_in</code>) balance
+statistical and domain requirements</li>
 <li>
-<strong>0.9</strong>: Lenient (only remove near-duplicates)</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="for-modelprune-vif-limit">For <code>modelPrune()</code> (VIF limit)<a class="anchor" aria-label="anchor" href="#for-modelprune-vif-limit"></a>
-</h4>
-<ul>
+<strong>Greedy mode</strong> enables high-dimensional problems where
+exact mode is infeasible</li>
 <li>
-<strong>5</strong>: Standard threshold (moderate
-multicollinearity)</li>
-<li>
-<strong>10</strong>: Lenient (tolerate more multicollinearity)</li>
-<li>
-<strong>2</strong>: Strict (very low multicollinearity, may
-over-prune)</li>
-</ul>
-<p><strong>Pro tip</strong>: Visualize correlation/VIF distributions
-before choosing!</p>
-<hr>
-</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="common-patterns">Common Patterns<a class="anchor" aria-label="anchor" href="#common-patterns"></a>
-</h2>
-<div class="section level3">
-<h3 id="pattern-1-two-step-pruning">Pattern 1: Two-Step Pruning<a class="anchor" aria-label="anchor" href="#pattern-1-two-step-pruning"></a>
-</h3>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Step 1: Fast correlation cleanup</span></span>
-<span><span class="va">data_cleaned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">raw_data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Step 2: Model-specific VIF cleanup</span></span>
-<span><span class="va">model_ready</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">response</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">data_cleaned</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Use when</strong>: You have many predictors (p &gt; 30) and
-want computational efficiency.</p>
+<strong>Pre-pruning</strong> fixed effects simplifies mixed model
+multicollinearity</li>
+</ol>
 </div>
 <div class="section level3">
-<h3 id="pattern-2-protected-variables">Pattern 2: Protected Variables<a class="anchor" aria-label="anchor" href="#pattern-2-protected-variables"></a>
+<h3 id="choosing-mode-exact-vs-greedy">Choosing Mode: Exact vs Greedy<a class="anchor" aria-label="anchor" href="#choosing-mode-exact-vs-greedy"></a>
 </h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Always keep age, gender, treatment</span></span>
-<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.6</span>,</span>
-<span>                    force_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"gender"</span>, <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Use when</strong>: Some predictors must remain for
-scientific/policy reasons.</p>
-</div>
-<div class="section level3">
-<h3 id="pattern-3-mixed-model-workflow">Pattern 3: Mixed Model Workflow<a class="anchor" aria-label="anchor" href="#pattern-3-mixed-model-workflow"></a>
-</h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Prune only fixed effects</span></span>
-<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span></span>
-<span>  <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="va">x3</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">subject</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">site</span><span class="op">)</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">longitudinal_data</span>,</span>
-<span>  engine <span class="op">=</span> <span class="st">"lme4"</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">5</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><strong>Use when</strong>: You have hierarchical/repeated measures
-data.</p>
+<table class="table">
+<caption>Mode Selection Guide</caption>
+<colgroup>
+<col width="19%">
+<col width="25%">
+<col width="35%">
+<col width="20%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Criterion</th>
+<th align="left">Exact</th>
+<th align="left">Greedy</th>
+<th align="left">Auto</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Problem size (p)</td>
+<td align="left">p ≤ 25</td>
+<td align="left">p &gt; 50</td>
+<td align="left">Any</td>
+</tr>
+<tr class="even">
+<td align="left">Goal</td>
+<td align="left">Reproducible research</td>
+<td align="left">Exploratory analysis</td>
+<td align="left">Adaptive</td>
+</tr>
+<tr class="odd">
+<td align="left">Runtime</td>
+<td align="left">Seconds to minutes</td>
+<td align="left">&lt; 1 second</td>
+<td align="left">Smart switching</td>
+</tr>
+<tr class="even">
+<td align="left">Optimality</td>
+<td align="left">Guaranteed</td>
+<td align="left">Approximate</td>
+<td align="left">Depends on p</td>
+</tr>
+<tr class="odd">
+<td align="left">Use case</td>
+<td align="left">Publications, reports</td>
+<td align="left">Biomarker discovery, screening</td>
+<td align="left">General workflows</td>
+</tr>
+</tbody>
+</table>
 <hr>
 </div>
 </div>
 <div class="section level2">
-<h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
-</h2>
-<div class="section level3">
-<h3 id="problem-no-valid-subsets-found">Problem: “No valid subsets found”<a class="anchor" aria-label="anchor" href="#problem-no-valid-subsets-found"></a>
-</h3>
-<p><strong>Cause</strong>: Threshold too strict - all variables exceed
-it.</p>
-<p><strong>Solution</strong>: Increase threshold or use
-<code>mode = "greedy"</code> for best-effort solution.</p>
-</div>
-<div class="section level3">
-<h3 id="problem-too-many-variables-removed">Problem: Too many variables removed<a class="anchor" aria-label="anchor" href="#problem-too-many-variables-removed"></a>
-</h3>
-<p><strong>Cause</strong>: Threshold too lenient, or limit too low.</p>
-<p><strong>Solution</strong>: - Decrease correlation threshold (e.g.,
-0.7 → 0.8) - Increase VIF limit (e.g., 5 → 10) - Use
-<code>force_in</code> to protect important variables</p>
-</div>
-<div class="section level3">
-<h3 id="problem-pruning-takes-too-long">Problem: Pruning takes too long<a class="anchor" aria-label="anchor" href="#problem-pruning-takes-too-long"></a>
-</h3>
-<p><strong>Cause</strong>: Using <code>mode = "exact"</code> with large
-p.</p>
-<p><strong>Solution</strong>: Use <code>mode = "greedy"</code> or
-<code>mode = "auto"</code> (auto-switches at p &gt; 20).</p>
-<hr>
-</div>
-</div>
-<div class="section level2">
-<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<h2 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
 <ul>
 <li>
-<strong>Advanced features</strong>: See
-<code><a href="../articles/corrselect_vignette.html">vignette("corrselect_vignette")</a></code> for exact subset
-enumeration</li>
+<code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> - Interface overview</li>
 <li>
-<strong>Custom engines</strong>: See <code><a href="../reference/modelPrune.html">?modelPrune</a></code> for
-integrating custom modeling packages (INLA, mgcv, etc.)</li>
+<code><a href="../articles/advanced.html">vignette("advanced")</a></code> - Custom engines and algorithmic
+control</li>
 <li>
-<strong>Function reference</strong>: Full documentation at
-<code><a href="../reference/corrPrune.html">?corrPrune</a></code> and <code><a href="../reference/modelPrune.html">?modelPrune</a></code>
-</li>
+<code><a href="../articles/comparison.html">vignette("comparison")</a></code> - Comparison with
+alternatives</li>
+<li>
+<code><a href="../articles/theory.html">vignette("theory")</a></code> - Mathematical foundations</li>
 </ul>
 <hr>
 </div>

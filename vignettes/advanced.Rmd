@@ -56,6 +56,7 @@ cat("Exact mode kept:", ncol(exact_result), "variables\n")
 ```
 
 **Use exact mode when**:
+
 - p ≤ 20 (feasible runtime)
 - You need guaranteed optimal solution
 - Reproducibility is critical
@@ -74,6 +75,7 @@ cat("Greedy mode kept:", ncol(greedy_result), "variables\n")
 ```
 
 **Use greedy mode when**:
+
 - p > 20 (exact becomes slow)
 - Speed is priority
 - Near-optimal is acceptable
@@ -356,6 +358,7 @@ tryCatch({
 ```
 
 **Validation checks**:
+
 - `fit` and `diagnostics` must be functions
 - `diagnostics` must return numeric vector
 - Correct length (one value per fixed effect)
@@ -481,6 +484,7 @@ system.time({
 ```
 
 **Use precomputed matrices when**:
+
 - Testing multiple thresholds
 - Cross-validation workflows
 - Sensitivity analysis
@@ -655,28 +659,34 @@ print(attr(result, "selected_vars"))
 ### For corrPrune() (Correlation Threshold)
 
 **Conservative (strict)**:
+
 - threshold = 0.5: Very low redundancy, may lose information
 - Use when: Interpretability is critical, small sample size
 
 **Moderate (recommended)**:
+
 - threshold = 0.7: Balances redundancy and information retention
 - Use when: Standard regression, general analysis
 
 **Lenient**:
+
 - threshold = 0.9: Only removes near-duplicates
 - Use when: Large sample size, prediction focus
 
 ### For modelPrune() (VIF Limit)
 
 **Strict**:
+
 - limit = 2: Very low multicollinearity, may over-prune
 - Use when: Small sample size, interpretability critical
 
 **Moderate (recommended)**:
+
 - limit = 5: Standard threshold in literature
 - Use when: General regression analysis
 
 **Lenient**:
+
 - limit = 10: Tolerates more multicollinearity
 - Use when: Large sample size, prediction focus
 
@@ -859,14 +869,17 @@ pipeline <- function(data, response) {
 # 8. References
 
 **Algorithms**:
+
 - Eppstein, D., Löffler, M., & Strash, D. (2010). Listing all maximal cliques in sparse graphs in near-optimal time. *Symposium on Algorithms and Computation*.
 - Bron, C., & Kerbosch, J. (1973). Algorithm 457: Finding all cliques of an undirected graph. *Communications of the ACM*, 16(9), 575-577.
 
 **Multicollinearity**:
+
 - O'Brien, R. M. (2007). A caution regarding rules of thumb for variance inflation factors. *Quality & Quantity*, 41(5), 673-690.
 - Belsley, D. A., Kuh, E., & Welsch, R. E. (1980). *Regression Diagnostics*. Wiley.
 
 **Software**:
+
 - INLA: Rue, H., Martino, S., & Chopin, N. (2009). Approximate Bayesian inference for latent Gaussian models. *Journal of the Royal Statistical Society: Series B*, 71(2), 319-392.
 - mgcv: Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). Chapman and Hall/CRC.
 

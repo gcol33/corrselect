@@ -23,7 +23,7 @@ articles:
     navbar: ~
     contents:
     - advanced
-    - corrselect_vignette
+    - theory
 
 reference:
   - title: High-Level Pruning Functions
@@ -53,3 +53,4 @@ reference:
     - survey_example
     - genes_example
     - longitudinal_example
+    - cor_example

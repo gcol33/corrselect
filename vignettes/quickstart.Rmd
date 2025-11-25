@@ -1,10 +1,10 @@
 ---
-title: "Quick Start: Predictor Pruning with corrselect"
+title: "Quick Start"
 author: "Gilles Colling"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Quick Start: Predictor Pruning with corrselect}
+  %\VignetteIndexEntry{Quick Start}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,281 +18,318 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Learning Objectives
+## What corrselect Does
 
-After reading this 5-minute guide, you will be able to:
+corrselect identifies and removes redundant variables based on pairwise correlation or association. Given a threshold $\tau$, it finds subsets where all pairwise associations satisfy $|a_{ij}| < \tau$ (see `vignette("theory")` for mathematical formulation).
 
-- Remove correlated predictors with `corrPrune()`
-- Reduce multicollinearity with `modelPrune()`
-- Understand when to use each approach
+## Interface Hierarchy
 
-## Prerequisites
+corrselect provides three levels of interface:
 
-- Basic R knowledge
-- Familiarity with linear models (helpful but not required)
+### Level 1: Simple Pruning
 
-**Estimated time**: 5 minutes
+**corrPrune()** - Removes redundant predictors based on pairwise correlation:
+
+- Returns a single pruned dataset
+- No response variable required
+- Fast greedy or exact search
+
+**modelPrune()** - Reduces VIF in regression models:
+
+- Returns a single pruned dataset with response
+- Iteratively removes high-VIF predictors
+- Works with lm, glm, lme4, glmmTMB
+
+### Level 2: Structured Subset Selection
+
+**corrSelect()** - Returns all maximal subsets (numeric data):
+
+- Enumerates all maximal valid subsets satisfying threshold (see `vignette("theory")`)
+- Provides full metadata (size, avg_corr, max_corr, min_corr)
+- Exact or greedy search
+
+**assocSelect()** - Returns all maximal subsets (mixed-type data):
+
+- Handles numeric, factor, and ordered variables
+- Uses appropriate association measures per variable pair
+- Exact or greedy search
+
+### Level 3: Low-Level Matrix Interface
+
+**MatSelect()** - Direct matrix input:
+
+- Accepts precomputed correlation/association matrices
+- No data preprocessing
+- Useful for repeated analyses
 
 ---
 
-## The Problem
-
-You have many predictors, but some are highly correlated. This causes:
-
-- **Unstable coefficient estimates**
-- **Inflated standard errors**
-- **Poor model interpretability**
-
-**The solution**: Remove redundant predictors before modeling.
-
----
-
-## Solution 1: Association-Based Pruning with `corrPrune()`
-
-**When to use**: You want to clean your data *before* modeling, or you don't have a specific model in mind yet.
-
-### Example: Ecological Data
-
-Let's use the `bioclim_example` dataset with the 19 WorldClim bioclimatic variables:
+## Pruning Example: corrPrune()
 
 ```{r}
 library(corrselect)
 data(bioclim_example)
 
-# How many variables?
-ncol(bioclim_example) - 1  # Exclude response variable
-```
-
-Many of these variables are redundant. Let's remove variables that correlate > 0.7:
-
-```{r}
-# Remove correlated predictors
+# Remove correlated predictors (threshold = 0.7)
 pruned <- corrPrune(
-  data = bioclim_example[, -1],  # Exclude response variable
-  threshold = 0.7                 # Max correlation allowed
+  data = bioclim_example[, -1],  # Exclude response
+  threshold = 0.7
 )
 
-# How many variables remain?
+# Variables retained
 ncol(pruned)
+head(names(pruned))
 ```
 
-**Result**: Reduced from 19 → ~8 variables, all with pairwise correlations ≤ 0.7.
-
-### Check what was removed
+Variables removed:
 
 ```{r}
-# Variables that were kept
-head(attr(pruned, "selected_vars"))
-
-# Variables that were removed
 head(attr(pruned, "removed_vars"))
 ```
 
-### Visualize the improvement
+**How corrPrune() selects among multiple maximal subsets**:
 
-```{r, fig.width=10, fig.height=4}
-par(mfrow = c(1, 2))
+When multiple maximal subsets exist (which is common), `corrPrune()` returns the subset with the **lowest average absolute correlation**. This selection criterion balances three goals:
 
-# Before pruning
-cor_before <- cor(bioclim_example[, -1])
-hist(cor_before[upper.tri(cor_before)],
-     breaks = 30,
-     main = "Before Pruning",
-     xlab = "Pairwise Correlation",
-     col = "salmon")
-abline(v = 0.7, col = "red", lwd = 2, lty = 2)
+1. **Minimize redundancy**: Lower average correlation means more independent variables
+2. **Maximize information**: Prefers diverse variable combinations over tightly clustered ones
+3. **Deterministic behavior**: Always returns the same result for the same data
 
-# After pruning
-cor_after <- cor(pruned)
-hist(cor_after[upper.tri(cor_after)],
-     breaks = 30,
-     main = "After Pruning",
-     xlab = "Pairwise Correlation",
-     col = "lightblue")
-abline(v = 0.7, col = "red", lwd = 2, lty = 2)
+**Example**:
+```r
+# If two maximal subsets exist:
+# Subset A: {bio1, bio4, bio12} with avg_corr = 0.35
+# Subset B: {bio2, bio5, bio15} with avg_corr = 0.42
+# corrPrune() returns Subset A (lower average correlation)
 ```
 
-**Key insight**: All correlations are now below the threshold (red dashed line).
+To explore **all** maximal subsets instead of just the optimal one, use `corrSelect()` (see below).
+
+Visualization:
+
+```{r, fig.width=7, fig.height=5}
+cor_before <- cor(bioclim_example[, -1])
+cor_after <- cor(pruned)
+
+hist(abs(cor_before[upper.tri(cor_before)]),
+     breaks = 30,
+     main = "Distribution of Absolute Correlations",
+     xlab = "Absolute Correlation",
+     col = rgb(0.8, 0.2, 0.2, 0.5),
+     xlim = c(0, 1),
+     ylim = c(0, max(table(cut(abs(cor_before[upper.tri(cor_before)]), breaks = 30))) * 1.2))
+
+hist(abs(cor_after[upper.tri(cor_after)]),
+     breaks = 30,
+     col = rgb(0.2, 0.5, 0.8, 0.5),
+     add = TRUE)
+
+abline(v = 0.7, col = "black", lwd = 2, lty = 2)
+legend("topright",
+       legend = c("Before", "After", "Threshold"),
+       fill = c(rgb(0.8, 0.2, 0.2, 0.5), rgb(0.2, 0.5, 0.8, 0.5), NA),
+       border = c("black", "black", NA),
+       lty = c(NA, NA, 2),
+       lwd = c(NA, NA, 2),
+       bty = "n")
+```
 
 ---
 
-## Solution 2: Model-Based Pruning with `modelPrune()`
-
-**When to use**: You're building a regression model and want to remove multicollinearity based on VIF (Variance Inflation Factor).
-
-### Example: Predicting Species Richness
-
-Let's build a model predicting species richness, but first remove multicollinear predictors:
+## Model-Based Pruning: modelPrune()
 
 ```{r}
-# Prune predictors based on VIF
+# Prune based on VIF (limit = 5)
 model_data <- modelPrune(
   formula = species_richness ~ .,
   data = bioclim_example,
-  limit = 5  # Max VIF allowed (common threshold)
+  limit = 5
 )
 
-# How many predictors remain?
+# Predictors retained
 length(attr(model_data, "selected_vars"))
 ```
 
-### What happened?
+Variables removed:
 
 ```{r}
-# Predictors removed (high VIF)
 attr(model_data, "removed_vars")
-
-# Final model is ready to use
-final_model <- attr(model_data, "final_model")
-summary(final_model)
 ```
 
-### Before/After VIF Comparison
-
-Let's compare VIF values before and after pruning:
+Final model:
 
 ```{r}
-# VIF before pruning (fit full model)
+final_model <- attr(model_data, "final_model")
+summary(final_model)$coefficients[1:5, ]  # First 5 coefficients
+```
+
+VIF comparison:
+
+```{r, fig.width=8, fig.height=5}
 full_model <- lm(species_richness ~ ., data = bioclim_example)
 
-# Compute VIF manually
-X_full <- model.matrix(full_model)[, -1]  # Remove intercept
+X_full <- model.matrix(full_model)[, -1]
 vif_before <- sapply(colnames(X_full), function(var) {
   1 / (1 - summary(lm(X_full[, var] ~ X_full[, -which(colnames(X_full) == var)]))$r.squared)
 })
 
-# VIF after pruning
 X_pruned <- model.matrix(final_model)[, -1]
 vif_after <- sapply(colnames(X_pruned), function(var) {
   1 / (1 - summary(lm(X_pruned[, var] ~ X_pruned[, -which(colnames(X_pruned) == var)]))$r.squared)
 })
 
-# Visualize
-par(mfrow = c(1, 2), mar = c(7, 4, 4, 2))
+par(mar = c(8, 4, 4, 2))
+all_vars <- unique(c(names(vif_before), names(vif_after)))
+vif_combined <- data.frame(
+  before = vif_before[match(all_vars, names(vif_before))],
+  after = vif_after[match(all_vars, names(vif_after))]
+)
+vif_combined[is.na(vif_combined)] <- 0
+vif_combined <- vif_combined[order(vif_combined$before, decreasing = TRUE), ]
 
-# Before pruning
-barplot(sort(vif_before, decreasing = TRUE)[1:min(20, length(vif_before))],
+n_show <- min(15, nrow(vif_combined))
+barplot(t(as.matrix(vif_combined[1:n_show, ])),
+        beside = TRUE,
         las = 2,
-        main = "Before Pruning",
+        main = "VIF Before and After modelPrune()",
         ylab = "VIF",
-        col = "salmon",
+        col = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7)),
         cex.names = 0.6,
-        names.arg = names(sort(vif_before, decreasing = TRUE)[1:min(20, length(vif_before))]))
-abline(h = 5, col = "red", lwd = 2, lty = 2)
-
-# After pruning
-barplot(sort(vif_after, decreasing = TRUE),
-        las = 2,
-        main = "After Pruning",
-        ylab = "VIF",
-        col = "lightblue",
-        cex.names = 0.6,
-        names.arg = names(sort(vif_after, decreasing = TRUE)))
-abline(h = 5, col = "red", lwd = 2, lty = 2)
-```
-
-**Key insight**: All VIF values are now below 5 (red dashed line), indicating acceptable multicollinearity.
-
----
-
-## Choosing Between `corrPrune()` and `modelPrune()`
-
-| Feature | `corrPrune()` | `modelPrune()` |
-|---------|---------------|----------------|
-| **When to use** | Before modeling | During model building |
-| **Requires response?** | No | Yes |
-| **Based on** | Pairwise correlations | Model diagnostics (VIF) |
-| **Speed** | Very fast | Moderate (refits models) |
-| **Best for** | Exploratory analysis | Regression prep |
-
-**Pro tip**: Use both!
-
-```{r, eval=FALSE}
-# Step 1: Quick correlation cleanup (exploratory)
-data_cleaned <- corrPrune(your_data, threshold = 0.7)
-
-# Step 2: VIF-based pruning (model-specific)
-model_ready <- modelPrune(response ~ ., data = data_cleaned, limit = 5)
+        names.arg = rownames(vif_combined)[1:n_show])
+abline(h = 5, col = "black", lwd = 2, lty = 2)
+legend("topright",
+       legend = c("Before", "After", "Limit"),
+       fill = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7), NA),
+       border = c("black", "black", NA),
+       lty = c(NA, NA, 2),
+       lwd = c(NA, NA, 2),
+       bty = "n")
 ```
 
 ---
 
-## Common Pitfalls
+## Subset Selection: corrSelect()
 
-### 1. Choosing the wrong threshold
+corrSelect() returns all maximal subsets, not just one:
 
-**Too strict** (e.g., threshold = 0.3): May remove too many useful variables
-
-**Too lenient** (e.g., threshold = 0.95): Multicollinearity persists
-
-**Recommendation**: Start with 0.7 for correlations, 5 for VIF
-
-### 2. Forgetting to protect important variables
-
-Use `force_in` to keep key predictors:
-
-```{r, eval=FALSE}
-pruned <- corrPrune(data, threshold = 0.7,
-                    force_in = c("age", "treatment"))
+```{r}
+results <- corrSelect(bioclim_example[, -1], threshold = 0.7)
+show(results)
 ```
 
-### 3. Pruning the response variable
+Inspect subsets:
 
-Always exclude your response variable from `corrPrune()`:
+```{r}
+as.data.frame(results)[1:5, ]  # First 5 subsets
+```
 
-```{r, eval=FALSE}
-# WRONG
-pruned <- corrPrune(my_data, threshold = 0.7)
+Extract a specific subset:
 
-# RIGHT
-pruned <- corrPrune(my_data[, -which(names(my_data) == "response")],
-                    threshold = 0.7)
+```{r}
+subset_data <- corrSubset(results, bioclim_example[, -1], which = 1)
+head(names(subset_data))
 ```
 
 ---
 
-## Summary
+## Mixed-Type Data: assocSelect()
 
-**You've learned**:
+```{r}
+data(survey_example)
 
-- `corrPrune()` removes correlated predictors (model-free)
-- `modelPrune()` reduces VIF (model-based)
-- Use both for a complete workflow
-- Check results with visualizations
+# Exclude ID and response
+survey_predictors <- survey_example[, !(names(survey_example) %in%
+                                         c("respondent_id", "overall_satisfaction"))]
 
-**In 5 minutes, you can now**:
-
-1. Clean your data with `corrPrune()`
-2. Prepare models with `modelPrune()`
-3. Understand when to use each approach
-
----
-
-## Next Steps
-
-- **More examples**: See `vignette("workflows")` for complete workflows across different domains
-- **Advanced features**: See `vignette("corrselect_vignette")` for exact subset enumeration
-- **Function reference**: See `?corrPrune` and `?modelPrune` for full documentation
+# Handle mixed types
+results_mixed <- assocSelect(survey_predictors, threshold = 0.6)
+show(results_mixed)
+```
 
 ---
 
-## Quick Reference
+## Protecting Variables
 
-```{r, eval=FALSE}
-# Association-based pruning
-pruned <- corrPrune(
-  data = your_data,
-  threshold = 0.7,       # Max correlation
-  mode = "auto",         # "exact", "greedy", or "auto"
-  force_in = NULL        # Variables to protect
+```{r}
+# Check available variable names
+head(names(bioclim_example[, -1]))
+
+# Force a variable to remain in all subsets
+first_var <- names(bioclim_example)[2]  # First predictor
+pruned_force <- corrPrune(
+  data = bioclim_example[, -1],
+  threshold = 0.7,
+  force_in = first_var
 )
 
-# Model-based pruning
-pruned <- modelPrune(
-  formula = y ~ .,
-  data = your_data,
-  engine = "lm",         # "lm", "glm", "lme4", "glmmTMB"
-  limit = 5,             # Max VIF
-  force_in = NULL        # Variables to protect
-)
+# Verify forced variable is present
+first_var %in% names(pruned_force)
 ```
+
+---
+
+## Threshold Selection
+
+Visualize correlation distribution:
+
+```{r, fig.width=7, fig.height=5}
+cor_mat <- cor(bioclim_example[, -1])
+cor_vec <- cor_mat[upper.tri(cor_mat)]
+
+hist(abs(cor_vec), breaks = 30,
+     main = "Distribution of Absolute Correlations",
+     xlab = "Absolute Correlation",
+     col = rgb(0.2, 0.5, 0.8, 0.6),
+     border = "white")
+abline(v = c(0.5, 0.7, 0.9), col = c("#d73027", "#4575b4", "#91cf60"), lwd = 2, lty = 2)
+legend("topright",
+       legend = c("0.5 (strict)", "0.7 (moderate)", "0.9 (lenient)"),
+       col = c("#d73027", "#4575b4", "#91cf60"), lwd = 2, lty = 2, bty = "n")
+```
+
+Test multiple thresholds:
+
+```{r, fig.width=7, fig.height=5}
+thresholds <- seq(0.3, 0.95, by = 0.05)
+sizes <- sapply(thresholds, function(t) {
+  tryCatch(ncol(corrPrune(bioclim_example[, -1], threshold = t)), error = function(e) NA)
+})
+
+plot(thresholds, sizes, type = "b",
+     xlab = "Threshold",
+     ylab = "Variables Retained",
+     main = "Threshold Sensitivity",
+     col = rgb(0.2, 0.5, 0.8), lwd = 2, pch = 19)
+abline(h = ncol(bioclim_example) - 1, lty = 2, col = "gray50")
+```
+
+---
+
+## Interface Selection
+
+corrPrune() and modelPrune():
+
+- Single pruned dataset
+- Fast execution
+- Preprocessing pipelines
+
+corrSelect() and assocSelect():
+
+- All maximal subsets
+- Full metadata per subset
+- Documented enumeration for reproducible research
+
+MatSelect():
+
+- Precomputed matrices
+- Repeated analyses with different thresholds
+
+---
+
+## See Also
+
+- `vignette("workflows")` - Complete workflows across domains
+- `vignette("advanced")` - Algorithmic control and custom engines
+- `vignette("comparison")` - Comparison with caret, Boruta, glmnet
+- `vignette("theory")` - Theoretical foundations and formulation
+- `?corrPrune`, `?modelPrune`, `?corrSelect`, `?assocSelect`, `?MatSelect`

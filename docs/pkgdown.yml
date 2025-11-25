@@ -4,10 +4,10 @@ pkgdown_sha: ~
 articles:
   advanced: advanced.html
   comparison: comparison.html
-  corrselect_vignette: corrselect_vignette.html
   quickstart: quickstart.html
+  theory: theory.html
   workflows: workflows.html
-last_built: 2025-11-24T16:57Z
+last_built: 2025-11-25T11:07Z
 urls:
   reference: https://gcol33.github.io/corrselect/reference
   article: https://gcol33.github.io/corrselect/articles
