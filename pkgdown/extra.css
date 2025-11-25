@@ -2,7 +2,8 @@
 img.r-plt,
 .figure img,
 figure img,
-img.figure-img {
+img.figure-img,
+svg.inline-svg {
   max-width: 100%;
   width: 100%;
   height: auto;
@@ -14,6 +15,16 @@ img.figure-img {
 [data-bs-theme="dark"] img.r-plt,
 [data-bs-theme="dark"] .figure img,
 [data-bs-theme="dark"] figure img,
-[data-bs-theme="dark"] img.figure-img {
+[data-bs-theme="dark"] img.figure-img,
+[data-bs-theme="dark"] svg.inline-svg {
   border-color: #4A4B46;
+}
+
+/* Dark mode colors for inline SVG elements */
+[data-bs-theme="dark"] .theme-bg {
+  fill: #3E3F3A;
+}
+
+[data-bs-theme="dark"] .theme-text {
+  fill: #E9E7E3;
 }
