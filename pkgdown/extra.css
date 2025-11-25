@@ -1,3 +1,13 @@
+/* Match plot width to code blocks with min-width */
+.figure img,
+figure img,
+img.figure-img {
+  width: 100%;
+  min-width: 400px;
+  max-width: 100%;
+  height: auto;
+}
+
 /* Match plot backgrounds to sandstone theme */
 .sourceCode img,
 .r-plot img,

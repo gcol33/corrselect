@@ -54,18 +54,20 @@ cor_matrix <- cor(predictors)
 col_pal <- colorRampPalette(c("#3B4992", "white", "#EE0000"))(100)
 
 par(mar = c(1, 1, 3, 1))
-image(1:ncol(cor_matrix), 1:nrow(cor_matrix), t(cor_matrix[nrow(cor_matrix):1, ]),
+nc <- ncol(cor_matrix)
+nr <- nrow(cor_matrix)
+image(seq_len(nc), seq_len(nr), t(cor_matrix[nr:1, ]),
       col = col_pal,
       xlab = "", ylab = "", axes = FALSE,
       main = "Bioclimatic Variable Correlations (p = 19)",
       zlim = c(-1, 1))
-axis(1, at = 1:ncol(cor_matrix), labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
-axis(2, at = ncol(cor_matrix):1, labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
+axis(1, at = seq_len(nc), labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
+axis(2, at = nc:1, labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
 
-for (i in 1:ncol(cor_matrix)) {
-  for (j in 1:nrow(cor_matrix)) {
+for (i in seq_len(nc)) {
+  for (j in seq_len(nr)) {
     text_col <- if (abs(cor_matrix[j, i]) > 0.6) "white" else "black"
-    text(i, nrow(cor_matrix) - j + 1, sprintf("%.2f", cor_matrix[j, i]),
+    text(i, nr - j + 1, sprintf("%.2f", cor_matrix[j, i]),
          cex = 0.5, col = text_col)
   }
 }

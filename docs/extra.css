@@ -1,3 +1,13 @@
+/* Match plot width to code blocks with min-width */
+.figure img,
+figure img,
+img.figure-img {
+  width: 100%;
+  min-width: 400px;
+  max-width: 100%;
+  height: auto;
+}
+
 /* Match plot backgrounds to sandstone theme */
 .sourceCode img,
 .r-plot img,
@@ -12,4 +22,11 @@ figure img {
 [data-bs-theme="dark"] img.figure-img,
 [data-bs-theme="dark"] figure img {
   background-color: #3e3f3a;
+}
+
+/* Dark mode: recolor pure-white SVG fills to theme background */
+[data-bs-theme="dark"] svg [fill="#FFFFFF"],
+[data-bs-theme="dark"] svg [fill="#ffffff"],
+[data-bs-theme="dark"] svg [fill="white"] {
+  fill: #3e3f3a;
 }
