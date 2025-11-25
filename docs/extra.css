@@ -7,8 +7,8 @@ img.figure-img {
   width: 100%;
   height: auto;
   border-radius: 0.375rem;
-  border: 1px solid #dfd7ca;
-  background-color: #f8f5f0;
+  border: 1px solid var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
 }
 
 /* Dark mode: invert colors then rotate hue back to preserve data colors */
@@ -16,7 +16,5 @@ img.figure-img {
 [data-bs-theme="dark"] .figure img,
 [data-bs-theme="dark"] figure img,
 [data-bs-theme="dark"] img.figure-img {
-  background-color: #3e3f3a;
-  border-color: #56544e;
   filter: invert(1) hue-rotate(180deg);
 }
