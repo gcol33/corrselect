@@ -254,12 +254,10 @@ plot(
   ylim = ylim_right
 )
 
-# Right-hand axis ticks (10, 100, 1K, 10K) within range
-kappa_ticks <- c(10, 100, 1000, 10000)
-log_ticks   <- log10(kappa_ticks)
-log_ticks   <- log_ticks[log_ticks >= ylim_right[1] & log_ticks <= ylim_right[2]]
-
-axis(4, at = log_ticks, labels = format(10^log_ticks, scientific = FALSE))
+# Right-hand axis ticks using pretty() on log scale
+log_ticks <- pretty(log_kappa)
+kappa_labels <- round(10^log_ticks)
+axis(4, at = log_ticks, labels = kappa_labels)
 mtext("Condition Number (κ)", side = 4, line = 3)
 
 # Legend centered at top
