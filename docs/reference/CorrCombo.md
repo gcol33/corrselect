@@ -1,9 +1,9 @@
 # CorrCombo S4 class
 
 Holds the result of
-[`corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 or
-[`MatSelect`](https://gcol33.github.io/corrselect/reference/MatSelect.md):
+[`MatSelect`](https://gillescolling.com/corrselect/reference/MatSelect.md):
 a list of valid variable combinations and their correlation statistics.
 
 This class stores all subsets of variables that meet the specified
@@ -73,9 +73,9 @@ show(object)
 
 ## See also
 
-[`corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md),
-[`MatSelect`](https://gcol33.github.io/corrselect/reference/MatSelect.md),
-[`corrSubset`](https://gcol33.github.io/corrselect/reference/corrSubset.md)
+[`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md),
+[`MatSelect`](https://gillescolling.com/corrselect/reference/MatSelect.md),
+[`corrSubset`](https://gillescolling.com/corrselect/reference/corrSubset.md)
 
 ## Examples
 

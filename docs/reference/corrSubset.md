@@ -1,11 +1,11 @@
 # Extract Variable Subsets from a CorrCombo Object
 
 Extracts one or more variable subsets from a
-[`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md)
+[`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
 object as data frames. Typically used after
-[`corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 or
-[`MatSelect`](https://gcol33.github.io/corrselect/reference/MatSelect.md)
+[`MatSelect`](https://gillescolling.com/corrselect/reference/MatSelect.md)
 to obtain filtered versions of the original dataset containing only
 low‐correlation variable combinations.
 
@@ -20,7 +20,7 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 - res:
 
   A
-  [`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md)
+  [`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
   object returned by `corrSelect` or `MatSelect`.
 
 - df:
@@ -62,9 +62,9 @@ variables.
 
 ## See also
 
-[`corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md),
-[`MatSelect`](https://gcol33.github.io/corrselect/reference/MatSelect.md),
-[`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md)
+[`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md),
+[`MatSelect`](https://gillescolling.com/corrselect/reference/MatSelect.md),
+[`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
 
 ## Examples
 

@@ -12,11 +12,11 @@ details the three implemented algorithms (Bron-Kerbosch,
 Eppstein-Löffler-Strash, and greedy heuristic), analyzes their
 computational complexity, and provides comprehensive references to the
 theoretical literature. For practical usage examples, see
-[`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md)
+[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
 and
-[`vignette("workflows")`](https://gcol33.github.io/corrselect/articles/workflows.md).
+[`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md).
 For algorithmic control and performance tuning, see
-[`vignette("advanced")`](https://gcol33.github.io/corrselect/articles/advanced.md).
+[`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md).
 
 ------------------------------------------------------------------------
 
@@ -929,9 +929,9 @@ Controls which edges appear in the threshold graph.
 
 ### **Maximal cliques → Returned subsets**
 
-- [`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+- [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
   returns **all** maximal cliques (full exact enumeration)
-- [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+- [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
   returns **one** maximal clique (greedy or exact, depending on mode)
 - Each clique corresponds exactly to a valid variable subset satisfying
   the threshold constraint
@@ -1729,11 +1729,11 @@ suffices (e.g., automated pipelines).
 
 ## See Also
 
-- [`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md) -
+- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   Interface overview and examples
-- [`vignette("workflows")`](https://gcol33.github.io/corrselect/articles/workflows.md) -
+- [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Real-world workflow examples
-- [`vignette("advanced")`](https://gcol33.github.io/corrselect/articles/advanced.md) -
+- [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Algorithmic control and custom engines
-- [`vignette("comparison")`](https://gcol33.github.io/corrselect/articles/comparison.md) -
+- [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   Comparison with alternatives

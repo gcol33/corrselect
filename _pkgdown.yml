@@ -1,16 +1,9 @@
-url: https://gcol33.github.io/corrselect
+url: https://gillescolling.com/corrselect
 
 template:
   bootstrap: 5
   bootswatch: sandstone
   light-switch: true
-  bslib:
-    bg: "#f8f5f0"
-    fg: "#3e3f3a"
-    primary: "#93c54b"
-    navbar-bg: "#3e3f3a"
-    navbar-light-color: "#fff"
-    navbar-light-hover-color: "#93c54b"
 
 home:
   title: "corrselect: Correlation-Based Variable Selection in R"
@@ -23,8 +16,6 @@ authors:
     href: https://github.com/gcol33
 
 navbar:
-  bg: dark
-  type: dark
   structure:
     left:  [intro, reference, articles, news]
     right: [search, github]

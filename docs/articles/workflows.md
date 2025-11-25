@@ -6,9 +6,9 @@ This vignette demonstrates integration of corrselect into complete
 modeling workflows, from raw predictors to final models under
 correlation constraints. Four applied settings illustrate interface
 selection and workflow composition. See
-[`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md)
+[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
 for interface descriptions and
-[`vignette("theory")`](https://gcol33.github.io/corrselect/articles/theory.md)
+[`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
 for mathematical foundations.
 
 Each workflow showcases different aspects of the package:
@@ -37,9 +37,9 @@ and poor model interpretation.
 
 **Strategy**: Two-stage pruning:
 
-1.  [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+1.  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
     removes pairwise correlations \> 0.7
-2.  [`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+2.  [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
     refines further using variance inflation factors (VIF)
 
 This approach balances model fit with interpretability and numerical
@@ -105,7 +105,7 @@ interpretability.
 #### Correlation distribution
 
 The histogram below shows how
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 reshapes the correlation structure. Before pruning (red), many variable
 pairs exceed the 0.7 threshold. After pruning (blue), all pairwise
 correlations fall below the threshold.
@@ -419,7 +419,7 @@ correlated). Reducing the number of items improves response rates and
 reduces respondent burden without losing measurement quality.
 
 **Strategy**: Use
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 with `force_in` to:
 
 1.  Ensure critical variables (like age) appear in the final model
@@ -817,7 +817,7 @@ Standard VIF calculations don’t account for random effects, but we still
 need to control multicollinearity among fixed-effect predictors.
 
 **Strategy**: Use
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 with `engine = "lme4"`:
 
 - Only fixed effects are pruned based on VIF
@@ -884,7 +884,7 @@ predictors (x1-x5).
 #### Prune fixed effects
 
 The
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 function with `engine = "lme4"` respects the random-effects structure.
 Only the fixed effects (x1-x5) are candidates for removal; the random
 intercepts for subject and site remain untouched.
@@ -1061,11 +1061,11 @@ diverse analytical pipelines:
 
 | Scenario | Function | Key Parameters |
 |----|----|----|
-| Small to moderate p (\< 50) | [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md) | `mode = "auto"` or `"exact"` |
-| High-dimensional (p \>\> n) | [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md) | `mode = "greedy"` |
-| Model-based refinement | [`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md) | `limit` (VIF threshold) |
-| Protected variables | [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md) | `force_in` |
-| Mixed-effects models | [`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md) | `engine = "lme4"` |
+| Small to moderate p (\< 50) | [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md) | `mode = "auto"` or `"exact"` |
+| High-dimensional (p \>\> n) | [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md) | `mode = "greedy"` |
+| Model-based refinement | [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md) | `limit` (VIF threshold) |
+| Protected variables | [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md) | `force_in` |
+| Mixed-effects models | [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md) | `engine = "lme4"` |
 
 **When to use each approach**:
 
@@ -1080,13 +1080,13 @@ diverse analytical pipelines:
 
 ## See Also
 
-- [`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md) -
+- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   Interface overview
-- [`vignette("advanced")`](https://gcol33.github.io/corrselect/articles/advanced.md) -
+- [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Custom engines and algorithmic control
-- [`vignette("comparison")`](https://gcol33.github.io/corrselect/articles/comparison.md) -
+- [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   Comparison with alternatives
-- [`vignette("theory")`](https://gcol33.github.io/corrselect/articles/theory.md) -
+- [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Mathematical foundations
 
 ------------------------------------------------------------------------

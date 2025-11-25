@@ -11,14 +11,14 @@ code continues to work.
 
 ### Bug Fixes
 
-- **[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)**:
+- **[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)**:
   Fixed infinite loop when VIF computation encountered perfect
   multicollinearity
   - Added proper handling of `Inf` and `NA` VIF values in pruning loop
   - Clamped extreme R² values (\> 0.9999) to prevent division by
     near-zero
   - Added safety checks to prevent removing all variables
-- **[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)**:
+- **[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)**:
   Fixed design matrix extraction for lme4 and glmmTMB engines
   - Now uses
     [`stats::model.matrix()`](https://rdrr.io/r/stats/model.matrix.html)
@@ -30,7 +30,7 @@ code continues to work.
 
 #### New Functions
 
-- **[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)**:
+- **[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)**:
   High-level association-based predictor pruning
   - Model-free pruning using pairwise correlations or associations
   - Automatic measure selection (`measure = "auto"`)
@@ -39,7 +39,7 @@ code continues to work.
   - `force_in` parameter to protect important predictors
   - Returns single pruned data.frame with pairwise associations ≤
     threshold
-- **[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)**:
+- **[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)**:
   Model-based predictor pruning using diagnostics
   - VIF-based iterative removal of multicollinear predictors
   - Supports multiple engines: `lm`, `glm`, `lme4`, `glmmTMB`
@@ -60,15 +60,15 @@ code continues to work.
 ### Enhancements
 
 - Exact methods
-  ([`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md),
-  [`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md))
+  ([`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md),
+  [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md))
   now integrate seamlessly with
-  [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 - Deterministic subset selection when multiple maximal sets exist
 - Improved error messages for threshold feasibility checks
 - Better handling of edge cases (single predictor, all correlated, etc.)
 - **Custom engine interface** for
-  [`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md):
+  [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md):
   Users can define custom modeling backends with `fit` and `diagnostics`
   functions, enabling integration with any R modeling package
 
@@ -88,9 +88,9 @@ code continues to work.
   survey, genes, longitudinal)
 - Updated README with quickstart examples and custom engine support
 - Full documentation for
-  [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
   and
-  [`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+  [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 - Usage examples for all modeling engines
 
 ### Package Changes
@@ -118,21 +118,21 @@ CRAN release: 2025-09-08
 ### Bug Fixes
 
 - `force_in` in
-  [`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md)
+  [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)
   now correctly accepts character column names.
 - `els` now correctly lists all valid subsets when a single variable is
   forced in.
-- [`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+- [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
   now displays an appropriate warning if only one variable remains after
   dropping unsupported columns.
 - Association matrix construction in
-  [`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+  [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
   now safely falls back to 0 for failed or meaningless associations
   (e.g. empty chi-squared tables due to sparse combinations or unused
   factor levels).
 
 ### Features Added
 
-- [`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+- [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
   now supports logical columns by automatically converting them to
   factors.

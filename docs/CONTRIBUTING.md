@@ -38,7 +38,7 @@ respectful, inclusive environment.
 
 This installation guide is focused on development.  
 For regular installation, please see the
-[README](https://gcol33.github.io/corrselect/README.md).
+[README](https://gillescolling.com/corrselect/README.md).
 
 ### Obtaining the source
 

@@ -39,7 +39,7 @@ largest subset. Subsets shorter than the maximum length are padded with
 
 ## See also
 
-[`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md)
+[`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
 
 ## Examples
 

@@ -50,14 +50,14 @@ These features make the package useful in domains like:
 
 ### High-Level Pruning Functions
 
-- **[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)**:
+- **[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)**:
   Association-based predictor pruning
   - Model-free, works on raw data
   - Automatic correlation/association measure selection
   - Fast greedy mode for large datasets (p \> 100)
   - Exact mode for guaranteed optimal solutions (p ≤ 20)
   - Protect important variables with `force_in`
-- **[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)**:
+- **[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)**:
   Model-based predictor pruning
   - VIF-based iterative removal
   - Supports `lm`, `glm`, `lme4`, `glmmTMB` engines
@@ -178,7 +178,7 @@ as.data.frame(res)
 
 ## Choosing Between `corrPrune` and `modelPrune`
 
-| Feature | [`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md) | [`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md) |
+| Feature | [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md) | [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md) |
 |----|----|----|
 | **Requires model specification?** | No | Yes |
 | **Based on** | Pairwise correlations/associations | Model diagnostics (VIF) |
@@ -188,9 +188,9 @@ as.data.frame(res)
 | **Best for** | Exploratory analysis, large p | Regression workflows, VIF reduction |
 
 **Tip**: Use
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 first to reduce dimensionality, then
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 for final cleanup within a modeling framework.
 
 ## Advanced Features
@@ -198,7 +198,7 @@ for final cleanup within a modeling framework.
 ### Mixed-Type Data
 
 Use
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 for exact enumeration with mixed data types:
 
 ``` r

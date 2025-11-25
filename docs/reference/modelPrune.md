@@ -162,9 +162,9 @@ constraint is feasible before pruning begins.
 
 ## See also
 
-[`corrPrune`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 for association-based predictor pruning,
-[`corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 for exhaustive subset enumeration.
 
 ## Examples

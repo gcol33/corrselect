@@ -25,7 +25,7 @@ statistical methods
 ### 1.1 Exact vs Greedy: When to Use Each
 
 corrselect offers two algorithmic approaches for
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md):
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md):
 
 #### Exact Mode (Graph-Theoretic)
 
@@ -138,14 +138,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.6            0.2
-#> 2   20           0.6            0.4
-#> 3   50           1.4            0.7
-#> 4  100           4.6            1.4
-#> 5  200          22.6            3.3
-#> 6  300          84.9            6.6
-#> 7  500         310.0           15.4
-#> 8 1000            NA           58.0
+#> 1   10           0.5            0.2
+#> 2   20           0.7            0.4
+#> 3   50           1.5            0.7
+#> 4  100           4.5            1.3
+#> 5  200          22.5            3.4
+#> 6  300          85.0            6.9
+#> 7  500         309.8           16.9
+#> 8 1000            NA           60.2
 ```
 
 ``` r
@@ -251,7 +251,7 @@ This ensures reproducibility across runs, machines, and R versions.
 #### What is a Custom Engine?
 
 A custom engine allows you to integrate **any** modeling framework with
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md),
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md),
 not just base R’s [`lm()`](https://rdrr.io/r/stats/lm.html) or `lme4`.
 This enables VIF-based pruning for:
 
@@ -263,7 +263,7 @@ This enables VIF-based pruning for:
 #### How Custom Engines Work
 
 The
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 algorithm follows this iterative process:
 
 1.  **Fit** the model with current predictors
@@ -273,7 +273,7 @@ algorithm follows this iterative process:
 5.  **Repeat** until all predictors satisfy the limit
 
 Your custom engine defines steps 1 and 2;
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 handles the iteration logic.
 
 #### Engine Structure Requirements
@@ -424,7 +424,7 @@ pruned <- modelPrune(
     0.05)
 
 **Important**:
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 only removes parametric (linear) terms. Smooth terms specified with
 `s()`, `te()`, etc. are **never removed** automatically, as they’re part
 of the model structure.
@@ -504,7 +504,7 @@ ratio tests, or any other model comparison criterion.
 
 #### Automatic Validation
 
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 automatically validates custom engines to catch common errors early:
 
 ``` r
@@ -564,7 +564,7 @@ print(test_diag)  # Numeric? Named? Correct length?
 
 ### 3.1 When You Need ALL Maximal Subsets
 
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 returns a **single** subset. Sometimes you want **all** maximal subsets:
 
 ``` r
@@ -740,11 +740,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 2.0 ms
+#> Recomputing each time: 2.1 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 2.3 ms
+#> Precomputed matrix: 2.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 0.8x faster
+#> Speedup: 1.0x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1023,7 +1023,7 @@ tryCatch({
 ```
 
 **Solution**: Use
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 first to remove perfect collinearity:
 
 ``` r
@@ -1322,16 +1322,16 @@ pipeline <- function(data, response) {
 
 ### See Also
 
-- [`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md) -
+- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   5-minute introduction
-- [`vignette("workflows")`](https://gcol33.github.io/corrselect/articles/workflows.md) -
+- [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Real-world examples
-- [`vignette("comparison")`](https://gcol33.github.io/corrselect/articles/comparison.md) -
+- [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   vs caret, Boruta, glmnet
 - `vignette("corrselect_vignette")` - Original exact methods vignette
-- [`?corrPrune`](https://gcol33.github.io/corrselect/reference/corrPrune.md) -
+- [`?corrPrune`](https://gillescolling.com/corrselect/reference/corrPrune.md) -
   Association-based pruning
-- [`?modelPrune`](https://gcol33.github.io/corrselect/reference/modelPrune.md) -
+- [`?modelPrune`](https://gillescolling.com/corrselect/reference/modelPrune.md) -
   Model-based pruning
-- [`?corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md) -
+- [`?corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md) -
   Exact subset enumeration

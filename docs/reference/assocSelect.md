@@ -3,7 +3,7 @@
 Identifies combinations of variables of any common data type (numeric,
 ordered factors, or unordered) factors—whose *pair-wise association*
 does not exceed a user-supplied threshold. The routine wraps
-[`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md)
+[`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)
 and handles all pre-processing (type conversion, missing-row removal,
 constant-column checks) for typical data-frame/tibble/data-table inputs.
 
@@ -70,13 +70,13 @@ assocSelect(
 - ...:
 
   Additional arguments passed unchanged to
-  [`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md)
+  [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)
   (e.g., `use_pivot = TRUE` for Bron–Kerbosch).
 
 ## Value
 
 A
-[`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md)
+[`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
 S4 object containing:
 
 - all valid subsets,
@@ -130,9 +130,9 @@ is thrown if they are missing.
 
 ## See also
 
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md),
-[`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md),
-[`corrSubset()`](https://gcol33.github.io/corrselect/reference/corrSubset.md)
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md),
+[`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md),
+[`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
 
 ## Examples
 

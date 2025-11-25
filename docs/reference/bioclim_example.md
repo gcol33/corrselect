@@ -109,16 +109,16 @@ BIO12-BIO19 are moderately correlated), leading to multicollinearity
 issues. The species richness response depends on a subset of predictors.
 
 **Use case**: Demonstrating
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 and
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 for reducing correlated environmental predictors before fitting species
 distribution models.
 
 ## See also
 
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md),
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md),
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 
 ## Examples
 

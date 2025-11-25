@@ -17,9 +17,9 @@ characteristics, and appropriate use cases. Evaluations use the
 `bioclim_example` dataset (19 bioclimatic variables, $`n = 100`$).
 
 See
-[`vignette("theory")`](https://gcol33.github.io/corrselect/articles/theory.md)
+[`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
 for mathematical foundations. See
-[`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md)
+[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
 for usage examples.
 
 ------------------------------------------------------------------------
@@ -807,11 +807,11 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 
 ## See Also
 
-- [`vignette("quickstart")`](https://gcol33.github.io/corrselect/articles/quickstart.md) -
+- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   Interface overview and usage examples
-- [`vignette("workflows")`](https://gcol33.github.io/corrselect/articles/workflows.md) -
+- [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Domain-specific workflows (genomics, ecology, surveys)
-- [`vignette("advanced")`](https://gcol33.github.io/corrselect/articles/advanced.md) -
+- [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Algorithm selection and performance tuning
-- [`vignette("theory")`](https://gcol33.github.io/corrselect/articles/theory.md) -
+- [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Graph-theoretic foundations and formal proofs

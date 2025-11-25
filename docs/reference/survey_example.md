@@ -63,14 +63,14 @@ multicollinearity. Items within each construct are correlated
 inter-correlated.
 
 **Use case**: Demonstrating
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 for identifying redundant questionnaire items in mixed-type data
 (ordered factors + numeric variables).
 
 ## See also
 
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md),
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md),
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 
 ## Examples
 

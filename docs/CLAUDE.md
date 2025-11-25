@@ -102,10 +102,10 @@ Correlation statistics (mean, min, max for subsets)
 ### R Layer Architecture
 
 **Data frame preprocessing**: -
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md):
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md):
 Filters to numeric columns only, removes NA rows, computes correlation
 matrix using `cor_method` parameter -
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md):
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md):
 Handles mixed types by computing appropriate metrics for each pair type
 (Pearson, Spearman, Kendall, Eta-squared, Cramér’s V)
 
@@ -117,7 +117,7 @@ output - [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
 method for tidy data extraction
 
 **Helper functions**: -
-[`corrSubset()`](https://gcol33.github.io/corrselect/reference/corrSubset.md)
+[`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
 (`R/corrSubset.R`): Extracts specific subsets from original data, with
 option to keep non-numeric columns (`keepExtra = TRUE`) -
 `findAllMaxSets()` (`R/findAllMaxSets.R`): R wrapper calling C++ via
@@ -126,9 +126,9 @@ Rcpp
 ### Algorithm Selection Logic
 
 Default method selection in both
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 and
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md): -
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md): -
 If `force_in` provided → use ELS algorithm - Otherwise → use
 Bron-Kerbosch algorithm
 
@@ -137,7 +137,7 @@ Users can override by explicitly setting `method = "els"` or
 
 ### Association Metrics for Mixed Data
 
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 automatically selects metrics based on variable pair types:
 
 | Type 1  | Type 2  | Default Metric                               |
@@ -212,9 +212,9 @@ This happens in C++ before returning to R.
 ### Missing Data Handling
 
 Both
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 and
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 remove rows with any NA values before computing the correlation matrix.
 A warning is issued if rows are dropped. The number of rows actually
 used is stored in the `CorrCombo` object’s `n_rows_used` slot.

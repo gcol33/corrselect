@@ -75,12 +75,12 @@ genomics. Genes are organized into four co-expression modules:
 Disease outcome depends on a subset of genes from Module 1.
 
 **Use case**: Demonstrating
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 with `mode = "greedy"` for handling high-dimensional data efficiently.
 
 ## See also
 
-[`corrPrune()`](https://gcol33.github.io/corrselect/reference/corrPrune.md)
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 
 ## Examples
 

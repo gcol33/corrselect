@@ -44,7 +44,7 @@ MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
 ## Value
 
 An object of class
-[`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md),
+[`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md),
 containing all valid subsets and their correlation statistics.
 
 ## Examples

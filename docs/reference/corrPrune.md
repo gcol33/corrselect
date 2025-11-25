@@ -139,11 +139,11 @@ based on association scores.
 
 ## See also
 
-[`corrSelect`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 for exhaustive subset enumeration,
-[`assocSelect`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+[`assocSelect`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 for mixed-type data subset enumeration,
-[`modelPrune`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 for model-based predictor pruning.
 
 ## Examples

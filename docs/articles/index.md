@@ -3,18 +3,18 @@
 ### Getting Started
 
 - [Quick
-  Start](https://gcol33.github.io/corrselect/articles/quickstart.md):
+  Start](https://gillescolling.com/corrselect/articles/quickstart.md):
 
 ### Practical Guides
 
 - [Complete Workflows: Real-World
-  Examples](https://gcol33.github.io/corrselect/articles/workflows.md):
+  Examples](https://gillescolling.com/corrselect/articles/workflows.md):
 - [Comparison with
-  Alternatives](https://gcol33.github.io/corrselect/articles/comparison.md):
+  Alternatives](https://gillescolling.com/corrselect/articles/comparison.md):
 
 ### Advanced
 
 - [Advanced
-  Topics](https://gcol33.github.io/corrselect/articles/advanced.md):
+  Topics](https://gillescolling.com/corrselect/articles/advanced.md):
 - [Theory and
-  Formulation](https://gcol33.github.io/corrselect/articles/theory.md):
+  Formulation](https://gillescolling.com/corrselect/articles/theory.md):

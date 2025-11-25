@@ -56,13 +56,13 @@ The outcome depends on time (linear trend), random effects (subject and
 site), and a subset of fixed-effect predictors (x1, x5, x15).
 
 **Use case**: Demonstrating
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 with mixed models (`lme4` engine) to prune fixed effects while
 preserving random effects structure.
 
 ## See also
 
-[`modelPrune()`](https://gcol33.github.io/corrselect/reference/modelPrune.md)
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 
 ## Examples
 

@@ -12,9 +12,9 @@ preprocessing step for regression, clustering, feature selection, and
 other analyses.
 
 Given a threshold $`t \in (0,1)`$, the functions
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 (data-frame interface) and
-[`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md)
+[`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)
 (matrix interface) enumerate all **maximal** subsets $`S`$ of variables
 satisfying:
 
@@ -34,7 +34,7 @@ graph-theoretic algorithms:
 Results are returned as a `CorrCombo` S4 object containing each subset’s
 variable names and summary statistics (`avg_corr`, `min_corr`,
 `max_corr`). You can then extract subsets from the original data via
-[`corrSubset()`](https://gcol33.github.io/corrselect/reference/corrSubset.md).
+[`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md).
 Because the procedure does not depend on any downstream model, it
 cleanly separates “feature curation” from “model fitting” and supports
 multiple correlation measures (`pearson`, `spearman`, `kendall`,
@@ -245,7 +245,7 @@ res5
 ## Changing Correlation Method
 
 By default,
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 uses Pearson correlation. You can choose alternatives with the
 `cor_method` argument:
 
@@ -286,9 +286,9 @@ res6
 ## Handling Mixed Data Types
 
 The function
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 extends
-[`corrSelect()`](https://gcol33.github.io/corrselect/reference/corrSelect.md)
+[`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
 to support **mixed data types** — including numeric, factor, and ordered
 variables — by using appropriate association measures for each variable
 pair.

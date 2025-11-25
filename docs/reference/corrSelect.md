@@ -3,7 +3,7 @@
 Identifies combinations of numeric variables in a data frame such that
 all pairwise absolute correlations fall below a specified threshold.
 This function is a wrapper around
-[`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md)
+[`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)
 and accepts data frames, tibbles, or data tables with automatic
 preprocessing.
 
@@ -52,13 +52,13 @@ corrSelect(
 - ...:
 
   Additional arguments passed to
-  [`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md),
+  [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md),
   e.g., `use_pivot`.
 
 ## Value
 
 An object of class
-[`CorrCombo`](https://gcol33.github.io/corrselect/reference/CorrCombo.md),
+[`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md),
 containing selected subsets and correlation statistics.
 
 ## Details
@@ -67,7 +67,7 @@ Only numeric columns are used for correlation analysis. Non‐numeric
 columns (factors, characters, logicals, etc.) are ignored, and their
 names and types are printed to inform the user. These can be optionally
 reattached later using
-[`corrSubset()`](https://gcol33.github.io/corrselect/reference/corrSubset.md)
+[`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
 with `keepExtra = TRUE`.
 
 Rows with missing values are removed before computing correlations. A
@@ -92,9 +92,9 @@ must be installed.
 
 ## See also
 
-[`assocSelect()`](https://gcol33.github.io/corrselect/reference/assocSelect.md),
-[`MatSelect()`](https://gcol33.github.io/corrselect/reference/MatSelect.md),
-[`corrSubset()`](https://gcol33.github.io/corrselect/reference/corrSubset.md)
+[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md),
+[`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md),
+[`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
 
 ## Examples
 
