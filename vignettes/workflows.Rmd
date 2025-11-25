@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
+  dev = "svglite",
   cache = TRUE  # Cache expensive computations to speed up builds
 )
 ```
@@ -131,7 +132,8 @@ legend("topright",
        lty    = c(NA, NA, 2),
        lwd    = c(NA, NA, 2),
        col    = c(NA, NA, "black"),
-       bty    = "n")
+       bty    = "o",
+       bg     = "white")
 ```
 
 ### Fit models
@@ -347,7 +349,8 @@ legend(
   ),
   fill = c(col_full, col_pruned),
   border = "white",
-  bty = "n"
+  bty = "o",
+  bg = "white"
 )
 
 ```
@@ -807,7 +810,8 @@ legend(
   lty = c(NA, NA, 2),
   lwd = c(NA, NA, 2),
   col = c(NA, NA, "red"),
-  bty = "n"
+  bty = "o",
+  bg = "white"
 )
 ```
 

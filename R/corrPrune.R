@@ -27,7 +27,7 @@
 #'   associations across groups when `by` is provided. Default: 1 (maximum,
 #'   ensuring threshold holds in all groups). Use 0.9 for 90th percentile, etc.
 #' @param max_exact_p Integer. Maximum number of predictors for which exact
-#'   mode is used when `mode = "auto"`. Default: 20.
+#'   mode is used when `mode = "auto"`. Default: 100.
 #' @param ... Additional arguments (reserved for future use).
 #'
 #' @return A data.frame containing the pruned subset of predictors. The result
@@ -90,7 +90,7 @@ corrPrune <- function(
   force_in    = NULL,
   by          = NULL,
   group_q     = 1,
-  max_exact_p = 20,
+  max_exact_p = 100,
   ...
 ) {
 

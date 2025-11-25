@@ -38,8 +38,8 @@ These features make the package useful in domains like:
 - **`corrPrune()`**: Association-based predictor pruning
   - Model-free, works on raw data
   - Automatic correlation/association measure selection
+  - Exact mode for guaranteed optimal solutions (recommended for p ≤ 100)
   - Fast greedy mode for large datasets (p > 100)
-  - Exact mode for guaranteed optimal solutions (p ≤ 20)
   - Protect important variables with `force_in`
 
 - **`modelPrune()`**: Model-based predictor pruning

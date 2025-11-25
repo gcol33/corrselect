@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 8,
-  fig.height = 5
+  fig.height = 5,
+  dev = "svglite"
 )
 library(corrselect)
 ```
@@ -161,7 +162,8 @@ if (requireNamespace("caret", quietly = TRUE)) {
          lty    = c(NA, NA, NA, 2),
          lwd    = c(NA, NA, NA, 2),
          col    = c(NA, NA, NA, "black"),
-         bty    = "n")
+         bty    = "o",
+         bg     = "white")
 }
 ```
 
@@ -401,42 +403,45 @@ Manual approach: iteratively remove max(VIF) until all VIF < threshold.
 
 ```{r}
 # Manual iterative VIF removal
-manual_vif_removal <- function(formula, data, threshold = 5) {
+manual_vif_removal <- function(formula, data, threshold = 5, max_iter = 10) {
   require(car)
 
+  # Get response variable name
+  response_var <- all.vars(formula)[1]
+
+  # Get predictor names (handles ~ . notation)
   model <- lm(formula, data = data)
+  current_vars <- names(coef(model))[-1]  # Exclude intercept
+
+  removed_vars <- character(0)
   vif_vals <- car::vif(model)
 
-  iterations <- 0
-  while (max(vif_vals) > threshold && iterations < 100) {
-    iterations <- iterations + 1
-
+  while (max(vif_vals) > threshold && length(current_vars) > 1 && length(removed_vars) < max_iter) {
     # Remove variable with highest VIF
     var_to_remove <- names(which.max(vif_vals))
-    cat("Iteration", iterations, ": Removing", var_to_remove, "(VIF =",
-        round(max(vif_vals), 2), ")\n")
+    removed_vars <- c(removed_vars, var_to_remove)
+    cat("Iteration", length(removed_vars), ": Removing", var_to_remove,
+        "(VIF =", round(max(vif_vals), 2), ")\n")
 
-    # Update formula
-    formula_str <- paste(deparse(formula), collapse = "")
-    formula_str <- gsub(paste0("\\+\\s*", var_to_remove), "", formula_str)
-    formula_str <- gsub(paste0(var_to_remove, "\\s*\\+"), "", formula_str)
-    formula <- as.formula(formula_str)
-
-    # Refit model
-    model <- lm(formula, data = data)
+    # Update variable list and refit
+    current_vars <- setdiff(current_vars, var_to_remove)
+    new_formula <- as.formula(paste(response_var, "~", paste(current_vars, collapse = " + ")))
+    model <- lm(new_formula, data = data)
     vif_vals <- car::vif(model)
   }
 
-  list(model = model, iterations = iterations, vif = vif_vals)
+  list(model = model, iterations = length(removed_vars),
+       vif = vif_vals, removed = removed_vars, converged = max(vif_vals) <= threshold)
 }
 
 # Run manual VIF removal
 if (requireNamespace("car", quietly = TRUE)) {
   cat("Manual VIF removal (iterative):\n")
   manual_result <- manual_vif_removal(species_richness ~ ., data = bioclim_example, threshold = 5)
-  cat("\nFinal VIF values:\n")
-  print(round(manual_result$vif, 2))
-  cat("\nTotal iterations:", manual_result$iterations, "\n")
+  cat("\nVariables kept:", length(manual_result$vif), "\n")
+  if (!manual_result$converged) {
+    cat("(Stopped at max_iter = 10; VIF threshold not yet reached)\n")
+  }
 }
 ```
 
@@ -497,7 +502,8 @@ if (requireNamespace("car", quietly = TRUE)) {
          lty    = c(NA, NA, 2),
          lwd    = c(NA, NA, 2),
          col    = c(NA, NA, "black"),
-         bty    = "n")
+         bty    = "o",
+         bg     = "white")
 }
 ```
 

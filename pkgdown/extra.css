@@ -13,3 +13,10 @@ figure img {
 [data-bs-theme="dark"] figure img {
   background-color: #3e3f3a;
 }
+
+/* Dark mode: recolor pure-white SVG fills to theme background */
+[data-bs-theme="dark"] svg [fill="#FFFFFF"],
+[data-bs-theme="dark"] svg [fill="#ffffff"],
+[data-bs-theme="dark"] svg [fill="white"] {
+  fill: #3e3f3a;
+}
