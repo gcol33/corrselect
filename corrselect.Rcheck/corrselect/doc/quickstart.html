@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Gilles Colling" />
+
+<meta name="date" content="2025-11-25" />
+
+<title>Quick Start</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Quick Start</h1>
+<h4 class="author">Gilles Colling</h4>
+<h4 class="date">2025-11-25</h4>
+
+
+
+<div id="what-corrselect-does" class="section level2">
+<h2>What corrselect Does</h2>
+<p>corrselect identifies and removes redundant variables based on
+pairwise correlation or association. Given a threshold <span class="math inline">\(\tau\)</span>, it finds subsets where all pairwise
+associations satisfy <span class="math inline">\(|a_{ij}| &lt;
+\tau\)</span> (see <code>vignette(&quot;theory&quot;)</code> for mathematical
+formulation).</p>
+</div>
+<div id="interface-hierarchy" class="section level2">
+<h2>Interface Hierarchy</h2>
+<p>corrselect provides three levels of interface:</p>
+<div id="level-1-simple-pruning" class="section level3">
+<h3>Level 1: Simple Pruning</h3>
+<p><strong>corrPrune()</strong> - Removes redundant predictors based on
+pairwise correlation:</p>
+<ul>
+<li>Returns a single pruned dataset</li>
+<li>No response variable required</li>
+<li>Fast greedy or exact search</li>
+</ul>
+<p><strong>modelPrune()</strong> - Reduces VIF in regression models:</p>
+<ul>
+<li>Returns a single pruned dataset with response</li>
+<li>Iteratively removes high-VIF predictors</li>
+<li>Works with lm, glm, lme4, glmmTMB</li>
+</ul>
+</div>
+<div id="level-2-structured-subset-selection" class="section level3">
+<h3>Level 2: Structured Subset Selection</h3>
+<p><strong>corrSelect()</strong> - Returns all maximal subsets (numeric
+data):</p>
+<ul>
+<li>Enumerates all maximal valid subsets satisfying threshold (see
+<code>vignette(&quot;theory&quot;)</code>)</li>
+<li>Provides full metadata (size, avg_corr, max_corr, min_corr)</li>
+<li>Exact or greedy search</li>
+</ul>
+<p><strong>assocSelect()</strong> - Returns all maximal subsets
+(mixed-type data):</p>
+<ul>
+<li>Handles numeric, factor, and ordered variables</li>
+<li>Uses appropriate association measures per variable pair</li>
+<li>Exact or greedy search</li>
+</ul>
+</div>
+<div id="level-3-low-level-matrix-interface" class="section level3">
+<h3>Level 3: Low-Level Matrix Interface</h3>
+<p><strong>MatSelect()</strong> - Direct matrix input:</p>
+<ul>
+<li>Accepts precomputed correlation/association matrices</li>
+<li>No data preprocessing</li>
+<li>Useful for repeated analyses</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="pruning-example-corrprune" class="section level2">
+<h2>Pruning Example: corrPrune()</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(corrselect)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">data</span>(bioclim_example)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Remove correlated predictors (threshold = 0.7)</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>pruned <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">data =</span> bioclim_example[, <span class="sc">-</span><span class="dv">1</span>],  <span class="co"># Exclude response</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.7</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Variables retained</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">ncol</span>(pruned)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; [1] 12</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(pruned))</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BIO1&quot;  &quot;BIO3&quot;  &quot;BIO6&quot;  &quot;BIO9&quot;  &quot;BIO11&quot; &quot;BIO12&quot;</span></span></code></pre></div>
+<p>Variables removed:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">attr</span>(pruned, <span class="st">&quot;removed_vars&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BIO2&quot;  &quot;BIO4&quot;  &quot;BIO5&quot;  &quot;BIO7&quot;  &quot;BIO8&quot;  &quot;BIO10&quot; &quot;BIO15&quot;</span></span></code></pre></div>
+<p><strong>How corrPrune() selects among multiple maximal
+subsets</strong>:</p>
+<p>When multiple maximal subsets exist (which is common),
+<code>corrPrune()</code> returns the subset with the <strong>lowest
+average absolute correlation</strong>. This selection criterion balances
+three goals:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Minimize redundancy</strong>: Lower average correlation
+means more independent variables</li>
+<li><strong>Maximize information</strong>: Prefers diverse variable
+combinations over tightly clustered ones</li>
+<li><strong>Deterministic behavior</strong>: Always returns the same
+result for the same data</li>
+</ol>
+<p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># If two maximal subsets exist:</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># Subset A: {bio1, bio4, bio12} with avg_corr = 0.35</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># Subset B: {bio2, bio5, bio15} with avg_corr = 0.42</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># corrPrune() returns Subset A (lower average correlation)</span></span></code></pre></div>
+<p>To explore <strong>all</strong> maximal subsets instead of just the
+optimal one, use <code>corrSelect()</code> (see below).</p>
+<p>Visualization:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>cor_before <span class="ot">&lt;-</span> <span class="fu">cor</span>(bioclim_example[, <span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>cor_after <span class="ot">&lt;-</span> <span class="fu">cor</span>(pruned)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">abs</span>(cor_before[<span class="fu">upper.tri</span>(cor_before)]),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Distribution of Absolute Correlations&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Absolute Correlation&quot;</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(<span class="fu">table</span>(<span class="fu">cut</span>(<span class="fu">abs</span>(cor_before[<span class="fu">upper.tri</span>(cor_before)]), <span class="at">breaks =</span> <span class="dv">30</span>))) <span class="sc">*</span> <span class="fl">1.2</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">abs</span>(cor_after[<span class="fu">upper.tri</span>(cor_after)]),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">0.7</span>, <span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Before&quot;</span>, <span class="st">&quot;After&quot;</span>, <span class="st">&quot;Threshold&quot;</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>       <span class="at">fill =</span> <span class="fu">c</span>(<span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>), <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>), <span class="cn">NA</span>),</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>       <span class="at">border =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;black&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>       <span class="at">lty =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>       <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Histogram showing distribution of absolute correlations before (red bars) and after (blue bars) pruning with corrPrune(). Black vertical dashed line marks the 0.7 threshold. Before pruning, many correlations exceed the threshold. After pruning, all pairwise correlations remain below 0.7, demonstrating successful redundancy reduction." src="data:image/png;base64,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" alt="Histogram showing distribution of absolute correlations before (red bars) and after (blue bars) pruning with corrPrune(). Black vertical dashed line marks the 0.7 threshold. Before pruning, many correlations exceed the threshold. After pruning, all pairwise correlations remain below 0.7, demonstrating successful redundancy reduction." /></p>
+<hr />
+</div>
+<div id="model-based-pruning-modelprune" class="section level2">
+<h2>Model-Based Pruning: modelPrune()</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Prune based on VIF (limit = 5)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>model_data <span class="ot">&lt;-</span> <span class="fu">modelPrune</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">formula =</span> species_richness <span class="sc">~</span> .,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">data =</span> bioclim_example,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">5</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># Predictors retained</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">attr</span>(model_data, <span class="st">&quot;selected_vars&quot;</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; [1] 16</span></span></code></pre></div>
+<p>Variables removed:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">attr</span>(model_data, <span class="st">&quot;removed_vars&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BIO2&quot; &quot;BIO7&quot; &quot;BIO5&quot;</span></span></code></pre></div>
+<p>Final model:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>final_model <span class="ot">&lt;-</span> <span class="fu">attr</span>(model_data, <span class="st">&quot;final_model&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">summary</span>(final_model)<span class="sc">$</span>coefficients[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]  <span class="co"># First 5 coefficients</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;                 Estimate Std. Error    t value     Pr(&gt;|t|)</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; (Intercept) -255.6180854 37.1881215 -6.8736488 1.075474e-09</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; BIO1           0.6123452  0.1356203  4.5151441 2.071774e-05</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; BIO3          -0.0912390  0.1823538 -0.5003405 6.181594e-01</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; BIO4          -0.1464343  0.1909057 -0.7670503 4.452280e-01</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; BIO6           0.1896414  0.1620747  1.1700869 2.453149e-01</span></span></code></pre></div>
+<p>VIF comparison:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Increase bottom margin for rotated axis labels</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>full_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(species_richness <span class="sc">~</span> ., <span class="at">data =</span> bioclim_example)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>X_full <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(full_model)[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>vif_before <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">colnames</span>(X_full), <span class="cf">function</span>(var) {</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(X_full[, var] <span class="sc">~</span> X_full[, <span class="sc">-</span><span class="fu">which</span>(<span class="fu">colnames</span>(X_full) <span class="sc">==</span> var)]))<span class="sc">$</span>r.squared)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>})</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>X_pruned <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(final_model)[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>vif_after <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">colnames</span>(X_pruned), <span class="cf">function</span>(var) {</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">summary</span>(<span class="fu">lm</span>(X_pruned[, var] <span class="sc">~</span> X_pruned[, <span class="sc">-</span><span class="fu">which</span>(<span class="fu">colnames</span>(X_pruned) <span class="sc">==</span> var)]))<span class="sc">$</span>r.squared)</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>})</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>all_vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">names</span>(vif_before), <span class="fu">names</span>(vif_after)))</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>vif_combined <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="at">before =</span> vif_before[<span class="fu">match</span>(all_vars, <span class="fu">names</span>(vif_before))],</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>  <span class="at">after  =</span> vif_after[<span class="fu">match</span>(all_vars, <span class="fu">names</span>(vif_after))]</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>)</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>vif_combined[<span class="fu">is.na</span>(vif_combined)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>vif_combined <span class="ot">&lt;-</span> vif_combined[<span class="fu">order</span>(vif_combined<span class="sc">$</span>before, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>n_show <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="dv">15</span>, <span class="fu">nrow</span>(vif_combined))</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="fu">barplot</span>(</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>  <span class="fu">t</span>(<span class="fu">as.matrix</span>(vif_combined[<span class="dv">1</span><span class="sc">:</span>n_show, ])),</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>  <span class="at">beside     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>  <span class="at">las        =</span> <span class="dv">2</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>  <span class="at">main       =</span> <span class="st">&quot;VIF Before and After modelPrune()&quot;</span>,</span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>  <span class="at">ylab       =</span> <span class="st">&quot;VIF&quot;</span>,</span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>  <span class="at">col        =</span> <span class="fu">c</span>(</span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a>    <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>),</span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>    <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>)</span>
+<span id="cb8-35"><a href="#cb8-35" tabindex="-1"></a>  ),</span>
+<span id="cb8-36"><a href="#cb8-36" tabindex="-1"></a>  <span class="at">cex.names  =</span> <span class="fl">0.6</span>,</span>
+<span id="cb8-37"><a href="#cb8-37" tabindex="-1"></a>  <span class="at">names.arg  =</span> <span class="fu">rownames</span>(vif_combined)[<span class="dv">1</span><span class="sc">:</span>n_show]</span>
+<span id="cb8-38"><a href="#cb8-38" tabindex="-1"></a>)</span>
+<span id="cb8-39"><a href="#cb8-39" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb8-41"><a href="#cb8-41" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb8-43"><a href="#cb8-43" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Before&quot;</span>, <span class="st">&quot;After&quot;</span>, <span class="st">&quot;Limit&quot;</span>),</span>
+<span id="cb8-44"><a href="#cb8-44" tabindex="-1"></a>       <span class="at">fill   =</span> <span class="fu">c</span>(</span>
+<span id="cb8-45"><a href="#cb8-45" tabindex="-1"></a>         <span class="fu">rgb</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>),</span>
+<span id="cb8-46"><a href="#cb8-46" tabindex="-1"></a>         <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>),</span>
+<span id="cb8-47"><a href="#cb8-47" tabindex="-1"></a>         <span class="cn">NA</span></span>
+<span id="cb8-48"><a href="#cb8-48" tabindex="-1"></a>       ),</span>
+<span id="cb8-49"><a href="#cb8-49" tabindex="-1"></a>       <span class="at">border =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;black&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb8-50"><a href="#cb8-50" tabindex="-1"></a>       <span class="at">lty    =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb8-51"><a href="#cb8-51" tabindex="-1"></a>       <span class="at">lwd    =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">2</span>),</span>
+<span id="cb8-52"><a href="#cb8-52" tabindex="-1"></a>       <span class="at">bty    =</span> <span class="st">&quot;o&quot;</span>,    <span class="co"># opaque box</span></span>
+<span id="cb8-53"><a href="#cb8-53" tabindex="-1"></a>       <span class="at">bg     =</span> <span class="st">&quot;white&quot;</span> <span class="co"># hides dashed line behind legend</span></span>
+<span id="cb8-54"><a href="#cb8-54" tabindex="-1"></a>)</span></code></pre></div>
+<p><img role="img" aria-label="Side-by-side barplot comparing VIF values before (red bars) and after (blue bars) modelPrune() for up to 15 variables. Black horizontal dashed line marks the VIF threshold of 5. Before pruning, several variables exceed the limit with high VIF values. After pruning, all retained variables have VIF below 5, and high-VIF variables are removed (shown as red-only bars), demonstrating successful multicollinearity reduction." src="data:image/png;base64,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" alt="Side-by-side barplot comparing VIF values before (red bars) and after (blue bars) modelPrune() for up to 15 variables. Black horizontal dashed line marks the VIF threshold of 5. Before pruning, several variables exceed the limit with high VIF values. After pruning, all retained variables have VIF below 5, and high-VIF variables are removed (shown as red-only bars), demonstrating successful multicollinearity reduction." /></p>
+<hr />
+</div>
+<div id="subset-selection-corrselect" class="section level2">
+<h2>Subset Selection: corrSelect()</h2>
+<p>corrSelect() returns all maximal subsets, not just one:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">corrSelect</span>(bioclim_example[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">threshold =</span> <span class="fl">0.7</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">show</span>(results)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; CorrCombo object</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; -----------------</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;   Correlation: pearson</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;   Threshold:   0.700</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;   Subsets:     42 valid combinations</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;   Data Rows:   100 used in correlation</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;   Pivot:       TRUE</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; Top combinations:</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt;   ------------------------------------------------------------</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;   [ 1] BIO1, BIO3, BIO6, BIO9, BIO11...  0.192  0.689    12</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;   [ 2] BIO1, BIO3, BIO5, BIO9, BIO11...  0.195  0.689    12</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;   [ 3] BIO1, BIO3, BIO6, BIO8, BIO11...  0.195  0.689    12</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt;   [ 4] BIO1, BIO4, BIO6, BIO9, BIO11...  0.196  0.689    12</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt;   [ 5] BIO1, BIO3, BIO6, BIO9, BIO11...  0.196  0.688    12</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt;   ... (37 more combinations)</span></span></code></pre></div>
+<p>Inspect subsets:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">as.data.frame</span>(results)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]  <span class="co"># First 5 subsets</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt;                      VarName01 VarName02 VarName03 VarName04 VarName05</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; Subset01 [avg=0.192]      BIO1      BIO3      BIO6      BIO9     BIO11</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; Subset02 [avg=0.195]      BIO1      BIO3      BIO5      BIO9     BIO11</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; Subset03 [avg=0.195]      BIO1      BIO3      BIO6      BIO8     BIO11</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; Subset04 [avg=0.196]      BIO1      BIO4      BIO6      BIO9     BIO11</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; Subset05 [avg=0.196]      BIO1      BIO3      BIO6      BIO9     BIO11</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;                      VarName06 VarName07 VarName08 VarName09 VarName10</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; Subset01 [avg=0.192]     BIO12     BIO13     BIO14     BIO16     BIO17</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; Subset02 [avg=0.195]     BIO12     BIO13     BIO14     BIO16     BIO17</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; Subset03 [avg=0.195]     BIO12     BIO13     BIO14     BIO16     BIO17</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; Subset04 [avg=0.196]     BIO12     BIO13     BIO14     BIO16     BIO17</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; Subset05 [avg=0.196]     BIO12     BIO13     BIO15     BIO16     BIO17</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;                      VarName11 VarName12</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; Subset01 [avg=0.192]     BIO18     BIO19</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; Subset02 [avg=0.195]     BIO18     BIO19</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; Subset03 [avg=0.195]     BIO18     BIO19</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; Subset04 [avg=0.196]     BIO18     BIO19</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; Subset05 [avg=0.196]     BIO18     BIO19</span></span></code></pre></div>
+<p>Extract a specific subset:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>subset_data <span class="ot">&lt;-</span> <span class="fu">corrSubset</span>(results, bioclim_example[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">which =</span> <span class="dv">1</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(subset_data))</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BIO1&quot;  &quot;BIO3&quot;  &quot;BIO6&quot;  &quot;BIO9&quot;  &quot;BIO11&quot; &quot;BIO12&quot;</span></span></code></pre></div>
+<hr />
+</div>
+<div id="mixed-type-data-assocselect" class="section level2">
+<h2>Mixed-Type Data: assocSelect()</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">data</span>(survey_example)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co"># Exclude ID and response</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>survey_predictors <span class="ot">&lt;-</span> survey_example[, <span class="sc">!</span>(<span class="fu">names</span>(survey_example) <span class="sc">%in%</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>                                         <span class="fu">c</span>(<span class="st">&quot;respondent_id&quot;</span>, <span class="st">&quot;overall_satisfaction&quot;</span>))]</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># Handle mixed types</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>results_mixed <span class="ot">&lt;-</span> <span class="fu">assocSelect</span>(survey_predictors, <span class="at">threshold =</span> <span class="fl">0.6</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="fu">show</span>(results_mixed)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; CorrCombo object</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; -----------------</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt;   Correlation: mixed</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt;   AssocMethod: numeric_factor = eta, numeric_ordered = spearman, factor_ordered</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt;                = cramersv, ordered_ordered = spearman</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt;   Threshold:   0.600</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt;   Subsets:     900 valid combinations</span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt;   Data Rows:   200 used in correlation</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt;   Pivot:       TRUE</span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; Top combinations:</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt;   ------------------------------------------------------------</span></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt;   [ 1] age, gender, education, satis...  0.175  0.555     6</span></span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt;   [ 2] age, gender, education, satis...  0.175  0.555     6</span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt;   [ 3] age, gender, education, satis...  0.176  0.555     6</span></span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a><span class="co">#&gt;   [ 4] age, gender, education, satis...  0.176  0.563     6</span></span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a><span class="co">#&gt;   [ 5] age, gender, education, satis...  0.176  0.591     6</span></span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="co">#&gt;   ... (895 more combinations)</span></span></code></pre></div>
+<hr />
+</div>
+<div id="protecting-variables" class="section level2">
+<h2>Protecting Variables</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Check available variable names</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(bioclim_example[, <span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;BIO1&quot; &quot;BIO2&quot; &quot;BIO3&quot; &quot;BIO4&quot; &quot;BIO5&quot; &quot;BIO6&quot;</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co"># Force a variable to remain in all subsets</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>first_var <span class="ot">&lt;-</span> <span class="fu">names</span>(bioclim_example)[<span class="dv">2</span>]  <span class="co"># First predictor</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>pruned_force <span class="ot">&lt;-</span> <span class="fu">corrPrune</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  <span class="at">data =</span> bioclim_example[, <span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.7</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  <span class="at">force_in =</span> first_var</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co"># Verify forced variable is present</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>first_var <span class="sc">%in%</span> <span class="fu">names</span>(pruned_force)</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<hr />
+</div>
+<div id="threshold-selection" class="section level2">
+<h2>Threshold Selection</h2>
+<p>Visualize correlation distribution:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>cor_mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(bioclim_example[, <span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>cor_vec <span class="ot">&lt;-</span> cor_mat[<span class="fu">upper.tri</span>(cor_mat)]</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co"># Histogram with fixed x-limits so the 0.9 line is always in view</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">abs</span>(cor_vec), <span class="at">breaks =</span> <span class="dv">30</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Distribution of Absolute Correlations&quot;</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Absolute Correlation&quot;</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>),</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># Threshold lines (all visible because of xlim)</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>),</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;#d73027&quot;</span>, <span class="st">&quot;#4575b4&quot;</span>, <span class="st">&quot;#91cf60&quot;</span>),</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># Legend with opaque background so dashed lines don&#39;t pass through</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;0.5 (strict)&quot;</span>, <span class="st">&quot;0.7 (moderate)&quot;</span>, <span class="st">&quot;0.9 (lenient)&quot;</span>),</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;#d73027&quot;</span>, <span class="st">&quot;#4575b4&quot;</span>, <span class="st">&quot;#91cf60&quot;</span>),</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>       <span class="at">bty =</span> <span class="st">&quot;o&quot;</span>,           <span class="co"># draw a box</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>       <span class="at">bg  =</span> <span class="st">&quot;white&quot;</span>)       <span class="co"># solid white background so lines stay hidden</span></span></code></pre></div>
+<p><img role="img" aria-label="Histogram of absolute correlation distribution with three colored vertical dashed lines indicating threshold levels: strict at 0.5 (red), moderate at 0.7 (blue), and lenient at 0.9 (green). The distribution helps users visualize correlation structure and choose an appropriate threshold based on the data&#39;s correlation characteristics." src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAA21BMVEUAAAAAADoAAGYAOjoAOmYAOpAAZpAAZrY6AAA6ADo6AGY6OgA6Ojo6OmY6ZpA6ZrY6kLY6kNtFdbRmAABmADpmOgBmOjpmZjpmkJBmkLZmkNtmtrZmtttmtv+Fs+CQOgCQOjqQZgCQZjqQkGaQkLaQtpCQttuQtv+Q29uQ2/+Rz2C2ZgC2Zjq2ZpC2kGa225C227a229u22/+2/7a2/9u2///XMCfbkDrbkGbbtmbbtpDb25Db27bb29vb2//b/7bb/9vb////tmb/trb/25D/27b//7b//9v////2qjj0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAY60lEQVR4nO2di3rktnlAKXVVyXETV6t109ZV1MRpWnncJl53NXXq1hUra+b9nyjEjQR4G3BAUP9wzvm+1VxI4gcHZ0EAJMFiDyCY4q0zADAGgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqI5ZUG3hebiVx+rD7uH4uo5WLz790/Ne710U1x+2vehVu0mMMru25ui+MJ9KguX9GCMVl4Gs+p//cPn1f798uOEXPX+ChN3TRQrELRS9L6naH7+8jJWUL3qxFIsVeBb92lTfbi376YLGmS14fVLu3+3PQsj0z5m10SxCkGLi8fu0h5ThuQ5LFVfcC/o612VievItLq69G9Tree4j81VJ+1jdk0Upy2o/vF//FLJYYvmvz63x3xVp1XLK4/+5cvi8jtXg/7p74pCNwlMyVVm3dpV/9OW7Z+rNf7qH551+hf/9m1RvPPsrxdugv8XZXHxa2uCH6PJjb+pX5t78auKrgp28cVzs3vFuz9UdWDlaTdjaqc+utdmS/sr/FnVvb983Mftmp9LcaxAUFXKV8+maGylWn1fC6q4+j8rRb14UFCbgvfWqyqbhaGgm+Lqv2/MkdiP0eTG33RIUF0NV9LYGq9azeze7p+/+N99T8aunt1rs6VJu6zzHbNrfi7lsQZB9RtdNFVJXT/vf9Ctto1z5Orj/n+cFOrDD/po7Ali3ptVXm6s57emCvto32vChY23KhV3cPVi+LnxNu0Iat9vVF34cuOiqa29nW1lTO1U/dpsqdOu/vz1s03p8K75uRTISgS9eNSFUJXBu+/s0lpQ1YBzUmipNqaG7RXUttn0i9m2SvM6SNItbAQt1futS7yO0c2NfhkQ1LxtdqpRtSe2aZXaV2/Lug3643983vw/HN01P5cCWZegpl9hmllOUO1LUERbc/DrE9QV8LZRrqnJehZ631uhvBhebvxNBwSttg9aFKGgvbHtq7elWW33O/P5OmbX/N9MIOsSdP+zGZm5+NcBQZsiMovbx0FnY6lqmLagPQs1tSBXuvfUxGhy42/qC+rFtw3HWtDwEN8b2756W9b/Td/9/se7UNDBXfN+M4GsQVDdnXAVxM9ff+66MRE1aFvQo2rQZrjrPqhBvdwM1aBe/OptMJrkdZKqHvaBGvR+72XRJPp6F1eD+r+ZQFYgqBqHqYeZFLvfNo3MlqC6JL02ZFmMtkFDQQfaoN54pTaiidHJjdcG7cRvdYraw0x9se2rt6VOu3QNzAm7ZnIpkNMW1DsquqL5W32crw1oC3rpevG6B6sK3/XI+7q6rVLs78W7XpSp8rwYfm46vfhOfNW9+qf9z3fN/7NgoL4vtntttnQ16NWz+W8bsWt+LgWyCkGbU53fNs24srAD9YGg9ZBf3XC8tav2DRa2BO0utF/eN2/8GF5uOuOgnfhuHNQbvXKnOr8YiO1emy29rqKp0CN2zc+lPFYgaHCxSHN5hTq78u5juw3anOV5qYr/V3/SvWi96nf+6ZZ/NOm3Be0s3HttRVNFBTH8iz3qTW1O2/E/7n/+3Y3b0GAvFvluKHadh3rLphf/7g9bd3bq0K5NviRlSU5ZUDgDEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJB0HVRnArRO5Tz14LFOZXyRNAz5VTKE0HPlFMpTwQ9U06lPBH0TDmV8kTQM+VUyhNBz5RTKU8ElcPT0xJR3r/XL6dSnggqBwTtAUHlgKA9IKgcELQHWYL+xrFEMHEgaA8IKgcE7QFB5YCgPSCoHE5G0NJ7aLx5BL17Dvnu4b5Z696tcb/3v3z9MOWB8wgqh1MRtKzsLJ2hL5/5um2v67eBl8GXpX4mfSSZBN09mKtNLz9N2uy8BV2U4wXdPdxWfzdWxdIvYl/KYUH9avYgeQTdFrfmTenexIGgi9EuzyfL0OeGlxvl19aK6dWZ1taXm6pmuld/r3768HVx+b02dasaAvrL5/12QhWaRVDzf0wzJS8IuiCt8nxqCdn+7GEO6q7m3PxNZZ4rblWtan/L4l5Vlq93VfHrWnNbNQle725NtVq3D6bnc4YV90HtXk46yCPoYhx/iDd6Wcm0gvuNMbQysClxI+it92bvzDB18Mz5pAZdFzMJar8yUmr9Xu+aD/aL+1pJI6jTddZ8TmyD2v8itEGlcryg4SHefGX8My+6g3zfEtT29aUIakfHdIt4Cgi6GAmCBp0k89Vn9njvDt2bi0fRNeixnLegJzIOGgwzGfPqQ7wTrxIxEFRYG3QklfH78RE0PzMP1GtRbSdJf9BLSlWD3jaC6l787uHaiPrmvXgz6qX/l2wHevEI2uVUBFWlqxSrhKs+bFxR721NWhZm8aa4+qkW1IyD6i8FjIPaUS+VfQSN52QEHaT37NGRa1kyDjPtHtR/FgSN5vQFDc8rDfH25+Ldf5HN1TOCxrMCQWNOswu4mqkeqN9cI2g8KxB0fjK1QevTXUPXMyFoFwTtIVsv3lT1uwcEjQZBe3irgXoEfWMQ9JjkEHQxZrrlo7TnXWzf6EAnaWSEvvQ29LtRCHqmzHUmSWGGvBUHhpmGBQ3HRr2BKAQ9U+a65UNRD9UcGoKPFdSriBH0TJnxaqaXG3eNiDrV+XLz1V1R3Kq7O/R1JO6Ce3V+9Gsl6NZ886puB/lkz5S6e0HqlesqFEHPlHYBvLcMfW7oXA+6qd+aWz4qC7fKPeVwqa8MvTYrlarpqk6DK6XttfjX7sS4vaLE2N5UtVIFRdXMtArgfUvI9meP9hX1/kV2t7Y+tX/uTXOgWtdUuxtzkZPW29wOorpDallzTZ698c4d4xFUDicyDtoW1Ff13rrl/hjRqr+mwq1WNWtX39StztJdf18v8qVHUDmciKDtQ/ymbi8GbnqCVvZta0HduFR9Fd7lH20N6g1ZIahETkXQsJPk3b8RX4N2Vm5q0FaiCCqHExG0Nczk3b9h26CeeK026NbcqmRXvq+vcPZusWsniqByOBFBWwP1/thmPXFD/afuxaseet2LdzfV2cqzuDVuu0X04mVyKoKGt3z4F1SacdDgON8/DlqtV7dBLx6Vkxs3DqqTkz8OiqC5ePtbPialg6ByOH1B4275OMwJnItH0Fy8+S0fhzmFq5nOUdBF4XrQY5JD0MVA0GOSQ9DFQNBjkkPQxUDQY5LrExRVszDTLR/1oKih6iT1DTX1Dz9FPfEDQc+U2SYP09dwOv+21/FjoXFP/EDQM2Wmc/Hmqg534qd1Rn2cuCd+IKgcTmQcNLiaKbw4tHSnMN1tHXfq9o/75rSm92XkEz8QVA5vKug3lqHPDcH1oFZQe9uxqlaVjM1tHebqkOCGjuDLg3OFIqgc3lLQb1pCtj97BJWmrU6NoO6hHuFtHfbq+d4vD8+2jKByOJFDfHhUN50kJ6iZrza8rcNOB9775eH56hFUDiciaOuWj01RXH7/oalOlaDBbR1O0L4vEfSUOBVBe57y8Qv/OUn34W0dQQ3a+hJBT4kTEbQ7s4jrijdtUP+2Dv+JH+0vaYOeEiciaDBQr2/nCB754Xrx9W0dzsXulzFP/EBQOZyKoMEtH+qRbc39Sf44qHtfV5atL+Oe+IGgZ4qQWz4OboGgZ4qQWz44Fw/9yLjlg6uZYACuBz0mOQRdDAQ9JjkEXQwEPSY5BF0MBD0mufMW9GTGQZcEQeWAoD0gqBwQtAcElQOC9oCgckDQHhBUDssKeirE7heCZmdRQTPTdzNTXhA0OwiaAoJmB0FTQFAQDYKCaBAURDNFUHs7VGGfKRKfHILCsUwWVN8NNXjLCYLCvEwV1Ko5dNMegsK8TBXU3pBfDhzkERTmhRo0O4yDpjBNUHUS9Xo/MvMOgnZB0BQmDjNVjurH2w7NDIWgXRA0BcZBs4OgKcwj6IGrqBA0PwiakByC5gdBE5JD0PwgqOvFGxgHjQZBU5hUg+4eBk/CjyaHoPlBUIWe23R6cuctKKQwsQ3qHu00LTkEhWOhkwSiQVAQDYKCaBAURIOgIBoEzQ7joCkgaHYQNAUEzQ6CpoCg2UHQFBA0OwiaAoJmB0FTQNDsIGgKCJodBE0BQbODoCkgKIgGQUE0tVGvd4OzMRyTXACCwrF4Rm2LItlRBIV5CY1KdhRBYV7aRm3H5k+enpwBQeFYAqPU7N73+93DwNyKU5OrGRf0N7gKgzRGqWkZjJlDs9NOSs7nvAVlHDQFrxd/8ThjcgEImp/VC5ozOQTNzxkIuqkO8MNT005OzgNB87N+QTe6Afp6d2Bym9jkfBA0P6sX1D36KKGHtEfQPhA0hdqo3YM5uG8RdGYQNIXGqK2eF+zlZvEzSQg6B+sXtHKzKIrEsSYE7YKgKTDMBKJBUBBNY9TuYXT2+anJ+SAoHIs3DppkZic5HwSFY/HGQWe4oB5BYWY6A/UzJReAoHAs3kB90jnOdnIBCArH0hh16AEeE5PzOW9BGQdNwb+rk158FhA0BcZBs4OgKSBodhA0Bc+o6iB/9bzhguW5QdAUvE7SxeP26jlxOBRBuyBoCsH1oJWgXA86OwiaQjBQrwTlivq5QdAUOjXo5vhZG/YI2geCptBug27ThusRFOYl7MVzRT0Ig3FQEA2Cgmg4Fw+iaRuVNsqEoDAzHaM2Y5eFHrxvCUFhXjpGjVWhWze12OAcYwjahXHQFDpGjZzqdLPjqLUGhvMRtAuCptA2amx2O++2paF6FkG7IGgKnV78yJlOatCjQNAUJo2D1udBaYNOAEFTmDZQf7CaRdAuCJpCd6A+aaweQbsgaArt246Pu5qpcbt3MYLmZ/WC7h6MmUPdn4nJBRwh6IqkRdAUmkP8B3OhnZAr6lckKKTQqUFHrqiPaKYiKMxLcEV99Xc7dsXy7uFQ9YqgMC/tK+rHW6AHZxhDUJiXiRcsH5phDEFhXqReUY+goJE69Q2Cgkbq1DcrEpRx0BSkTn2DoBNZvaDCpr5B0ImsXlBhU98g6ERWL6iwqW8QdCLrF1TW1DcIOpEzEDRfcgian9UL6t1wNEdyAQian9ULKuxJcwg6kdULmjrpTTs5n/MWFFKQOnkYgoKGThKIBkFBNMaoeXpIewSFufEEnWOgCUFhXhAURIOg2WEcNAUEzQ6CpoCg2UHQFBA0OwiaghN0jqnt9gjaB4KmwEB9dhA0BQTNDoKmgKDZQdAUEDQ7CJoCgoJoEBREg6AgGgQF0SAoiAZBQTQICqKRJWjfu5OHcdAUEDQ7CJoCgmYHQVNA0OwgaAoImh0ETQFBs4OgKSBodhA0BQTNDoKmgKDZQdAUEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgmaHcdAUEDQ7CJoCgmYHQVNA0OwgaAoImh0ETQFBs4OgKUwR9PVOzRFejs3CjKBdEDSFyYJur55HnkyHoF0QNIWpglo1tabRySFofhDUCPpyowVtPVy+eQRD74bnLSikQA26AKvamYWZJqiqI6/3rrsUnRyCrmhnFmbiMFPl6MVj1ZEfeuQXgvaxqp1ZGMZBF2BVO7MwCLoAq9qZhUHQBVjVziwMgmbn6WmJnWEcNCE5BEXQY0HQ7CBoCgiaHQRNAUGzg6ApIGh2EDQFBM0OgqaAoNlB0BTkC9q74kxEp3hE5HqTHIJ2U5wgaEJ2EHSFguY4HCSlOH92MoKgCCoaBEVQ0SAogooGQRFUNAiKoKJBUAQVDYJmF5Rx0BQQFEEngKAIOi3x+hsETUgOQRH0WBAUQSeAoHMLOr5Jb+jIfB/qnNdLZxN0NPT799FREn5RBI1cMZpIiRA0DgSNXDGaSIkQNA4EjVwxmkiJEDQOBI1cMZpIiXIKOtuZpOjcxqaTods5OwgaVeQHcntE2kcQndvYdBDUMlrQCDp5XxB05uRGCxpBJ+8Lgs6c3GhBI+jkfUHQmZMbLWgEnbwvCDpzcqMFjaCT9wVBZ05utKBXLyjjoCkg6GCRI2gXBI1cMZpIiRA0DgSNXHE8yoEvD4SOzHd0bn1Bx/cgJfRBQQ+kGAeCRq44HuXAlwdCR+YbQRcBQTthIvONoIuAoJ0wkflG0EVA0E6YyHwj6CIgaCdMZL4RdBEQtBMmMt8TcjseZfpPdij0MSlKBUFHineu3I5Hmf6TIejMySWVZPTP2bu078sDoSPzjaCLgKAjxTtXbsejTP/JEHTm5JJKMvrn7F3a9+WB0JH5RtBFQNCR4p0rt+NRpv9kCDpzckklGf1z9i7t+/JA6Mh8I+ginKigfT/sXCnOvUn/OOjcuU0dBz2wtYVx0MkrjkZB0MhCQNBsBTQaBUEjCwFBsxXQaBQEjSwEBM1WQKNREDSyEBA0WwGNRkHQyEJA0GwFNBoFQSMLAUGzFdBoFASNLAQEzVZAo1EQNLIQ1iLo7qHQXH6alFzOAhqNIkLQ5VecXgixgi7PJEG3xa15U7o3ccnlLKDRKAgaWQjrEHT3UGu5vXqekFzOAhqNgqCRhbAOQV/v7t3bMjzIFzWzZQxAMXMNCjAvE9ugtgodbIMCzMu0Y/LrnTmQU3/CQtBozM7T0xJRJjyrMwHp46BwBAiaAoJmB0FTQNDsIGgKCJodBE0BQbODoCkgaHYQNAUEzQ6CprCEoMV58/S0RJT375eI8s03x2yVJM9cFr5xjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2VhQjHVFYWfm2RggNwgKokFQEA2CgmgQFESDoCAaBAXRICiIBkFBNAgKokFQEA2CgmgQFESTUdCyKC4eez/kiqIfQpJlat129jd5ZkgNwrzcFMV19ijb6ie7H1s7gZdf1BPFH13++QQtqwyVLlPBh1xRdg/Vm22OQm1nv8wzhW/4k1UhXu9y78xWfchk6Otd/SSD48s/m6BmQvvNdfdDtigvN+qH3g4+xGmeKHs90XQOQXt+stw7s3u43mcpmL2uNF3uE8o/m6CBLdnU6Uk4Q0XdjrK9+m0OQcOf7LMsLaJWlIyClsVt/SyYhPLPJ6j+gUv/1y4zCNpNeJM9SvUxSxs0CFNefn+XpUEd7kzOQ3zwi+2PLP9sgpqKzFZnwYdsUcw3GQo1jKKOV1kEDcJs1fHRVHAZo2Tsve49IxPKf22Clrn6SE0U9YyoBQS9yHTQCXdGHW9ebjI9VEi0oG9ziM/zAKfuvuQ/xJsGm2m85YuSrXOgEX2If5NO0jbPKGgQZWvnFJy/3RaEMaWZoasURsl1aNOI7iS9wTBT8yS8rFEUWWrQIIx5MGqGg07PyFyGKJo6XYnDTG8wUJ+tLdXNfp4zSeEQehXCezpqpijLtEElDtTrY6HKkumJbnN1Fr0o9uCbI06wL/tspzqDMGWu87ZBlE2uKHsraGL5c7EIiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJBUBANgoJoEBREg6AgGgQF0SAoiAZBQTQICqJB0ANszMxFwxN1mmnoDGV3Jf1onEMzOflpqESCz+cNgo7z+uHXB2aS9WTq8crMqLs5MHGWvyFyBiDoONvLP2o1jxTUbrZ7GK9DEXQQBB1l93Btpg98ufn7GzNPoXoAnJ4o106PWAmlnXq9U2tUIm69CQ23Vsz//+Rt8OHr4vJ79eeTW1cnsNHpquSvfroLAnx1l+9pcNJB0FHUpKv6cQYvN9VfNdOrrhPVg1vUP/UkuEZQ87q1KyqCp3Q0G+hnyCl13bpqQzX/sPqs3uuEmvVdJs4RBB1lo126dbM3by8/uVmDzeTHlcAtQfXabm5h82Hf3uDWLqnXVdt+eDQtAidouH6GpymcBgg6hjHITJOtD7pKF/+5ENXflqBmomvrky+ov4E9qNfr2nZnWRSNoD3rnyMIOkbzRA/zuA31V48bOX+MlYGg/kNA/EO8v4ET1K2rPlWxdIcsFDRY/xxB0BGsX6q9WNegesHm4nG8BnW4TlLVnhysQXUEs/ilIyg16FtnQDL1s+WUj7oNan2rdAnboLe1SqFJ3jCTv4EVrl63eqNbrWXR2wZFUOjFPcujslP34nXnXUlb2g+2F2/8K4your9dj8zrgXr9IHt/AyecW9fWoK93xa1ut7Z68QgKfTQ9503VOlSjnG500jyfrRnDrMwqvlJDRW4ctHkyllpkT3V6Gzjh7Lq2DXrxqMTedMZBERRAKAgKokFQEA2CgmgQFESDoCAaBAXRICiIBkFBNAgKokFQEA2CgmgQFESDoCAaBAXRICiIBkFBNAgKokFQEA2CgmgQFESDoCAaBAXRICiI5i+MYLVHXlCk2QAAAABJRU5ErkJggg==" alt="Histogram of absolute correlation distribution with three colored vertical dashed lines indicating threshold levels: strict at 0.5 (red), moderate at 0.7 (blue), and lenient at 0.9 (green). The distribution helps users visualize correlation structure and choose an appropriate threshold based on the data&#39;s correlation characteristics." /></p>
+<p>Test multiple thresholds:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>thresholds <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.3</span>, <span class="fl">0.95</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>sizes <span class="ot">&lt;-</span> <span class="fu">sapply</span>(thresholds, <span class="cf">function</span>(t) {</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">tryCatch</span>(<span class="fu">ncol</span>(<span class="fu">corrPrune</span>(bioclim_example[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">threshold =</span> t)), <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>})</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="fu">plot</span>(thresholds, sizes, <span class="at">type =</span> <span class="st">&quot;b&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Threshold&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Variables Retained&quot;</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Threshold Sensitivity&quot;</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">ncol</span>(bioclim_example) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;gray50&quot;</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Line plot showing threshold sensitivity analysis. X-axis shows correlation thresholds from 0.3 to 0.95, y-axis shows number of variables retained. Blue line with dots shows how the number of retained variables increases as threshold becomes more lenient. Horizontal gray dashed line marks the original number of variables. The curve helps identify the plateau region where additional threshold relaxation yields diminishing returns." src="data:image/png;base64,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" alt="Line plot showing threshold sensitivity analysis. X-axis shows correlation thresholds from 0.3 to 0.95, y-axis shows number of variables retained. Blue line with dots shows how the number of retained variables increases as threshold becomes more lenient. Horizontal gray dashed line marks the original number of variables. The curve helps identify the plateau region where additional threshold relaxation yields diminishing returns." /></p>
+<hr />
+</div>
+<div id="interface-selection" class="section level2">
+<h2>Interface Selection</h2>
+<p>corrPrune() and modelPrune():</p>
+<ul>
+<li>Single pruned dataset</li>
+<li>Fast execution</li>
+<li>Preprocessing pipelines</li>
+</ul>
+<p>corrSelect() and assocSelect():</p>
+<ul>
+<li>All maximal subsets</li>
+<li>Full metadata per subset</li>
+<li>Documented enumeration for reproducible research</li>
+</ul>
+<p>MatSelect():</p>
+<ul>
+<li>Precomputed matrices</li>
+<li>Repeated analyses with different thresholds</li>
+</ul>
+<hr />
+</div>
+<div id="see-also" class="section level2">
+<h2>See Also</h2>
+<ul>
+<li><code>vignette(&quot;workflows&quot;)</code> - Complete workflows across
+domains</li>
+<li><code>vignette(&quot;advanced&quot;)</code> - Algorithmic control and custom
+engines</li>
+<li><code>vignette(&quot;comparison&quot;)</code> - Comparison with caret, Boruta,
+glmnet</li>
+<li><code>vignette(&quot;theory&quot;)</code> - Theoretical foundations and
+formulation</li>
+<li><code>?corrPrune</code>, <code>?modelPrune</code>,
+<code>?corrSelect</code>, <code>?assocSelect</code>,
+<code>?MatSelect</code></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -42,7 +42,7 @@
 #'   \describe{
 #'     \item{selected_vars}{Character vector of retained predictor names}
 #'     \item{removed_vars}{Character vector of removed predictor names (in order of removal)}
-#'     \item{engine}{Character string indicating which engine was used}
+#'     \item{engine}{Character string indicating which engine was used (for custom engines, this is the engine's `name` field)}
 #'     \item{criterion}{Character string indicating which criterion was used}
 #'     \item{limit}{The threshold value used}
 #'     \item{final_model}{The final fitted model object (optional)}

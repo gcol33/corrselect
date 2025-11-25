@@ -1,0 +1,19 @@
+CorrCombo               CorrCombo S4 class
+MatSelect               Select Variable Subsets with Low Correlation or
+                        Association (Matrix Interface)
+as.data.frame.CorrCombo
+                        Coerce CorrCombo to a Data Frame
+assocSelect             Select Variable Subsets with Low Association
+                        (Mixed-Type Data Frame Interface)
+bioclim_example         Example Bioclimatic Data for Ecological
+                        Modeling
+cor_example             Example Correlation Matrix with Block Structure
+corrPrune               Association-Based Predictor Pruning
+corrSelect              Select Variable Subsets with Low Correlation
+                        (Data Frame Interface)
+corrSubset              Extract Variable Subsets from a CorrCombo
+                        Object
+genes_example           Example Gene Expression Data for Bioinformatics
+longitudinal_example    Example Longitudinal Data for Clinical Research
+modelPrune              Model-Based Predictor Pruning
+survey_example          Example Survey Data for Social Science Research

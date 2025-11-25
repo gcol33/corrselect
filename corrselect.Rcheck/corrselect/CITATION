@@ -1,0 +1,8 @@
+citHeader("To cite the corrselect package in publications use:")
+
+bibentry("Manual",
+         title = "corrselect: Correlation-Based Variable Subset Selection",
+         author = person("Gilles", "Colling"),
+         year = "2025",
+         note = "R package version 1.0.0",
+         url = "https://github.com/gcol33/corrselect")

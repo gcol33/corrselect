@@ -20,6 +20,6 @@ BugReports: https://github.com/gcol33/corrselect/issues
 Depends: R (>= 3.5)
 LazyData: true
 NeedsCompilation: yes
-Packaged: 2025-11-25 16:31:16 UTC; Gilles Colling
+Packaged: 2025-11-25 16:41:04 UTC; Gilles Colling
 Author: Gilles Colling [aut, cre]
 Maintainer: Gilles Colling <gilles.colling051@gmail.com>

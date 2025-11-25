@@ -112,7 +112,8 @@ result has the following attributes:
 
 - engine:
 
-  Character string indicating which engine was used
+  Character string indicating which engine was used (for custom engines,
+  this is the engine's `name` field)
 
 - criterion:
 

@@ -8,17 +8,11 @@
 
 ## R CMD check results
 
-0 errors ✔ | 0 warnings ✔ | 2 notes ✖
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
-### Notes
-
-1. **checking for future file timestamps ... NOTE**
-   - "unable to verify current time"
-   - This is a false positive related to system time verification on Windows
-
-2. All 261 tests pass successfully
-3. All examples run without errors
-4. All vignettes build successfully with accessibility improvements (alt-text for all figures)
+- All 261 tests pass successfully
+- All examples run without errors
+- All vignettes build successfully with accessibility improvements (alt-text for all figures)
 
 ## Package updates
 

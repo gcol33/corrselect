@@ -227,14 +227,11 @@ res <- MatSelect(mat, threshold = 0.7, method = "els")
 ## JOSS Paper
 
 This repository includes a short paper prepared for submission to the
-*Journal of Open Source Software (JOSS)*.  
-You can find the manuscript and references in the
-[`paper/`](https://gcol33.github.io/corrselect/paper) directory:
+*Journal of Open Source Software (JOSS)*. You can find the manuscript
+and references in the `paper/` directory:
 
-- [`paper/paper.md`](https://gcol33.github.io/corrselect/paper/paper.md)
-  – main text  
-- [`paper/paper.bib`](https://gcol33.github.io/corrselect/paper/paper.bib)
-  – bibliography
+- `paper/paper.md` – main text
+- `paper/paper.bib` – bibliography
 
 ## License
 

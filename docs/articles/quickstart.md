@@ -76,8 +76,8 @@ Variables removed:
 
 ``` r
 
-head(attr(pruned, "removed_vars"))
-#> NULL
+attr(pruned, "removed_vars")
+#> [1] "BIO2"  "BIO4"  "BIO5"  "BIO7"  "BIO8"  "BIO10" "BIO15"
 ```
 
 **How corrPrune() selects among multiple maximal subsets**:

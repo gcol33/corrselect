@@ -28,7 +28,8 @@
 ^BUGFIX_.*\.md$
 ^FINAL_TEST_REPORT\.md$
 ^TEST_SUMMARY\.md$
-^NUL$
+^[Nn][Uu][Ll]$
 ^check_dois\.R$
 ^check_dois\.py$
 ^check_dois_thorough\.py$
+^figure$

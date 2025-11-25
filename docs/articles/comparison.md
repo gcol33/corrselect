@@ -122,9 +122,9 @@ cat("\ncorrselect results:\n")
 cat("  Variables retained:", ncol(result_corrselect), "\n")
 #>   Variables retained: 12
 cat("  Variables removed:", length(attr(result_corrselect, "removed_vars")), "\n")
-#>   Variables removed: 0
+#>   Variables removed: 7
 cat("  Removed:", paste(attr(result_corrselect, "removed_vars"), collapse = ", "), "\n")
-#>   Removed:
+#>   Removed: BIO2, BIO4, BIO5, BIO7, BIO8, BIO10, BIO15
 ```
 
 corrselect retains more variables

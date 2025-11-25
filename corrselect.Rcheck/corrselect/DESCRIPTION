@@ -1,0 +1,27 @@
+Package: corrselect
+Title: Correlation-Based and Model-Based Predictor Pruning
+Version: 3.0.0
+Authors@R: 
+    person("Gilles", "Colling", email = "gilles.colling051@gmail.com", role = c("aut", "cre"))
+Description: Provides functions for predictor pruning using association-based and model-based approaches. Includes corrPrune() for fast correlation-based pruning, modelPrune() for VIF-based regression pruning, and exact graph-theoretic algorithms (Eppstein–Löffler–Strash, Bron–Kerbosch) for exhaustive subset enumeration. Supports linear models, GLMs, and mixed models (lme4, glmmTMB).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+LinkingTo: Rcpp
+Imports: Rcpp, methods, stats
+Suggests: GO.db, WGCNA, preprocessCore, impute, energy, minerva, lme4,
+        glmmTMB, MASS, caret, car, carData, microbenchmark, igraph,
+        Boruta, glmnet, corrplot, knitr, rmarkdown, testthat (>=
+        3.0.0), tibble
+VignetteBuilder: knitr
+URL: https://gillescolling.com/corrselect/
+BugReports: https://github.com/gcol33/corrselect/issues
+Depends: R (>= 3.5)
+LazyData: true
+NeedsCompilation: yes
+Packaged: 2025-11-25 16:41:04 UTC; Gilles Colling
+Author: Gilles Colling [aut, cre]
+Maintainer: Gilles Colling <gilles.colling051@gmail.com>
+Built: R 4.5.1; x86_64-w64-mingw32; 2025-11-25 16:41:53 UTC; windows
+Archs: x64

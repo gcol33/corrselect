@@ -88,6 +88,10 @@ the following attributes:
 
   Character vector of retained variable names
 
+- removed_vars:
+
+  Character vector of removed variable names
+
 - mode:
 
   Character string indicating which mode was used ("exact" or "greedy")

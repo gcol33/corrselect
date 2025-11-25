@@ -57,6 +57,7 @@ A data.frame containing the pruned subset of predictors. The result
 has the following attributes:
 \describe{
 \item{selected_vars}{Character vector of retained variable names}
+\item{removed_vars}{Character vector of removed variable names}
 \item{mode}{Character string indicating which mode was used ("exact" or "greedy")}
 \item{measure}{Character string indicating which association measure was used}
 \item{threshold}{The threshold value used}
