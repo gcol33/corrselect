@@ -155,7 +155,7 @@ legend("topright",
        lwd    = c(NA, NA, 2),
        col    = c(NA, NA, "black"),
        bty    = "o",
-       bg     = "white")
+       bg = NA)
 ```
 
 ![Histogram showing distribution of absolute correlations before and
@@ -315,7 +315,7 @@ legend(
   lwd    = 2,
   horiz  = TRUE,
   bty    = "o",
-  bg     = "white",
+  bg = NA,
   x.intersp = 0.8
 )
 ```
@@ -402,7 +402,7 @@ legend(
   fill = c(col_full, col_pruned),
   border = "white",
   bty = "o",
-  bg = "white"
+  bg = NA
 )
 ```
 
@@ -765,11 +765,11 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (3.4 ms)
+#> Exact mode: 11 genes kept (3.7 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.5 ms)
+#> Greedy mode: 10 genes kept (0.4 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 6.3x faster
+#> Speedup: 8.4x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
@@ -1036,7 +1036,7 @@ legend(
   lwd = c(NA, NA, 2),
   col = c(NA, NA, "red"),
   bty = "o",
-  bg = "white"
+  bg = NA
 )
 ```
 

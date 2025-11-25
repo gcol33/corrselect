@@ -182,7 +182,7 @@ if (requireNamespace("caret", quietly = TRUE)) {
          lwd    = c(NA, NA, NA, 2),
          col    = c(NA, NA, NA, "black"),
          bty    = "o",
-         bg     = "white")
+         bg = NA)
 }
 ```
 
@@ -603,7 +603,7 @@ if (requireNamespace("car", quietly = TRUE)) {
          lwd    = c(NA, NA, 2),
          col    = c(NA, NA, "black"),
          bty    = "o",
-         bg     = "white")
+         bg = NA)
 }
 ```
 

@@ -165,7 +165,7 @@ if (requireNamespace("caret", quietly = TRUE)) {
          lwd    = c(NA, NA, NA, 2),
          col    = c(NA, NA, NA, "black"),
          bty    = "o",
-         bg     = "white")
+         bg = NA)
 }
 ```
 
@@ -505,7 +505,7 @@ if (requireNamespace("car", quietly = TRUE)) {
          lwd    = c(NA, NA, 2),
          col    = c(NA, NA, "black"),
          bty    = "o",
-         bg     = "white")
+         bg = NA)
 }
 ```
 
@@ -590,3 +590,4 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 - `vignette("workflows")` - Domain-specific workflows (genomics, ecology, surveys)
 - `vignette("advanced")` - Algorithm selection and performance tuning
 - `vignette("theory")` - Graph-theoretic foundations and formal proofs
+

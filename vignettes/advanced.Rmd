@@ -187,7 +187,7 @@ legend("topleft",
        pch = 19,
        lwd = 2,
        bty = "o",
-       bg = "white")
+       bg = NA)
 ```
 
 **Key insight**: The scaling behavior depends heavily on correlation structure. For this moderately correlated dataset (ρ = 0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy mode scales efficiently beyond p = 1000. The exact mode provides guaranteed optimality at the cost of computational complexity, while greedy mode offers substantial speed advantages for large p with near-optimal results in most practical scenarios.
@@ -847,7 +847,7 @@ abline(v = c(0.5, 0.7, 0.9), col = c("red", "blue", "green"), lwd = 2, lty = 2)
 legend("topright",
        legend = c("0.5 (strict)", "0.7 (moderate)", "0.9 (lenient)"),
        col = c("red", "blue", "green"), lwd = 2, lty = 2,
-       bty = "o", bg = "white")
+       bty = "o", bg = NA)
 
 # Subset size vs threshold
 thresholds <- seq(0.3, 0.95, by = 0.05)
@@ -1032,3 +1032,4 @@ pipeline <- function(data, response) {
 - `?corrPrune` - Association-based pruning
 - `?modelPrune` - Model-based pruning
 - `?corrSelect` - Exact subset enumeration
+

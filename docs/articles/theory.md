@@ -351,7 +351,7 @@ for (i in 1:4) {
   # Node circle
   symbols(node_pos[i, 1], node_pos[i, 2],
           circles = node_size, add = TRUE,
-          inches = FALSE, bg = "white", fg = "black", lwd = 2)
+          inches = FALSE, bg = NA, fg = "black", lwd = 2)
 
   # Node label
   text(node_pos[i, 1], node_pos[i, 2],
@@ -365,7 +365,7 @@ text(1, -0.35, "cor = 0.75\n(too high, no edge)", cex = 0.8, col = "red")
 # Legend showing maximal cliques
 legend("right",
        legend = c("Maximal cliques:", "{V1, V3}", "{V1, V4}", "{V2, V3}", "{V2, V4}"),
-       bty = "o", bg = "white", cex = 0.9,
+       bty = "o", bg = NA, cex = 0.9,
        pch = c(NA, 19, 19, 19, 19),
        col = c(NA, "black", "black", "black", "black"))
 
@@ -457,7 +457,7 @@ if (requireNamespace("igraph", quietly = TRUE)) {
                    "Block 3 (V11-V15): Low cor",
                    "Block 4 (V16-V20): Minimal cor"),
          fill = c("#d73027", "#fc8d59", "#91bfdb", "#4575b4"),
-         bty = "o", bg = "white", cex = 0.8)
+         bty = "o", bg = NA, cex = 0.8)
 } else {
   cat("Install igraph for network visualization: install.packages('igraph')\n")
   cat("Adjacency matrix (first 5×5 block):\n")
@@ -826,7 +826,7 @@ legend("bottomleft",
        col = c("black", "black", "gray70"),
        lwd = c(2, 2, 1.5),
        bty = "o",
-       bg = "white",
+       bg = NA,
        cex = 0.7)
 ```
 
