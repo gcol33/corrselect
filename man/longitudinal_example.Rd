@@ -29,8 +29,8 @@ each, with 20 correlated predictors and nested random effects (subject and site)
 This dataset represents a typical longitudinal study with repeated measures.
 Predictors are correlated both within and between subjects:
 \itemize{
-\item Predictors x1-x10: Highly correlated (r ≈ 0.75)
-\item Predictors x11-x20: Moderately correlated (r ≈ 0.50)
+\item Predictors x1-x10: Highly correlated (r ~= 0.75)
+\item Predictors x11-x20: Moderately correlated (r ~= 0.50)
 }
 
 The outcome depends on time (linear trend), random effects (subject and site),

@@ -123,10 +123,10 @@
 #' @details
 #' This dataset simulates a high-dimensional, low-sample scenario common in genomics.
 #' Genes are organized into four co-expression modules:
-#' - Module 1 (GENE001-GENE050): Highly correlated (r ≈ 0.80), disease-associated
-#' - Module 2 (GENE051-GENE100): Moderately correlated (r ≈ 0.60)
-#' - Module 3 (GENE101-GENE150): Weakly correlated (r ≈ 0.40)
-#' - Module 4 (GENE151-GENE200): Independent (r ≈ 0)
+#' - Module 1 (GENE001-GENE050): Highly correlated (r ~= 0.80), disease-associated
+#' - Module 2 (GENE051-GENE100): Moderately correlated (r ~= 0.60)
+#' - Module 3 (GENE101-GENE150): Weakly correlated (r ~= 0.40)
+#' - Module 4 (GENE151-GENE200): Independent (r ~= 0)
 #'
 #' Disease outcome depends on a subset of genes from Module 1.
 #'
@@ -170,8 +170,8 @@
 #' @details
 #' This dataset represents a typical longitudinal study with repeated measures.
 #' Predictors are correlated both within and between subjects:
-#' - Predictors x1-x10: Highly correlated (r ≈ 0.75)
-#' - Predictors x11-x20: Moderately correlated (r ≈ 0.50)
+#' - Predictors x1-x10: Highly correlated (r ~= 0.75)
+#' - Predictors x11-x20: Moderately correlated (r ~= 0.50)
 #'
 #' The outcome depends on time (linear trend), random effects (subject and site),
 #' and a subset of fixed-effect predictors (x1, x5, x15).

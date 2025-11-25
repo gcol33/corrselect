@@ -209,3 +209,15 @@ Vignettes provide:
 - Performance comparisons between algorithms
 - Guidance on threshold selection
 - Mixed-type data workflows
+
+### CRITICAL: DOI and URL Handling
+
+**NEVER remove or unlink DOIs/URLs without explicit user approval.**
+
+When CRAN check reports broken DOIs or URLs:
+1. **ALWAYS** verify the correct DOI/URL first
+2. **ASK the user** before making any changes
+3. If a DOI is incorrect, search for the correct one and propose an update
+4. Only unlink/remove with explicit user permission
+
+Example: If a DOI like `10.1016/S0167-5060(06)80001-3` returns 404, search for the correct DOI (e.g., `10.1016/S0167-5060(13)71063-X`) and ask user to verify before updating.

@@ -85,7 +85,7 @@ and mixed models.
 \item Computing diagnostics for each fixed-effect predictor
 \item Checking feasibility of \code{force_in} constraints
 \item Iteratively removing the predictor with the worst diagnostic value
-(excluding \code{force_in} variables) until all diagnostics ≤ \code{limit}
+(excluding \code{force_in} variables) until all diagnostics <= \code{limit}
 \item Returning the pruned data frame
 }
 

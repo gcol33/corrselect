@@ -23,7 +23,7 @@
 #' This dataset provides a controlled correlation structure useful for:
 #' \itemize{
 #'   \item Threshold sensitivity analysis (comparing results at
-#'     τ = 0.5, 0.7, 0.9)
+#'     tau = 0.5, 0.7, 0.9)
 #'   \item Algorithm comparison (exact vs greedy modes)
 #'   \item Visualization examples (heatmaps, correlation distributions)
 #'   \item Reproducible benchmarks across vignettes
@@ -31,9 +31,9 @@
 #'
 #' Expected behavior with different thresholds:
 #' \itemize{
-#'   \item τ = 0.5: Block 1 requires pruning (all pairs > 0.75)
-#'   \item τ = 0.7: Blocks 1-2 require pruning
-#'   \item τ = 0.9: Only Block 1 requires pruning
+#'   \item tau = 0.5: Block 1 requires pruning (all pairs > 0.75)
+#'   \item tau = 0.7: Blocks 1-2 require pruning
+#'   \item tau = 0.9: Only Block 1 requires pruning
 #' }
 #'
 #' @source Generated with \code{data-raw/create_cor_example.R} using

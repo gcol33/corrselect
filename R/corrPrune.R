@@ -14,7 +14,7 @@
 #'   for all-numeric data, and appropriate measures are selected for mixed-type
 #'   data.
 #' @param mode Character string specifying the search algorithm. Options:
-#'   - `"auto"` (default): uses exact search if number of predictors ≤ `max_exact_p`,
+#'   - `"auto"` (default): uses exact search if number of predictors <= `max_exact_p`,
 #'     otherwise uses greedy search
 #'   - `"exact"`: exhaustive search for maximal subsets (may be slow for large p)
 #'   - `"greedy"`: fast approximate search using iterative removal

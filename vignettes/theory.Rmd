@@ -1391,7 +1391,7 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 
 ### Threshold Graph Theory
 
-- Mahadev, N. V. R., & Peled, U. N. (1995). *Threshold Graphs and Related Topics*. Elsevier. [doi:10.1016/S0167-5060(06)80001-3](https://doi.org/10.1016/S0167-5060(06)80001-3)
+- Mahadev, N. V. R., & Peled, U. N. (1995). *Threshold Graphs and Related Topics*. Amsterdam: Elsevier, Annals of Discrete Mathematics, Vol. 56. [doi:10.1016/S0167-5060(13)71063-X](https://doi.org/10.1016/S0167-5060(13)71063-X)
   - **Comprehensive reference**: Mathematical properties of threshold graphs
   - Theoretical foundation for threshold-based graph construction
 

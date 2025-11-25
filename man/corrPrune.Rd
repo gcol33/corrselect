@@ -30,7 +30,7 @@ data.}
 
 \item{mode}{Character string specifying the search algorithm. Options:
 \itemize{
-\item \code{"auto"} (default): uses exact search if number of predictors ≤ \code{max_exact_p},
+\item \code{"auto"} (default): uses exact search if number of predictors <= \code{max_exact_p},
 otherwise uses greedy search
 \item \code{"exact"}: exhaustive search for maximal subsets (may be slow for large p)
 \item \code{"greedy"}: fast approximate search using iterative removal
