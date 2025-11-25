@@ -26,3 +26,4 @@ NUL
 
 # Build artifacts
 vignettes/.build.timestamp
+nvignettes/*.htmlnvignettes/*_files/
