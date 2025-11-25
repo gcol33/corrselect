@@ -37,7 +37,7 @@
     <li><a class="dropdown-item" href="../articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
     <li><a class="dropdown-item" href="../articles/comparison.html">Comparison with Alternatives</a></li>
     <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
-    <li><a class="dropdown-item" href="../articles/theory.html">Correlation Subset Selection with corrselect</a></li>
+    <li><a class="dropdown-item" href="../articles/theory.html">Theory and Formulation</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -165,11 +165,13 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <p>Let’s measure runtime scaling:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate datasets with increasing p</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/microbenchmark/" class="external-link">microbenchmark</a></span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">benchmark_corrPrune</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    exact_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    greedy_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    exact_time_ms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    greedy_time_ms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">p</span> <span class="kw">in</span> <span class="va">p_values</span><span class="op">)</span> <span class="op">{</span></span>
@@ -179,61 +181,94 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span>    <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">cor_mat</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co"># Exact mode (skip if p too large)</span></span>
-<span>    <span class="va">exact_time</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">p</span> <span class="op">&lt;=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>        <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span>
-<span>      <span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span></span>
+<span>    <span class="va">exact_time_ms</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">p</span> <span class="op">&lt;=</span> <span class="fl">500</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>        times <span class="op">=</span> <span class="fl">3</span>,  <span class="co"># Few iterations for speed</span></span>
+<span>        unit <span class="op">=</span> <span class="st">"ms"</span></span>
+<span>      <span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span>    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>      <span class="cn">NA</span></span>
 <span>    <span class="op">}</span></span>
 <span></span>
 <span>    <span class="co"># Greedy mode</span></span>
-<span>    <span class="va">greedy_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>      <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"greedy"</span><span class="op">)</span></span>
-<span>    <span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span></span>
+<span>    <span class="va">greedy_time_ms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"greedy"</span><span class="op">)</span>,</span>
+<span>      times <span class="op">=</span> <span class="fl">3</span>,  <span class="co"># Few iterations for speed</span></span>
+<span>      unit <span class="op">=</span> <span class="st">"ms"</span></span>
+<span>    <span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span></span>
 <span>    <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">results</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>      p <span class="op">=</span> <span class="va">p</span>,</span>
-<span>      exact_time <span class="op">=</span> <span class="va">exact_time</span>,</span>
-<span>      greedy_time <span class="op">=</span> <span class="va">greedy_time</span></span>
+<span>      exact_time_ms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">exact_time_ms</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>      greedy_time_ms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">greedy_time_ms</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="va">results</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Benchmark</span></span>
-<span><span class="va">p_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co"># Benchmark (extended range to show comprehensive scaling behavior)</span></span>
+<span><span class="va">p_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">300</span>, <span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu">benchmark_corrPrune</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            p exact_time greedy_time</span></span>
-<span><span class="co">#&gt; elapsed   10          0        0.00</span></span>
-<span><span class="co">#&gt; elapsed1  15          0        0.00</span></span>
-<span><span class="co">#&gt; elapsed2  20          0        0.00</span></span>
-<span><span class="co">#&gt; elapsed3  25          0        0.02</span></span>
-<span><span class="co">#&gt; elapsed4  50         NA        0.00</span></span>
-<span><span class="co">#&gt; elapsed5 100         NA        0.00</span></span></code></pre></div>
+<span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
+<span><span class="co">#&gt; 1   10           0.5            0.2</span></span>
+<span><span class="co">#&gt; 2   20           0.6            0.3</span></span>
+<span><span class="co">#&gt; 3   50           1.3            0.8</span></span>
+<span><span class="co">#&gt; 4  100           4.5            1.4</span></span>
+<span><span class="co">#&gt; 5  200          22.8            3.3</span></span>
+<span><span class="co">#&gt; 6  300          84.9            6.5</span></span>
+<span><span class="co">#&gt; 7  500         312.5           15.1</span></span>
+<span><span class="co">#&gt; 8 1000            NA           56.4</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">p</span>, <span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time</span>,</span>
-<span>     type <span class="op">=</span> <span class="st">"b"</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
+<span><span class="va">exact_valid</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time_ms</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time_ms</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
+<span><span class="va">greedy_valid</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">greedy_time_ms</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">benchmark</span><span class="op">$</span><span class="va">greedy_time_ms</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
+<span></span>
+<span><span class="co"># Replace any zeros with small positive value for log scale</span></span>
+<span><span class="va">exact_times</span> <span class="op">&lt;-</span> <span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time_ms</span></span>
+<span><span class="va">greedy_times</span> <span class="op">&lt;-</span> <span class="va">benchmark</span><span class="op">$</span><span class="va">greedy_time_ms</span></span>
+<span><span class="va">exact_times</span><span class="op">[</span><span class="va">exact_times</span> <span class="op">&lt;=</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">exact_times</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.01</span></span>
+<span><span class="va">greedy_times</span><span class="op">[</span><span class="va">greedy_times</span> <span class="op">&lt;=</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">greedy_times</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.01</span></span>
+<span></span>
+<span><span class="co"># Determine y-axis limits from valid data</span></span>
+<span><span class="va">all_valid_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">exact_times</span><span class="op">[</span><span class="va">exact_valid</span><span class="op">]</span>, <span class="va">greedy_times</span><span class="op">[</span><span class="va">greedy_valid</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">ylim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">all_valid_times</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">all_valid_times</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot greedy mode (all points)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">p</span><span class="op">[</span><span class="va">greedy_valid</span><span class="op">]</span>, <span class="va">greedy_times</span><span class="op">[</span><span class="va">greedy_valid</span><span class="op">]</span>,</span>
+<span>     type <span class="op">=</span> <span class="st">"b"</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">1</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>, lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Number of Predictors (p)"</span>,</span>
-<span>     ylab <span class="op">=</span> <span class="st">"Time (seconds)"</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Time (milliseconds, log scale)"</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">"Exact vs Greedy Scaling"</span>,</span>
-<span>     ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.1</span><span class="op">)</span>,</span>
+<span>     ylim <span class="op">=</span> <span class="va">ylim</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">p</span><span class="op">)</span>,</span>
 <span>     log <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in xy.coords(x, y, xlabel, ylabel, log): 4 y values &lt;= 0 omitted from</span></span>
-<span><span class="co">#&gt; logarithmic plot</span></span>
-<span><span class="co">#&gt; Warning in plot.window(...): nonfinite axis=2 limits [GScale(-inf,-inf,..);</span></span>
-<span><span class="co">#&gt; log=TRUE] -- corrected now</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">p</span>, <span class="va">benchmark</span><span class="op">$</span><span class="va">greedy_time</span>, type <span class="op">=</span> <span class="st">"b"</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exact"</span>, <span class="st">"Greedy"</span><span class="op">)</span>,</span>
-<span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">20</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"Auto switches here"</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="advanced_files/figure-html/unnamed-chunk-5-1.png" width="768"></p>
-<p><strong>Key insight</strong>: Exact mode becomes impractical beyond p
-≈ 25. Greedy mode scales linearly.</p>
+<span></span>
+<span><span class="co"># Add exact mode (only where available)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">p</span><span class="op">[</span><span class="va">exact_valid</span><span class="op">]</span>, <span class="va">exact_times</span><span class="op">[</span><span class="va">exact_valid</span><span class="op">]</span>,</span>
+<span>      type <span class="op">=</span> <span class="st">"b"</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">1</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Mark exact mode limit</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">500</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray50"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">500</span>, <span class="va">ylim</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="fl">0.5</span>, <span class="st">"Exact mode limit"</span>, pos <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"gray30"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>,</span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exact"</span>, <span class="st">"Greedy"</span><span class="op">)</span>,</span>
+<span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       pch <span class="op">=</span> <span class="fl">19</span>,</span>
+<span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>       bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="advanced_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." width="768"></p>
+<p><strong>Key insight</strong>: The scaling behavior depends heavily on
+correlation structure. For this moderately correlated dataset (ρ =
+0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy
+mode scales efficiently beyond p = 1000. The exact mode provides
+guaranteed optimality at the cost of computational complexity, while
+greedy mode offers substantial speed advantages for large p with
+near-optimal results in most practical scenarios.</p>
 </div>
 <div class="section level3">
 <h3 id="deterministic-tie-breaking">1.3 Deterministic Tie-Breaking<a class="anchor" aria-label="anchor" href="#deterministic-tie-breaking"></a>
@@ -272,8 +307,53 @@ versions.</p>
 <h2 id="custom-engines-for-modelprune">2. Custom Engines for modelPrune()<a class="anchor" aria-label="anchor" href="#custom-engines-for-modelprune"></a>
 </h2>
 <div class="section level3">
-<h3 id="custom-engine-structure">2.1 Custom Engine Structure<a class="anchor" aria-label="anchor" href="#custom-engine-structure"></a>
+<h3 id="understanding-custom-engines">2.1 Understanding Custom Engines<a class="anchor" aria-label="anchor" href="#understanding-custom-engines"></a>
 </h3>
+<div class="section level4">
+<h4 id="what-is-a-custom-engine">What is a Custom Engine?<a class="anchor" aria-label="anchor" href="#what-is-a-custom-engine"></a>
+</h4>
+<p>A custom engine allows you to integrate <strong>any</strong> modeling
+framework with <code><a href="../reference/modelPrune.html">modelPrune()</a></code>, not just base R’s
+<code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> or <code>lme4</code>. This enables VIF-based pruning
+for:</p>
+<ul>
+<li>
+<strong>Bayesian models</strong> (INLA, brms, Stan)</li>
+<li>
+<strong>Additive models</strong> (mgcv GAMs)</li>
+<li>
+<strong>Survival models</strong> (coxph, flexsurv)</li>
+<li>
+<strong>Custom metrics</strong> (AIC, BIC, posterior
+uncertainty)</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="how-custom-engines-work">How Custom Engines Work<a class="anchor" aria-label="anchor" href="#how-custom-engines-work"></a>
+</h4>
+<p>The <code><a href="../reference/modelPrune.html">modelPrune()</a></code> algorithm follows this iterative
+process:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Fit</strong> the model with current predictors</li>
+<li>
+<strong>Diagnose</strong> each predictor (compute a “badness”
+metric)</li>
+<li>
+<strong>Identify</strong> the worst predictor (highest diagnostic
+value)</li>
+<li>
+<strong>Remove</strong> if it exceeds the <code>limit</code>
+threshold</li>
+<li>
+<strong>Repeat</strong> until all predictors satisfy the limit</li>
+</ol>
+<p>Your custom engine defines steps 1 and 2; <code><a href="../reference/modelPrune.html">modelPrune()</a></code>
+handles the iteration logic.</p>
+</div>
+<div class="section level4">
+<h4 id="engine-structure-requirements">Engine Structure Requirements<a class="anchor" aria-label="anchor" href="#engine-structure-requirements"></a>
+</h4>
 <p>A custom engine is a named list with two required functions:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -293,12 +373,28 @@ versions.</p>
 <span>  <span class="co"># Optional: Name for error messages</span></span>
 <span>  name <span class="op">=</span> <span class="st">"my_custom_engine"</span>  <span class="co"># Defaults to "custom"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p><strong>Key principle</strong>: The <code>diagnostics</code> function
+must return <strong>higher values for worse predictors</strong>. This
+inverted metric ensures the algorithm removes the most problematic
+variables first.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="example-inla-engine-bayesian-spatial-models">2.2 Example: INLA Engine (Bayesian Spatial Models)<a class="anchor" aria-label="anchor" href="#example-inla-engine-bayesian-spatial-models"></a>
 </h3>
-<p>INLA is a popular package for Bayesian inference. Let’s integrate
-it:</p>
+<div class="section level4">
+<h4 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
+</h4>
+<p>INLA (Integrated Nested Laplace Approximations) is a popular package
+for fast Bayesian inference, especially for spatial and temporal models.
+Unlike traditional VIF, we can use <strong>posterior
+uncertainty</strong> as a pruning criterion: variables with high
+posterior standard deviation contribute less information to the
+model.</p>
+</div>
+<div class="section level4">
+<h4 id="implementation">Implementation<a class="anchor" aria-label="anchor" href="#implementation"></a>
+</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom engine for INLA</span></span>
 <span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -327,22 +423,50 @@ it:</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Usage</span></span>
+<span><span class="co"># Usage example</span></span>
 <span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span></span>
 <span>  <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="va">x3</span> <span class="op">+</span> <span class="va">x4</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">my_data</span>,</span>
 <span>  engine <span class="op">=</span> <span class="va">inla_engine</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">0.5</span>  <span class="co"># Remove if posterior SD &gt; 0.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><strong>How it works</strong>: 1. <code>fit</code> function calls
-INLA to fit the model 2. <code>diagnostics</code> extracts posterior SDs
-for fixed effects 3. <code>modelPrune</code> iteratively removes
-variables with SD &gt; 0.5</p>
+</div>
+<div class="section level4">
+<h4 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
+</h4>
+<ol style="list-style-type: decimal">
+<li>
+<strong>fit</strong>: Calls <code>INLA::inla()</code> to compute
+posterior distributions</li>
+<li>
+<strong>diagnostics</strong>: Extracts posterior standard deviations
+from <code>model$summary.fixed</code>
+</li>
+<li>
+<strong>limit</strong>: Threshold for acceptable uncertainty (e.g.,
+0.5 means remove predictors with posterior SD &gt; 0.5)</li>
+</ol>
+<p><strong>Interpretation</strong>: Variables with high posterior SD
+have coefficients that are uncertain given the data. Removing them
+reduces model complexity without losing much information.</p>
+<p><strong>When to use</strong>: Spatial models, hierarchical models,
+disease mapping, ecological modeling with INLA.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="example-mgcv-engine-gams">2.3 Example: mgcv Engine (GAMs)<a class="anchor" aria-label="anchor" href="#example-mgcv-engine-gams"></a>
 </h3>
-<p>Generalized Additive Models (GAMs) via mgcv:</p>
+<div class="section level4">
+<h4 id="background-1">Background<a class="anchor" aria-label="anchor" href="#background-1"></a>
+</h4>
+<p>Generalized Additive Models (GAMs) allow non-linear relationships via
+smooth terms. When pruning GAMs, we want to remove <strong>parametric
+(linear) terms</strong> with weak evidence while preserving smooth terms
+that model non-linear patterns.</p>
+</div>
+<div class="section level4">
+<h4 id="implementation-1">Implementation<a class="anchor" aria-label="anchor" href="#implementation-1"></a>
+</h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom engine for mgcv GAMs</span></span>
 <span><span class="va">mgcv_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -365,7 +489,7 @@ variables with SD &gt; 0.5</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Usage</span></span>
+<span><span class="co"># Usage example</span></span>
 <span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span></span>
 <span>  <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="fu">s</span><span class="op">(</span><span class="va">x3</span><span class="op">)</span>,  <span class="co"># s() for smooth terms</span></span>
 <span>  data <span class="op">=</span> <span class="va">my_data</span>,</span>
@@ -373,10 +497,42 @@ variables with SD &gt; 0.5</p>
 <span>  limit <span class="op">=</span> <span class="fl">0.05</span>  <span class="co"># Remove if p &gt; 0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level4">
+<h4 id="how-it-works-1">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works-1"></a>
+</h4>
+<ol style="list-style-type: decimal">
+<li>
+<strong>fit</strong>: Calls <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">mgcv::gam()</a></code> to fit the
+additive model</li>
+<li>
+<strong>diagnostics</strong>: Extracts p-values for
+<strong>parametric terms only</strong> (not smooth terms)</li>
+<li>
+<strong>limit</strong>: Significance threshold (e.g., 0.05 for
+traditional α = 0.05)</li>
+</ol>
+<p><strong>Important</strong>: <code><a href="../reference/modelPrune.html">modelPrune()</a></code> only removes
+parametric (linear) terms. Smooth terms specified with <code>s()</code>,
+<code>te()</code>, etc. are <strong>never removed</strong>
+automatically, as they’re part of the model structure.</p>
+<p><strong>When to use</strong>: Non-linear regression, ecological
+response curves, time series with trends.</p>
+</div>
+</div>
 <div class="section level3">
 <h3 id="example-custom-criterion-aic-based">2.4 Example: Custom Criterion (AIC-Based)<a class="anchor" aria-label="anchor" href="#example-custom-criterion-aic-based"></a>
 </h3>
-<p>You can define entirely custom pruning criteria:</p>
+<div class="section level4">
+<h4 id="background-2">Background<a class="anchor" aria-label="anchor" href="#background-2"></a>
+</h4>
+<p>Sometimes you want to prune based on <strong>model comparison
+metrics</strong> rather than coefficient-level diagnostics. This example
+shows how to remove variables that don’t improve model fit according to
+AIC.</p>
+</div>
+<div class="section level4">
+<h4 id="implementation-2">Implementation<a class="anchor" aria-label="anchor" href="#implementation-2"></a>
+</h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># AIC-based pruning engine</span></span>
 <span><span class="va">aic_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -415,10 +571,38 @@ variables with SD &gt; 0.5</p>
 <span>  limit <span class="op">=</span> <span class="op">-</span><span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level4">
+<h4 id="how-it-works-2">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works-2"></a>
+</h4>
+<ol style="list-style-type: decimal">
+<li>
+<strong>fit</strong>: Standard linear model</li>
+<li>
+<strong>diagnostics</strong>: For each variable, refit the model
+<strong>without</strong> that variable and compute ΔAIC</li>
+<li>
+<strong>limit</strong>: Threshold for ΔAIC (e.g., -2 means “remove
+if AIC improves by more than 2 points”)</li>
+</ol>
+<p><strong>Key insight</strong>: The score is <strong>negated</strong>
+(multiplied by -1) to maintain the “higher is worse” convention. A
+variable with score &gt; -2 means removing it would worsen AIC by more
+than 2, so it’s kept.</p>
+<p><strong>When to use</strong>: Model selection focused on parsimony,
+comparing nested models, when VIF isn’t the right metric.</p>
+<p><strong>Alternative metrics</strong>: You can adapt this pattern for
+BIC, likelihood ratio tests, or any other model comparison
+criterion.</p>
+</div>
+</div>
 <div class="section level3">
 <h3 id="validation-and-error-handling">2.5 Validation and Error Handling<a class="anchor" aria-label="anchor" href="#validation-and-error-handling"></a>
 </h3>
-<p>Custom engines are validated automatically:</p>
+<div class="section level4">
+<h4 id="automatic-validation">Automatic Validation<a class="anchor" aria-label="anchor" href="#automatic-validation"></a>
+</h4>
+<p><code><a href="../reference/modelPrune.html">modelPrune()</a></code> automatically validates custom engines to
+catch common errors early:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Invalid engine: missing 'diagnostics'</span></span>
 <span><span class="va">bad_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -433,17 +617,52 @@ variables with SD &gt; 0.5</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error: Custom engine missing required fields: diagnostics</span></span>
 <span><span class="co">#&gt; Required: 'fit' and 'diagnostics'</span></span></code></pre></div>
-<p><strong>Validation checks</strong>:</p>
-<ul>
+</div>
+<div class="section level4">
+<h4 id="validation-checklist">Validation Checklist<a class="anchor" aria-label="anchor" href="#validation-checklist"></a>
+</h4>
+<p>Your custom engine must satisfy these requirements:</p>
+<ol style="list-style-type: decimal">
 <li>
-<code>fit</code> and <code>diagnostics</code> must be functions</li>
+<strong>Structure</strong>: Named list with <code>fit</code> and
+<code>diagnostics</code> functions</li>
 <li>
-<code>diagnostics</code> must return numeric vector</li>
-<li>Correct length (one value per fixed effect)</li>
-<li>Named vector with correct names</li>
-<li>No missing values</li>
-</ul>
+<strong>fit returns model object</strong>: Must return something the
+<code>diagnostics</code> function can consume</li>
+<li>
+<strong>diagnostics returns numeric vector</strong>: No characters,
+factors, or other types</li>
+<li>
+<strong>Correct length</strong>: One diagnostic value per fixed
+effect (excluding intercept)</li>
+<li>
+<strong>Named vector</strong>: Names must match variable names
+exactly</li>
+<li>
+<strong>No missing values</strong>: NA, NaN, or Inf will cause
+errors</li>
+<li>
+<strong>Higher = worse</strong>: Diagnostic values must increase for
+more problematic predictors</li>
+</ol>
+</div>
+<div class="section level4">
+<h4 id="debugging-tips">Debugging Tips<a class="anchor" aria-label="anchor" href="#debugging-tips"></a>
+</h4>
+<p>If your custom engine fails, check:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Test your fit function in isolation</span></span>
+<span><span class="va">test_model</span> <span class="op">&lt;-</span> <span class="va">my_engine</span><span class="op">$</span><span class="fu">fit</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">my_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">test_model</span><span class="op">)</span>  <span class="co"># Does it work?</span></span>
+<span></span>
+<span><span class="co"># Test your diagnostics function</span></span>
+<span><span class="va">test_diag</span> <span class="op">&lt;-</span> <span class="va">my_engine</span><span class="op">$</span><span class="fu">diagnostics</span><span class="op">(</span><span class="va">test_model</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">test_diag</span><span class="op">)</span>  <span class="co"># Numeric? Named? Correct length?</span></span>
+<span></span>
+<span><span class="co"># Check that "higher = worse" convention is satisfied</span></span>
+<span><span class="co"># The variable with the highest score should be the one you'd remove first</span></span></code></pre></div>
 <hr>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -454,7 +673,7 @@ variables with SD &gt; 0.5</p>
 </h3>
 <p><code><a href="../reference/corrPrune.html">corrPrune()</a></code> returns a <strong>single</strong> subset.
 Sometimes you want <strong>all</strong> maximal subsets:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># corrPrune: Single subset</span></span>
 <span><span class="va">single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"corrPrune returned:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">single</span><span class="op">)</span>, <span class="st">"variables\n"</span><span class="op">)</span></span>
@@ -482,7 +701,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <h3 id="exploring-multiple-subsets">3.2 Exploring Multiple Subsets<a class="anchor" aria-label="anchor" href="#exploring-multiple-subsets"></a>
 </h3>
 <p>When multiple maximal subsets exist, you can explore them:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Display first few subsets</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"First few maximal subsets:\n"</span><span class="op">)</span></span>
@@ -521,7 +740,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <div class="section level3">
 <h3 id="extracting-specific-subsets">3.3 Extracting Specific Subsets<a class="anchor" aria-label="anchor" href="#extracting-specific-subsets"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Extract subset with lowest average correlation</span></span>
 <span>  <span class="va">best_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">avg_corr</span><span class="op">)</span></span>
@@ -551,7 +770,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 </h3>
 <p>You can define custom criteria for choosing among multiple
 subsets:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Custom criterion: Prefer subsets with specific variables</span></span>
 <span>  <span class="va">preferred_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mpg"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span><span class="op">)</span></span>
@@ -592,25 +811,40 @@ subsets:</p>
 </h3>
 <p>For repeated pruning with different thresholds, precompute the
 correlation matrix:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Slow: Recomputes correlation every time</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">result1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
-<span>  <span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
-<span>  <span class="va">result3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;       0       0       0</span></span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create larger dataset for meaningful timing comparison</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">large_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="fl">50</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Fast: Compute correlation once, reuse</span></span>
-<span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">result1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">cor_matrix</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
-<span>  <span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">cor_matrix</span>, threshold <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
-<span>  <span class="va">result3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">cor_matrix</span>, threshold <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;       0       0       0</span></span></code></pre></div>
+<span><span class="co"># Benchmark: Recompute correlation every time</span></span>
+<span><span class="va">time1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="op">{</span></span>
+<span>    <span class="va">result1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">large_data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span>    <span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">large_data</span>, threshold <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span>    <span class="va">result3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">large_data</span>, threshold <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  unit <span class="op">=</span> <span class="st">"ms"</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span></span>
+<span><span class="co"># Benchmark: Compute correlation once, reuse</span></span>
+<span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">large_data</span><span class="op">)</span></span>
+<span><span class="va">time2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="op">{</span></span>
+<span>    <span class="va">result1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">cor_matrix</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span>    <span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">cor_matrix</span>, threshold <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span>    <span class="va">result3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">cor_matrix</span>, threshold <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  unit <span class="op">=</span> <span class="st">"ms"</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Recomputing each time: 2.0 ms</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Precomputed matrix: 2.0 ms</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Speedup: 1.0x faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li>Testing multiple thresholds</li>
@@ -625,7 +859,7 @@ correlation matrix:</p>
 <div class="section level4">
 <h4 id="memory-efficient-correlation-computation">Memory-Efficient Correlation Computation<a class="anchor" aria-label="anchor" href="#memory-efficient-correlation-computation"></a>
 </h4>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Standard (memory-intensive for large n)</span></span>
 <span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">large_data</span><span class="op">)</span></span>
 <span></span>
@@ -643,7 +877,7 @@ correlation matrix:</p>
 <h4 id="sparse-correlation-matrices">Sparse Correlation Matrices<a class="anchor" aria-label="anchor" href="#sparse-correlation-matrices"></a>
 </h4>
 <p>If most correlations are low, consider sparse storage:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to sparse format (requires Matrix package)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span>
 <span></span>
@@ -664,7 +898,7 @@ correlation matrix:</p>
 <h3 id="parallel-processing-strategies">4.3 Parallel Processing Strategies<a class="anchor" aria-label="anchor" href="#parallel-processing-strategies"></a>
 </h3>
 <p>For multiple independent pruning operations:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create cluster</span></span>
@@ -707,7 +941,7 @@ p &gt; 100: Always use "greedy"</code></pre>
 </h4>
 <p><strong>Cause</strong>: Threshold too strict - all variables exceed
 it</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: All correlations &gt; 0.9</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
@@ -726,7 +960,7 @@ it</p>
 <p><strong>Solutions</strong>: 1. Increase threshold 2. Use
 <code>force_in</code> to keep at least one variable 3. Check data for
 near-duplicates</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Solution 1: Increase threshold</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in corrPrune(high_cor_data, threshold = 0.95): No valid subsets found that satisfy the threshold constraint</span></span>
@@ -744,7 +978,7 @@ near-duplicates</p>
 </h4>
 <p><strong>Cause</strong>: Variables in <code>force_in</code> have
 |correlation| &gt; threshold</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># x1 and x2 are highly correlated</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.5</span>, force_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span><span class="op">)</span><span class="op">)</span></span>
@@ -759,7 +993,7 @@ near-duplicates</p>
 <h4 id="error-vif-computation-fails-in-modelprune">Error: VIF computation fails in modelPrune()<a class="anchor" aria-label="anchor" href="#error-vif-computation-fails-in-modelprune"></a>
 </h4>
 <p><strong>Cause</strong>: Perfect multicollinearity (R² = 1)</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create perfect multicollinearity</span></span>
 <span><span class="va">perfect_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
@@ -879,7 +1113,7 @@ near-duplicates</p>
 <span><span class="co">#&gt; 100 -0.35454240  0.55215771  1.85991086</span></span></code></pre></div>
 <p><strong>Solution</strong>: Use <code><a href="../reference/corrPrune.html">corrPrune()</a></code> first to
 remove perfect collinearity:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Two-step approach</span></span>
 <span><span class="va">step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">perfect_data</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, threshold <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span></span>
 <span><span class="va">step2_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">perfect_data</span><span class="op">$</span><span class="va">y</span>, <span class="va">step1</span><span class="op">)</span></span>
@@ -935,7 +1169,7 @@ remove perfect collinearity:</p>
 <div class="section level4">
 <h4 id="empirical-approach-visualize-first">Empirical Approach: Visualize First<a class="anchor" aria-label="anchor" href="#empirical-approach-visualize-first"></a>
 </h4>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize correlation distribution</span></span>
@@ -969,7 +1203,7 @@ remove perfect collinearity:</p>
 <span>     col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, <span class="st">"Original"</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="advanced_files/figure-html/unnamed-chunk-25-1.png" width="960"></p>
+<p><img src="advanced_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." width="960"></p>
 <p><strong>Strategy</strong>: Choose threshold where curve begins to
 plateau.</p>
 </div>
@@ -980,7 +1214,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="single-predictor-after-pruning">Single Predictor After Pruning<a class="anchor" aria-label="anchor" href="#single-predictor-after-pruning"></a>
 </h4>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Very strict threshold may leave only 1 variable</span></span>
 <span><span class="va">strict_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Variables remaining:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">strict_result</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -996,7 +1230,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="all-variables-removed">All Variables Removed<a class="anchor" aria-label="anchor" href="#all-variables-removed"></a>
 </h4>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Impossible threshold</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span>
@@ -1008,7 +1242,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="mixed-type-data">Mixed-Type Data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a>
 </h4>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create mixed data</span></span>
 <span><span class="va">mixed_data</span> <span class="op">&lt;-</span> <span class="va">mtcars</span></span>
 <span><span class="va">mixed_data</span><span class="op">$</span><span class="va">cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">mixed_data</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span></span>
@@ -1050,7 +1284,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="for-exploratory-analysis">For Exploratory Analysis<a class="anchor" aria-label="anchor" href="#for-exploratory-analysis"></a>
 </h4>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Visualize correlations</span></span>
 <span><span class="fu">corrplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"circle"</span><span class="op">)</span></span>
 <span></span>
@@ -1068,7 +1302,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="for-publication-quality-analysis">For Publication-Quality Analysis<a class="anchor" aria-label="anchor" href="#for-publication-quality-analysis"></a>
 </h4>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Use exact mode for reproducibility and optimality</span></span>
 <span><span class="va">data_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span>
 <span></span>
@@ -1087,7 +1321,7 @@ plateau.</p>
 <div class="section level3">
 <h3 id="combining-with-other-methods">6.2 Combining with Other Methods<a class="anchor" aria-label="anchor" href="#combining-with-other-methods"></a>
 </h3>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Comprehensive variable selection pipeline</span></span>
 <span><span class="va">pipeline</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">response</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Step 1: Remove correlations</span></span>
@@ -1099,8 +1333,8 @@ plateau.</p>
 <span></span>
 <span>  <span class="co"># Step 3: Feature importance (optional)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"Boruta"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">boruta_result</span> <span class="op">&lt;-</span> <span class="fu">Boruta</span><span class="fu">::</span><span class="fu">Boruta</span><span class="op">(</span><span class="va">response</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">step2</span><span class="op">)</span></span>
-<span>    <span class="va">important</span> <span class="op">&lt;-</span> <span class="fu">Boruta</span><span class="fu">::</span><span class="fu">getSelectedAttributes</span><span class="op">(</span><span class="va">boruta_result</span><span class="op">)</span></span>
+<span>    <span class="va">boruta_result</span> <span class="op">&lt;-</span> <span class="fu">Boruta</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Boruta/man/Boruta.html" class="external-link">Boruta</a></span><span class="op">(</span><span class="va">response</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">step2</span><span class="op">)</span></span>
+<span>    <span class="va">important</span> <span class="op">&lt;-</span> <span class="fu">Boruta</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Boruta/man/getSelectedAttributes.html" class="external-link">getSelectedAttributes</a></span><span class="op">(</span><span class="va">boruta_result</span><span class="op">)</span></span>
 <span>    <span class="va">final_data</span> <span class="op">&lt;-</span> <span class="va">step2</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"response"</span>, <span class="va">important</span><span class="op">)</span><span class="op">]</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>    <span class="va">final_data</span> <span class="op">&lt;-</span> <span class="va">step2</span></span>
@@ -1222,7 +1456,7 @@ methods vignette</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

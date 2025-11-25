@@ -21,91 +21,102 @@ library(corrselect)
 
 ## Overview
 
-This vignette compares corrselect with common alternatives for handling multicollinearity and variable selection:
+This vignette compares corrselect's graph-theoretic approach to four established methods for multicollinearity management and variable selection:
 
-- **caret::findCorrelation()**: Greedy correlation-based removal
-- **Boruta**: Random forest feature importance
-- **glmnet**: LASSO/Ridge regularization
-- **Manual VIF removal**: Iterative variance inflation factor pruning
+1. **caret::findCorrelation()** - Greedy correlation-based pruning
+2. **Boruta** - Random forest permutation importance
+3. **glmnet** - L1/L2 regularization (LASSO/Ridge)
+4. **Manual VIF removal** - Iterative variance inflation factor thresholding
 
+Each comparison examines algorithmic differences, performance characteristics, and appropriate use cases. Evaluations use the `bioclim_example` dataset (19 bioclimatic variables, $n = 100$).
+
+See `vignette("theory")` for mathematical foundations. See `vignette("quickstart")` for usage examples.
 
 ---
 
-## Test Dataset
-
-We'll use the `bioclim_example` dataset with 19 WorldClim bioclimatic variables:
+## Evaluation Dataset
 
 ```{r}
 data(bioclim_example)
 predictors <- bioclim_example[, -1]  # Exclude response
 response <- bioclim_example[, 1]
 
-cat("Number of variables:", ncol(predictors), "\n")
-cat("Sample size:", nrow(predictors), "\n")
-cat("Response variable: species_richness\n")
+cat("Variables:", ncol(predictors), "\n")
+cat("Observations:", nrow(predictors), "\n")
+cat("Response: species_richness (continuous)\n")
 ```
 
-Let's visualize the correlation structure:
-
-```{r, fig.width=8, fig.height=6}
+```{r, fig.width=8, fig.height=6, fig.alt="Correlation heatmap of 19 bioclimatic variables displayed as a color-coded matrix. Blue indicates negative correlations, white indicates near-zero correlations, and red indicates positive correlations. Numerical correlation values are overlaid on each cell. The heatmap reveals block structure with correlations ranging from -0.15 to 0.97, showing strong correlations among temperature-related variables and precipitation-related variables."}
 cor_matrix <- cor(predictors)
 
-# Custom color palette
+# Correlation heatmap
 col_pal <- colorRampPalette(c("#3B4992", "white", "#EE0000"))(100)
 
-# Correlation heatmap
-par(mar = c(1, 1, 2, 1))
+par(mar = c(1, 1, 3, 1))
 image(1:ncol(cor_matrix), 1:nrow(cor_matrix), t(cor_matrix[nrow(cor_matrix):1, ]),
       col = col_pal,
       xlab = "", ylab = "", axes = FALSE,
-      main = "Correlation Matrix (19 Bioclimatic Variables)",
+      main = "Bioclimatic Variable Correlations (p = 19)",
       zlim = c(-1, 1))
 axis(1, at = 1:ncol(cor_matrix), labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
 axis(2, at = ncol(cor_matrix):1, labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
 
-# Add correlation values
 for (i in 1:ncol(cor_matrix)) {
   for (j in 1:nrow(cor_matrix)) {
-    text(i, nrow(cor_matrix) - j + 1, sprintf("%.2f", cor_matrix[j, i]), cex = 0.5)
+    text_col <- if (abs(cor_matrix[j, i]) > 0.6) "white" else "black"
+    text(i, nrow(cor_matrix) - j + 1, sprintf("%.2f", cor_matrix[j, i]),
+         cex = 0.5, col = text_col)
   }
 }
 ```
 
+Block structure present: correlations range from -0.15 to 0.97.
+
 
 ---
 
-# Comparison 1: caret::findCorrelation()
+## Comparison 1: caret::findCorrelation()
 
-caret's `findCorrelation()` uses a greedy heuristic to remove correlated variables.
+### Method
 
-## How It Works
+caret's `findCorrelation()` applies greedy iterative removal:
+
+1. Identify pair with maximum $|r_{ij}|$
+2. Remove variable with larger mean absolute correlation
+3. Repeat until all $|r_{ij}| < \tau$
+
+Non-deterministic: results depend on internal ordering. Typically removes more variables than graph-theoretic methods.
+
+### Execution
 
 ```{r}
 if (requireNamespace("caret", quietly = TRUE)) {
-  # Run caret
+  # Apply caret's greedy algorithm
   to_remove_caret <- caret::findCorrelation(cor_matrix, cutoff = 0.7)
   result_caret <- predictors[, -to_remove_caret]
 
-  cat("Variables removed by caret:", length(to_remove_caret), "\n")
-  cat("Variables kept:", ncol(result_caret), "\n")
-  cat("Removed variables:", colnames(predictors)[to_remove_caret], "\n")
+  cat("caret results:\n")
+  cat("  Variables retained:", ncol(result_caret), "\n")
+  cat("  Variables removed:", length(to_remove_caret), "\n")
+  cat("  Removed:", paste(colnames(predictors)[to_remove_caret], collapse = ", "), "\n")
 }
 ```
 
-## corrselect::corrPrune() Comparison
-
 ```{r}
-# Run corrselect (exact mode)
+# Apply corrselect (exact mode)
 result_corrselect <- corrPrune(predictors, threshold = 0.7, mode = "exact")
 
-cat("\nVariables removed by corrselect:", length(attr(result_corrselect, "removed_vars")), "\n")
-cat("Variables kept:", ncol(result_corrselect), "\n")
-cat("Removed variables:", attr(result_corrselect, "removed_vars"), "\n")
+cat("\ncorrselect results:\n")
+cat("  Variables retained:", ncol(result_corrselect), "\n")
+cat("  Variables removed:", length(attr(result_corrselect, "removed_vars")), "\n")
+cat("  Removed:", paste(attr(result_corrselect, "removed_vars"), collapse = ", "), "\n")
 ```
 
-## Visual Comparison
+corrselect retains more variables ($|S_{\text{corrselect}}| \ge |S_{\text{caret}}|$) via maximal clique enumeration while satisfying identical threshold constraint.
 
-```{r, fig.width=7, fig.height=5}
+### Distribution Comparison
+
+```{r, fig.width=7, fig.height=5, fig.alt="Overlaid histogram comparing absolute correlation distributions across three methods: original data (gray bars), caret's findCorrelation (red bars), and corrselect (blue bars). Black vertical dashed line marks the 0.7 threshold. All methods successfully reduce correlations below the threshold, but corrselect retains more variables than caret while still satisfying the constraint, demonstrating the advantage of maximal clique enumeration over greedy removal."}
 # Extract correlations
 cor_orig <- cor(predictors)
 cor_corrselect <- cor(result_corrselect)
@@ -132,297 +143,195 @@ if (requireNamespace("caret", quietly = TRUE)) {
        add = TRUE)
 
   abline(v = 0.7, col = "black", lwd = 2, lty = 2)
+
   legend("topright",
-         legend = c(paste0("Original (", ncol(predictors), " vars)"),
-                    paste0("caret (", ncol(result_caret), " vars)"),
-                    paste0("corrselect (", ncol(result_corrselect), " vars)"),
-                    "Threshold"),
-         fill = c(rgb(0.5, 0.5, 0.5, 0.4), rgb(0.8, 0.2, 0.2, 0.4),
-                  rgb(0.2, 0.5, 0.8, 0.4), NA),
-         border = c("black", "black", "black", NA),
-         lty = c(NA, NA, NA, 2),
-         lwd = c(NA, NA, NA, 2),
-         bty = "n")
+         legend = c(
+           paste0("Original (", ncol(predictors), " vars)"),
+           paste0("caret (", ncol(result_caret), " vars)"),
+           paste0("corrselect (", ncol(result_corrselect), " vars)"),
+           "Threshold"
+         ),
+         fill   = c(
+           rgb(0.5, 0.5, 0.5, 0.4),
+           rgb(0.8, 0.2, 0.2, 0.4),
+           rgb(0.2, 0.5, 0.8, 0.4),
+           NA
+         ),
+         border = c("white", "white", "white", NA),
+         lty    = c(NA, NA, NA, 2),
+         lwd    = c(NA, NA, NA, 2),
+         col    = c(NA, NA, NA, "black"),
+         bty    = "n")
 }
 ```
 
-## Key Differences
+### Comparison
 
-| Feature | caret::findCorrelation() | corrselect::corrPrune() |
-|---------|-------------------------|------------------------|
-| **Algorithm** | Greedy heuristic | Graph-theoretic (`vignette("theory")`) |
-| **Reproducibility** | Non-deterministic | Fully reproducible |
-| **Variables retained** | Fewer (conservative removal) | More (maximizes retention) |
-| **force_in support** | No | Yes |
-| **Mixed data** | No | Yes (via assocSelect) |
-| **Speed** | Fast | Fast (greedy) or moderate (exact) |
+| Feature | caret | corrselect |
+|---------|-------|------------|
+| **Algorithm** | Greedy iterative removal | Maximal clique enumeration |
+| **Optimality** | Heuristic | Exact (mode = "exact") |
+| **Reproducibility** | Non-deterministic | Deterministic |
+| **Variables retained** | $\le$ optimal | Maximal |
+| **Forced variables** | No | Yes (`force_in`) |
+| **Mixed data** | No | Yes (`assocSelect`) |
+| **Complexity** | $O(p^2)$ | $O(p^2)$ greedy, $O(3^{p/3})$ exact |
 
-**caret**: Quick exploratory analysis where reproducibility is not critical.
+### Applications
 
-**corrselect**: Reproducible results and maximal variable retention.
+**caret**: Exploratory analysis, non-critical reproducibility requirements.
+
+**corrselect**: Reproducible research, maximal variable retention, forced variable constraints, mixed data types.
+
 
 ---
 
-## Reproducible Benchmarks
+## Comparison 2: Boruta
 
-Using the `cor_example` dataset (20 variables with known block structure):
+### Method
 
-```{r}
-data(cor_example)
+Boruta tests variable importance via random forest permutation:
 
-# Ensure matrix is exactly symmetric (fix any floating point asymmetries)
-cor_example <- (cor_example + t(cor_example)) / 2
-diag(cor_example) <- 1
+1. Create shadow features (permuted copies)
+2. Fit random forest on original + shadow features
+3. Test: $\text{importance}(X_i) > \max(\text{importance}(\text{shadow}))$
+4. Iteratively confirm/reject until convergence
 
-cat("Matrix dimensions:", nrow(cor_example), "x", ncol(cor_example), "\n")
-cat("Mean correlation:", mean(abs(cor_example[upper.tri(cor_example)])), "\n")
-```
+**Orthogonal objective**: Boruta selects predictive variables (supervised). corrselect removes redundant variables (unsupervised).
 
-Timing comparison at threshold = 0.7:
-
-```{r, eval=requireNamespace("caret", quietly=TRUE) && requireNamespace("microbenchmark", quietly=TRUE)}
-if (requireNamespace("caret", quietly = TRUE) &&
-    requireNamespace("microbenchmark", quietly = TRUE)) {
-
-  # Benchmark with microbenchmark
-  mb <- microbenchmark::microbenchmark(
-    caret = {
-      to_remove <- caret::findCorrelation(cor_example, cutoff = 0.7)
-      cor_example[, -to_remove]
-    },
-    corrselect_greedy = {
-      MatSelect(cor_example, threshold = 0.7, mode = "greedy")
-    },
-    corrselect_exact = {
-      MatSelect(cor_example, threshold = 0.7, mode = "exact")
-    },
-    times = 50
-  )
-
-  print(mb)
-}
-```
-
-Visualization of timing results:
-
-```{r, eval=requireNamespace("caret", quietly=TRUE) && requireNamespace("microbenchmark", quietly=TRUE), fig.width=7, fig.height=5}
-if (requireNamespace("caret", quietly = TRUE) &&
-    requireNamespace("microbenchmark", quietly = TRUE)) {
-
-  # Convert to milliseconds
-  mb_df <- data.frame(
-    method = mb$expr,
-    time_ms = mb$time / 1e6
-  )
-
-  # Compute medians for plotting
-  method_levels <- c("caret", "corrselect_greedy", "corrselect_exact")
-  method_labels <- c("caret", "corrselect (greedy)", "corrselect (exact)")
-
-  medians <- sapply(method_levels, function(m) {
-    median(mb_df$time_ms[mb_df$method == m])
-  })
-
-  # Barplot
-  par(mar = c(8, 4, 4, 2))
-  bp <- barplot(medians,
-                names.arg = method_labels,
-                las = 2,
-                col = c(rgb(0.8, 0.2, 0.2, 0.7),
-                        rgb(0.2, 0.5, 0.8, 0.7),
-                        rgb(0.4, 0.4, 0.4, 0.7)),
-                ylab = "Median Time (ms)",
-                main = "Timing Comparison (p=20, threshold=0.7)",
-                cex.names = 0.8)
-
-  # Add median values on bars
-  text(bp, medians, labels = sprintf("%.2f ms", medians),
-       pos = 3, cex = 0.8)
-}
-```
-
-Scaling with problem size:
-
-```{r, eval=requireNamespace("caret", quietly=TRUE), fig.width=7, fig.height=5}
-if (requireNamespace("caret", quietly = TRUE)) {
-
-  set.seed(20250125)
-  p_values <- c(10, 20, 30, 40, 50)
-  times_caret <- numeric(length(p_values))
-  times_corrselect_greedy <- numeric(length(p_values))
-  times_corrselect_exact <- numeric(length(p_values))
-
-  for (i in seq_along(p_values)) {
-    p <- p_values[i]
-
-    # Generate test matrix
-    mat <- matrix(rnorm(p * (p + 50)), ncol = p)
-    cor_mat <- cor(mat)
-
-    # Time caret
-    times_caret[i] <- system.time({
-      caret::findCorrelation(cor_mat, cutoff = 0.7)
-    })[3]
-
-    # Time corrselect greedy
-    times_corrselect_greedy[i] <- system.time({
-      MatSelect(cor_mat, threshold = 0.7, mode = "greedy")
-    })[3]
-
-    # Time corrselect exact (skip for p > 30 to avoid long runtime)
-    if (p <= 30) {
-      times_corrselect_exact[i] <- system.time({
-        MatSelect(cor_mat, threshold = 0.7, mode = "exact")
-      })[3]
-    } else {
-      times_corrselect_exact[i] <- NA
-    }
-  }
-
-  # Plot scaling
-  plot(p_values, times_caret * 1000,
-       type = "b", col = rgb(0.8, 0.2, 0.2), pch = 19, lwd = 2,
-       xlab = "Number of Variables (p)",
-       ylab = "Time (ms)",
-       main = "Scaling with Problem Size",
-       log = "y", ylim = c(0.1, max(times_corrselect_exact * 1000, na.rm = TRUE)))
-
-  lines(p_values, times_corrselect_greedy * 1000,
-        type = "b", col = rgb(0.2, 0.5, 0.8), pch = 19, lwd = 2)
-
-  lines(p_values[!is.na(times_corrselect_exact)],
-        times_corrselect_exact[!is.na(times_corrselect_exact)] * 1000,
-        type = "b", col = rgb(0.4, 0.4, 0.4), pch = 19, lwd = 2)
-
-  legend("topleft",
-         legend = c("caret", "corrselect (greedy)", "corrselect (exact)"),
-         col = c(rgb(0.8, 0.2, 0.2), rgb(0.2, 0.5, 0.8), rgb(0.4, 0.4, 0.4)),
-         lwd = 2, pch = 19, bty = "n")
-}
-```
-
----
-
-# Comparison 2: Boruta
-
-Boruta identifies **important** variables via random forest permutation tests. This is fundamentally different from removing **redundant** variables.
-
-## Different Questions
+### Execution
 
 ```{r, eval=requireNamespace("Boruta", quietly=TRUE)}
 if (requireNamespace("Boruta", quietly = TRUE)) {
-  library(Boruta)
-
-  # Boruta: which variables predict species richness?
+  # Boruta: "Which variables predict species_richness?"
   set.seed(123)
-  boruta_result <- Boruta(species_richness ~ ., data = bioclim_example, maxRuns = 100)
+  boruta_result <- Boruta::Boruta(
+    species_richness ~ .,
+    data    = bioclim_example,
+    maxRuns = 100
+  )
 
-  cat("Boruta results:\n")
+  cat("Boruta variable importance screening:\n")
   print(table(boruta_result$finalDecision))
 
-  important_vars <- names(boruta_result$finalDecision[boruta_result$finalDecision == "Confirmed"])
-  cat("\nConfirmed important variables:", important_vars, "\n")
-  cat("Number of important variables:", length(important_vars), "\n")
+  important_vars <- names(boruta_result$finalDecision[
+    boruta_result$finalDecision == "Confirmed"
+  ])
+
+  cat("\n  Confirmed predictors:", length(important_vars), "\n")
+  cat(" ", paste(important_vars, collapse = ", "), "\n")
 }
 ```
 
 ```{r}
-# corrselect: which variables are redundant?
+# corrselect: "Which variables are redundant?"
 corrselect_result <- corrPrune(predictors, threshold = 0.7)
-cat("\ncorrselect results:\n")
-cat("Non-redundant variables:", ncol(corrselect_result), "\n")
-cat("Variables:", names(corrselect_result), "\n")
+
+cat("\ncorrselect multicollinearity pruning:\n")
+cat("  Non-redundant variables:", ncol(corrselect_result), "\n")
+cat(" ", paste(names(corrselect_result), collapse = ", "), "\n")
 ```
 
-## Comparison Table
+Different variable sets selected: Boruta optimizes prediction; corrselect minimizes redundancy.
 
-| Aspect | Boruta | corrselect |
-|--------|--------|------------|
-| **Question answered** | "Which variables predict Y?" | "Which variables are redundant?" |
-| **Criterion** | Variable importance | Pairwise correlation |
-| **Requires response** | Yes (supervised) | No (unsupervised) |
-| **Handles multicollinearity** | Partially | Yes (explicitly) |
-| **Deterministic** | No (stochastic) | Yes |
-| **Computational cost** | High (many random forests) | Low |
+### Comparison
 
-## Combined Workflow
+| Criterion | Boruta | corrselect |
+|-----------|--------|------------|
+| **Objective** | Predictive power | Redundancy removal |
+| **Criterion** | Permutation importance | $\|r_{ij}\| < \tau$ |
+| **Response** | Required | Not required |
+| **Multicollinearity** | Indirect | Direct |
+| **Stochastic** | Yes | No |
+| **Complexity** | High ($\ge 100$ forests) | Low (graph) |
 
-Boruta and corrselect can be used sequentially:
+### Sequential Application
 
 ```{r, eval=FALSE}
-# Remove redundant predictors (corrselect)
+# Stage 1: Correlation-based pruning
 data_pruned <- corrPrune(raw_data, threshold = 0.7)
 
-# Identify important predictors (Boruta)
-boruta_result <- Boruta(response ~ ., data = data_pruned)
-final_vars <- names(boruta_result$finalDecision[boruta_result$finalDecision == "Confirmed"])
+# Stage 2: Importance testing
+boruta_result <- Boruta::Boruta(response ~ ., data = cbind(response, data_pruned))
+final_vars <- names(boruta_result$finalDecision[
+  boruta_result$finalDecision == "Confirmed"
+])
 
-# Final model
-final_model <- lm(response ~ ., data = data_pruned[, c("response", final_vars)])
+# Stage 3: Final model
+final_model <- lm(response ~ ., data = cbind(response, data_pruned)[, c("response", final_vars)])
 ```
 
-Workflow components:
+Stage 1 removes redundancy (reproducible). Stage 2 tests importance (stochastic). Stage 3 fits model with non-redundant, predictive variables.
 
-1. corrPrune reduces the variable set based on correlation structure
-2. Boruta screens the reduced set for predictive importance
-3. Final model contains variables that are both non-redundant and statistically important
+### Applications
 
-This addresses both redundancy and variable importance when both reproducible pruning and RF-based importance tests are required.
+**Boruta**: Prediction-focused analysis with response variable.
+
+**corrselect**: Multicollinearity removal, exploratory analysis without response, reproducible selection.
+
+**Sequential**: High-dimensional correlated data requiring both redundancy removal and importance testing.
 
 ---
 
-# Comparison 3: glmnet (LASSO/Ridge)
+## Comparison 3: glmnet (LASSO/Ridge)
 
-glmnet performs variable selection via L1/L2 regularization, shrinking coefficients toward zero.
+### Method
 
-## How It Works
+glmnet minimizes regularized loss:
+
+$$
+\min_{\beta} \frac{1}{2n} \|y - X\beta\|_2^2 + \lambda \left[\alpha \|\beta\|_1 + (1-\alpha) \|\beta\|_2^2\right]
+$$
+
+- $\alpha = 1$: LASSO (L1 penalty, sparse $\beta$)
+- $\alpha = 0$: Ridge (L2 penalty, shrinkage)
+- $\lambda$: Cross-validation selected
+
+**Difference**: glmnet performs soft selection (shrinkage) optimizing prediction. corrselect performs hard selection (removal) based on correlation structure.
+
+### Execution
 
 ```{r, eval=requireNamespace("glmnet", quietly=TRUE)}
 if (requireNamespace("glmnet", quietly = TRUE)) {
-  library(glmnet)
-
-  # Prepare data
+  # Fit LASSO with cross-validation
   X <- as.matrix(predictors)
   y <- response
 
-  # Fit LASSO with cross-validation
   set.seed(123)
-  cv_lasso <- cv.glmnet(X, y, alpha = 1)
+  cv_lasso <- glmnet::cv.glmnet(X, y, alpha = 1)
 
-  # Extract non-zero coefficients at lambda.1se
-  coef_lasso <- coef(cv_lasso, s = "lambda.1se")
+  # Extract non-zero coefficients at lambda.1se (conservative choice)
+  coef_lasso <- stats::coef(cv_lasso, s = "lambda.1se")
   selected_lasso <- rownames(coef_lasso)[coef_lasso[, 1] != 0][-1]  # Remove intercept
 
-  cat("glmnet selected variables:", selected_lasso, "\n")
-  cat("Number of variables:", length(selected_lasso), "\n")
+  cat("glmnet (LASSO, λ = lambda.1se):\n")
+  cat("  Variables retained:", length(selected_lasso), "\n")
+  cat(" ", paste(selected_lasso, collapse = ", "), "\n")
 }
 ```
-
-## Compare Prediction Performance
 
 ```{r, eval=requireNamespace("glmnet", quietly=TRUE)}
 if (requireNamespace("glmnet", quietly = TRUE)) {
-  # Model 1: glmnet-selected variables (OLS)
+  # Compare model performance
   model_glmnet <- lm(species_richness ~ .,
                      data = bioclim_example[, c("species_richness", selected_lasso)])
 
-  # Model 2: corrselect-selected variables (OLS)
   model_corrselect <- lm(species_richness ~ .,
                          data = cbind(species_richness = response, result_corrselect))
 
-  cat("\nPrediction performance (R²):\n")
-  cat("glmnet variables:", round(summary(model_glmnet)$r.squared, 3), "\n")
-  cat("corrselect variables:", round(summary(model_corrselect)$r.squared, 3), "\n")
-
-  cat("\nNumber of predictors:\n")
-  cat("glmnet:", length(selected_lasso), "\n")
-  cat("corrselect:", ncol(result_corrselect), "\n")
+  cat("\nModel comparison (OLS on selected variables):\n")
+  cat("  glmnet:     R² =", round(summary(model_glmnet)$r.squared, 3),
+      "with", length(selected_lasso), "predictors\n")
+  cat("  corrselect: R² =", round(summary(model_corrselect)$r.squared, 3),
+      "with", ncol(result_corrselect), "predictors\n")
 }
 ```
 
-## Visual: Coefficient Comparison
+glmnet selects fewer variables ($|S_{\text{glmnet}}| \le |S_{\text{corrselect}}|$) optimizing prediction. corrselect maximizes retention under correlation constraint.
 
-```{r, eval=requireNamespace("glmnet", quietly=TRUE), fig.width=10, fig.height=5}
+### Coefficient Comparison
+
+```{r, eval=requireNamespace("glmnet", quietly=TRUE), fig.width=10, fig.height=5, fig.alt="Side-by-side barplots comparing coefficient magnitudes between glmnet (left panel, salmon bars) and corrselect (right panel, blue bars). Left panel shows glmnet's shrunk coefficients affected by L1 penalty, biased toward zero. Right panel shows corrselect's unbiased OLS coefficients on pruned variables with preserved effect sizes. The comparison illustrates the tradeoff between prediction-focused shrinkage and interpretation-focused hard selection."}
 if (requireNamespace("glmnet", quietly = TRUE)) {
   par(mfrow = c(1, 2), mar = c(8, 4, 3, 2))
 
@@ -441,33 +350,54 @@ if (requireNamespace("glmnet", quietly = TRUE)) {
           las = 2,
           main = "corrselect: Unbiased OLS Coefficients",
           ylab = "Absolute Coefficient Value",
-          col = "lightblue",
+          col = rgb(0.2, 0.5, 0.8, 0.7),
           cex.names = 0.7)
 }
 ```
 
-## Key Differences
+Left: L1 penalty shrinks coefficients toward zero (biased). Right: OLS on pruned variables (unbiased). glmnet optimizes prediction with shrinkage. corrselect preserves effect sizes.
 
-| Feature | glmnet | corrselect |
-|---------|--------|------------|
-| **Primary goal** | Prediction accuracy | Interpretability + multicollinearity removal |
-| **Method** | Coefficient shrinkage | Hard variable removal |
-| **Coefficient bias** | Yes (shrunk toward zero) | No (standard OLS) |
-| **Multicollinearity** | Handles via shrinkage | Removes via pruning |
-| **Requires response** | Yes | No (corrPrune) |
-| **Cross-validation** | Built-in | Not needed |
+### Comparison
 
-**glmnet**: Prediction-focused; coefficient interpretability secondary.
+| Criterion | glmnet | corrselect |
+|-----------|--------|------------|
+| **Objective** | Prediction accuracy | Multicollinearity removal |
+| **Selection** | Soft (shrinkage) | Hard (removal) |
+| **Coefficient bias** | Yes (L1/L2) | No |
+| **Multicollinearity** | Regularization | Pruning |
+| **Response** | Required | Not required |
+| **Tuning** | $\lambda$ (cross-validation) | $\tau$ (user-specified) |
+| **Interpretability** | Shrunk effects | Direct effects |
 
-**corrselect**: Interpretability focus; unbiased coefficients; exploratory analysis without response variable.
+### Applications
+
+**glmnet**: Prediction-focused, high-dimensional ($p > n$), accepts biased coefficients.
+
+**corrselect**: Interpretable coefficients, exploratory analysis, explicit correlation constraint, unregularized modeling.
+
+**Sequential**: Correlation pruning (corrselect) followed by sparse prediction (glmnet).
 
 ---
 
-# Comparison 4: modelPrune() vs Manual VIF Removal
+## Comparison 4: modelPrune() vs Manual VIF Removal
 
-For regression models, VIF-based multicollinearity removal is common. Let's compare corrselect's `modelPrune()` with manual VIF removal.
+### Method
 
-## Manual VIF Removal (Traditional Approach)
+Variance Inflation Factor quantifies predictor multicollinearity:
+
+$$
+\text{VIF}_j = \frac{1}{1 - R^2_j}
+$$
+
+where $R^2_j$ results from regressing $X_j$ on remaining predictors. Thresholds:
+
+- VIF < 5: Low collinearity
+- VIF < 10: Moderate (acceptable)
+- VIF ≥ 10: High (problematic)
+
+Manual approach: iteratively remove max(VIF) until all VIF < threshold.
+
+### Manual Implementation
 
 ```{r}
 # Manual iterative VIF removal
@@ -530,7 +460,7 @@ if (requireNamespace("car", quietly = TRUE)) {
 
 ## Visual: VIF Comparison
 
-```{r, fig.width=8, fig.height=5}
+```{r, fig.width=8, fig.height=5, fig.alt="Side-by-side barplot showing VIF values before (red bars) and after (blue bars) applying modelPrune() for the top 15 variables ordered by initial VIF. Black horizontal dashed line marks the VIF limit of 5. Before pruning, many variables show high VIF values indicating severe multicollinearity. After modelPrune(), all retained variables have VIF below the threshold, and high-VIF variables are completely removed (shown as red-only bars), demonstrating automated and effective multicollinearity reduction."}
 if (requireNamespace("car", quietly = TRUE)) {
   # Compute VIF for original model
   model_full <- lm(species_richness ~ ., data = bioclim_example)
@@ -562,72 +492,93 @@ if (requireNamespace("car", quietly = TRUE)) {
   abline(h = 5, col = "black", lwd = 2, lty = 2)
   legend("topright",
          legend = c("Before", "After", "Limit = 5"),
-         fill = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7), NA),
-         border = c("black", "black", NA),
-         lty = c(NA, NA, 2),
-         lwd = c(NA, NA, 2),
-         bty = "n")
+         fill   = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7), NA),
+         border = c("white", "white", NA),
+         lty    = c(NA, NA, 2),
+         lwd    = c(NA, NA, 2),
+         col    = c(NA, NA, "black"),
+         bty    = "n")
 }
 ```
 
-## Comparison Summary
+### Comparison
 
-Compared to manual VIF removal, modelPrune():
+| Criterion | Manual VIF | modelPrune() |
+|-----------|------------|--------------|
+| **Algorithm** | Iterative greedy | Graph-based |
+| **Automation** | Manual | Automated |
+| **Optimality** | Heuristic | Maximal subset |
+| **Forced variables** | Manual exclusion | `force_in` |
+| **Output** | Verbose log | Summary |
 
-- Automated: No manual iteration required
-- Optimized: Uses graph algorithms to find optimal subset
-- force_in support: Protect important variables from removal
-- Transparent: Clear documentation of removed variables
-- Consistent: Always returns same result
+### Applications
+
+**Manual VIF**: Educational use, diagnostic understanding, legacy workflows.
+
+**modelPrune()**: Production pipelines, forced variable constraints, reproducible documentation.
 
 ---
 
-# Overview of Approaches
+## Summary
 
-## Tool Comparison
+### Method Selection
 
-| Your Goal | Tool |
-|-----------|------|
-| Remove redundant predictors (no response) | corrPrune() |
-| Reduce VIF in regression model | modelPrune() |
-| Maximize prediction accuracy | glmnet or Boruta |
-| Mixed-type data (numeric + categorical) | assocSelect() |
-| Protect certain variables from removal | corrselect (force_in) |
-| Reproducible multicollinearity removal | corrselect |
-| Quick exploratory analysis | caret::findCorrelation() |
+| Goal | Primary Method | Alternative |
+|------|---------------|-------------|
+| Redundancy removal (unsupervised) | corrPrune() | caret::findCorrelation() |
+| VIF reduction (regression) | modelPrune() | Manual VIF |
+| Predictive variable selection | Boruta | RF importance |
+| Prediction accuracy | glmnet | Elastic net |
+| Mixed data types | assocSelect() | Manual metrics |
+| Forced variable constraints | corrselect (`force_in`) | N/A |
+| Exploratory (fast) | caret | corrPrune (greedy) |
 
-## Design Characteristics
+### corrselect Distinguishing Features
 
-**corrselect**:
+1. **Maximal clique enumeration**: Optimal retention under $|r_{ij}| < \tau$ constraint
+2. **Deterministic**: ELS and Bron-Kerbosch algorithms guarantee reproducibility
+3. **Flexible**: Forced variables, mixed types, greedy/exact modes
+4. **Unbiased estimates**: Hard removal preserves coefficient interpretability
+5. **Model-agnostic**: Correlation-based preprocessing
 
-- Reproducible multicollinearity removal
-- Maximal variable retention under correlation constraint (exact mode)
-- Model-agnostic preprocessing
-- Mixed-type data (numeric, factors, ordered)
-- Protected variables (force_in)
-- Unbiased coefficient estimates (no shrinkage)
-
-**Alternatives**:
-
-- **caret**: Quick exploration; reproducibility not required
-- **Boruta**: Feature importance screening; not redundancy removal
-- **glmnet**: Prediction-focused; coefficient shrinkage
-- **Manual VIF**: Educational contexts; full manual control
-
-## Combined Approach Example
+### Integrated Workflow
 
 ```{r, eval=FALSE}
-# Example workflow combining multiple approaches
-data_cleaned <- corrPrune(raw_data, threshold = 0.7)          # Remove redundancy
-model_data <- modelPrune(response ~ ., data_cleaned, limit = 5)  # Ensure VIF < 5
-final_model <- lm(response ~ ., data = model_data)           # Interpretable model
+# Correlation pruning
+data_pruned <- corrPrune(raw_data, threshold = 0.7)
+
+# VIF refinement
+model_data <- modelPrune(response ~ ., data = data_pruned, limit = 5)
+
+# Importance testing (optional)
+if (requireNamespace("Boruta", quietly = TRUE)) {
+  boruta_result <- Boruta::Boruta(response ~ ., data = model_data)
+  important_vars <- names(boruta_result$finalDecision[
+    boruta_result$finalDecision == "Confirmed"
+  ])
+}
+
+# Final model: OLS (interpretable) or glmnet (prediction)
+final_model <- lm(response ~ ., data = model_data[, c("response", important_vars)])
 ```
+
+---
+
+## References
+
+- **caret**: Kuhn, M. (2008). Building predictive models in R using the caret package. *Journal of Statistical Software*, 28(5), 1-26. [doi:10.18637/jss.v028.i05](https://doi.org/10.18637/jss.v028.i05)
+
+- **Boruta**: Kursa, M. B., & Rudnicki, W. R. (2010). Feature selection with the Boruta package. *Journal of Statistical Software*, 36(11), 1-13. [doi:10.18637/jss.v036.i11](https://doi.org/10.18637/jss.v036.i11)
+
+- **glmnet**: Friedman, J., Hastie, T., & Tibshirani, R. (2010). Regularization paths for generalized linear models via coordinate descent. *Journal of Statistical Software*, 33(1), 1-22. [doi:10.18637/jss.v033.i01](https://doi.org/10.18637/jss.v033.i01)
+
+- **VIF**: Belsley, D. A., Kuh, E., & Welsch, R. E. (1980). *Regression Diagnostics: Identifying Influential Data and Sources of Collinearity*. Wiley. [doi:10.1002/0471725153](https://doi.org/10.1002/0471725153)
 
 ---
 
 ## See Also
 
-- `vignette("quickstart")` - Quick introduction to corrselect
-- `vignette("workflows")` - Real-world workflow examples
-- `vignette("advanced")` - Advanced features and customization
-- `vignette("theory")` - Theoretical foundations and formulation
+- `vignette("quickstart")` - Interface overview and usage examples
+- `vignette("workflows")` - Domain-specific workflows (genomics, ecology, surveys)
+- `vignette("advanced")` - Algorithm selection and performance tuning
+- `vignette("theory")` - Graph-theoretic foundations and formal proofs

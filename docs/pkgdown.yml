@@ -1,5 +1,5 @@
 pandoc: '3.8'
-pkgdown: 2.1.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   advanced: advanced.html
@@ -7,7 +7,7 @@ articles:
   quickstart: quickstart.html
   theory: theory.html
   workflows: workflows.html
-last_built: 2025-11-25T11:07Z
+last_built: 2025-11-25T15:31Z
 urls:
   reference: https://gcol33.github.io/corrselect/reference
   article: https://gcol33.github.io/corrselect/articles

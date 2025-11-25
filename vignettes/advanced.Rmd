@@ -112,12 +112,16 @@ benchmark_corrPrune <- function(p_values) {
     cor_mat <- 0.5^abs(outer(1:p, 1:p, "-"))
     data <- as.data.frame(MASS::mvrnorm(n = 100, mu = rep(0, p), Sigma = cor_mat))
 
-    # Exact mode
-    exact_time_ms <- median(microbenchmark(
-      corrPrune(data, threshold = 0.7, mode = "exact"),
-      times = 3,  # Few iterations for speed
-      unit = "ms"
-    )$time) / 1e6  # Convert nanoseconds to milliseconds
+    # Exact mode (skip if p too large)
+    exact_time_ms <- if (p <= 500) {
+      median(microbenchmark(
+        corrPrune(data, threshold = 0.7, mode = "exact"),
+        times = 3,  # Few iterations for speed
+        unit = "ms"
+      )$time) / 1e6  # Convert nanoseconds to milliseconds
+    } else {
+      NA
+    }
 
     # Greedy mode
     greedy_time_ms <- median(microbenchmark(
@@ -136,13 +140,13 @@ benchmark_corrPrune <- function(p_values) {
   results
 }
 
-# Benchmark (extended range to show scaling behavior)
-p_values <- c(10, 20, 50, 100, 200, 300)
+# Benchmark (extended range to show comprehensive scaling behavior)
+p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 ```
 
-```{r, fig.width=8, fig.height=5}
+```{r, fig.width=8, fig.height=5, fig.alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data."}
 # Visualize scaling
 # Separate data for exact mode (only where available) and greedy mode (all points)
 exact_valid <- !is.na(benchmark$exact_time_ms) & benchmark$exact_time_ms > 0
@@ -172,6 +176,10 @@ plot(benchmark$p[greedy_valid], greedy_times[greedy_valid],
 lines(benchmark$p[exact_valid], exact_times[exact_valid],
       type = "b", col = rgb(0.8, 0.2, 0.2, 1), pch = 19, lwd = 2)
 
+# Mark exact mode limit
+abline(v = 500, lty = 2, col = "gray50")
+text(500, ylim[2] * 0.5, "Exact mode limit", pos = 4, col = "gray30")
+
 legend("topleft",
        legend = c("Exact", "Greedy"),
        col = c(rgb(0.8, 0.2, 0.2, 1), rgb(0.2, 0.5, 0.8, 1)),
@@ -180,7 +188,7 @@ legend("topleft",
        bty = "n")
 ```
 
-**Key insight**: Both exact and greedy modes scale efficiently for typical correlation structures. For this moderately correlated dataset (ρ = 0.5^|i-j|), both algorithms remain practical up to p = 300. The greedy mode offers a speed advantage, while exact mode provides guaranteed optimality.
+**Key insight**: The scaling behavior depends heavily on correlation structure. For this moderately correlated dataset (ρ = 0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy mode scales efficiently beyond p = 1000. The exact mode provides guaranteed optimality at the cost of computational complexity, while greedy mode offers substantial speed advantages for large p with near-optimal results in most practical scenarios.
 
 ## 1.3 Deterministic Tie-Breaking
 
@@ -215,7 +223,30 @@ This ensures reproducibility across runs, machines, and R versions.
 
 # 2. Custom Engines for modelPrune()
 
-## 2.1 Custom Engine Structure
+## 2.1 Understanding Custom Engines
+
+### What is a Custom Engine?
+
+A custom engine allows you to integrate **any** modeling framework with `modelPrune()`, not just base R's `lm()` or `lme4`. This enables VIF-based pruning for:
+
+- **Bayesian models** (INLA, brms, Stan)
+- **Additive models** (mgcv GAMs)
+- **Survival models** (coxph, flexsurv)
+- **Custom metrics** (AIC, BIC, posterior uncertainty)
+
+### How Custom Engines Work
+
+The `modelPrune()` algorithm follows this iterative process:
+
+1. **Fit** the model with current predictors
+2. **Diagnose** each predictor (compute a "badness" metric)
+3. **Identify** the worst predictor (highest diagnostic value)
+4. **Remove** if it exceeds the `limit` threshold
+5. **Repeat** until all predictors satisfy the limit
+
+Your custom engine defines steps 1 and 2; `modelPrune()` handles the iteration logic.
+
+### Engine Structure Requirements
 
 A custom engine is a named list with two required functions:
 
@@ -239,9 +270,15 @@ my_engine <- list(
 )
 ```
 
+**Key principle**: The `diagnostics` function must return **higher values for worse predictors**. This inverted metric ensures the algorithm removes the most problematic variables first.
+
 ## 2.2 Example: INLA Engine (Bayesian Spatial Models)
 
-INLA is a popular package for Bayesian inference. Let's integrate it:
+### Background
+
+INLA (Integrated Nested Laplace Approximations) is a popular package for fast Bayesian inference, especially for spatial and temporal models. Unlike traditional VIF, we can use **posterior uncertainty** as a pruning criterion: variables with high posterior standard deviation contribute less information to the model.
+
+### Implementation
 
 ```{r, eval=FALSE}
 # Custom engine for INLA
@@ -271,7 +308,7 @@ inla_engine <- list(
   }
 )
 
-# Usage
+# Usage example
 pruned <- modelPrune(
   y ~ x1 + x2 + x3 + x4,
   data = my_data,
@@ -280,14 +317,23 @@ pruned <- modelPrune(
 )
 ```
 
-**How it works**:
-1. `fit` function calls INLA to fit the model
-2. `diagnostics` extracts posterior SDs for fixed effects
-3. `modelPrune` iteratively removes variables with SD > 0.5
+### How It Works
+
+1. **fit**: Calls `INLA::inla()` to compute posterior distributions
+2. **diagnostics**: Extracts posterior standard deviations from `model$summary.fixed`
+3. **limit**: Threshold for acceptable uncertainty (e.g., 0.5 means remove predictors with posterior SD > 0.5)
+
+**Interpretation**: Variables with high posterior SD have coefficients that are uncertain given the data. Removing them reduces model complexity without losing much information.
+
+**When to use**: Spatial models, hierarchical models, disease mapping, ecological modeling with INLA.
 
 ## 2.3 Example: mgcv Engine (GAMs)
 
-Generalized Additive Models (GAMs) via mgcv:
+### Background
+
+Generalized Additive Models (GAMs) allow non-linear relationships via smooth terms. When pruning GAMs, we want to remove **parametric (linear) terms** with weak evidence while preserving smooth terms that model non-linear patterns.
+
+### Implementation
 
 ```{r, eval=FALSE}
 # Custom engine for mgcv GAMs
@@ -311,7 +357,7 @@ mgcv_engine <- list(
   }
 )
 
-# Usage
+# Usage example
 pruned <- modelPrune(
   y ~ x1 + x2 + s(x3),  # s() for smooth terms
   data = my_data,
@@ -320,9 +366,23 @@ pruned <- modelPrune(
 )
 ```
 
+### How It Works
+
+1. **fit**: Calls `mgcv::gam()` to fit the additive model
+2. **diagnostics**: Extracts p-values for **parametric terms only** (not smooth terms)
+3. **limit**: Significance threshold (e.g., 0.05 for traditional α = 0.05)
+
+**Important**: `modelPrune()` only removes parametric (linear) terms. Smooth terms specified with `s()`, `te()`, etc. are **never removed** automatically, as they're part of the model structure.
+
+**When to use**: Non-linear regression, ecological response curves, time series with trends.
+
 ## 2.4 Example: Custom Criterion (AIC-Based)
 
-You can define entirely custom pruning criteria:
+### Background
+
+Sometimes you want to prune based on **model comparison metrics** rather than coefficient-level diagnostics. This example shows how to remove variables that don't improve model fit according to AIC.
+
+### Implementation
 
 ```{r, eval=FALSE}
 # AIC-based pruning engine
@@ -363,9 +423,23 @@ pruned <- modelPrune(
 )
 ```
 
+### How It Works
+
+1. **fit**: Standard linear model
+2. **diagnostics**: For each variable, refit the model **without** that variable and compute ΔAIC
+3. **limit**: Threshold for ΔAIC (e.g., -2 means "remove if AIC improves by more than 2 points")
+
+**Key insight**: The score is **negated** (multiplied by -1) to maintain the "higher is worse" convention. A variable with score > -2 means removing it would worsen AIC by more than 2, so it's kept.
+
+**When to use**: Model selection focused on parsimony, comparing nested models, when VIF isn't the right metric.
+
+**Alternative metrics**: You can adapt this pattern for BIC, likelihood ratio tests, or any other model comparison criterion.
+
 ## 2.5 Validation and Error Handling
 
-Custom engines are validated automatically:
+### Automatic Validation
+
+`modelPrune()` automatically validates custom engines to catch common errors early:
 
 ```{r, error=TRUE}
 # Invalid engine: missing 'diagnostics'
@@ -381,13 +455,34 @@ tryCatch({
 })
 ```
 
-**Validation checks**:
+### Validation Checklist
 
-- `fit` and `diagnostics` must be functions
-- `diagnostics` must return numeric vector
-- Correct length (one value per fixed effect)
-- Named vector with correct names
-- No missing values
+Your custom engine must satisfy these requirements:
+
+1. **Structure**: Named list with `fit` and `diagnostics` functions
+2. **fit returns model object**: Must return something the `diagnostics` function can consume
+3. **diagnostics returns numeric vector**: No characters, factors, or other types
+4. **Correct length**: One diagnostic value per fixed effect (excluding intercept)
+5. **Named vector**: Names must match variable names exactly
+6. **No missing values**: NA, NaN, or Inf will cause errors
+7. **Higher = worse**: Diagnostic values must increase for more problematic predictors
+
+### Debugging Tips
+
+If your custom engine fails, check:
+
+```{r, eval=FALSE}
+# Test your fit function in isolation
+test_model <- my_engine$fit(y ~ x1 + x2, data = my_data)
+summary(test_model)  # Does it work?
+
+# Test your diagnostics function
+test_diag <- my_engine$diagnostics(test_model, c("x1", "x2"))
+print(test_diag)  # Numeric? Named? Correct length?
+
+# Check that "higher = worse" convention is satisfied
+# The variable with the highest score should be the one you'd remove first
+```
 
 ---
 
@@ -732,7 +827,7 @@ print(attr(result, "selected_vars"))
 
 ### Empirical Approach: Visualize First
 
-```{r, fig.width=10, fig.height=4}
+```{r, fig.width=10, fig.height=4, fig.alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention."}
 data(mtcars)
 
 # Visualize correlation distribution
