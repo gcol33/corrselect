@@ -16,9 +16,12 @@
 
 ## Package updates
 
-This is a major release (3.0.0) that is **fully backward compatible** with version 2.x.
+This is a patch release (3.0.2) with CRAN compliance fixes.
 
-### Major additions:
+### CRAN compliance (3.0.2):
+- Single-quoted software names in DESCRIPTION ('lme4', 'glmmTMB') per CRAN policy
+
+### Major additions (3.0.0):
 - New `corrPrune()` function for high-level association-based pruning
 - New `modelPrune()` function for VIF-based model pruning
 - New C++ greedy algorithm for high-dimensional data (p > 100)
