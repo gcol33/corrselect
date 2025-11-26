@@ -57,11 +57,16 @@ make_svg_theme_aware <- function(svg_path,
   has_legend_without_stroke <- grepl("<rect [^>]*style='stroke-width:[^']*fill: #F5F6F8;'", svg_content)
   # Check for legend boxes that still have white fill (need to be themed)
   has_white_legend_fill <- grepl("<rect [^>]*style='[^']*fill: #FFFFFF;", svg_content)
+  # Check for old stroke-based svg-bg rect (now we use CSS border instead)
+  has_old_svg_bg_stroke <- grepl("class='svg-bg'[^>]*stroke-width:", svg_content)
+  # Check for legend boxes without rounded corners (need rx attribute)
+  has_legend_no_rounding <- grepl("<rect x='[^']+' y='[^']+' width='[^']+' height='[^']+' style='[^']*fill: #F5F6F8;", svg_content) &&
+                            !grepl("<rect rx='[^']+' x='[^']+' y='[^']+' width='[^']+' height='[^']+' style='[^']*fill: #F5F6F8;", svg_content)
   if (grepl("theme-aware-processed", svg_content, fixed = TRUE) &&
       grepl("class='svg-bg'", svg_content, fixed = TRUE) &&
       !has_white_strokes && !has_wrong_text_fill && !has_wrong_rect_stroke &&
       !has_css_variables && !has_combined_rule && !has_legend_without_stroke &&
-      !has_white_legend_fill) {
+      !has_white_legend_fill && !has_old_svg_bg_stroke && !has_legend_no_rounding) {
     if (verbose) cat(sprintf("  %s: already processed\n", basename(svg_path)))
     return(invisible(FALSE))
   }
@@ -100,14 +105,27 @@ make_svg_theme_aware <- function(svg_path,
       "fill: #FFFFFF;",
       svg_content
     )
+    # Replace old svg-bg rect with stroke to new format without stroke
+    svg_content <- gsub(
+      "<rect class='svg-bg' width='100%' height='100%' style='stroke: [^;]+; stroke-width: [^;]+; fill: [^;]+;'/>",
+      sprintf("<rect class='svg-bg' width='100%%' height='100%%' style='stroke: none; fill: %s;'/>", LIGHT_BG),
+      svg_content
+    )
     # Add stroke to legend boxes that have fill: #F5F6F8 but no explicit stroke
     # Use border color for legend box stroke (matches red.R approach)
     # Pattern requires: not svg-bg class, style with stroke-width but NO stroke: already
+    # Also add rx for rounded corners
     svg_content <- gsub(
-      "(<rect (?!class='svg-bg')[^>]*style='stroke-width: [0-9.]+; )(fill: #F5F6F8;)(' />)",
-      sprintf("\\1stroke: %s; \\2\\3", LIGHT_BORDER),
+      "(<rect )((?!class='svg-bg')[^>]*style='stroke-width: [0-9.]+; )(fill: #F5F6F8;)(' />)",
+      sprintf("\\1rx='4' \\2stroke: %s; \\3\\4", LIGHT_BORDER),
       svg_content,
       perl = TRUE
+    )
+    # Add rx to legend boxes that already have stroke but no rx
+    svg_content <- gsub(
+      "(<rect )(x='[^']+' y='[^']+' width='[^']+' height='[^']+' style='[^']*fill: #F5F6F8;[^']*' />)",
+      "\\1rx='4' \\2",
+      svg_content
     )
   }
 
@@ -119,13 +137,14 @@ make_svg_theme_aware <- function(svg_path,
     # Based on working approach: modify CSS rules and specific elements
     # Using fixed = TRUE for exact pattern matching
 
-    # 1) Replace background rect (full figure) - add border and new fill
+    # 1) Replace background rect (full figure) - just set fill, no stroke
+    # The outer CSS border (via .inline-svg) handles the border with rounded corners
     # Handle both fill: #FFFFFF and fill: none patterns
     svg_content <- sub(
       "<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>",
       sprintf(
-        "<rect class='svg-bg' width='100%%' height='100%%' style='stroke: %s; stroke-width: 0.666667; fill: %s;'/>",
-        light_border, light_bg
+        "<rect class='svg-bg' width='100%%' height='100%%' style='stroke: none; fill: %s;'/>",
+        light_bg
       ),
       svg_content,
       fixed = TRUE
@@ -133,8 +152,8 @@ make_svg_theme_aware <- function(svg_path,
     svg_content <- sub(
       "<rect width='100%' height='100%' style='stroke: none; fill: none;'/>",
       sprintf(
-        "<rect class='svg-bg' width='100%%' height='100%%' style='stroke: %s; stroke-width: 0.666667; fill: %s;'/>",
-        light_border, light_bg
+        "<rect class='svg-bg' width='100%%' height='100%%' style='stroke: none; fill: %s;'/>",
+        light_bg
       ),
       svg_content,
       fixed = TRUE
@@ -146,15 +165,17 @@ make_svg_theme_aware <- function(svg_path,
     # Pattern: rects with stroke-width but no stroke: in their style get a stroke added
     # This handles the legend box which svglite renders as:
     #   style='stroke-width: 0.75; fill: #FFFFFF;'
+    # Add rx='4' for rounded corners (matches .375rem at typical SVG scale)
     svg_content <- gsub(
-      "(<rect [^>]*style='stroke-width: [0-9.]+; )(fill: #FFFFFF;)(' />)",
-      sprintf("\\1stroke: %s; fill: %s;\\3", light_border, light_bg),
+      "(<rect )([^>]*style='stroke-width: [0-9.]+; )(fill: #FFFFFF;)(' />)",
+      sprintf("\\1rx='4' \\2stroke: %s; fill: %s;\\4", light_border, light_bg),
       svg_content
     )
     # Handle rects that already have an explicit stroke - just change the fill
+    # Also add rx for rounded corners if not present
     svg_content <- gsub(
-      "(<rect [^>]*style='[^']*stroke: [^;]+;[^']*)(fill: #FFFFFF;)",
-      sprintf("\\1fill: %s;", light_bg),
+      "(<rect )([^>]*style='[^']*stroke: [^;]+;[^']*)(fill: #FFFFFF;)(' />)",
+      sprintf("\\1rx='4' \\2fill: %s;\\4", light_bg),
       svg_content
     )
 

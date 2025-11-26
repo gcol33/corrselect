@@ -1,4 +1,5 @@
 /* Plot styling - match code block borders */
+/* Bootstrap 5 Sandstone uses --bs-border-radius: .375rem for pre/code */
 img.r-plt,
 .figure img,
 figure img,
@@ -8,7 +9,7 @@ svg.inline-svg {
   width: 100%;
   height: auto;
   border: 1px solid #DFD7CA;
-  border-radius: 0.25rem;
+  border-radius: .375rem;
 }
 
 /* Dark mode border */
@@ -32,8 +33,8 @@ svg.inline-svg {
 
 /* Dark mode colors for svglite format */
 /* Override the embedded styles in inline SVGs */
+/* No stroke on svg-bg - the outer CSS border handles rounding */
 [data-bs-theme="dark"] svg.inline-svg .svg-bg {
-  stroke: #495057 !important;
   fill: #343739 !important;
 }
 
@@ -50,7 +51,8 @@ svg.inline-svg {
 }
 
 /* Rect strokes (histogram bars, etc.) - match text color */
-[data-bs-theme="dark"] svg.inline-svg .svglite rect {
+/* Exclude rects with stroke: none (like empty legend key boxes) */
+[data-bs-theme="dark"] svg.inline-svg .svglite rect:not([style*="stroke: none"]) {
   stroke: #DFD7CA !important;
 }
 
