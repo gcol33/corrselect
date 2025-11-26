@@ -1,3 +1,11 @@
+# corrselect 3.0.2
+
+## CRAN Compliance
+
+- Single-quoted software names in DESCRIPTION ('lme4', 'glmmTMB') per CRAN policy
+
+---
+
 # corrselect 3.0.0
 
 ## Major Release: Predictor Pruning Toolkit
