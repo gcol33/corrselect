@@ -21,10 +21,11 @@ svg.inline-svg {
 }
 
 /* Dark mode colors for inline SVG elements */
+/* Use !important to override embedded SVG <style> blocks */
 [data-bs-theme="dark"] .theme-bg {
-  fill: #3E3F3A;
+  fill: #3E3F3A !important;
 }
 
 [data-bs-theme="dark"] .theme-text {
-  fill: #E9E7E3;
+  fill: #E9E7E3 !important;
 }
