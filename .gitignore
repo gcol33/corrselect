@@ -27,4 +27,3 @@ NUL
 # Build artifacts
 vignettes/.build.timestamp
 nvignettes/*.htmlnvignettes/*_files/
-build_site.R
