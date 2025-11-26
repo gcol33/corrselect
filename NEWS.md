@@ -6,11 +6,7 @@
 
 ---
 
-# corrselect 3.0.0
-
-## Major Release: Predictor Pruning Toolkit
-
-Version 3.0.0 represents a major expansion of corrselect from a specialized subset enumeration tool into a comprehensive predictor pruning toolkit. **Fully backward compatible** with 2.x - all existing code continues to work.
+# corrselect 3.0.1
 
 ## Bug Fixes
 
@@ -22,6 +18,14 @@ Version 3.0.0 represents a major expansion of corrselect from a specialized subs
   - Now uses `stats::model.matrix()` for all engines (more robust)
   - Eliminated "Could not find columns" warnings
 - **Test suite**: All 261 tests pass with zero warnings (CRAN-compliant)
+
+---
+
+# corrselect 3.0.0
+
+## Major Release: Predictor Pruning Toolkit
+
+Version 3.0.0 represents a major expansion of corrselect from a specialized subset enumeration tool into a comprehensive predictor pruning toolkit. **Fully backward compatible** with 2.x - all existing code continues to work.
 
 ## Major Features
 
@@ -97,3 +101,26 @@ Version 3.0.0 represents a major expansion of corrselect from a specialized subs
 ## Features Added
 
 - `assocSelect()` now supports logical columns by automatically converting them to factors.
+
+---
+
+# corrselect 2.0.0
+
+## Major Release: Mixed-Type Association Selection
+
+Version 2.0.0 introduces support for mixed-type data through the new `assocSelect()` function, enabling subset selection on datasets containing numeric, factor, and ordered variables.
+
+## Major Features
+
+- **`assocSelect()`**: New function for mixed-type data frame interface
+  - Handles numeric, factor, and ordered variables
+  - Automatic association measure selection based on variable pair types
+  - Supports Pearson, Spearman, Kendall correlations
+  - Computes Eta-squared for numeric-factor pairs
+  - Computes Cramér's V for factor-factor pairs
+
+## Enhancements
+
+- Improved algorithm selection logic
+- Better handling of edge cases in subset enumeration
+- Enhanced documentation with examples for mixed-type workflows
