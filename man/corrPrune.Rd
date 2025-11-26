@@ -12,7 +12,7 @@ corrPrune(
   force_in = NULL,
   by = NULL,
   group_q = 1,
-  max_exact_p = 20,
+  max_exact_p = 100,
   ...
 )
 }
@@ -48,7 +48,7 @@ associations across groups when \code{by} is provided. Default: 1 (maximum,
 ensuring threshold holds in all groups). Use 0.9 for 90th percentile, etc.}
 
 \item{max_exact_p}{Integer. Maximum number of predictors for which exact
-mode is used when \code{mode = "auto"}. Default: 20.}
+mode is used when \code{mode = "auto"}. Default: 100.}
 
 \item{...}{Additional arguments (reserved for future use).}
 }
