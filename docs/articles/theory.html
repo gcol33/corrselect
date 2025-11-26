@@ -98,7 +98,43 @@ the theoretical literature. For practical usage examples, see
 <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> and
 <code><a href="../articles/workflows.html">vignette("workflows")</a></code>. For algorithmic control and
 performance tuning, see <code><a href="../articles/advanced.html">vignette("advanced")</a></code>.</p>
+<div class="section level3">
+<h3 id="contents">Contents<a class="anchor" aria-label="anchor" href="#contents"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>
+<a href="#terminology">Terminology</a> — Core definitions
+(association, threshold, valid subset, clique)</li>
+<li>
+<a href="#intuitive-overview">Intuitive Overview</a> — Conceptual
+introduction with toy examples</li>
+<li>
+<a href="#problem-formulation">Problem Formulation</a> — Formal
+mathematical statement</li>
+<li>
+<a href="#graph-theoretic-interpretation">Graph-Theoretic
+Interpretation</a> — Threshold graphs and maximal cliques</li>
+<li>
+<a href="#from-theory-to-implementation">From Theory to
+Implementation</a> — How concepts map to function arguments</li>
+<li>
+<a href="#search-algorithms">Search Algorithms</a> — Exact
+enumeration vs greedy heuristic</li>
+<li>
+<a href="#algorithm-pseudocode">Algorithm Pseudocode</a> — ELS,
+Bron-Kerbosch, Greedy</li>
+<li>
+<a href="#forced-variables">Technical Details</a> — Forced
+variables, complexity, output structure</li>
+<li>
+<a href="#design-philosophy">Design Philosophy</a> — Why maximal?
+Why hard threshold? Why graphs?</li>
+<li>
+<a href="#references">References</a> — Academic literature and
+further reading</li>
+</ol>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="terminology">Terminology<a class="anchor" aria-label="anchor" href="#terminology"></a>
@@ -319,6 +355,29 @@ Identifies the maximum (largest) valid subset.</p>
 </li>
 </ul>
 <p>This balances optimality with computational cost.</p>
+<blockquote>
+<p><strong>Key Points — Terminology</strong></p>
+<ul>
+<li>
+<strong>Association matrix</strong>: Symmetric matrix of pairwise
+relationships (correlations, Cramér’s V, etc.)</li>
+<li>
+<strong>Threshold (τ)</strong>: Cutoff determining which pairs are
+“too associated” to coexist</li>
+<li>
+<strong>Valid subset</strong>: All pairwise associations below
+τ</li>
+<li>
+<strong>Maximal subset</strong>: Valid subset that cannot be
+enlarged</li>
+<li>
+<strong>Threshold graph</strong>: Graph where edges connect
+compatible (low-association) variable pairs</li>
+<li>
+<strong>Clique</strong>: Fully connected subgraph; maximal cliques =
+maximal valid subsets</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -393,9 +452,7 @@ subset—globally optimal.</p>
 </h3>
 <p>Consider 4 variables with this correlation matrix:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/">corrselect</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Construct a simple 4x4 correlation matrix</span></span>
+<code class="sourceCode R"><span><span class="co"># Construct a simple 4x4 correlation matrix</span></span>
 <span><span class="va">cor_4var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="fl">1.00</span>, <span class="fl">0.85</span>, <span class="fl">0.10</span>, <span class="fl">0.15</span>,</span>
 <span>  <span class="fl">0.85</span>, <span class="fl">1.00</span>, <span class="fl">0.12</span>, <span class="fl">0.18</span>,</span>
@@ -552,7 +609,7 @@ they can coexist in a valid subset.</p>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -569,7 +626,7 @@ they can coexist in a valid subset.</p>
     }
   ]]></style>
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHw0MzIuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='432.00' />
@@ -601,7 +658,7 @@ they can coexist in a valid subset.</p>
 <text x='288.00' y='90.73' text-anchor='middle' style='font-size: 9.60px;fill: #FF0000; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='80.47px' lengthAdjust='spacingAndGlyphs'>(too high, no edge)</text>
 <text x='288.00' y='362.54' text-anchor='middle' style='font-size: 9.60px;fill: #FF0000; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='42.92px' lengthAdjust='spacingAndGlyphs'>cor = 0.75</text>
 <text x='288.00' y='374.06' text-anchor='middle' style='font-size: 9.60px;fill: #FF0000; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='80.47px' lengthAdjust='spacingAndGlyphs'>(too high, no edge)</text>
-<rect x='443.06' y='184.32' width='104.14' height='77.76' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
+<rect rx='4' x='443.06' y='184.32' width='104.14' height='77.76' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <circle cx='452.78' cy='210.24' r='2.43' style='stroke-width: 0.75; fill: #000000;' />
 <circle cx='452.78' cy='223.20' r='2.43' style='stroke-width: 0.75; fill: #000000;' />
 <circle cx='452.78' cy='236.16' r='2.43' style='stroke-width: 0.75; fill: #000000;' />
@@ -727,7 +784,7 @@ has 20 variables with known block structure:</p>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -744,7 +801,7 @@ has 20 variables with known block structure:</p>
     }
   ]]></style>
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHw1NzYuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='576.00' />
@@ -983,7 +1040,7 @@ has 20 variables with known block structure:</p>
 <text x='133.10' y='259.23' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V20</text>
 </g>
 <g clip-path='url(#cpMTQuNDB8NTYxLjYwfDQzLjIwfDU2MS42MA==)'>
-<rect x='14.40' y='43.20' width='162.81' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
+<rect rx='4' x='14.40' y='43.20' width='162.81' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <rect x='23.04' y='51.84' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #D73027;' />
 <rect x='23.04' y='63.36' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #FC8D59;' />
 <rect x='23.04' y='74.88' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #91BFDB;' />
@@ -1049,7 +1106,7 @@ representing a valid variable subset.</p>
 <span><span class="co">#&gt; -----------------</span></span>
 <span><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
 <span><span class="co">#&gt;   Threshold:   0.700</span></span>
-<span><span class="co">#&gt;   Subsets:     4 valid combinations</span></span>
+<span><span class="co">#&gt;   Subsets:     4 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   4 used in correlation</span></span>
 <span><span class="co">#&gt;   Pivot:       TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1081,6 +1138,20 @@ theoretically important?)</li>
 </ul>
 <p>Real datasets have similar structure but with more variables and more
 complex clustering.</p>
+<blockquote>
+<p><strong>Key Points — Intuitive Overview</strong></p>
+<ul>
+<li>corrselect finds variable subsets where no pair exceeds a
+correlation threshold</li>
+<li>Multiple valid subsets typically exist; all are enumerated for user
+choice</li>
+<li>Graph representation: variables = nodes, low-correlation pairs =
+edges</li>
+<li>Maximal cliques in this graph = maximal valid subsets</li>
+<li>Comparing subsets reveals correlation structure (clusters of related
+variables)</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -1240,6 +1311,15 @@ satisfies:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">for all </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">
 |a_{ki}| &lt; \tau \quad \text{for all } i \in S
 </annotation></semantics></math></p>
+<blockquote>
+<p><strong>Key Points — Problem Formulation</strong></p>
+<ul>
+<li>Input: p × p association matrix A, threshold τ ∈ (0,1)</li>
+<li>Valid subset: S where |a_ij| &lt; τ for all pairs i,j ∈ S</li>
+<li>Maximal: cannot add any variable without violating threshold</li>
+<li>Goal: enumerate all maximal valid subsets</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -1342,9 +1422,7 @@ maximal cliques in
 <p>Threshold graph construction with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/">corrselect</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Build adjacency matrix for threshold graph</span></span>
+<code class="sourceCode R"><span><span class="co"># Build adjacency matrix for threshold graph</span></span>
 <span><span class="va">tau</span> <span class="op">&lt;-</span> <span class="fl">0.7</span></span>
 <span><span class="va">adj_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cor_6var</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">tau</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">adj_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
@@ -1434,7 +1512,7 @@ maximal cliques in
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -1451,7 +1529,7 @@ maximal cliques in
     }
   ]]></style>
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwyODguMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='288.00' />
@@ -1618,7 +1696,7 @@ maximal cliques in
 <text x='483.20' y='97.05' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V4</text>
 <text x='501.60' y='140.18' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V5</text>
 <text x='520.00' y='168.99' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V6</text>
-<rect x='347.04' y='174.24' width='90.77' height='40.32' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
+<rect rx='4' x='347.04' y='174.24' width='90.77' height='40.32' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='349.31' y1='204.48' x2='364.43' y2='204.48' style='stroke-width: 1.12; stroke: #B3B3B3;' />
 <circle cx='356.87' cy='184.32' r='5.40' style='stroke-width: 1.50; fill: #CC3333; fill-opacity: 0.70;' />
 <circle cx='356.87' cy='194.40' r='5.40' style='stroke-width: 1.50; fill: #3380CC; fill-opacity: 0.70;' />
@@ -1665,7 +1743,7 @@ threshold constraint.</p>
 <span><span class="co">#&gt; -----------------</span></span>
 <span><span class="co">#&gt;   Method:      els</span></span>
 <span><span class="co">#&gt;   Threshold:   0.700</span></span>
-<span><span class="co">#&gt;   Subsets:     3 valid combinations</span></span>
+<span><span class="co">#&gt;   Subsets:     3 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   6 used in correlation</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top combinations:</span></span>
@@ -1693,6 +1771,18 @@ symmetric example, both subsets have equal size and are equally valid
 solutions. In practice, you might choose based on domain knowledge
 (prefer variables with established theory) or downstream model
 performance.</p>
+<blockquote>
+<p><strong>Key Points — Graph-Theoretic Interpretation</strong></p>
+<ul>
+<li>Build threshold graph: nodes = variables, edges connect pairs with
+|a_ij| &lt; τ</li>
+<li>Maximal valid subsets ↔︎ maximal cliques in threshold graph</li>
+<li>Proven algorithms (ELS, Bron-Kerbosch) enumerate all maximal cliques
+efficiently</li>
+<li>Graph structure reveals variable clustering (densely connected =
+similar variables)</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -1702,7 +1792,6 @@ performance.</p>
 <p>The mathematical concepts defined earlier map directly onto the
 function arguments and behavior of the package. The correspondence is
 outlined below.</p>
-<hr>
 <div class="section level3">
 <h3 id="threshold-tau-threshold-argument">
 <strong>Threshold
@@ -1718,7 +1807,6 @@ outlined below.</p>
 <li>Lower thresholds → stricter pruning → sparser graphs → smaller valid
 subsets</li>
 </ul>
-<hr>
 </div>
 <div class="section level3">
 <h3 id="maximal-cliques-returned-subsets">
@@ -1734,7 +1822,6 @@ cliques (full exact enumeration)</li>
 <li>Each clique corresponds exactly to a valid variable subset
 satisfying the threshold constraint</li>
 </ul>
-<hr>
 </div>
 <div class="section level3">
 <h3 id="forced-in-set-f-force_in-argument">
@@ -1752,7 +1839,6 @@ itself is a valid subset (all pairs in
 satisfy
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>)</li>
 </ul>
-<hr>
 </div>
 <div class="section level3">
 <h3 id="search-type-mode-and-method-arguments">
@@ -1784,7 +1870,6 @@ specified</li>
 <code>method = "bron-kerbosch"</code><br>
 Bron–Kerbosch with pivoting (default)</li>
 </ul>
-<hr>
 </div>
 <div class="section level3">
 <h3 id="association-matrix-a-data-input-and-matrix-based-functions">
@@ -1805,7 +1890,6 @@ Uses a precomputed association matrix directly</li>
 Computes mixed association measures (Pearson, eta-squared, Cramér’s V)
 before selection</li>
 </ul>
-<hr>
 </div>
 <div class="section level3">
 <h3 id="graph-density-performance-considerations">
@@ -1824,7 +1908,6 @@ Many edges → potentially exponential growth in maximal cliques</li>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
 greedy for larger
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>.</p>
-<hr>
 </div>
 <div class="section level3">
 <h3 id="example-mapping">
@@ -1846,6 +1929,23 @@ greedy for larger
 <p>The returned object contains all maximal cliques, each representing a
 valid variable subset that satisfies the threshold constraint and
 includes the required variables.</p>
+<blockquote>
+<p><strong>Key Points — From Theory to Implementation</strong></p>
+<ul>
+<li>
+<code>threshold</code> = τ (correlation cutoff)</li>
+<li>
+<code>force_in</code> = F (variables required in all subsets)</li>
+<li>
+<code>mode = "exact"</code> → enumerate all maximal cliques</li>
+<li>
+<code>mode = "greedy"</code> → fast heuristic, single subset</li>
+<li>
+<code>method = "els"</code> recommended when using
+<code>force_in</code>
+</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -2002,6 +2102,25 @@ optimal).</p>
 vs
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>2</mn><mi>p</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(2^p)</annotation></semantics></math>
 for exact enumeration.</p>
+<blockquote>
+<p><strong>Key Points — Search Algorithms</strong></p>
+<ul>
+<li>
+<strong>Exact mode</strong>: ELS or Bron-Kerbosch enumerate all
+maximal cliques</li>
+<li>
+<strong>ELS</strong>: O(d · 3^{d/3}), faster on sparse graphs,
+better with <code>force_in</code>
+</li>
+<li>
+<strong>Bron-Kerbosch</strong>: O(3^{p/3}), pivoting improves
+performance</li>
+<li>
+<strong>Greedy</strong>: O(p²), fast but returns single (possibly
+non-optimal) subset</li>
+<li>Rule of thumb: exact for p ≤ 20, greedy for p &gt; 20</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -2517,6 +2636,26 @@ greedy mode provides a fast approximation.</p></li>
 dense correlation structure (high
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>),
 or when a single solution suffices (e.g., automated pipelines).</p>
+<blockquote>
+<p><strong>Key Points — Design Philosophy</strong></p>
+<ul>
+<li>
+<strong>Maximal not maximum</strong>: All locally optimal subsets
+enumerated, not just the globally largest</li>
+<li>
+<strong>Hard threshold</strong>: Simple, interpretable guarantee
+vs. soft penalty optimization</li>
+<li>
+<strong>Graph algorithms</strong>: Leverage decades of research;
+proven correctness and complexity bounds</li>
+<li>
+<strong>Pairwise only</strong>: Computational tractability, clear
+interpretation, robustness</li>
+<li>
+<strong>Enumerate all</strong>: Preserves information for downstream
+choice; greedy available when speed critical</li>
+</ul>
+</blockquote>
 <hr>
 </div>
 </div>
@@ -2834,6 +2973,44 @@ engines</li>
 <code><a href="../articles/comparison.html">vignette("comparison")</a></code> - Comparison with
 alternatives</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.5.1 (2025-06-13 ucrt)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
+<span><span class="co">#&gt; Running under: Windows 11 x64 (build 26200)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
+<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
+<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
+<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
+<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: Europe/Luxembourg</span></span>
+<span><span class="co">#&gt; tzcode source: internal</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] igraph_2.1.4     corrselect_3.0.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1</span></span>
+<span><span class="co">#&gt;  [9] ragg_1.5.0        sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   </span></span>
+<span><span class="co">#&gt; [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4  </span></span>
+<span><span class="co">#&gt; [17] compiler_4.5.1    fs_1.6.6          pkgconfig_2.0.3   htmlwidgets_1.6.4</span></span>
+<span><span class="co">#&gt; [21] Rcpp_1.1.0        systemfonts_1.3.1 digest_0.6.37     R6_2.6.1         </span></span>
+<span><span class="co">#&gt; [25] magrittr_2.0.4    bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0    </span></span>
+<span><span class="co">#&gt; [29] cachem_1.1.0      desc_1.4.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

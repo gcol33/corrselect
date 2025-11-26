@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.6            0.2
+#> 1   10           0.5            0.2
 #> 2   20           0.7            0.4
-#> 3   50           1.6            0.9
-#> 4  100           4.7            1.9
-#> 5  200          22.7            3.4
-#> 6  300          85.7            6.8
-#> 7  500         310.8           15.0
-#> 8 1000            NA           54.1
+#> 3   50           1.4            0.7
+#> 4  100           4.4            1.5
+#> 5  200          22.2            3.3
+#> 6  300          85.1            6.5
+#> 7  500         307.3           15.0
+#> 8 1000            NA           54.0
 ```
 
 ``` r
@@ -582,7 +582,7 @@ show(all_subsets)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.900
-#>   Subsets:     2 valid combinations
+#>   Subsets:     2 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -740,7 +740,7 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 3.9 ms
+#> Recomputing each time: 4.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
 #> Precomputed matrix: 1.8 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
@@ -1177,7 +1177,7 @@ show(result)
 #>   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric
 #>                = eta, factor_factor = cramersv
 #>   Threshold:   0.600
-#>   Subsets:     20 valid combinations
+#>   Subsets:     20 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -1336,3 +1336,42 @@ pipeline <- function(data, response) {
   Model-based pruning
 - [`?corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md) -
   Exact subset enumeration
+
+### Session Info
+
+``` r
+
+sessionInfo()
+#> R version 4.5.1 (2025-06-13 ucrt)
+#> Platform: x86_64-w64-mingw32/x64
+#> Running under: Windows 11 x64 (build 26200)
+#> 
+#> Matrix products: default
+#>   LAPACK version 3.12.1
+#> 
+#> locale:
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
+#> 
+#> time zone: Europe/Luxembourg
+#> tzcode source: internal
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] microbenchmark_1.5.0 corrselect_3.0.1    
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
+#>  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1
+#>  [9] ragg_1.5.0        sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
+#> [13] jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0     yaml_2.3.10      
+#> [17] lifecycle_1.0.4   compiler_4.5.1    fs_1.6.6          htmlwidgets_1.6.4
+#> [21] Rcpp_1.1.0        systemfonts_1.3.1 digest_0.6.37     R6_2.6.1         
+#> [25] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     
+#> [29] desc_1.4.3
+```

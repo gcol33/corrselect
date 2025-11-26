@@ -684,8 +684,6 @@ if (requireNamespace("Boruta", quietly = TRUE)) {
 final_model <- lm(response ~ ., data = model_data[, c("response", important_vars)])
 ```
 
-------------------------------------------------------------------------
-
 ## References
 
 - **caret**: Kuhn, M. (2008). Building predictive models in R using the
@@ -707,8 +705,6 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
   Collinearity*. Wiley.
   [doi:10.1002/0471725153](https://doi.org/10.1002/0471725153)
 
-------------------------------------------------------------------------
-
 ## See Also
 
 - [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
@@ -719,3 +715,64 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
   Algorithm selection and performance tuning
 - [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Graph-theoretic foundations and formal proofs
+
+## Session Info
+
+``` r
+
+sessionInfo()
+#> R version 4.5.1 (2025-06-13 ucrt)
+#> Platform: x86_64-w64-mingw32/x64
+#> Running under: Windows 11 x64 (build 26200)
+#> 
+#> Matrix products: default
+#>   LAPACK version 3.12.1
+#> 
+#> locale:
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
+#> 
+#> time zone: Europe/Luxembourg
+#> tzcode source: internal
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] car_3.1-3        carData_3.0-5    corrselect_3.0.1
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] tidyselect_1.2.1     timeDate_4051.111    dplyr_1.1.4         
+#>  [4] farver_2.1.2         S7_0.2.0             fastmap_1.2.0       
+#>  [7] pROC_1.19.0.1        caret_7.0-1          digest_0.6.37       
+#> [10] rpart_4.1.24         timechange_0.3.0     lifecycle_1.0.4     
+#> [13] survival_3.8-3       magrittr_2.0.4       compiler_4.5.1      
+#> [16] rlang_1.1.6          sass_0.4.10          tools_4.5.1         
+#> [19] yaml_2.3.10          Boruta_9.0.0         data.table_1.17.8   
+#> [22] knitr_1.50           htmlwidgets_1.6.4    plyr_1.8.9          
+#> [25] RColorBrewer_1.1-3   abind_1.4-8          withr_3.0.2         
+#> [28] purrr_1.2.0          desc_1.4.3           nnet_7.3-20         
+#> [31] grid_4.5.1           stats4_4.5.1         future_1.67.0       
+#> [34] ggplot2_4.0.0        globals_0.18.0       scales_1.4.0        
+#> [37] iterators_1.0.14     MASS_7.3-65          cli_3.6.5           
+#> [40] rmarkdown_2.30       ragg_1.5.0           generics_0.1.4      
+#> [43] future.apply_1.20.0  reshape2_1.4.4       cachem_1.1.0        
+#> [46] stringr_1.5.2        splines_4.5.1        parallel_4.5.1      
+#> [49] vctrs_0.6.5          hardhat_1.4.2        glmnet_4.1-10       
+#> [52] Matrix_1.7-4         jsonlite_2.0.0       Formula_1.2-5       
+#> [55] listenv_0.9.1        systemfonts_1.3.1    foreach_1.5.2       
+#> [58] gower_1.0.2          jquerylib_0.1.4      recipes_1.3.1       
+#> [61] glue_1.8.0           parallelly_1.45.1    pkgdown_2.2.0       
+#> [64] codetools_0.2-20     lubridate_1.9.4      stringi_1.8.7       
+#> [67] shape_1.4.6.1        gtable_0.3.6         tibble_3.3.0        
+#> [70] pillar_1.11.1        htmltools_0.5.8.1    ipred_0.9-15        
+#> [73] lava_1.8.2           R6_2.6.1             textshaping_1.0.3   
+#> [76] evaluate_1.0.5       lattice_0.22-7       bslib_0.9.0         
+#> [79] class_7.3-23         Rcpp_1.1.0           svglite_2.2.2       
+#> [82] nlme_3.1-168         prodlim_2025.04.28   ranger_0.17.0       
+#> [85] xfun_0.53            fs_1.6.6             pkgconfig_2.0.3     
+#> [88] ModelMetrics_1.2.2.2
+```

@@ -18,6 +18,28 @@ and
 For algorithmic control and performance tuning, see
 [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md).
 
+### Contents
+
+1.  [Terminology](#terminology) — Core definitions (association,
+    threshold, valid subset, clique)
+2.  [Intuitive Overview](#intuitive-overview) — Conceptual introduction
+    with toy examples
+3.  [Problem Formulation](#problem-formulation) — Formal mathematical
+    statement
+4.  [Graph-Theoretic Interpretation](#graph-theoretic-interpretation) —
+    Threshold graphs and maximal cliques
+5.  [From Theory to Implementation](#from-theory-to-implementation) —
+    How concepts map to function arguments
+6.  [Search Algorithms](#search-algorithms) — Exact enumeration vs
+    greedy heuristic
+7.  [Algorithm Pseudocode](#algorithm-pseudocode) — ELS, Bron-Kerbosch,
+    Greedy
+8.  [Technical Details](#forced-variables) — Forced variables,
+    complexity, output structure
+9.  [Design Philosophy](#design-philosophy) — Why maximal? Why hard
+    threshold? Why graphs?
+10. [References](#references) — Academic literature and further reading
+
 ------------------------------------------------------------------------
 
 ## Terminology
@@ -164,6 +186,19 @@ Chooses the method automatically:
 
 This balances optimality with computational cost.
 
+> **Key Points — Terminology**
+>
+> - **Association matrix**: Symmetric matrix of pairwise relationships
+>   (correlations, Cramér’s V, etc.)
+> - **Threshold (τ)**: Cutoff determining which pairs are “too
+>   associated” to coexist
+> - **Valid subset**: All pairwise associations below τ
+> - **Maximal subset**: Valid subset that cannot be enlarged
+> - **Threshold graph**: Graph where edges connect compatible
+>   (low-association) variable pairs
+> - **Clique**: Fully connected subgraph; maximal cliques = maximal
+>   valid subsets
+
 ------------------------------------------------------------------------
 
 ## Intuitive Overview
@@ -225,8 +260,6 @@ corrselect finds **all maximal** subsets because:
 Consider 4 variables with this correlation matrix:
 
 ``` r
-
-library(corrselect)
 
 # Construct a simple 4x4 correlation matrix
 cor_4var <- matrix(c(
@@ -544,7 +577,7 @@ show(results)
 #> -----------------
 #>   Method:      bron-kerbosch
 #>   Threshold:   0.700
-#>   Subsets:     4 valid combinations
+#>   Subsets:     4 maximal subsets
 #>   Data Rows:   4 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -576,6 +609,18 @@ This toy example shows why corrselect enumerates all solutions:
 
 Real datasets have similar structure but with more variables and more
 complex clustering.
+
+> **Key Points — Intuitive Overview**
+>
+> - corrselect finds variable subsets where no pair exceeds a
+>   correlation threshold
+> - Multiple valid subsets typically exist; all are enumerated for user
+>   choice
+> - Graph representation: variables = nodes, low-correlation pairs =
+>   edges
+> - Maximal cliques in this graph = maximal valid subsets
+> - Comparing subsets reveals correlation structure (clusters of related
+>   variables)
 
 ------------------------------------------------------------------------
 
@@ -669,6 +714,13 @@ satisfies:
 |a_{ki}| < \tau \quad \text{for all } i \in S
 ```
 
+> **Key Points — Problem Formulation**
+>
+> - Input: p × p association matrix A, threshold τ ∈ (0,1)
+> - Valid subset: S where \|a_ij\| \< τ for all pairs i,j ∈ S
+> - Maximal: cannot add any variable without violating threshold
+> - Goal: enumerate all maximal valid subsets
+
 ------------------------------------------------------------------------
 
 ## Graph-Theoretic Interpretation
@@ -748,8 +800,6 @@ print(round(cor_6var, 2))
 Threshold graph construction with $`\tau = 0.7`$:
 
 ``` r
-
-library(corrselect)
 
 # Build adjacency matrix for threshold graph
 tau <- 0.7
@@ -879,7 +929,7 @@ show(results)
 #> -----------------
 #>   Method:      els
 #>   Threshold:   0.700
-#>   Subsets:     3 valid combinations
+#>   Subsets:     3 maximal subsets
 #>   Data Rows:   6 used in correlation
 #> 
 #> Top combinations:
@@ -907,6 +957,16 @@ example, both subsets have equal size and are equally valid solutions.
 In practice, you might choose based on domain knowledge (prefer
 variables with established theory) or downstream model performance.
 
+> **Key Points — Graph-Theoretic Interpretation**
+>
+> - Build threshold graph: nodes = variables, edges connect pairs with
+>   \|a_ij\| \< τ
+> - Maximal valid subsets ↔︎ maximal cliques in threshold graph
+> - Proven algorithms (ELS, Bron-Kerbosch) enumerate all maximal cliques
+>   efficiently
+> - Graph structure reveals variable clustering (densely connected =
+>   similar variables)
+
 ------------------------------------------------------------------------
 
 ## From Theory to Implementation
@@ -914,8 +974,6 @@ variables with established theory) or downstream model performance.
 The mathematical concepts defined earlier map directly onto the function
 arguments and behavior of the package. The correspondence is outlined
 below.
-
-------------------------------------------------------------------------
 
 ### **Threshold ($`\tau`$) → `threshold` argument**
 
@@ -926,8 +984,6 @@ Controls which edges appear in the threshold graph.
 - Lower thresholds → stricter pruning → sparser graphs → smaller valid
   subsets
 
-------------------------------------------------------------------------
-
 ### **Maximal cliques → Returned subsets**
 
 - [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
@@ -937,8 +993,6 @@ Controls which edges appear in the threshold graph.
 - Each clique corresponds exactly to a valid variable subset satisfying
   the threshold constraint
 
-------------------------------------------------------------------------
-
 ### **Forced-in set ($`F`$) → `force_in` argument**
 
 Ensures that certain variables appear in every returned subset.
@@ -946,8 +1000,6 @@ Ensures that certain variables appear in every returned subset.
 - `corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))`
 - Internally, the algorithm verifies that $`F`$ itself is a valid subset
   (all pairs in $`F`$ satisfy $`|a_{ij}| < \tau`$)
-
-------------------------------------------------------------------------
 
 ### **Search type → `mode` and `method` arguments**
 
@@ -965,8 +1017,6 @@ Choice of enumeration algorithm:
 - `method = "bron-kerbosch"`  
   Bron–Kerbosch with pivoting (default)
 
-------------------------------------------------------------------------
-
 ### **Association matrix ($`A`$) → Data input and matrix-based functions**
 
 How the association structure enters the algorithm:
@@ -979,8 +1029,6 @@ How the association structure enters the algorithm:
   Computes mixed association measures (Pearson, eta-squared, Cramér’s V)
   before selection
 
-------------------------------------------------------------------------
-
 ### **Graph density → Performance considerations**
 
 Depends directly on the threshold:
@@ -992,8 +1040,6 @@ Depends directly on the threshold:
 
 These properties motivate the `auto` mode: exact for small $`p`$, greedy
 for larger $`p`$.
-
-------------------------------------------------------------------------
 
 ### **Example mapping**
 
@@ -1019,6 +1065,14 @@ results <- corrSelect(
 The returned object contains all maximal cliques, each representing a
 valid variable subset that satisfies the threshold constraint and
 includes the required variables.
+
+> **Key Points — From Theory to Implementation**
+>
+> - `threshold` = τ (correlation cutoff)
+> - `force_in` = F (variables required in all subsets)
+> - `mode = "exact"` → enumerate all maximal cliques
+> - `mode = "greedy"` → fast heuristic, single subset
+> - `method = "els"` recommended when using `force_in`
 
 ------------------------------------------------------------------------
 
@@ -1144,6 +1198,16 @@ until all pairs satisfy $`|a_{ij}| < \tau`$.
 Returns a single valid subset (not necessarily maximal or optimal).
 
 Complexity: $`O(p^2)`$ vs $`O(2^p)`$ for exact enumeration.
+
+> **Key Points — Search Algorithms**
+>
+> - **Exact mode**: ELS or Bron-Kerbosch enumerate all maximal cliques
+> - **ELS**: O(d · 3^{d/3}), faster on sparse graphs, better with
+>   `force_in`
+> - **Bron-Kerbosch**: O(3^{p/3}), pivoting improves performance
+> - **Greedy**: O(p²), fast but returns single (possibly non-optimal)
+>   subset
+> - Rule of thumb: exact for p ≤ 20, greedy for p \> 20
 
 ------------------------------------------------------------------------
 
@@ -1547,6 +1611,19 @@ one (greedy mode). Why offer exhaustive enumeration?
 correlation structure (high $`\tau`$), or when a single solution
 suffices (e.g., automated pipelines).
 
+> **Key Points — Design Philosophy**
+>
+> - **Maximal not maximum**: All locally optimal subsets enumerated, not
+>   just the globally largest
+> - **Hard threshold**: Simple, interpretable guarantee vs. soft penalty
+>   optimization
+> - **Graph algorithms**: Leverage decades of research; proven
+>   correctness and complexity bounds
+> - **Pairwise only**: Computational tractability, clear interpretation,
+>   robustness
+> - **Enumerate all**: Preserves information for downstream choice;
+>   greedy available when speed critical
+
 ------------------------------------------------------------------------
 
 ## References
@@ -1738,3 +1815,42 @@ suffices (e.g., automated pipelines).
   Algorithmic control and custom engines
 - [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   Comparison with alternatives
+
+## Session Info
+
+``` r
+
+sessionInfo()
+#> R version 4.5.1 (2025-06-13 ucrt)
+#> Platform: x86_64-w64-mingw32/x64
+#> Running under: Windows 11 x64 (build 26200)
+#> 
+#> Matrix products: default
+#>   LAPACK version 3.12.1
+#> 
+#> locale:
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
+#> 
+#> time zone: Europe/Luxembourg
+#> tzcode source: internal
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] igraph_2.1.4     corrselect_3.0.1
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
+#>  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1
+#>  [9] ragg_1.5.0        sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
+#> [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4  
+#> [17] compiler_4.5.1    fs_1.6.6          pkgconfig_2.0.3   htmlwidgets_1.6.4
+#> [21] Rcpp_1.1.0        systemfonts_1.3.1 digest_0.6.37     R6_2.6.1         
+#> [25] magrittr_2.0.4    bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0    
+#> [29] cachem_1.1.0      desc_1.4.3
+```

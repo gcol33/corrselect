@@ -11,7 +11,7 @@
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -28,7 +28,7 @@
     }
   ]]></style>
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='720.00' height='360.00' />

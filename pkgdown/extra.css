@@ -10,6 +10,8 @@ svg.inline-svg {
   height: auto;
   border: 1px solid #DFD7CA;
   border-radius: .375rem;
+  overflow: hidden;
+  display: block;
 }
 
 /* Dark mode border */
@@ -31,11 +33,24 @@ svg.inline-svg {
   fill: #DFD7CA !important;
 }
 
+/* Hide clipPath rects - they should not be visible */
+svg.inline-svg clipPath rect,
+svg.inline-svg defs rect {
+  stroke: none !important;
+  fill: none !important;
+}
+
 /* Dark mode colors for svglite format */
 /* Override the embedded styles in inline SVGs */
 /* No stroke on svg-bg - the outer CSS border handles rounding */
 [data-bs-theme="dark"] svg.inline-svg .svg-bg {
   fill: #343739 !important;
+  stroke: none !important;
+}
+
+/* Light mode - ensure svg-bg has no stroke */
+svg.inline-svg .svg-bg {
+  stroke: none !important;
 }
 
 [data-bs-theme="dark"] svg.inline-svg .svglite line,
@@ -51,13 +66,14 @@ svg.inline-svg {
 }
 
 /* Rect strokes (histogram bars, etc.) - match text color */
-/* Exclude rects with stroke: none (like empty legend key boxes) */
-[data-bs-theme="dark"] svg.inline-svg .svglite rect:not([style*="stroke: none"]) {
+/* Use > g > rect to exclude clipPath rects; exclude stroke: none (empty legend keys) */
+[data-bs-theme="dark"] svg.inline-svg .svglite > g > rect:not([style*="stroke: none"]) {
   stroke: #DFD7CA !important;
 }
 
 /* Legend box backgrounds - override inline fill: #F5F6F8 */
-[data-bs-theme="dark"] svg.inline-svg .svglite rect[style*="fill: #F5F6F8"] {
+/* Exclude svg-bg which also has fill: #F5F6F8 but should NOT have a stroke */
+[data-bs-theme="dark"] svg.inline-svg .svglite rect[style*="fill: #F5F6F8"]:not(.svg-bg) {
   fill: #343739 !important;
   stroke: #495057 !important;
 }

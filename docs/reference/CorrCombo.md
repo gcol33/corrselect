@@ -97,7 +97,7 @@ show(new("CorrCombo",
 #>   Method:      els
 #>   Correlation: mixed
 #>   Threshold:   0.500
-#>   Subsets:     2 valid combinations
+#>   Subsets:     2 maximal subsets
 #>   Data Rows:   5 used in correlation
 #> 
 #> Top combinations:

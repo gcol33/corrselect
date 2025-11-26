@@ -91,6 +91,9 @@ correlation constraints. Four applied settings illustrate interface
 selection and workflow composition. See
 <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> for interface descriptions and
 <code><a href="../articles/theory.html">vignette("theory")</a></code> for mathematical foundations.</p>
+<p><strong>Functions used</strong>: <code><a href="../reference/corrPrune.html">corrPrune()</a></code>,
+<code><a href="../reference/modelPrune.html">modelPrune()</a></code> — see <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> for
+full signatures and parameter details.</p>
 <p>Each workflow showcases different aspects of the package:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -132,8 +135,7 @@ stability.</p>
 <h4 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/">corrselect</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Data structure</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">)</span></span>
@@ -146,7 +148,7 @@ stability.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">$</span><span class="va">species_richness</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
 <span><span class="co">#&gt;     5.0    96.0   118.5   120.2   144.2   206.0</span></span></code></pre></div>
-<p>The dataset contains 500 sampling locations with 19 bioclimatic
+<p>The dataset contains 100 sampling locations with 19 bioclimatic
 predictors and a species richness response. The bioclimatic variables
 are standard WorldClim metrics (BIO1-BIO19) measuring temperature and
 precipitation patterns.</p>
@@ -246,7 +248,7 @@ below the threshold.</p>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -262,9 +264,8 @@ below the threshold.</p>
       stroke: none;
     }
   ]]></style>
-
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='504.00' height='360.00' />
@@ -366,7 +367,7 @@ below the threshold.</p>
 <rect x='431.92' y='278.13' width='13.24' height='0.00' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #3380CC; fill-opacity: 0.40;' />
 <rect x='445.16' y='278.13' width='13.24' height='0.00' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #3380CC; fill-opacity: 0.40;' />
 <line x1='343.20' y1='286.56' x2='343.20' y2='59.04' style='stroke-width: 1.50; stroke-dasharray: 8.00,8.00;' />
-<rect x='363.16' y='59.04' width='110.60' height='57.60' style='stroke-width: 0.75; fill: var(--svg-bg-color, #FFFFFF);' />
+<rect rx='4' x='363.16' y='59.04' width='110.60' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <rect x='373.96' y='69.84' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #CC3333; fill-opacity: 0.40;' />
 <rect x='373.96' y='84.24' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #3380CC; fill-opacity: 0.40;' />
 <rect x='373.96' y='98.64' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: none;' />
@@ -455,11 +456,10 @@ coefficient estimates.</p>
 <span><span class="co">#&gt; 3 + modelPrune         12 0.8962848 538.1157</span></span></code></pre></div>
 <p><strong>Key insights</strong>:</p>
 <ul>
-<li>The full model has severe multicollinearity (κ &gt; 1000)</li>
-<li>Correlation-based pruning reduces κ by ~10x while losing minimal
-fit</li>
-<li>VIF-based refinement achieves excellent stability (κ &lt; 100) with
-only marginal R² decrease</li>
+<li>The full model has substantial multicollinearity (high κ)</li>
+<li>Correlation-based pruning reduces κ while losing minimal fit</li>
+<li>VIF-based refinement can further improve stability with only
+marginal R² decrease</li>
 </ul>
 </div>
 <div class="section level4">
@@ -548,7 +548,7 @@ were redundant for prediction.</p>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -564,9 +564,8 @@ were redundant for prediction.</p>
       stroke: none;
     }
   ]]></style>
-
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='360.00' />
@@ -643,7 +642,7 @@ were redundant for prediction.</p>
 <text transform='translate(573.12,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='114.05px' lengthAdjust='spacingAndGlyphs'>Condition Number (κ)</text>
 </g>
 <g clip-path='url(#cpNTcuNjB8NTE4LjQwfDU3LjYwfDI4OC4wMA==)'>
-<rect x='110.44' y='62.21' width='355.11' height='28.80' style='stroke-width: 0.75; fill: var(--svg-bg-color, #FFFFFF);' />
+<rect rx='4' x='110.44' y='62.21' width='355.11' height='28.80' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='113.68' y1='76.61' x2='135.28' y2='76.61' style='stroke-width: 1.50; stroke: #3380CC;' />
 <line x1='288.54' y1='76.61' x2='310.14' y2='76.61' style='stroke-width: 1.50; stroke: #CC3333;' />
 <circle cx='124.48' cy='76.61' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
@@ -747,7 +746,7 @@ sizes</li>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -763,9 +762,8 @@ sizes</li>
       stroke: none;
     }
   ]]></style>
-
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='504.00' height='360.00' />
@@ -866,7 +864,7 @@ sizes</li>
 <rect x='407.20' y='199.18' width='17.07' height='2.79' style='stroke-width: 0.75; stroke: none; fill: #3380CC; fill-opacity: 0.50;' />
 <rect x='428.53' y='201.98' width='17.07' height='0.078' style='stroke-width: 0.75; stroke: none; fill: #3380CC; fill-opacity: 0.50;' />
 <rect x='449.87' y='201.98' width='17.07' height='0.89' style='stroke-width: 0.75; stroke: none; fill: #3380CC; fill-opacity: 0.50;' />
-<rect x='361.43' y='59.04' width='112.33' height='43.20' style='stroke-width: 0.75; fill: var(--svg-bg-color, #FFFFFF);' />
+<rect rx='4' x='361.43' y='59.04' width='112.33' height='43.20' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <rect x='372.23' y='69.84' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #CC3333; fill-opacity: 0.50;' />
 <rect x='372.23' y='84.24' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #3380CC; fill-opacity: 0.50;' />
 <text x='391.67' y='77.74' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='70.02px' lengthAdjust='spacingAndGlyphs'>Full (19 vars)</text>
@@ -916,7 +914,7 @@ and loyalty domains</li>
 <span><span class="co">#&gt;  $ satisfaction_3      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 3 3 4 5 3 4 4 ...</span></span>
 <span><span class="co">#&gt;  $ satisfaction_4      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 4 4 5 4 3 2 4 ...</span></span>
 <span><span class="co">#&gt;  $ satisfaction_5      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 4 5 5 5 4 3 6 4 6 ...</span></span></code></pre></div>
-<p>The dataset contains 500 respondents, 30 Likert-scale items (10 each
+<p>The dataset contains 200 respondents, 30 Likert-scale items (10 each
 for satisfaction, engagement, loyalty), plus demographics (age, gender,
 education) and an overall satisfaction outcome.</p>
 </div>
@@ -955,9 +953,9 @@ covariates that must not be removed.</p>
 <span><span class="va">selected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">survey_clean</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "age"            "satisfaction_9" "engagement_1"   "loyalty_3"</span></span></code></pre></div>
-<p>The pruning reduced the questionnaire from 31 items to ~10 items
-while ensuring age was retained. The remaining items span all three
-constructs, avoiding the loss of entire domains.</p>
+<p>The pruning reduced the questionnaire substantially while ensuring
+age was retained. The remaining items span all three constructs,
+avoiding the loss of entire domains.</p>
 </div>
 <div class="section level4">
 <h4 id="construct-coverage">Construct coverage<a class="anchor" aria-label="anchor" href="#construct-coverage"></a>
@@ -1026,7 +1024,7 @@ construct and (2) the overall variable reduction.</p>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -1042,9 +1040,8 @@ construct and (2) the overall variable reduction.</p>
       stroke: none;
     }
   ]]></style>
-
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='360.00' />
@@ -1260,27 +1257,30 @@ those with the lowest maximum correlation to already-selected variables.
 This heuristic runs in O(p²) time compared to the exponential complexity
 of exact methods.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Extract gene expression data (exclude ID and outcome)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/microbenchmark/" class="external-link">microbenchmark</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract gene expression data (exclude ID and outcome)</span></span>
 <span><span class="va">gene_expr</span> <span class="op">&lt;-</span> <span class="va">genes_example</span><span class="op">[</span>, <span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span><span class="co"># Greedy pruning</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="co"># Greedy pruning with timing</span></span>
+<span><span class="va">greedy_timing</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
 <span>  <span class="va">genes_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">gene_expr</span>,</span>
 <span>    threshold <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>    mode <span class="op">=</span> <span class="st">"greedy"</span>  <span class="co"># Fast for large p</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;    0.02    0.00    0.02</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">greedy_ms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">greedy_timing</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span></span>
 <span></span>
 <span><span class="co"># Reduction</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Reduced from %d → %d genes\n"</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Reduced from %d → %d genes (%.1f ms)\n"</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Reduced from 200 → 177 genes</span></span></code></pre></div>
-<p>The greedy algorithm completed in milliseconds, reducing the gene set
-by ~50% while ensuring all pairwise correlations remain below 0.8.</p>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span>,</span>
+<span>            <span class="va">greedy_ms</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Reduced from 200 → 177 genes (9.7 ms)</span></span></code></pre></div>
+<p>The greedy algorithm completed in milliseconds while ensuring all
+pairwise correlations remain below 0.8.</p>
 </div>
 <div class="section level4">
 <h4 id="dimensionality-reduction">Dimensionality reduction<a class="anchor" aria-label="anchor" href="#dimensionality-reduction"></a>
@@ -1310,7 +1310,7 @@ by ~50% while ensuring all pairwise correlations remain below 0.8.</p>
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -1326,9 +1326,8 @@ by ~50% while ensuring all pairwise correlations remain below 0.8.</p>
       stroke: none;
     }
   ]]></style>
-
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='360.00' />
@@ -1373,9 +1372,7 @@ by ~50% while ensuring all pairwise correlations remain below 0.8.</p>
 benchmark both approaches on a smaller subset. The performance gap
 widens dramatically as the number of variables increases.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/microbenchmark/" class="external-link">microbenchmark</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Subset for comparison (use smaller subset for vignette build speed)</span></span>
+<code class="sourceCode R"><span><span class="co"># Subset for comparison (use smaller subset for vignette build speed)</span></span>
 <span><span class="va">gene_subset</span> <span class="op">&lt;-</span> <span class="va">gene_expr</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span>  <span class="co"># Reduced from 50 to 20 for faster builds</span></span>
 <span></span>
 <span><span class="co"># Benchmark exact mode</span></span>
@@ -1398,14 +1395,14 @@ widens dramatically as the number of variables increases.</p>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact mode: 11 genes kept (3.5 ms)</span></span>
+<span><span class="co">#&gt; Exact mode: 11 genes kept (3.3 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.5 ms)</span></span>
+<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.4 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 6.8x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 7.5x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
-mode completes in seconds.</p>
+mode completes in milliseconds.</p>
 </div>
 <div class="section level4">
 <h4 id="classification">Classification<a class="anchor" aria-label="anchor" href="#classification"></a>
@@ -1503,7 +1500,7 @@ package and is shown with <code>eval=FALSE</code> for portability.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Observations per subject: %d\n"</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">$</span><span class="va">subject</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Observations per subject: 10</span></span></code></pre></div>
-<p>The dataset has 500 observations from 50 subjects across 2 sites,
+<p>The dataset has 500 observations from 50 subjects across 5 sites,
 with 10 measurements per subject. We have 5 correlated fixed-effect
 predictors (x1-x5).</p>
 </div>
@@ -1732,7 +1729,6 @@ for model-specific multicollinearity (VIF)</li>
 <strong>Combining both</strong>: Often yields best results
 (correlation pruning → VIF refinement → final model)</li>
 </ul>
-<hr>
 </div>
 <div class="section level2">
 <h2 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
@@ -1749,7 +1745,6 @@ alternatives</li>
 <li>
 <code><a href="../articles/theory.html">vignette("theory")</a></code> - Mathematical foundations</li>
 </ul>
-<hr>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -1764,6 +1759,46 @@ deal with it. <em>Ecography</em>, 36(1), 27-46.</li>
 </ul>
 <p><strong>Methods</strong>: - See package documentation and JOSS paper
 for algorithm details</p>
+<div class="section level3">
+<h3 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h3>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.5.1 (2025-06-13 ucrt)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
+<span><span class="co">#&gt; Running under: Windows 11 x64 (build 26200)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
+<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
+<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
+<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
+<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: Europe/Luxembourg</span></span>
+<span><span class="co">#&gt; tzcode source: internal</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] igraph_2.1.4         car_3.1-3            carData_3.0-5       </span></span>
+<span><span class="co">#&gt; [4] microbenchmark_1.5.0 corrselect_3.0.1    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.53         Formula_1.2-5     textshaping_1.0.3 jsonlite_2.0.0   </span></span>
+<span><span class="co">#&gt;  [9] htmltools_0.5.8.1 ragg_1.5.0        sass_0.4.10       rmarkdown_2.30   </span></span>
+<span><span class="co">#&gt; [13] abind_1.4-8       evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0    </span></span>
+<span><span class="co">#&gt; [17] yaml_2.3.10       lifecycle_1.0.4   compiler_4.5.1    codetools_0.2-20 </span></span>
+<span><span class="co">#&gt; [21] fs_1.6.6          pkgconfig_2.0.3   htmlwidgets_1.6.4 Rcpp_1.1.0       </span></span>
+<span><span class="co">#&gt; [25] systemfonts_1.3.1 digest_0.6.37     R6_2.6.1          magrittr_2.0.4   </span></span>
+<span><span class="co">#&gt; [29] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     </span></span>
+<span><span class="co">#&gt; [33] desc_1.4.3</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

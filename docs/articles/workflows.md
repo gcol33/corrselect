@@ -11,6 +11,13 @@ for interface descriptions and
 [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
 for mathematical foundations.
 
+**Functions used**:
+[`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md),
+[`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
+— see
+[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
+for full signatures and parameter details.
+
 Each workflow showcases different aspects of the package:
 
 1.  **Ecological Modeling**: Two-stage pruning (correlation + VIF) for
@@ -49,7 +56,6 @@ stability.
 
 ``` r
 
-library(corrselect)
 data(bioclim_example)
 
 # Data structure
@@ -65,7 +71,7 @@ summary(bioclim_example$species_richness)
 #>     5.0    96.0   118.5   120.2   144.2   206.0
 ```
 
-The dataset contains 500 sampling locations with 19 bioclimatic
+The dataset contains 100 sampling locations with 19 bioclimatic
 predictors and a species richness response. The bioclimatic variables
 are standard WorldClim metrics (BIO1-BIO19) measuring temperature and
 precipitation patterns.
@@ -239,10 +245,10 @@ print(comparison)
 
 **Key insights**:
 
-- The full model has severe multicollinearity (κ \> 1000)
-- Correlation-based pruning reduces κ by ~10x while losing minimal fit
-- VIF-based refinement achieves excellent stability (κ \< 100) with only
-  marginal R² decrease
+- The full model has substantial multicollinearity (high κ)
+- Correlation-based pruning reduces κ while losing minimal fit
+- VIF-based refinement can further improve stability with only marginal
+  R² decrease
 
 #### Visualization
 
@@ -450,7 +456,7 @@ str(survey_example[, 1:10])  # First 10 columns
 #>  $ satisfaction_5      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 7 4 5 5 5 4 3 6 4 6 ...
 ```
 
-The dataset contains 500 respondents, 30 Likert-scale items (10 each for
+The dataset contains 200 respondents, 30 Likert-scale items (10 each for
 satisfaction, engagement, loyalty), plus demographics (age, gender,
 education) and an overall satisfaction outcome.
 
@@ -492,9 +498,9 @@ print(selected)
 #> [1] "age"            "satisfaction_9" "engagement_1"   "loyalty_3"
 ```
 
-The pruning reduced the questionnaire from 31 items to ~10 items while
-ensuring age was retained. The remaining items span all three
-constructs, avoiding the loss of entire domains.
+The pruning reduced the questionnaire substantially while ensuring age
+was retained. The remaining items span all three constructs, avoiding
+the loss of entire domains.
 
 #### Construct coverage
 
@@ -684,29 +690,32 @@ exact methods.
 
 ``` r
 
+library(microbenchmark)
+
 # Extract gene expression data (exclude ID and outcome)
 gene_expr <- genes_example[, -(1:2)]
 
-# Greedy pruning
-system.time({
+# Greedy pruning with timing
+greedy_timing <- microbenchmark(
   genes_pruned <- corrPrune(
     data = gene_expr,
     threshold = 0.8,
     mode = "greedy"  # Fast for large p
-  )
-})
-#>    user  system elapsed 
-#>    0.02    0.00    0.02
+  ),
+  times = 3
+)
+greedy_ms <- median(greedy_timing$time) / 1e6
 
 # Reduction
-cat(sprintf("Reduced from %d → %d genes\n",
+cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
-            ncol(genes_pruned)))
-#> Reduced from 200 → 177 genes
+            ncol(genes_pruned),
+            greedy_ms))
+#> Reduced from 200 → 177 genes (9.7 ms)
 ```
 
-The greedy algorithm completed in milliseconds, reducing the gene set by
-~50% while ensuring all pairwise correlations remain below 0.8.
+The greedy algorithm completed in milliseconds while ensuring all
+pairwise correlations remain below 0.8.
 
 #### Dimensionality reduction
 
@@ -740,8 +749,6 @@ dramatically as the number of variables increases.
 
 ``` r
 
-library(microbenchmark)
-
 # Subset for comparison (use smaller subset for vignette build speed)
 gene_subset <- gene_expr[, 1:20]  # Reduced from 50 to 20 for faster builds
 
@@ -765,16 +772,16 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (3.5 ms)
+#> Exact mode: 11 genes kept (3.3 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.5 ms)
+#> Greedy mode: 10 genes kept (0.4 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 6.8x faster
+#> Speedup: 7.5x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
 exact enumeration would be prohibitively slow, while greedy mode
-completes in seconds.
+completes in milliseconds.
 
 #### Classification
 
@@ -877,7 +884,7 @@ cat(sprintf("Observations per subject: %d\n",
 #> Observations per subject: 10
 ```
 
-The dataset has 500 observations from 50 subjects across 2 sites, with
+The dataset has 500 observations from 50 subjects across 5 sites, with
 10 measurements per subject. We have 5 correlated fixed-effect
 predictors (x1-x5).
 
@@ -1077,8 +1084,6 @@ diverse analytical pipelines:
 - **Combining both**: Often yields best results (correlation pruning →
   VIF refinement → final model)
 
-------------------------------------------------------------------------
-
 ## See Also
 
 - [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
@@ -1089,8 +1094,6 @@ diverse analytical pipelines:
   Comparison with alternatives
 - [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Mathematical foundations
-
-------------------------------------------------------------------------
 
 ## References
 
@@ -1103,3 +1106,44 @@ diverse analytical pipelines:
 
 **Methods**: - See package documentation and JOSS paper for algorithm
 details
+
+### Session Info
+
+``` r
+
+sessionInfo()
+#> R version 4.5.1 (2025-06-13 ucrt)
+#> Platform: x86_64-w64-mingw32/x64
+#> Running under: Windows 11 x64 (build 26200)
+#> 
+#> Matrix products: default
+#>   LAPACK version 3.12.1
+#> 
+#> locale:
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
+#> 
+#> time zone: Europe/Luxembourg
+#> tzcode source: internal
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] igraph_2.1.4         car_3.1-3            carData_3.0-5       
+#> [4] microbenchmark_1.5.0 corrselect_3.0.1    
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
+#>  [5] xfun_0.53         Formula_1.2-5     textshaping_1.0.3 jsonlite_2.0.0   
+#>  [9] htmltools_0.5.8.1 ragg_1.5.0        sass_0.4.10       rmarkdown_2.30   
+#> [13] abind_1.4-8       evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0    
+#> [17] yaml_2.3.10       lifecycle_1.0.4   compiler_4.5.1    codetools_0.2-20 
+#> [21] fs_1.6.6          pkgconfig_2.0.3   htmlwidgets_1.6.4 Rcpp_1.1.0       
+#> [25] systemfonts_1.3.1 digest_0.6.37     R6_2.6.1          magrittr_2.0.4   
+#> [29] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     
+#> [33] desc_1.4.3
+```

@@ -83,6 +83,31 @@ Colling</h4>
     
     
 <div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install from CRAN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"corrselect"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or install development version from GitHub</span></span>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"GillesColling/corrselect"</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Suggested packages</strong> (for extended functionality):</p>
+<ul>
+<li>
+<code>lme4</code>, <code>glmmTMB</code>: Mixed-effects models in
+<code><a href="../reference/modelPrune.html">modelPrune()</a></code>
+</li>
+<li>
+<code>WGCNA</code>: Biweight midcorrelation
+(<code>bicor</code>)</li>
+<li>
+<code>energy</code>: Distance correlation</li>
+<li>
+<code>minerva</code>: Maximal information coefficient</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="what-corrselect-does">What corrselect Does<a class="anchor" aria-label="anchor" href="#what-corrselect-does"></a>
 </h2>
 <p>corrselect identifies and removes redundant variables based on
@@ -141,7 +166,6 @@ data):</p>
 <li>No data preprocessing</li>
 <li>Useful for repeated analyses</li>
 </ul>
-<hr>
 </div>
 </div>
 <div class="section level2">
@@ -150,9 +174,8 @@ data):</p>
 <div class="section level3">
 <h3 id="corrprune-association-based-pruning">corrPrune(): Association-Based Pruning<a class="anchor" aria-label="anchor" href="#corrprune-association-based-pruning"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/">corrselect</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Remove correlated predictors (threshold = 0.7)</span></span>
 <span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
@@ -163,7 +186,7 @@ data):</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "drat" "qsec" "gear" "carb"</span></span></code></pre></div>
 <p>Variables removed:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned</span>, <span class="st">"removed_vars"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cyl"  "disp" "hp"   "wt"   "vs"   "am"</span></span></code></pre></div>
 <p><strong>How corrPrune() selects among multiple maximal
@@ -189,7 +212,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <div class="section level3">
 <h3 id="modelprune-vif-based-pruning">modelPrune(): VIF-Based Pruning<a class="anchor" aria-label="anchor" href="#modelprune-vif-based-pruning"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prune based on VIF (limit = 5)</span></span>
 <span><span class="va">model_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span></span>
 <span>  formula <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>,</span>
@@ -206,7 +229,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <div class="section level3">
 <h3 id="corrselect-enumerate-all-maximal-subsets">corrSelect(): Enumerate All Maximal Subsets<a class="anchor" aria-label="anchor" href="#corrselect-enumerate-all-maximal-subsets"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/methods/show.html" class="external-link">show</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; CorrCombo object</span></span>
@@ -214,7 +237,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <span><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
 <span><span class="co">#&gt;   Correlation: pearson</span></span>
 <span><span class="co">#&gt;   Threshold:   0.700</span></span>
-<span><span class="co">#&gt;   Subsets:     15 valid combinations</span></span>
+<span><span class="co">#&gt;   Subsets:     15 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
 <span><span class="co">#&gt;   Pivot:       TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -228,7 +251,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <span><span class="co">#&gt;   [ 5] wt, qsec, gear, carb              0.388  0.656     4</span></span>
 <span><span class="co">#&gt;   ... (10 more combinations)</span></span></code></pre></div>
 <p>Inspect subsets:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>  <span class="co"># First 5 subsets</span></span>
 <span><span class="co">#&gt;                      VarName01 VarName02 VarName03 VarName04 VarName05</span></span>
 <span><span class="co">#&gt; Subset01 [avg=0.416]       mpg      drat      qsec      gear      carb</span></span>
@@ -237,7 +260,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <span><span class="co">#&gt; Subset04 [avg=0.373]        wt      qsec        am      carb      &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; Subset05 [avg=0.388]        wt      qsec      gear      carb      &lt;NA&gt;</span></span></code></pre></div>
 <p>Extract a specific subset:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subset_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrSubset.html">corrSubset</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">mtcars</span>, which <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">subset_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "drat" "qsec" "gear" "carb"</span></span></code></pre></div>
@@ -245,7 +268,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <div class="section level3">
 <h3 id="assocselect-mixed-type-data">assocSelect(): Mixed-Type Data<a class="anchor" aria-label="anchor" href="#assocselect-mixed-type-data"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create mixed-type data</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
@@ -264,15 +287,18 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <span><span class="co">#&gt;   AssocMethod: numeric_numeric = pearson, numeric_factor = eta, numeric_ordered</span></span>
 <span><span class="co">#&gt;                = spearman, factor_ordered = cramersv</span></span>
 <span><span class="co">#&gt;   Threshold:   0.500</span></span>
-<span><span class="co">#&gt;   Subsets:     1 valid combinations</span></span>
+<span><span class="co">#&gt;   Subsets:     1 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   100 used in correlation</span></span>
 <span><span class="co">#&gt;   Pivot:       TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top combinations:</span></span>
 <span><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
 <span><span class="co">#&gt;   ------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   [ 1] x1, x2, cat1, ord1                0.077  0.184     4</span></span></code></pre></div>
-<hr>
+<span><span class="co">#&gt;   [ 1] x1, x2, cat1, ord1                0.077  0.184     4</span></span>
+<span></span>
+<span><span class="co"># Verify all pairwise associations are below threshold</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Max pairwise association:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">results_mixed</span><span class="op">@</span><span class="va">max_corr</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Max pairwise association: 0.1842642</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -280,7 +306,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 </h2>
 <p>Use <code>force_in</code> to ensure specific variables are always
 retained:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Force "mpg" to remain in all subsets</span></span>
 <span><span class="va">pruned_force</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mtcars</span>,</span>
@@ -291,40 +317,19 @@ retained:</p>
 <span><span class="co"># Verify forced variable is present</span></span>
 <span><span class="st">"mpg"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned_force</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<hr>
 </div>
 <div class="section level2">
 <h2 id="threshold-selection">Threshold Selection<a class="anchor" aria-label="anchor" href="#threshold-selection"></a>
 </h2>
-<p>Common threshold guidelines:</p>
-<table class="table">
-<thead><tr class="header">
-<th>Threshold</th>
-<th>Interpretation</th>
-<th>Use Case</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>0.5</td>
-<td>Strict</td>
-<td>When multicollinearity is critical</td>
-</tr>
-<tr class="even">
-<td>0.7</td>
-<td>Moderate</td>
-<td>General-purpose default</td>
-</tr>
-<tr class="odd">
-<td>0.9</td>
-<td>Lenient</td>
-<td>When retaining variables is priority</td>
-</tr>
-</tbody>
-</table>
+<p>Common thresholds: <strong>0.5</strong> (strict),
+<strong>0.7</strong> (moderate, recommended default),
+<strong>0.9</strong> (lenient).</p>
+<p>Lower thresholds are stricter because they allow fewer variable pairs
+to coexist, resulting in smaller subsets. Higher thresholds permit
+stronger correlations, retaining more variables.</p>
 <p>For detailed threshold selection strategies including visualization
-techniques and sensitivity analysis, see
+techniques, VIF guidelines, and sensitivity analysis, see
 <code><a href="../articles/advanced.html">vignette("advanced")</a></code>.</p>
-<hr>
 </div>
 <div class="section level2">
 <h2 id="interface-selection-guide">Interface Selection Guide<a class="anchor" aria-label="anchor" href="#interface-selection-guide"></a>
@@ -356,7 +361,7 @@ techniques and sensitivity analysis, see
 </td>
 </tr>
 <tr class="odd">
-<td>Enumerate all valid subsets</td>
+<td>Enumerate all maximal subsets</td>
 <td><code><a href="../reference/corrSelect.html">corrSelect()</a></code></td>
 <td><code>threshold</code></td>
 </tr>
@@ -379,7 +384,331 @@ techniques and sensitivity analysis, see
 </tr>
 </tbody>
 </table>
-<hr>
+</div>
+<div class="section level2">
+<h2 id="quick-reference">Quick Reference<a class="anchor" aria-label="anchor" href="#quick-reference"></a>
+</h2>
+<div class="section level3">
+<h3 id="corrprune">corrPrune()<a class="anchor" aria-label="anchor" href="#corrprune"></a>
+</h3>
+<p>Removes redundant predictors based on pairwise correlation.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, measure <span class="op">=</span> <span class="st">"auto"</span>, mode <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>          force_in <span class="op">=</span> <span class="cn">NULL</span>, by <span class="op">=</span> <span class="cn">NULL</span>, group_q <span class="op">=</span> <span class="fl">1</span>, max_exact_p <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="39%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>data</code></td>
+<td>Data frame or matrix</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>threshold</code></td>
+<td>Maximum allowed correlation</td>
+<td><code>0.7</code></td>
+</tr>
+<tr class="odd">
+<td><code>measure</code></td>
+<td>Correlation type: <code>"auto"</code>, <code>"pearson"</code>,
+<code>"spearman"</code>, <code>"kendall"</code>
+</td>
+<td><code>"auto"</code></td>
+</tr>
+<tr class="even">
+<td><code>mode</code></td>
+<td>Algorithm: <code>"auto"</code>, <code>"exact"</code>,
+<code>"greedy"</code>
+</td>
+<td><code>"auto"</code></td>
+</tr>
+<tr class="odd">
+<td><code>force_in</code></td>
+<td>Variables that must be retained</td>
+<td><code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong>: Data frame with pruned variables.
+Attributes: <code>selected_vars</code>, <code>removed_vars</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="modelprune">modelPrune()<a class="anchor" aria-label="anchor" href="#modelprune"></a>
+</h3>
+<p>Iteratively removes predictors with high VIF from a regression
+model.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, engine <span class="op">=</span> <span class="st">"lm"</span>, criterion <span class="op">=</span> <span class="st">"vif"</span>,</span>
+<span>           limit <span class="op">=</span> <span class="fl">5</span>, force_in <span class="op">=</span> <span class="cn">NULL</span>, max_steps <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="39%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>formula</code></td>
+<td>Model formula (e.g., <code>y ~ .</code>)</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>data</code></td>
+<td>Data frame</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td><code>engine</code></td>
+<td>
+<code>"lm"</code>, <code>"glm"</code>, <code>"lme4"</code>,
+<code>"glmmTMB"</code>, or custom</td>
+<td><code>"lm"</code></td>
+</tr>
+<tr class="even">
+<td><code>limit</code></td>
+<td>Maximum allowed VIF</td>
+<td><code>5</code></td>
+</tr>
+<tr class="odd">
+<td><code>force_in</code></td>
+<td>Variables that must be retained</td>
+<td><code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong>: Pruned data frame. Attributes:
+<code>selected_vars</code>, <code>removed_vars</code>,
+<code>final_model</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="corrselect">corrSelect()<a class="anchor" aria-label="anchor" href="#corrselect"></a>
+</h3>
+<p>Enumerates all maximal subsets satisfying correlation threshold
+(numeric data).</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">df</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, method <span class="op">=</span> <span class="cn">NULL</span>, force_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>           cor_method <span class="op">=</span> <span class="st">"pearson"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="39%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>df</code></td>
+<td>Data frame (numeric columns only)</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>threshold</code></td>
+<td>Maximum allowed correlation</td>
+<td><code>0.7</code></td>
+</tr>
+<tr class="odd">
+<td><code>method</code></td>
+<td>Algorithm: <code>"bron-kerbosch"</code>, <code>"els"</code>
+</td>
+<td>auto</td>
+</tr>
+<tr class="even">
+<td><code>cor_method</code></td>
+<td>
+<code>"pearson"</code>, <code>"spearman"</code>,
+<code>"kendall"</code>, <code>"bicor"</code>, <code>"distance"</code>,
+<code>"maximal"</code>
+</td>
+<td><code>"pearson"</code></td>
+</tr>
+<tr class="odd">
+<td><code>force_in</code></td>
+<td>Variables required in all subsets</td>
+<td><code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong>: <code>CorrCombo</code> S4 object with
+slots: <code>subset_list</code>, <code>avg_corr</code>,
+<code>min_corr</code>, <code>max_corr</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="assocselect">assocSelect()<a class="anchor" aria-label="anchor" href="#assocselect"></a>
+</h3>
+<p>Enumerates all maximal subsets for mixed-type data (numeric, factor,
+ordered).</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/assocSelect.html">assocSelect</a></span><span class="op">(</span><span class="va">df</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, method <span class="op">=</span> <span class="cn">NULL</span>, force_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>            method_num_num <span class="op">=</span> <span class="st">"pearson"</span>, method_num_ord <span class="op">=</span> <span class="st">"spearman"</span>,</span>
+<span>            method_ord_ord <span class="op">=</span> <span class="st">"spearman"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="39%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>df</code></td>
+<td>Data frame (any column types)</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>threshold</code></td>
+<td>Maximum allowed association</td>
+<td><code>0.7</code></td>
+</tr>
+<tr class="odd">
+<td><code>method_num_num</code></td>
+<td>Numeric-numeric: <code>"pearson"</code>, <code>"spearman"</code>,
+etc.</td>
+<td><code>"pearson"</code></td>
+</tr>
+<tr class="even">
+<td><code>method_num_ord</code></td>
+<td>Numeric-ordered: <code>"spearman"</code>,
+<code>"kendall"</code>
+</td>
+<td><code>"spearman"</code></td>
+</tr>
+<tr class="odd">
+<td><code>method_ord_ord</code></td>
+<td>Ordered-ordered: <code>"spearman"</code>,
+<code>"kendall"</code>
+</td>
+<td><code>"spearman"</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong>: <code>CorrCombo</code> S4 object.</p>
+</div>
+<div class="section level3">
+<h3 id="matselect">MatSelect()<a class="anchor" aria-label="anchor" href="#matselect"></a>
+</h3>
+<p>Direct matrix interface for precomputed correlation/association
+matrices.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MatSelect.html">MatSelect</a></span><span class="op">(</span><span class="va">mat</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, method <span class="op">=</span> <span class="cn">NULL</span>, force_in <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>mat</code></td>
+<td>Symmetric correlation/association matrix</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>threshold</code></td>
+<td>Maximum allowed value</td>
+<td><code>0.7</code></td>
+</tr>
+<tr class="odd">
+<td><code>method</code></td>
+<td>Algorithm: <code>"bron-kerbosch"</code>, <code>"els"</code>
+</td>
+<td>auto</td>
+</tr>
+<tr class="even">
+<td><code>force_in</code></td>
+<td>Variables required in all subsets</td>
+<td><code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong>: <code>CorrCombo</code> S4 object.</p>
+</div>
+<div class="section level3">
+<h3 id="corrsubset">corrSubset()<a class="anchor" aria-label="anchor" href="#corrsubset"></a>
+</h3>
+<p>Extracts a specific subset from a <code>CorrCombo</code> result.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/corrSubset.html">corrSubset</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">df</span>, which <span class="op">=</span> <span class="st">"best"</span>, keepExtra <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="39%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>res</code></td>
+<td>
+<code>CorrCombo</code> object from
+<code>corrSelect</code>/<code>assocSelect</code>/<code>MatSelect</code>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>df</code></td>
+<td>Original data frame</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td><code>which</code></td>
+<td>Subset index or <code>"best"</code> (lowest avg correlation)</td>
+<td><code>"best"</code></td>
+</tr>
+<tr class="even">
+<td><code>keepExtra</code></td>
+<td>Include non-numeric columns in output?</td>
+<td><code>FALSE</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong>: Data frame containing only the selected
+variables.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
+</h2>
+<p><strong>“No valid subsets found” error</strong> - Threshold too
+strict—all variable pairs exceed it - Solution: Increase threshold or
+use <code>force_in</code> to keep at least one variable</p>
+<p><strong>VIF computation fails in modelPrune()</strong> - Perfect
+multicollinearity (R² = 1) present - Solution: Use
+<code>corrPrune(threshold = 0.99)</code> first to remove
+near-duplicates</p>
+<p><strong>Forced variables conflict</strong> - Variables in
+<code>force_in</code> are too highly correlated with each other -
+Solution: Increase threshold or reduce <code>force_in</code> set</p>
+<p><strong>Slow performance with many variables</strong> - Exact mode is
+exponential for large p - Solution: Use <code>mode = "greedy"</code> for
+p &gt; 25</p>
+<p>For comprehensive troubleshooting with code examples, see
+<code><a href="../articles/advanced.html">vignette("advanced")</a></code>, Section 5.</p>
 </div>
 <div class="section level2">
 <h2 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
@@ -403,6 +732,43 @@ formulation</li>
 <code><a href="../reference/MatSelect.html">?MatSelect</a></code>
 </li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.5.1 (2025-06-13 ucrt)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
+<span><span class="co">#&gt; Running under: Windows 11 x64 (build 26200)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
+<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
+<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
+<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
+<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: Europe/Luxembourg</span></span>
+<span><span class="co">#&gt; tzcode source: internal</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] corrselect_3.0.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1</span></span>
+<span><span class="co">#&gt;  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    </span></span>
+<span><span class="co">#&gt; [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  </span></span>
+<span><span class="co">#&gt; [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       ragg_1.5.0       </span></span>
+<span><span class="co">#&gt; [21] bslib_0.9.0       evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10      </span></span>
+<span><span class="co">#&gt; [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -11,7 +11,7 @@
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
-    .svglite rect {
+    .svglite > g > rect {
       fill: none;
       stroke: #3E3F3A;
       stroke-linecap: round;
@@ -27,9 +27,8 @@
       stroke: none;
     }
   ]]></style>
-
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: #DFD7CA; stroke-width: 0.666667; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='360.00' />
@@ -106,7 +105,7 @@
 <text transform='translate(573.12,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='114.05px' lengthAdjust='spacingAndGlyphs'>Condition Number (κ)</text>
 </g>
 <g clip-path='url(#cpNTcuNjB8NTE4LjQwfDU3LjYwfDI4OC4wMA==)'>
-<rect x='110.44' y='62.21' width='355.11' height='28.80' style='stroke-width: 0.75; fill: var(--svg-bg-color, #FFFFFF);' />
+<rect rx='4' x='110.44' y='62.21' width='355.11' height='28.80' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='113.68' y1='76.61' x2='135.28' y2='76.61' style='stroke-width: 1.50; stroke: #3380CC;' />
 <line x1='288.54' y1='76.61' x2='310.14' y2='76.61' style='stroke-width: 1.50; stroke: #CC3333;' />
 <circle cx='124.48' cy='76.61' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />

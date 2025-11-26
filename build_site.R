@@ -62,11 +62,14 @@ make_svg_theme_aware <- function(svg_path,
   # Check for legend boxes without rounded corners (need rx attribute)
   has_legend_no_rounding <- grepl("<rect x='[^']+' y='[^']+' width='[^']+' height='[^']+' style='[^']*fill: #F5F6F8;", svg_content) &&
                             !grepl("<rect rx='[^']+' x='[^']+' y='[^']+' width='[^']+' height='[^']+' style='[^']*fill: #F5F6F8;", svg_content)
+  # Check for old broad .svglite rect rule (should be .svglite > g > rect)
+  has_broad_rect_rule <- grepl("\\.svglite rect \\{", svg_content)
   if (grepl("theme-aware-processed", svg_content, fixed = TRUE) &&
       grepl("class='svg-bg'", svg_content, fixed = TRUE) &&
       !has_white_strokes && !has_wrong_text_fill && !has_wrong_rect_stroke &&
       !has_css_variables && !has_combined_rule && !has_legend_without_stroke &&
-      !has_white_legend_fill && !has_old_svg_bg_stroke && !has_legend_no_rounding) {
+      !has_white_legend_fill && !has_old_svg_bg_stroke && !has_legend_no_rounding &&
+      !has_broad_rect_rule) {
     if (verbose) cat(sprintf("  %s: already processed\n", basename(svg_path)))
     return(invisible(FALSE))
   }
@@ -125,6 +128,12 @@ make_svg_theme_aware <- function(svg_path,
     svg_content <- gsub(
       "(<rect )(x='[^']+' y='[^']+' width='[^']+' height='[^']+' style='[^']*fill: #F5F6F8;[^']*' />)",
       "\\1rx='4' \\2",
+      svg_content
+    )
+    # Replace old broad .svglite rect rule with more specific .svglite > g > rect
+    svg_content <- gsub(
+      "(\\.svglite) rect (\\{)",
+      "\\1 > g > rect \\2",
       svg_content
     )
   }
@@ -201,6 +210,7 @@ make_svg_theme_aware <- function(svg_path,
       "      stroke-miterlimit: 10.00;\n",
       "    }"
     )
+    # Use .svglite > g > rect to only target rects inside g elements, not defs/clipPath
     new_line_rule <- sprintf(
       paste0(
         "    /* theme-aware-processed */\n",
@@ -212,7 +222,7 @@ make_svg_theme_aware <- function(svg_path,
         "      stroke-linejoin: round;\n",
         "      stroke-miterlimit: 10.00;\n",
         "    }\n",
-        "    .svglite rect {\n",
+        "    .svglite > g > rect {\n",
         "      fill: none;\n",
         "      stroke: %s;\n",
         "      stroke-linecap: round;\n",

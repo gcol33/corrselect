@@ -91,7 +91,7 @@ show(results)
 #> -----------------
 #>   Method:      els
 #>   Threshold:   0.700
-#>   Subsets:     5 valid combinations
+#>   Subsets:     5 maximal subsets
 #>   Data Rows:   20 used in correlation
 #> 
 #> Top combinations:
