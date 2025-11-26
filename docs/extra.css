@@ -7,7 +7,7 @@ svg.inline-svg {
   max-width: 100%;
   width: 100%;
   height: auto;
-  border: 1px solid #DAD3C3;
+  border: 1px solid #DFD7CA;
   border-radius: 0.25rem;
 }
 
@@ -17,15 +17,45 @@ svg.inline-svg {
 [data-bs-theme="dark"] figure img,
 [data-bs-theme="dark"] img.figure-img,
 [data-bs-theme="dark"] svg.inline-svg {
-  border-color: #4A4B46;
+  border-color: #495057;
 }
 
-/* Dark mode colors for inline SVG elements */
+/* Dark mode colors for inline SVG elements (base R svg format) */
 /* Use !important to override embedded SVG <style> blocks */
 [data-bs-theme="dark"] .theme-bg {
-  fill: #3E3F3A !important;
+  fill: #343739 !important;
 }
 
 [data-bs-theme="dark"] .theme-text {
-  fill: #dfd7ca !important;
+  fill: #DFD7CA !important;
+}
+
+/* Dark mode colors for svglite format */
+/* Override the embedded styles in inline SVGs */
+[data-bs-theme="dark"] svg.inline-svg .svg-bg {
+  stroke: #495057 !important;
+  fill: #343739 !important;
+}
+
+[data-bs-theme="dark"] svg.inline-svg .svglite line,
+[data-bs-theme="dark"] svg.inline-svg .svglite polyline,
+[data-bs-theme="dark"] svg.inline-svg .svglite polygon,
+[data-bs-theme="dark"] svg.inline-svg .svglite path,
+[data-bs-theme="dark"] svg.inline-svg .svglite circle {
+  stroke: #DFD7CA !important;
+}
+
+[data-bs-theme="dark"] svg.inline-svg .svglite text {
+  fill: #DFD7CA !important;
+}
+
+/* Rect strokes (histogram bars, etc.) - match text color */
+[data-bs-theme="dark"] svg.inline-svg .svglite rect {
+  stroke: #DFD7CA !important;
+}
+
+/* Legend box backgrounds - override inline fill: #F5F6F8 */
+[data-bs-theme="dark"] svg.inline-svg .svglite rect[style*="fill: #F5F6F8"] {
+  fill: #343739 !important;
+  stroke: #495057 !important;
 }
