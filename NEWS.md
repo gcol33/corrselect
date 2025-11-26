@@ -4,6 +4,10 @@
 
 - Single-quoted software names in DESCRIPTION ('lme4', 'glmmTMB') per CRAN policy
 
+## Documentation
+
+- Updated vignettes with improved examples and workflows
+
 ---
 
 # corrselect 3.0.1
