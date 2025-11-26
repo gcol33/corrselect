@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1395,11 +1395,11 @@ widens dramatically as the number of variables increases.</p>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact mode: 11 genes kept (3.3 ms)</span></span>
+<span><span class="co">#&gt; Exact mode: 11 genes kept (3.4 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Greedy mode: 10 genes kept (0.4 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 7.5x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 8.0x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
 mode completes in milliseconds.</p>
@@ -1786,7 +1786,7 @@ for algorithm details</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] igraph_2.1.4         car_3.1-3            carData_3.0-5       </span></span>
-<span><span class="co">#&gt; [4] microbenchmark_1.5.0 corrselect_3.0.1    </span></span>
+<span><span class="co">#&gt; [4] microbenchmark_1.5.0 corrselect_3.0.2    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      </span></span>

@@ -772,11 +772,11 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (3.3 ms)
+#> Exact mode: 11 genes kept (3.4 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
 #> Greedy mode: 10 genes kept (0.4 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 7.5x faster
+#> Speedup: 8.0x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
@@ -1134,7 +1134,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] igraph_2.1.4         car_3.1-3            carData_3.0-5       
-#> [4] microbenchmark_1.5.0 corrselect_3.0.1    
+#> [4] microbenchmark_1.5.0 corrselect_3.0.2    
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      

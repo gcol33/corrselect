@@ -20,25 +20,25 @@ For algorithmic control and performance tuning, see
 
 ### Contents
 
-1.  [Terminology](#terminology) — Core definitions (association,
+1.  [Terminology](#terminology): Core definitions (association,
     threshold, valid subset, clique)
-2.  [Intuitive Overview](#intuitive-overview) — Conceptual introduction
+2.  [Intuitive Overview](#intuitive-overview): Conceptual introduction
     with toy examples
-3.  [Problem Formulation](#problem-formulation) — Formal mathematical
+3.  [Problem Formulation](#problem-formulation): Formal mathematical
     statement
-4.  [Graph-Theoretic Interpretation](#graph-theoretic-interpretation) —
+4.  [Graph-Theoretic Interpretation](#graph-theoretic-interpretation):
     Threshold graphs and maximal cliques
-5.  [From Theory to Implementation](#from-theory-to-implementation) —
-    How concepts map to function arguments
-6.  [Search Algorithms](#search-algorithms) — Exact enumeration vs
-    greedy heuristic
-7.  [Algorithm Pseudocode](#algorithm-pseudocode) — ELS, Bron-Kerbosch,
+5.  [From Theory to Implementation](#from-theory-to-implementation): How
+    concepts map to function arguments
+6.  [Search Algorithms](#search-algorithms): Exact enumeration vs greedy
+    heuristic
+7.  [Algorithm Pseudocode](#algorithm-pseudocode): ELS, Bron-Kerbosch,
     Greedy
-8.  [Technical Details](#forced-variables) — Forced variables,
+8.  [Technical Details](#forced-variables): Forced variables,
     complexity, output structure
-9.  [Design Philosophy](#design-philosophy) — Why maximal? Why hard
+9.  [Design Philosophy](#design-philosophy): Why maximal? Why hard
     threshold? Why graphs?
-10. [References](#references) — Academic literature and further reading
+10. [References](#references): Academic literature and further reading
 
 ------------------------------------------------------------------------
 
@@ -1842,7 +1842,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.1.4     corrselect_3.0.1
+#> [1] igraph_2.1.4     corrselect_3.0.2
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      

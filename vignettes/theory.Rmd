@@ -14,13 +14,29 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 7,
-  fig.height = 5
+  fig.height = 5,
+  dev = "svglite",
+  fig.ext = "svg"
 )
+library(corrselect)
 ```
 
 ## Overview
 
 This vignette presents the mathematical formulation and graph-theoretic foundations underlying **corrselect**. Variable subset selection under correlation constraints is formulated as a maximal independent set problem on threshold graphs, enabling exact enumeration via established algorithms from computational graph theory. The vignette defines the formal problem statement, explains the graph-theoretic representation, details the three implemented algorithms (Bron-Kerbosch, Eppstein-Löffler-Strash, and greedy heuristic), analyzes their computational complexity, and provides comprehensive references to the theoretical literature. For practical usage examples, see `vignette("quickstart")` and `vignette("workflows")`. For algorithmic control and performance tuning, see `vignette("advanced")`.
+
+### Contents
+
+1. [Terminology](#terminology): Core definitions (association, threshold, valid subset, clique)
+2. [Intuitive Overview](#intuitive-overview): Conceptual introduction with toy examples
+3. [Problem Formulation](#problem-formulation): Formal mathematical statement
+4. [Graph-Theoretic Interpretation](#graph-theoretic-interpretation): Threshold graphs and maximal cliques
+5. [From Theory to Implementation](#from-theory-to-implementation): How concepts map to function arguments
+6. [Search Algorithms](#search-algorithms): Exact enumeration vs greedy heuristic
+7. [Algorithm Pseudocode](#algorithm-pseudocode): ELS, Bron-Kerbosch, Greedy
+8. [Technical Details](#forced-variables): Forced variables, complexity, output structure
+9. [Design Philosophy](#design-philosophy): Why maximal? Why hard threshold? Why graphs?
+10. [References](#references): Academic literature and further reading
 
 ---
 
@@ -157,6 +173,15 @@ Chooses the method automatically:
 
 This balances optimality with computational cost.
 
+> **Key Points — Terminology**
+>
+> - **Association matrix**: Symmetric matrix of pairwise relationships (correlations, Cramér's V, etc.)
+> - **Threshold (τ)**: Cutoff determining which pairs are "too associated" to coexist
+> - **Valid subset**: All pairwise associations below τ
+> - **Maximal subset**: Valid subset that cannot be enlarged
+> - **Threshold graph**: Graph where edges connect compatible (low-association) variable pairs
+> - **Clique**: Fully connected subgraph; maximal cliques = maximal valid subsets
+
 ---
 
 ## Intuitive Overview
@@ -207,8 +232,6 @@ corrselect finds **all maximal** subsets because:
 Consider 4 variables with this correlation matrix:
 
 ```{r}
-library(corrselect)
-
 # Construct a simple 4x4 correlation matrix
 cor_4var <- matrix(c(
   1.00, 0.85, 0.10, 0.15,
@@ -481,6 +504,14 @@ This toy example shows why corrselect enumerates all solutions:
 
 Real datasets have similar structure but with more variables and more complex clustering.
 
+> **Key Points — Intuitive Overview**
+>
+> - corrselect finds variable subsets where no pair exceeds a correlation threshold
+> - Multiple valid subsets typically exist; all are enumerated for user choice
+> - Graph representation: variables = nodes, low-correlation pairs = edges
+> - Maximal cliques in this graph = maximal valid subsets
+> - Comparing subsets reveals correlation structure (clusters of related variables)
+
 ---
 
 ## Problem Formulation
@@ -559,6 +590,12 @@ A valid subset $S$ is **maximal** if no variable $k \notin S$ satisfies:
 |a_{ki}| < \tau \quad \text{for all } i \in S
 \]
 
+> **Key Points — Problem Formulation**
+>
+> - Input: p × p association matrix A, threshold τ ∈ (0,1)
+> - Valid subset: S where |a_ij| < τ for all pairs i,j ∈ S
+> - Maximal: cannot add any variable without violating threshold
+> - Goal: enumerate all maximal valid subsets
 
 ---
 
@@ -618,8 +655,6 @@ print(round(cor_6var, 2))
 Threshold graph construction with $\tau = 0.7$:
 
 ```{r, fig.width=8, fig.height=4, fig.alt="Two side-by-side visualizations for 6-variable example. Left panel: correlation matrix heatmap with blue (negative), white (zero), and red (positive) colors, numerical values overlaid, and black dashed lines separating two correlation blocks. Right panel: threshold graph showing 6 nodes positioned in two groups based on correlation structure, with blue edges connecting variables where absolute correlation is below 0.7. The dual visualization demonstrates how correlation matrix structure translates to threshold graph topology, revealing maximal cliques within and across correlation blocks."}
-library(corrselect)
-
 # Build adjacency matrix for threshold graph
 tau <- 0.7
 adj_matrix <- abs(cor_6var) < tau
@@ -729,13 +764,18 @@ MatSelect identified two maximal subsets of size 3, exactly matching the visual 
 
 Neither subset can be extended: adding any variable from the other group would introduce a pair with correlation above 0.7. For this symmetric example, both subsets have equal size and are equally valid solutions. In practice, you might choose based on domain knowledge (prefer variables with established theory) or downstream model performance.
 
+> **Key Points — Graph-Theoretic Interpretation**
+>
+> - Build threshold graph: nodes = variables, edges connect pairs with |a_ij| < τ
+> - Maximal valid subsets ↔ maximal cliques in threshold graph
+> - Proven algorithms (ELS, Bron-Kerbosch) enumerate all maximal cliques efficiently
+> - Graph structure reveals variable clustering (densely connected = similar variables)
+
 ---
 
 ## From Theory to Implementation
 
 The mathematical concepts defined earlier map directly onto the function arguments and behavior of the package. The correspondence is outlined below.
-
----
 
 ### **Threshold (\(\tau\)) → `threshold` argument**
 
@@ -744,15 +784,11 @@ Controls which edges appear in the threshold graph.
 - `corrPrune(data, threshold = 0.7)` keeps an edge only if \(|a_{ij}| < 0.7\)
 - Lower thresholds → stricter pruning → sparser graphs → smaller valid subsets
 
----
-
 ### **Maximal cliques → Returned subsets**
 
 - `corrSelect()` returns **all** maximal cliques (full exact enumeration)
 - `corrPrune()` returns **one** maximal clique (greedy or exact, depending on mode)
 - Each clique corresponds exactly to a valid variable subset satisfying the threshold constraint
-
----
 
 ### **Forced-in set (\(F\)) → `force_in` argument**
 
@@ -760,8 +796,6 @@ Ensures that certain variables appear in every returned subset.
 
 - `corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))`
 - Internally, the algorithm verifies that \(F\) itself is a valid subset (all pairs in \(F\) satisfy \(|a_{ij}| < \tau\))
-
----
 
 ### **Search type → `mode` and `method` arguments**
 
@@ -779,8 +813,6 @@ Choice of enumeration algorithm:
 - `method = "bron-kerbosch"`  
   Bron–Kerbosch with pivoting (default)
 
----
-
 ### **Association matrix (\(A\)) → Data input and matrix-based functions**
 
 How the association structure enters the algorithm:
@@ -790,9 +822,7 @@ How the association structure enters the algorithm:
 - `MatSelect(cor_matrix)`  
   Uses a precomputed association matrix directly
 - `assocSelect(data)`  
-  Computes mixed association measures (Pearson, eta-squared, Cramér’s V) before selection
-
----
+  Computes mixed association measures (Pearson, eta-squared, Cramér's V) before selection
 
 ### **Graph density → Performance considerations**
 
@@ -804,8 +834,6 @@ Depends directly on the threshold:
   Many edges → potentially exponential growth in maximal cliques
 
 These properties motivate the `auto` mode: exact for small \(p\), greedy for larger \(p\).
-
----
 
 ### **Example mapping**
 
@@ -829,6 +857,13 @@ results <- corrSelect(
 
 The returned object contains all maximal cliques, each representing a valid variable subset that satisfies the threshold constraint and includes the required variables.
 
+> **Key Points — From Theory to Implementation**
+>
+> - `threshold` = τ (correlation cutoff)
+> - `force_in` = F (variables required in all subsets)
+> - `mode = "exact"` → enumerate all maximal cliques
+> - `mode = "greedy"` → fast heuristic, single subset
+> - `method = "els"` recommended when using `force_in`
 
 ---
 
@@ -955,6 +990,14 @@ Iteratively removes variables with highest average absolute association until al
 Returns a single valid subset (not necessarily maximal or optimal).
 
 Complexity: $O(p^2)$ vs $O(2^p)$ for exact enumeration.
+
+> **Key Points — Search Algorithms**
+>
+> - **Exact mode**: ELS or Bron-Kerbosch enumerate all maximal cliques
+> - **ELS**: O(d · 3^{d/3}), faster on sparse graphs, better with `force_in`
+> - **Bron-Kerbosch**: O(3^{p/3}), pivoting improves performance
+> - **Greedy**: O(p²), fast but returns single (possibly non-optimal) subset
+> - Rule of thumb: exact for p ≤ 20, greedy for p > 20
 
 ---
 
@@ -1294,6 +1337,14 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 
 **When to use greedy mode**: High-dimensional data ($p > 50$), dense correlation structure (high $\tau$), or when a single solution suffices (e.g., automated pipelines).
 
+> **Key Points — Design Philosophy**
+>
+> - **Maximal not maximum**: All locally optimal subsets enumerated, not just the globally largest
+> - **Hard threshold**: Simple, interpretable guarantee vs. soft penalty optimization
+> - **Graph algorithms**: Leverage decades of research; proven correctness and complexity bounds
+> - **Pairwise only**: Computational tractability, clear interpretation, robustness
+> - **Enumerate all**: Preserves information for downstream choice; greedy available when speed critical
+
 ---
 
 ## References
@@ -1432,7 +1483,9 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 - `vignette("advanced")` - Algorithmic control and custom engines
 - `vignette("comparison")` - Comparison with alternatives
 
+## Session Info
 
-
-
+```{r}
+sessionInfo()
+```
 
