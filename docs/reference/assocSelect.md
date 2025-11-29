@@ -154,7 +154,7 @@ assocSelect(df, threshold = 0.6)
 #>   AssocMethod: numeric_numeric = pearson, numeric_factor = eta, numeric_ordered
 #>                = spearman, factor_ordered = cramersv
 #>   Threshold:   0.600
-#>   Subsets:     1 maximal subsets
+#>   Subsets:     1 valid combinations
 #>   Data Rows:   15 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -177,7 +177,7 @@ assocSelect(df,
 #>   AssocMethod: numeric_numeric = kendall, numeric_factor = eta, numeric_ordered
 #>                = kendall, factor_ordered = cramersv
 #>   Threshold:   0.500
-#>   Subsets:     1 maximal subsets
+#>   Subsets:     1 valid combinations
 #>   Data Rows:   15 used in correlation
 #>   Forced-in:   height
 #> 

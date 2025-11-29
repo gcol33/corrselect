@@ -52,16 +52,16 @@
 <div class="section level3">
 <h3 id="cran-compliance-3-0-2">CRAN Compliance<a class="anchor" aria-label="anchor" href="#cran-compliance-3-0-2"></a></h3>
 <ul><li>Single-quoted software names in DESCRIPTION (‘lme4’, ‘glmmTMB’) per CRAN policy</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-3-0-2">Documentation<a class="anchor" aria-label="anchor" href="#documentation-3-0-2"></a></h3>
+<ul><li>Updated vignettes with improved examples and workflows</li>
 </ul><hr></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.0.0" id="corrselect-300">corrselect 3.0.0<a class="anchor" aria-label="anchor" href="#corrselect-300"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.0.1" id="corrselect-301">corrselect 3.0.1<a class="anchor" aria-label="anchor" href="#corrselect-301"></a></h2>
 <div class="section level3">
-<h3 id="major-release-predictor-pruning-toolkit-3-0-0">Major Release: Predictor Pruning Toolkit<a class="anchor" aria-label="anchor" href="#major-release-predictor-pruning-toolkit-3-0-0"></a></h3>
-<p>Version 3.0.0 represents a major expansion of corrselect from a specialized subset enumeration tool into a comprehensive predictor pruning toolkit. <strong>Fully backward compatible</strong> with 2.x - all existing code continues to work.</p>
-</div>
-<div class="section level3">
-<h3 id="bug-fixes-3-0-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-3-0-0"></a></h3>
+<h3 id="bug-fixes-3-0-1">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-3-0-1"></a></h3>
 <ul><li>
 <strong><code><a href="../reference/modelPrune.html">modelPrune()</a></code></strong>: Fixed infinite loop when VIF computation encountered perfect multicollinearity
 <ul><li>Added proper handling of <code>Inf</code> and <code>NA</code> VIF values in pruning loop</li>
@@ -75,7 +75,14 @@
 </ul></li>
 <li>
 <strong>Test suite</strong>: All 261 tests pass with zero warnings (CRAN-compliant)</li>
-</ul></div>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0.0" id="corrselect-300">corrselect 3.0.0<a class="anchor" aria-label="anchor" href="#corrselect-300"></a></h2>
+<div class="section level3">
+<h3 id="major-release-predictor-pruning-toolkit-3-0-0">Major Release: Predictor Pruning Toolkit<a class="anchor" aria-label="anchor" href="#major-release-predictor-pruning-toolkit-3-0-0"></a></h3>
+<p>Version 3.0.0 represents a major expansion of corrselect from a specialized subset enumeration tool into a comprehensive predictor pruning toolkit. <strong>Fully backward compatible</strong> with 2.x - all existing code continues to work.</p>
+</div>
 <div class="section level3">
 <h3 id="major-features-3-0-0">Major Features<a class="anchor" aria-label="anchor" href="#major-features-3-0-0"></a></h3>
 <div class="section level4">
@@ -176,6 +183,30 @@
 <h3 id="features-added-2-0-1">Features Added<a class="anchor" aria-label="anchor" href="#features-added-2-0-1"></a></h3>
 <ul><li>
 <code><a href="../reference/assocSelect.html">assocSelect()</a></code> now supports logical columns by automatically converting them to factors.</li>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.0" id="corrselect-200">corrselect 2.0.0<a class="anchor" aria-label="anchor" href="#corrselect-200"></a></h2>
+<div class="section level3">
+<h3 id="major-release-mixed-type-association-selection-2-0-0">Major Release: Mixed-Type Association Selection<a class="anchor" aria-label="anchor" href="#major-release-mixed-type-association-selection-2-0-0"></a></h3>
+<p>Version 2.0.0 introduces support for mixed-type data through the new <code><a href="../reference/assocSelect.html">assocSelect()</a></code> function, enabling subset selection on datasets containing numeric, factor, and ordered variables.</p>
+</div>
+<div class="section level3">
+<h3 id="major-features-2-0-0">Major Features<a class="anchor" aria-label="anchor" href="#major-features-2-0-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/assocSelect.html">assocSelect()</a></code></strong>: New function for mixed-type data frame interface
+<ul><li>Handles numeric, factor, and ordered variables</li>
+<li>Automatic association measure selection based on variable pair types</li>
+<li>Supports Pearson, Spearman, Kendall correlations</li>
+<li>Computes Eta-squared for numeric-factor pairs</li>
+<li>Computes Cramér’s V for factor-factor pairs</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-2-0-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-2-0-0"></a></h3>
+<ul><li>Improved algorithm selection logic</li>
+<li>Better handling of edge cases in subset enumeration</li>
+<li>Enhanced documentation with examples for mixed-type workflows</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

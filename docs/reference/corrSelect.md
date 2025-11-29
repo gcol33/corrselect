@@ -125,7 +125,7 @@ corrSelect(df, threshold = 0.8)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.800
-#>   Subsets:     4 maximal subsets
+#>   Subsets:     4 valid combinations
 #>   Data Rows:   100 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -146,7 +146,7 @@ corrSelect(df, threshold = 0.6, method = "bron-kerbosch", use_pivot = TRUE)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.600
-#>   Subsets:     4 maximal subsets
+#>   Subsets:     4 valid combinations
 #>   Data Rows:   100 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -167,7 +167,7 @@ corrSelect(df, threshold = 0.6, force_in = "V10", cor_method = "spearman")
 #>   Method:      els
 #>   Correlation: spearman
 #>   Threshold:   0.600
-#>   Subsets:     4 maximal subsets
+#>   Subsets:     4 valid combinations
 #>   Data Rows:   100 used in correlation
 #>   Forced-in:   V10
 #> 

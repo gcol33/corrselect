@@ -16,7 +16,7 @@ corrPrune(
   force_in = NULL,
   by = NULL,
   group_q = 1,
-  max_exact_p = 20,
+  max_exact_p = 100,
   ...
 )
 ```
@@ -73,7 +73,7 @@ corrPrune(
 - max_exact_p:
 
   Integer. Maximum number of predictors for which exact mode is used
-  when `mode = "auto"`. Default: 20.
+  when `mode = "auto"`. Default: 100.
 
 - ...:
 

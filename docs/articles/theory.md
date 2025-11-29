@@ -577,7 +577,7 @@ show(results)
 #> -----------------
 #>   Method:      bron-kerbosch
 #>   Threshold:   0.700
-#>   Subsets:     4 maximal subsets
+#>   Subsets:     4 valid combinations
 #>   Data Rows:   4 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -929,7 +929,7 @@ show(results)
 #> -----------------
 #>   Method:      els
 #>   Threshold:   0.700
-#>   Subsets:     3 maximal subsets
+#>   Subsets:     3 valid combinations
 #>   Data Rows:   6 used in correlation
 #> 
 #> Top combinations:
@@ -1842,7 +1842,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.1.4     corrselect_3.0.2
+#> [1] igraph_2.1.4     corrselect_3.0.1
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      

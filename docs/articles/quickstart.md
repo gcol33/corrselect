@@ -143,7 +143,7 @@ show(results)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.700
-#>   Subsets:     15 maximal subsets
+#>   Subsets:     15 valid combinations
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -202,7 +202,7 @@ show(results_mixed)
 #>   AssocMethod: numeric_numeric = pearson, numeric_factor = eta, numeric_ordered
 #>                = spearman, factor_ordered = cramersv
 #>   Threshold:   0.500
-#>   Subsets:     1 maximal subsets
+#>   Subsets:     1 valid combinations
 #>   Data Rows:   100 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -447,7 +447,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.0.2
+#> [1] corrselect_3.0.1
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    

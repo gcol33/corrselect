@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.5            0.2
-#> 2   20           0.8            0.4
-#> 3   50           1.4            0.8
-#> 4  100           4.6            1.4
-#> 5  200          22.8            3.6
-#> 6  300          85.9            6.9
-#> 7  500         308.3           15.5
-#> 8 1000            NA           54.9
+#> 1   10           0.5            0.3
+#> 2   20           0.6            0.3
+#> 3   50           1.0            0.7
+#> 4  100           1.9            1.3
+#> 5  200           5.2            3.1
+#> 6  300          13.7            5.8
+#> 7  500          37.1           13.4
+#> 8 1000            NA           48.7
 ```
 
 ``` r
@@ -582,7 +582,7 @@ show(all_subsets)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.900
-#>   Subsets:     2 maximal subsets
+#>   Subsets:     2 valid combinations
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -740,11 +740,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 3.9 ms
+#> Recomputing each time: 3.6 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 1.8 ms
+#> Precomputed matrix: 0.9 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 2.1x faster
+#> Speedup: 3.9x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1177,7 +1177,7 @@ show(result)
 #>   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric
 #>                = eta, factor_factor = cramersv
 #>   Threshold:   0.600
-#>   Subsets:     20 maximal subsets
+#>   Subsets:     20 valid combinations
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -1363,7 +1363,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.0.2    
+#> [1] microbenchmark_1.5.0 corrselect_3.0.1    
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
