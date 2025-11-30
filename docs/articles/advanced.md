@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.5            0.3
-#> 2   20           0.6            0.3
-#> 3   50           1.0            0.7
-#> 4  100           1.9            1.3
-#> 5  200           5.2            3.1
-#> 6  300          13.7            5.8
-#> 7  500          37.1           13.4
-#> 8 1000            NA           48.7
+#> 1   10           0.5            0.2
+#> 2   20           0.7            0.4
+#> 3   50           1.5            0.7
+#> 4  100           4.6            1.4
+#> 5  200          22.8            3.5
+#> 6  300          84.8            6.6
+#> 7  500         313.2           15.5
+#> 8 1000            NA           57.0
 ```
 
 ``` r
@@ -582,7 +582,7 @@ show(all_subsets)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.900
-#>   Subsets:     2 valid combinations
+#>   Subsets:     2 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -740,11 +740,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 3.6 ms
+#> Recomputing each time: 4.2 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 0.9 ms
+#> Precomputed matrix: 2.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 3.9x faster
+#> Speedup: 2.1x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1177,7 +1177,7 @@ show(result)
 #>   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric
 #>                = eta, factor_factor = cramersv
 #>   Threshold:   0.600
-#>   Subsets:     20 valid combinations
+#>   Subsets:     20 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -1363,15 +1363,14 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.0.1    
+#> [1] microbenchmark_1.5.0 corrselect_3.0.2    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
-#>  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1
-#>  [9] ragg_1.5.0        sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
-#> [13] jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0     yaml_2.3.10      
-#> [17] lifecycle_1.0.4   compiler_4.5.1    fs_1.6.6          htmlwidgets_1.6.4
-#> [21] Rcpp_1.1.0        systemfonts_1.3.1 digest_0.6.37     R6_2.6.1         
-#> [25] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     
-#> [29] desc_1.4.3
+#>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
+#>  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1
+#>  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    
+#> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  
+#> [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       bslib_0.9.0      
+#> [21] evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   
+#> [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4 MASS_7.3-65
 ```

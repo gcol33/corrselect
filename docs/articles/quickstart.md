@@ -143,7 +143,7 @@ show(results)
 #>   Method:      bron-kerbosch
 #>   Correlation: pearson
 #>   Threshold:   0.700
-#>   Subsets:     15 valid combinations
+#>   Subsets:     15 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -202,7 +202,7 @@ show(results_mixed)
 #>   AssocMethod: numeric_numeric = pearson, numeric_factor = eta, numeric_ordered
 #>                = spearman, factor_ordered = cramersv
 #>   Threshold:   0.500
-#>   Subsets:     1 valid combinations
+#>   Subsets:     1 maximal subsets
 #>   Data Rows:   100 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -447,14 +447,14 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.0.1
+#> [1] corrselect_3.0.2
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
 #>  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1
 #>  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    
 #> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  
-#> [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       ragg_1.5.0       
-#> [21] bslib_0.9.0       evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10      
-#> [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4
+#> [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       bslib_0.9.0      
+#> [21] evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   
+#> [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4
 ```

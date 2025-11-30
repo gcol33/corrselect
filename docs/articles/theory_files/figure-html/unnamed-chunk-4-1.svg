@@ -3,15 +3,24 @@
 <g class='svglite'>
 <defs>
   <style type='text/css'><![CDATA[
-    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+    /* theme-aware-processed */
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite circle {
       fill: none;
-      stroke: #000000;
+      stroke: #3E3F3A;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite > g > rect {
+      fill: none;
+      stroke: #3E3F3A;
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
     }
     .svglite text {
       white-space: pre;
+      fill: #3E3F3A;
     }
     .svglite g.glyphgroup path {
       fill: inherit;
@@ -19,14 +28,14 @@
     }
   ]]></style>
 </defs>
-<rect width='100%' height='100%' style='stroke: none; fill: none;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHw1NzYuMDA='>
     <rect x='0.00' y='0.00' width='576.00' height='576.00' />
   </clipPath>
 </defs>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHw1NzYuMDA=)'>
-<text x='288.00' y='26.75' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='449.58px' lengthAdjust='spacingAndGlyphs'>Threshold Graph (τ = 0.7): Variables with |cor| &lt; 0.7 are connected</text>
+<text x='288.00' y='26.75' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='449.58px' lengthAdjust='spacingAndGlyphs'>Threshold Graph (τ = 0.7): Variables with |cor| &lt; 0.7 are connected</text>
 </g>
 <defs>
   <clipPath id='cpMTQuNDB8NTYxLjYwfDQzLjIwfDU2MS42MA=='>
@@ -258,15 +267,15 @@
 <text x='133.10' y='259.23' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V20</text>
 </g>
 <g clip-path='url(#cpMTQuNDB8NTYxLjYwfDQzLjIwfDU2MS42MA==)'>
-<rect x='14.40' y='43.20' width='162.81' height='57.60' style='stroke-width: 0.75; fill: #FFFFFF;' />
+<rect rx='4' x='14.40' y='43.20' width='162.81' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <rect x='23.04' y='51.84' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #D73027;' />
 <rect x='23.04' y='63.36' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #FC8D59;' />
 <rect x='23.04' y='74.88' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #91BFDB;' />
 <rect x='23.04' y='86.40' width='6.91' height='5.76' style='stroke-width: 0.75; fill: #4575B4;' />
-<text x='38.59' y='58.15' style='font-size: 9.60px; font-family: "Arial";' textLength='108.19px' lengthAdjust='spacingAndGlyphs'>Block 1 (V1-V5): High cor</text>
-<text x='38.59' y='69.67' style='font-size: 9.60px; font-family: "Arial";' textLength='134.30px' lengthAdjust='spacingAndGlyphs'>Block 2 (V6-V10): Moderate cor</text>
-<text x='38.59' y='81.19' style='font-size: 9.60px; font-family: "Arial";' textLength='116.00px' lengthAdjust='spacingAndGlyphs'>Block 3 (V11-V15): Low cor</text>
-<text x='38.59' y='92.71' style='font-size: 9.60px; font-family: "Arial";' textLength='132.14px' lengthAdjust='spacingAndGlyphs'>Block 4 (V16-V20): Minimal cor</text>
+<text x='38.59' y='58.15' style='font-size: 9.60px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='108.19px' lengthAdjust='spacingAndGlyphs'>Block 1 (V1-V5): High cor</text>
+<text x='38.59' y='69.67' style='font-size: 9.60px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='134.30px' lengthAdjust='spacingAndGlyphs'>Block 2 (V6-V10): Moderate cor</text>
+<text x='38.59' y='81.19' style='font-size: 9.60px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='116.00px' lengthAdjust='spacingAndGlyphs'>Block 3 (V11-V15): Low cor</text>
+<text x='38.59' y='92.71' style='font-size: 9.60px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='132.14px' lengthAdjust='spacingAndGlyphs'>Block 4 (V16-V20): Minimal cor</text>
 </g>
 </g>
 </svg>

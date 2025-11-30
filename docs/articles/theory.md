@@ -577,7 +577,7 @@ show(results)
 #> -----------------
 #>   Method:      bron-kerbosch
 #>   Threshold:   0.700
-#>   Subsets:     4 valid combinations
+#>   Subsets:     4 maximal subsets
 #>   Data Rows:   4 used in correlation
 #>   Pivot:       TRUE
 #> 
@@ -929,7 +929,7 @@ show(results)
 #> -----------------
 #>   Method:      els
 #>   Threshold:   0.700
-#>   Subsets:     3 valid combinations
+#>   Subsets:     3 maximal subsets
 #>   Data Rows:   6 used in correlation
 #> 
 #> Top combinations:
@@ -1842,15 +1842,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.1.4     corrselect_3.0.1
+#> [1] igraph_2.1.4     corrselect_3.0.2
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
 #>  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1
-#>  [9] ragg_1.5.0        sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
-#> [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4  
-#> [17] compiler_4.5.1    fs_1.6.6          pkgconfig_2.0.3   htmlwidgets_1.6.4
-#> [21] Rcpp_1.1.0        systemfonts_1.3.1 digest_0.6.37     R6_2.6.1         
-#> [25] magrittr_2.0.4    bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0    
-#> [29] cachem_1.1.0      desc_1.4.3
+#>  [9] sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5    jquerylib_0.1.4  
+#> [13] fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4   compiler_4.5.1   
+#> [17] fs_1.6.6          htmlwidgets_1.6.4 Rcpp_1.1.0        pkgconfig_2.0.3  
+#> [21] systemfonts_1.3.1 digest_0.6.37     R6_2.6.1          magrittr_2.0.4   
+#> [25] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     
+#> [29] desc_1.4.3
 ```

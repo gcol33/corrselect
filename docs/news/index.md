@@ -2,6 +2,8 @@
 
 ## corrselect 3.0.2
 
+CRAN release: 2025-11-29
+
 ### CRAN Compliance
 
 - Single-quoted software names in DESCRIPTION (‘lme4’, ‘glmmTMB’) per

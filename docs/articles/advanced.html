@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2025-11-29</h4>
+            <h4 data-toc-skip class="date">2025-11-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -222,14 +222,14 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu">benchmark_corrPrune</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
-<span><span class="co">#&gt; 1   10           0.5            0.3</span></span>
-<span><span class="co">#&gt; 2   20           0.6            0.3</span></span>
-<span><span class="co">#&gt; 3   50           1.0            0.7</span></span>
-<span><span class="co">#&gt; 4  100           1.9            1.3</span></span>
-<span><span class="co">#&gt; 5  200           5.2            3.1</span></span>
-<span><span class="co">#&gt; 6  300          13.7            5.8</span></span>
-<span><span class="co">#&gt; 7  500          37.1           13.4</span></span>
-<span><span class="co">#&gt; 8 1000            NA           48.7</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   10           0.5            0.2</span></span>
+<span><span class="co">#&gt; 2   20           0.7            0.4</span></span>
+<span><span class="co">#&gt; 3   50           1.5            0.7</span></span>
+<span><span class="co">#&gt; 4  100           4.6            1.4</span></span>
+<span><span class="co">#&gt; 5  200          22.8            3.5</span></span>
+<span><span class="co">#&gt; 6  300          84.8            6.6</span></span>
+<span><span class="co">#&gt; 7  500         313.2           15.5</span></span>
+<span><span class="co">#&gt; 8 1000            NA           57.0</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -271,7 +271,124 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>       bty <span class="op">=</span> <span class="st">"o"</span>,</span>
 <span>       bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="advanced_files/figure-html/unnamed-chunk-5-1.svg" class="r-plt" alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." width="2400"></p>
+<p>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='360.00pt' viewBox='0 0 576.00 360.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    /* theme-aware-processed */
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite circle {
+      fill: none;
+      stroke: #3E3F3A;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite > g > rect {
+      fill: none;
+      stroke: #3E3F3A;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+      fill: #3E3F3A;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
+    <rect x='0.00' y='0.00' width='576.00' height='360.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng=='>
+    <rect x='59.04' y='59.04' width='486.72' height='227.52' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng==)'>
+<line x1='78.96' y1='254.48' x2='79.73' y2='251.67' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='86.74' y1='239.67' x2='90.15' y2='236.30' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='101.08' y1='226.98' x2='112.23' y2='218.80' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='124.51' y1='211.40' x2='157.08' y2='195.60' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='170.38' y1='190.17' x2='202.25' y2='179.47' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='216.10' y1='175.59' x2='293.10' y2='158.19' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='307.26' y1='155.62' x2='520.60' y2='126.21' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='77.07' cy='261.43' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='81.62' cy='244.73' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='95.28' cy='231.24' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='118.04' cy='214.54' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='163.56' cy='192.46' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='209.08' cy='177.18' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='300.12' cy='156.60' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='527.73' cy='125.22' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+</g>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
+<line x1='72.51' y1='286.56' x2='527.73' y2='286.56' style='stroke-width: 0.75;' />
+<line x1='72.51' y1='286.56' x2='72.51' y2='293.76' style='stroke-width: 0.75;' />
+<line x1='163.56' y1='286.56' x2='163.56' y2='293.76' style='stroke-width: 0.75;' />
+<line x1='254.60' y1='286.56' x2='254.60' y2='293.76' style='stroke-width: 0.75;' />
+<line x1='345.65' y1='286.56' x2='345.65' y2='293.76' style='stroke-width: 0.75;' />
+<line x1='436.69' y1='286.56' x2='436.69' y2='293.76' style='stroke-width: 0.75;' />
+<line x1='527.73' y1='286.56' x2='527.73' y2='293.76' style='stroke-width: 0.75;' />
+<text x='72.51' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='163.56' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>200</text>
+<text x='254.60' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>400</text>
+<text x='345.65' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
+<text x='436.69' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
+<text x='527.73' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='26.69px' lengthAdjust='spacingAndGlyphs'>1000</text>
+<line x1='59.04' y1='278.13' x2='59.04' y2='72.90' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='278.13' x2='51.84' y2='278.13' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='239.35' x2='51.84' y2='239.35' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='222.65' x2='51.84' y2='222.65' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='183.87' x2='51.84' y2='183.87' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='167.16' x2='51.84' y2='167.16' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='128.38' x2='51.84' y2='128.38' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='111.68' x2='51.84' y2='111.68' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='72.90' x2='51.84' y2='72.90' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,278.13) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.1</text>
+<text transform='translate(41.76,239.35) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text transform='translate(41.76,183.87) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>5.0</text>
+<text transform='translate(41.76,128.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>50.0</text>
+<text transform='translate(41.76,72.90) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>500.0</text>
+<polygon points='59.04,286.56 545.76,286.56 545.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
+<text x='302.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='167.16px' lengthAdjust='spacingAndGlyphs'>Exact vs Greedy Scaling</text>
+<text x='302.40' y='341.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='131.36px' lengthAdjust='spacingAndGlyphs'>Number of Predictors (p)</text>
+<text transform='translate(12.96,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='156.95px' lengthAdjust='spacingAndGlyphs'>Time (milliseconds, log scale)</text>
+</g>
+<g clip-path='url(#cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng==)'>
+<line x1='85.92' y1='225.47' x2='90.98' y2='218.66' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='99.92' y1='207.37' x2='113.40' y2='191.38' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='123.53' y1='181.22' x2='158.07' y2='151.96' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='169.47' y1='143.19' x2='203.17' y2='119.76' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='215.88' y1='113.30' x2='293.32' y2='86.52' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='77.07' cy='239.35' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='81.62' cy='231.24' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='95.28' cy='212.88' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='118.04' cy='185.88' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='163.56' cy='147.30' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='209.08' cy='115.65' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='300.12' cy='84.17' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<line x1='300.12' y1='286.56' x2='300.12' y2='59.04' style='stroke-width: 0.75; stroke: #7F7F7F; stroke-dasharray: 4.00,4.00;' />
+<text x='307.32' y='87.03' style='font-size: 12.00px;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>Exact mode limit</text>
+<rect rx='4' x='59.04' y='59.04' width='80.38' height='43.20' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
+<line x1='62.28' y1='73.44' x2='83.88' y2='73.44' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='62.28' y1='87.84' x2='83.88' y2='87.84' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='73.08' cy='73.44' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='73.08' cy='87.84' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<text x='94.68' y='77.74' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='30.00px' lengthAdjust='spacingAndGlyphs'>Exact</text>
+<text x='94.68' y='92.14' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='39.34px' lengthAdjust='spacingAndGlyphs'>Greedy</text>
+</g>
+</g>
+</svg></p>
 <p><strong>Key insight</strong>: The scaling behavior depends heavily on
 correlation structure. For this moderately correlated dataset (ρ =
 0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy
@@ -697,7 +814,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <span><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
 <span><span class="co">#&gt;   Correlation: pearson</span></span>
 <span><span class="co">#&gt;   Threshold:   0.900</span></span>
-<span><span class="co">#&gt;   Subsets:     2 valid combinations</span></span>
+<span><span class="co">#&gt;   Subsets:     2 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
 <span><span class="co">#&gt;   Pivot:       TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -850,11 +967,11 @@ correlation matrix:</p>
 <span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 3.6 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 4.2 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Precomputed matrix: 0.9 ms</span></span>
+<span><span class="co">#&gt; Precomputed matrix: 2.0 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 3.9x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 2.1x faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li>Testing multiple thresholds</li>
@@ -1214,7 +1331,190 @@ remove perfect collinearity:</p>
 <span>     col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, <span class="st">"Original"</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="advanced_files/figure-html/unnamed-chunk-26-1.svg" class="r-plt" alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." width="3000"></p>
+<p>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='720.00pt' height='288.00pt' viewBox='0 0 720.00 288.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    /* theme-aware-processed */
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite circle {
+      fill: none;
+      stroke: #3E3F3A;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite > g > rect {
+      fill: none;
+      stroke: #3E3F3A;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+      fill: #3E3F3A;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHwyODguMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='288.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHwyODguMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpMC4wMHwzNjAuMDB8MC4wMHwyODguMDA='>
+    <rect x='0.00' y='0.00' width='360.00' height='288.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHwzNjAuMDB8MC4wMHwyODguMDA=)'>
+<text x='194.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='195.19px' lengthAdjust='spacingAndGlyphs'>Distribution of |Correlations|</text>
+<text x='194.40' y='269.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='64.95px' lengthAdjust='spacingAndGlyphs'>|Correlation|</text>
+<text transform='translate(12.96,136.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='56.69px' lengthAdjust='spacingAndGlyphs'>Frequency</text>
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHwyODguMDA=)'>
+<line x1='110.84' y1='214.56' x2='277.96' y2='214.56' style='stroke-width: 0.75;' />
+<line x1='110.84' y1='214.56' x2='110.84' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='166.55' y1='214.56' x2='166.55' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='222.25' y1='214.56' x2='222.25' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='277.96' y1='214.56' x2='277.96' y2='221.76' style='stroke-width: 0.75;' />
+<text x='110.84' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='166.55' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='222.25' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='277.96' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<line x1='59.04' y1='208.80' x2='59.04' y2='64.80' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='208.80' x2='51.84' y2='208.80' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='172.80' x2='51.84' y2='172.80' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='136.80' x2='51.84' y2='136.80' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='100.80' x2='51.84' y2='100.80' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='64.80' x2='51.84' y2='64.80' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,208.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text transform='translate(41.76,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text transform='translate(41.76,136.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text transform='translate(41.76,100.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text transform='translate(41.76,64.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>8</text>
+</g>
+<defs>
+  <clipPath id='cpNTkuMDR8MzI5Ljc2fDU5LjA0fDIxNC41Ng=='>
+    <rect x='59.04' y='59.04' width='270.72' height='155.52' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNTkuMDR8MzI5Ljc2fDU5LjA0fDIxNC41Ng==)'>
+<rect x='69.07' y='154.80' width='13.93' height='54.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='82.99' y='190.80' width='13.93' height='18.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='96.92' y='172.80' width='13.93' height='36.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='110.84' y='136.80' width='13.93' height='72.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='124.77' y='190.80' width='13.93' height='18.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='138.70' y='208.80' width='13.93' height='0.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='152.62' y='190.80' width='13.93' height='18.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='166.55' y='118.80' width='13.93' height='90.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='180.47' y='172.80' width='13.93' height='36.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='194.40' y='172.80' width='13.93' height='36.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='208.33' y='64.80' width='13.93' height='144.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='222.25' y='208.80' width='13.93' height='0.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='236.18' y='82.80' width='13.93' height='126.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='250.10' y='64.80' width='13.93' height='144.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='264.03' y='136.80' width='13.93' height='72.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='277.96' y='154.80' width='13.93' height='54.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='291.88' y='154.80' width='13.93' height='54.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='305.81' y='190.80' width='13.93' height='18.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<line x1='194.40' y1='214.56' x2='194.40' y2='59.04' style='stroke-width: 1.50; stroke: #FF0000; stroke-dasharray: 8.00,8.00;' />
+<line x1='250.10' y1='214.56' x2='250.10' y2='59.04' style='stroke-width: 1.50; stroke: #0000FF; stroke-dasharray: 8.00,8.00;' />
+<line x1='305.81' y1='214.56' x2='305.81' y2='59.04' style='stroke-width: 1.50; stroke: #00FF00; stroke-dasharray: 8.00,8.00;' />
+<rect rx='4' x='202.47' y='59.04' width='127.29' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
+<line x1='213.27' y1='73.44' x2='234.87' y2='73.44' style='stroke-width: 1.50; stroke: #FF0000; stroke-dasharray: 8.00,8.00;' />
+<line x1='213.27' y1='87.84' x2='234.87' y2='87.84' style='stroke-width: 1.50; stroke: #0000FF; stroke-dasharray: 8.00,8.00;' />
+<line x1='213.27' y1='102.24' x2='234.87' y2='102.24' style='stroke-width: 1.50; stroke: #00FF00; stroke-dasharray: 8.00,8.00;' />
+<text x='245.67' y='77.74' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='53.33px' lengthAdjust='spacingAndGlyphs'>0.5 (strict)</text>
+<text x='245.67' y='92.14' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='78.69px' lengthAdjust='spacingAndGlyphs'>0.7 (moderate)</text>
+<text x='245.67' y='106.54' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='63.36px' lengthAdjust='spacingAndGlyphs'>0.9 (lenient)</text>
+</g>
+<defs>
+  <clipPath id='cpNDE5LjA0fDY4OS43Nnw1OS4wNHwyMTQuNTY='>
+    <rect x='419.04' y='59.04' width='270.72' height='155.52' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDE5LjA0fDY4OS43Nnw1OS4wNHwyMTQuNTY=)'>
+<line x1='436.27' y1='208.80' x2='441.15' y2='208.80' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='455.55' y1='208.80' x2='460.43' y2='208.80' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='474.83' y1='208.80' x2='479.71' y2='208.80' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='492.45' y1='204.20' x2='500.65' y2='197.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='513.39' y1='192.80' x2='518.28' y2='192.80' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='531.02' y1='188.20' x2='539.22' y2='181.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='551.96' y1='176.80' x2='556.84' y2='176.80' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='569.58' y1='172.20' x2='577.78' y2='165.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='587.04' y1='154.63' x2='598.89' y2='134.97' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='608.15' y1='124.20' x2='616.35' y2='117.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='627.43' y1='108.20' x2='635.63' y2='101.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='646.71' y1='92.20' x2='654.91' y2='85.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<line x1='665.99' y1='76.20' x2='674.19' y2='69.40' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='429.07' cy='208.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='448.35' cy='208.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='467.63' cy='208.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='486.91' cy='208.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='506.19' cy='192.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='525.48' cy='192.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='544.76' cy='176.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='564.04' cy='176.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='583.32' cy='160.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='602.61' cy='128.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='621.89' cy='112.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='641.17' cy='96.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='660.45' cy='80.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+<circle cx='679.73' cy='64.80' r='2.70' style='stroke-width: 1.50; stroke: #0000FF;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHwyODguMDA=)'>
+<line x1='429.07' y1='214.56' x2='660.45' y2='214.56' style='stroke-width: 0.75;' />
+<line x1='429.07' y1='214.56' x2='429.07' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='467.63' y1='214.56' x2='467.63' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='506.19' y1='214.56' x2='506.19' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='544.76' y1='214.56' x2='544.76' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='583.32' y1='214.56' x2='583.32' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='621.89' y1='214.56' x2='621.89' y2='221.76' style='stroke-width: 0.75;' />
+<line x1='660.45' y1='214.56' x2='660.45' y2='221.76' style='stroke-width: 0.75;' />
+<text x='429.07' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text x='467.63' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='506.19' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='544.76' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='583.32' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.7</text>
+<text x='621.89' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<text x='660.45' y='240.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.9</text>
+<line x1='419.04' y1='208.80' x2='419.04' y2='80.80' style='stroke-width: 0.75;' />
+<line x1='419.04' y1='208.80' x2='411.84' y2='208.80' style='stroke-width: 0.75;' />
+<line x1='419.04' y1='176.80' x2='411.84' y2='176.80' style='stroke-width: 0.75;' />
+<line x1='419.04' y1='144.80' x2='411.84' y2='144.80' style='stroke-width: 0.75;' />
+<line x1='419.04' y1='112.80' x2='411.84' y2='112.80' style='stroke-width: 0.75;' />
+<line x1='419.04' y1='80.80' x2='411.84' y2='80.80' style='stroke-width: 0.75;' />
+<text transform='translate(401.76,208.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text transform='translate(401.76,176.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text transform='translate(401.76,144.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text transform='translate(401.76,112.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>8</text>
+<text transform='translate(401.76,80.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text>
+<polygon points='419.04,214.56 689.76,214.56 689.76,59.04 419.04,59.04 ' style='stroke-width: 0.75;' />
+</g>
+<defs>
+  <clipPath id='cpMzYwLjAwfDcyMC4wMHwwLjAwfDI4OC4wMA=='>
+    <rect x='360.00' y='0.00' width='360.00' height='288.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzYwLjAwfDcyMC4wMHwwLjAwfDI4OC4wMA==)'>
+<text x='554.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='145.56px' lengthAdjust='spacingAndGlyphs'>Threshold Sensitivity</text>
+<text x='554.40' y='269.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='53.36px' lengthAdjust='spacingAndGlyphs'>Threshold</text>
+<text transform='translate(372.96,136.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='159.84px' lengthAdjust='spacingAndGlyphs'>Number of Variables Retained</text>
+</g>
+<g clip-path='url(#cpNDE5LjA0fDY4OS43Nnw1OS4wNHwyMTQuNTY=)'>
+<line x1='419.04' y1='64.80' x2='689.76' y2='64.80' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 4.00,4.00;' />
+<text x='429.07' y='57.60' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='41.36px' lengthAdjust='spacingAndGlyphs'>Original</text>
+</g>
+</g>
+</svg></p>
 <p><strong>Strategy</strong>: Choose threshold where curve begins to
 plateau.</p>
 </div>
@@ -1269,7 +1569,7 @@ plateau.</p>
 <span><span class="co">#&gt;   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric</span></span>
 <span><span class="co">#&gt;                = eta, factor_factor = cramersv</span></span>
 <span><span class="co">#&gt;   Threshold:   0.600</span></span>
-<span><span class="co">#&gt;   Subsets:     20 valid combinations</span></span>
+<span><span class="co">#&gt;   Subsets:     20 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
 <span><span class="co">#&gt;   Pivot:       TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1481,17 +1781,16 @@ methods vignette</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.1    </span></span>
+<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.2    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      </span></span>
-<span><span class="co">#&gt;  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1</span></span>
-<span><span class="co">#&gt;  [9] ragg_1.5.0        sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   </span></span>
-<span><span class="co">#&gt; [13] jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0     yaml_2.3.10      </span></span>
-<span><span class="co">#&gt; [17] lifecycle_1.0.4   compiler_4.5.1    fs_1.6.6          htmlwidgets_1.6.4</span></span>
-<span><span class="co">#&gt; [21] Rcpp_1.1.0        systemfonts_1.3.1 digest_0.6.37     R6_2.6.1         </span></span>
-<span><span class="co">#&gt; [25] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     </span></span>
-<span><span class="co">#&gt; [29] desc_1.4.3</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1</span></span>
+<span><span class="co">#&gt;  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    </span></span>
+<span><span class="co">#&gt; [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  </span></span>
+<span><span class="co">#&gt; [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       bslib_0.9.0      </span></span>
+<span><span class="co">#&gt; [21] evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   </span></span>
+<span><span class="co">#&gt; [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4 MASS_7.3-65</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
