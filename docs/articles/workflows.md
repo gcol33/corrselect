@@ -449,11 +449,11 @@ str(survey_example[, 1:10])  # First 10 columns
 #>  $ gender              : Factor w/ 3 levels "Female","Male",..: 2 3 1 2 2 1 1 2 2 1 ...
 #>  $ education           : Ord.factor w/ 4 levels "High School"<..: 3 1 4 2 2 1 1 1 2 3 ...
 #>  $ overall_satisfaction: num  58 40 44 40 58 67 61 49 51 52 ...
-#>  $ satisfaction_1      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 3 5 3 4 5 5 4 4 5 ...
-#>  $ satisfaction_2      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 3 4 3 4 6 6 4 4 3 ...
-#>  $ satisfaction_3      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 3 4 3 3 4 5 3 4 4 ...
-#>  $ satisfaction_4      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 3 4 4 4 5 4 3 2 4 ...
-#>  $ satisfaction_5      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 7 4 5 5 5 4 3 6 4 6 ...
+#>  $ satisfaction_1      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 4 5 3 4 5 4 5 4 6 ...
+#>  $ satisfaction_2      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 3 4 3 4 6 6 4 4 4 ...
+#>  $ satisfaction_3      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 6 3 4 4 3 4 5 3 4 4 ...
+#>  $ satisfaction_4      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 7 3 4 4 4 5 4 3 2 4 ...
+#>  $ satisfaction_5      : Ord.factor w/ 7 levels "1"<"2"<"3"<"4"<..: 7 4 5 4 5 4 3 5 3 6 ...
 ```
 
 The dataset contains 200 respondents, 30 Likert-scale items (10 each for
@@ -490,12 +490,13 @@ survey_clean <- corrPrune(
 cat(sprintf("Reduced from %d → %d variables\n",
             ncol(survey_numeric),
             ncol(survey_clean)))
-#> Reduced from 31 → 4 variables
+#> Reduced from 31 → 7 variables
 
 # Which items were kept?
 selected <- attr(survey_clean, "selected_vars")
 print(selected)
-#> [1] "age"            "satisfaction_9" "engagement_1"   "loyalty_3"
+#> [1] "age"            "satisfaction_1" "engagement_1"   "loyalty_1"     
+#> [5] "loyalty_5"      "loyalty_7"      "loyalty_10"
 ```
 
 The pruning reduced the questionnaire substantially while ensuring age
@@ -520,7 +521,7 @@ cat(sprintf("Satisfaction: %d/10 items kept\n", satisfaction_kept))
 cat(sprintf("Engagement: %d/10 items kept\n", engagement_kept))
 #> Engagement: 1/10 items kept
 cat(sprintf("Loyalty: %d/10 items kept\n", loyalty_kept))
-#> Loyalty: 1/10 items kept
+#> Loyalty: 4/10 items kept
 ```
 
 Good balance: all three constructs retained representation, ensuring the
@@ -595,21 +596,24 @@ summary(model_survey)
 #> 
 #> Residuals:
 #>      Min       1Q   Median       3Q      Max 
-#> -17.0653  -4.1416  -0.1467   4.2400  22.2405 
+#> -19.8718  -3.9671  -0.2193   4.0766  20.0132 
 #> 
 #> Coefficients:
 #>                Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)    24.85040    2.03665  12.202   <2e-16 ***
-#> age             0.01951    0.04109   0.475   0.6354    
-#> satisfaction_9  4.96640    0.34387  14.443   <2e-16 ***
-#> engagement_1    0.24937    0.32131   0.776   0.4386    
-#> loyalty_3       0.54190    0.30190   1.795   0.0742 .  
+#> (Intercept)    26.01351    2.11317  12.310   <2e-16 ***
+#> age             0.02558    0.04152   0.616   0.5385    
+#> satisfaction_1  4.97997    0.32940  15.118   <2e-16 ***
+#> engagement_1    0.26170    0.30292   0.864   0.3887    
+#> loyalty_1       0.37258    0.32254   1.155   0.2495    
+#> loyalty_5       0.30218    0.30068   1.005   0.3162    
+#> loyalty_7       0.01332    0.32027   0.042   0.9669    
+#> loyalty_10     -0.51598    0.30702  -1.681   0.0945 .  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 6.372 on 195 degrees of freedom
-#> Multiple R-squared:  0.6893, Adjusted R-squared:  0.683 
-#> F-statistic: 108.2 on 4 and 195 DF,  p-value: < 2.2e-16
+#> Residual standard error: 6.397 on 192 degrees of freedom
+#> Multiple R-squared:  0.6916, Adjusted R-squared:  0.6804 
+#> F-statistic: 61.52 on 7 and 192 DF,  p-value: < 2.2e-16
 ```
 
 #### Model comparison
@@ -638,8 +642,8 @@ data.frame(
   Num_Predictors = c(33, 10)
 )
 #>              Model        R2    Adj_R2 Num_Predictors
-#> 1   Full (33 vars) 0.9790144 0.7679931             33
-#> 2 Pruned (10 vars) 0.6893327 0.6829600             10
+#> 1   Full (33 vars) 0.9822173 0.8034025             33
+#> 2 Pruned (10 vars) 0.6916262 0.6803834             10
 ```
 
 ------------------------------------------------------------------------
@@ -711,7 +715,7 @@ cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
             ncol(genes_pruned),
             greedy_ms))
-#> Reduced from 200 → 177 genes (9.7 ms)
+#> Reduced from 200 → 177 genes (19.8 ms)
 ```
 
 The greedy algorithm completed in milliseconds while ensuring all
@@ -772,11 +776,11 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (3.4 ms)
+#> Exact mode: 11 genes kept (6.4 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.4 ms)
+#> Greedy mode: 10 genes kept (0.8 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 8.0x faster
+#> Speedup: 7.8x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
@@ -1112,7 +1116,7 @@ details
 ``` r
 
 sessionInfo()
-#> R version 4.5.1 (2025-06-13 ucrt)
+#> R version 4.5.2 (2025-10-31 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1133,16 +1137,14 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.1.4         car_3.1-3            carData_3.0-5       
-#> [4] microbenchmark_1.5.0 corrselect_3.0.2    
+#> [1] microbenchmark_1.5.0 corrselect_3.0.2    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
-#>  [5] xfun_0.53         Formula_1.2-5     textshaping_1.0.3 jsonlite_2.0.0   
-#>  [9] htmltools_0.5.8.1 sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
-#> [13] jquerylib_0.1.4   abind_1.4-8       fastmap_1.2.0     yaml_2.3.10      
-#> [17] lifecycle_1.0.4   compiler_4.5.1    codetools_0.2-20  fs_1.6.6         
-#> [21] pkgconfig_2.0.3   htmlwidgets_1.6.4 Rcpp_1.1.0        systemfonts_1.3.1
-#> [25] digest_0.6.37     R6_2.6.1          magrittr_2.0.4    bslib_0.9.0      
-#> [29] tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
+#>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          codetools_0.2-20 
+#>  [5] fastmap_1.2.0     xfun_0.53         cachem_1.1.0      knitr_1.50       
+#>  [9] htmltools_0.5.8.1 rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5        
+#> [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3
+#> [17] jquerylib_0.1.4   systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2      
+#> [21] bslib_0.9.0       evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10      
+#> [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4
 ```

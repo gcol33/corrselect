@@ -47,7 +47,7 @@
 <rect x='135.40' y='96.96' width='23.00' height='189.60' style='stroke-width: 0.75; fill: #D3D3D3;' />
 <rect x='158.40' y='267.60' width='23.00' height='18.96' style='stroke-width: 0.75; fill: #ADD8E6;' />
 <rect x='204.40' y='96.96' width='23.00' height='189.60' style='stroke-width: 0.75; fill: #D3D3D3;' />
-<rect x='227.40' y='267.60' width='23.00' height='18.96' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='227.40' y='210.72' width='23.00' height='75.84' style='stroke-width: 0.75; fill: #ADD8E6;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
 <text x='89.40' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='62.02px' lengthAdjust='spacingAndGlyphs'>Satisfaction</text>
@@ -85,7 +85,7 @@
 </defs>
 <g clip-path='url(#cpMjg4LjAwfDU3Ni4wMHwwLjAwfDM2MC4wMA==)'>
 <rect x='354.40' y='96.96' width='83.64' height='189.60' style='stroke-width: 0.75; fill: #FA8072;' />
-<rect x='454.76' y='262.10' width='83.64' height='24.46' style='stroke-width: 0.75; fill: #90EE90;' />
+<rect x='454.76' y='243.75' width='83.64' height='42.81' style='stroke-width: 0.75; fill: #90EE90;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
 <text x='396.22' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Before</text>
@@ -121,7 +121,7 @@
 </defs>
 <g clip-path='url(#cpMzQ3LjA0fDU0NS43Nnw1OS4wNHwyODYuNTY=)'>
 <text x='396.22' y='83.64' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>31</text>
-<text x='496.58' y='248.78' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='496.58' y='230.43' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>7</text>
 </g>
 </g>
 </svg>

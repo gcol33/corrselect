@@ -909,11 +909,11 @@ and loyalty domains</li>
 <span><span class="co">#&gt;  $ gender              : Factor w/ 3 levels "Female","Male",..: 2 3 1 2 2 1 1 2 2 1 ...</span></span>
 <span><span class="co">#&gt;  $ education           : Ord.factor w/ 4 levels "High School"&lt;..: 3 1 4 2 2 1 1 1 2 3 ...</span></span>
 <span><span class="co">#&gt;  $ overall_satisfaction: num  58 40 44 40 58 67 61 49 51 52 ...</span></span>
-<span><span class="co">#&gt;  $ satisfaction_1      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 5 3 4 5 5 4 4 5 ...</span></span>
-<span><span class="co">#&gt;  $ satisfaction_2      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 3 4 6 6 4 4 3 ...</span></span>
-<span><span class="co">#&gt;  $ satisfaction_3      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 3 3 4 5 3 4 4 ...</span></span>
-<span><span class="co">#&gt;  $ satisfaction_4      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 4 4 5 4 3 2 4 ...</span></span>
-<span><span class="co">#&gt;  $ satisfaction_5      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 4 5 5 5 4 3 6 4 6 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ satisfaction_1      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 4 5 3 4 5 4 5 4 6 ...</span></span>
+<span><span class="co">#&gt;  $ satisfaction_2      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 3 4 6 6 4 4 4 ...</span></span>
+<span><span class="co">#&gt;  $ satisfaction_3      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 4 3 4 5 3 4 4 ...</span></span>
+<span><span class="co">#&gt;  $ satisfaction_4      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 3 4 4 4 5 4 3 2 4 ...</span></span>
+<span><span class="co">#&gt;  $ satisfaction_5      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 4 5 4 5 4 3 5 3 6 ...</span></span></code></pre></div>
 <p>The dataset contains 200 respondents, 30 Likert-scale items (10 each
 for satisfaction, engagement, loyalty), plus demographics (age, gender,
 education) and an overall satisfaction outcome.</p>
@@ -947,12 +947,13 @@ covariates that must not be removed.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Reduced from %d → %d variables\n"</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_clean</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Reduced from 31 → 4 variables</span></span>
+<span><span class="co">#&gt; Reduced from 31 → 7 variables</span></span>
 <span></span>
 <span><span class="co"># Which items were kept?</span></span>
 <span><span class="va">selected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">survey_clean</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "age"            "satisfaction_9" "engagement_1"   "loyalty_3"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "age"            "satisfaction_1" "engagement_1"   "loyalty_1"     </span></span>
+<span><span class="co">#&gt; [5] "loyalty_5"      "loyalty_7"      "loyalty_10"</span></span></code></pre></div>
 <p>The pruning reduced the questionnaire substantially while ensuring
 age was retained. The remaining items span all three constructs,
 avoiding the loss of entire domains.</p>
@@ -974,7 +975,7 @@ engagement, loyalty) survived the correlation threshold.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Engagement: %d/10 items kept\n"</span>, <span class="va">engagement_kept</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Engagement: 1/10 items kept</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Loyalty: %d/10 items kept\n"</span>, <span class="va">loyalty_kept</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loyalty: 1/10 items kept</span></span></code></pre></div>
+<span><span class="co">#&gt; Loyalty: 4/10 items kept</span></span></code></pre></div>
 <p>Good balance: all three constructs retained representation, ensuring
 the reduced questionnaire still measures all intended dimensions.</p>
 </div>
@@ -1060,7 +1061,7 @@ construct and (2) the overall variable reduction.</p>
 <rect x='135.40' y='96.96' width='23.00' height='189.60' style='stroke-width: 0.75; fill: #D3D3D3;' />
 <rect x='158.40' y='267.60' width='23.00' height='18.96' style='stroke-width: 0.75; fill: #ADD8E6;' />
 <rect x='204.40' y='96.96' width='23.00' height='189.60' style='stroke-width: 0.75; fill: #D3D3D3;' />
-<rect x='227.40' y='267.60' width='23.00' height='18.96' style='stroke-width: 0.75; fill: #ADD8E6;' />
+<rect x='227.40' y='210.72' width='23.00' height='75.84' style='stroke-width: 0.75; fill: #ADD8E6;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
 <text x='89.40' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='62.02px' lengthAdjust='spacingAndGlyphs'>Satisfaction</text>
@@ -1098,7 +1099,7 @@ construct and (2) the overall variable reduction.</p>
 </defs>
 <g clip-path='url(#cpMjg4LjAwfDU3Ni4wMHwwLjAwfDM2MC4wMA==)'>
 <rect x='354.40' y='96.96' width='83.64' height='189.60' style='stroke-width: 0.75; fill: #FA8072;' />
-<rect x='454.76' y='262.10' width='83.64' height='24.46' style='stroke-width: 0.75; fill: #90EE90;' />
+<rect x='454.76' y='243.75' width='83.64' height='42.81' style='stroke-width: 0.75; fill: #90EE90;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
 <text x='396.22' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Before</text>
@@ -1134,7 +1135,7 @@ construct and (2) the overall variable reduction.</p>
 </defs>
 <g clip-path='url(#cpMzQ3LjA0fDU0NS43Nnw1OS4wNHwyODYuNTY=)'>
 <text x='396.22' y='83.64' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>31</text>
-<text x='496.58' y='248.78' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='496.58' y='230.43' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>7</text>
 </g>
 </g>
 </svg></p>
@@ -1164,21 +1165,24 @@ items.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
 <span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
-<span><span class="co">#&gt; -17.0653  -4.1416  -0.1467   4.2400  22.2405 </span></span>
+<span><span class="co">#&gt; -19.8718  -3.9671  -0.2193   4.0766  20.0132 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;                Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)    24.85040    2.03665  12.202   &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; age             0.01951    0.04109   0.475   0.6354    </span></span>
-<span><span class="co">#&gt; satisfaction_9  4.96640    0.34387  14.443   &lt;2e-16 ***</span></span>
-<span><span class="co">#&gt; engagement_1    0.24937    0.32131   0.776   0.4386    </span></span>
-<span><span class="co">#&gt; loyalty_3       0.54190    0.30190   1.795   0.0742 .  </span></span>
+<span><span class="co">#&gt; (Intercept)    26.01351    2.11317  12.310   &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; age             0.02558    0.04152   0.616   0.5385    </span></span>
+<span><span class="co">#&gt; satisfaction_1  4.97997    0.32940  15.118   &lt;2e-16 ***</span></span>
+<span><span class="co">#&gt; engagement_1    0.26170    0.30292   0.864   0.3887    </span></span>
+<span><span class="co">#&gt; loyalty_1       0.37258    0.32254   1.155   0.2495    </span></span>
+<span><span class="co">#&gt; loyalty_5       0.30218    0.30068   1.005   0.3162    </span></span>
+<span><span class="co">#&gt; loyalty_7       0.01332    0.32027   0.042   0.9669    </span></span>
+<span><span class="co">#&gt; loyalty_10     -0.51598    0.30702  -1.681   0.0945 .  </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Residual standard error: 6.372 on 195 degrees of freedom</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.6893, Adjusted R-squared:  0.683 </span></span>
-<span><span class="co">#&gt; F-statistic: 108.2 on 4 and 195 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div>
+<span><span class="co">#&gt; Residual standard error: 6.397 on 192 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.6916, Adjusted R-squared:  0.6804 </span></span>
+<span><span class="co">#&gt; F-statistic: 61.52 on 7 and 192 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="model-comparison-1">Model comparison<a class="anchor" aria-label="anchor" href="#model-comparison-1"></a>
@@ -1205,8 +1209,8 @@ reducing model complexity.</p>
 <span>  Num_Predictors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;              Model        R2    Adj_R2 Num_Predictors</span></span>
-<span><span class="co">#&gt; 1   Full (33 vars) 0.9790144 0.7679931             33</span></span>
-<span><span class="co">#&gt; 2 Pruned (10 vars) 0.6893327 0.6829600             10</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   Full (33 vars) 0.9822173 0.8034025             33</span></span>
+<span><span class="co">#&gt; 2 Pruned (10 vars) 0.6916262 0.6803834             10</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -1278,7 +1282,7 @@ of exact methods.</p>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span>,</span>
 <span>            <span class="va">greedy_ms</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Reduced from 200 → 177 genes (9.7 ms)</span></span></code></pre></div>
+<span><span class="co">#&gt; Reduced from 200 → 177 genes (19.8 ms)</span></span></code></pre></div>
 <p>The greedy algorithm completed in milliseconds while ensuring all
 pairwise correlations remain below 0.8.</p>
 </div>
@@ -1395,11 +1399,11 @@ widens dramatically as the number of variables increases.</p>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact mode: 11 genes kept (3.4 ms)</span></span>
+<span><span class="co">#&gt; Exact mode: 11 genes kept (6.4 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.4 ms)</span></span>
+<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.8 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 8.0x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 7.8x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
 mode completes in milliseconds.</p>
@@ -1764,7 +1768,7 @@ for algorithm details</p>
 </h3>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.5.1 (2025-06-13 ucrt)</span></span>
+<span><span class="co">#&gt; R version 4.5.2 (2025-10-31 ucrt)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
 <span><span class="co">#&gt; Running under: Windows 11 x64 (build 26200)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1785,18 +1789,16 @@ for algorithm details</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] igraph_2.1.4         car_3.1-3            carData_3.0-5       </span></span>
-<span><span class="co">#&gt; [4] microbenchmark_1.5.0 corrselect_3.0.2    </span></span>
+<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.2    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      </span></span>
-<span><span class="co">#&gt;  [5] xfun_0.53         Formula_1.2-5     textshaping_1.0.3 jsonlite_2.0.0   </span></span>
-<span><span class="co">#&gt;  [9] htmltools_0.5.8.1 sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   </span></span>
-<span><span class="co">#&gt; [13] jquerylib_0.1.4   abind_1.4-8       fastmap_1.2.0     yaml_2.3.10      </span></span>
-<span><span class="co">#&gt; [17] lifecycle_1.0.4   compiler_4.5.1    codetools_0.2-20  fs_1.6.6         </span></span>
-<span><span class="co">#&gt; [21] pkgconfig_2.0.3   htmlwidgets_1.6.4 Rcpp_1.1.0        systemfonts_1.3.1</span></span>
-<span><span class="co">#&gt; [25] digest_0.6.37     R6_2.6.1          magrittr_2.0.4    bslib_0.9.0      </span></span>
-<span><span class="co">#&gt; [29] tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          codetools_0.2-20 </span></span>
+<span><span class="co">#&gt;  [5] fastmap_1.2.0     xfun_0.53         cachem_1.1.0      knitr_1.50       </span></span>
+<span><span class="co">#&gt;  [9] htmltools_0.5.8.1 rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5        </span></span>
+<span><span class="co">#&gt; [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3</span></span>
+<span><span class="co">#&gt; [17] jquerylib_0.1.4   systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2      </span></span>
+<span><span class="co">#&gt; [21] bslib_0.9.0       evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10      </span></span>
+<span><span class="co">#&gt; [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
