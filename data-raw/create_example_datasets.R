@@ -90,24 +90,28 @@ to_likert <- function(x, noise_sd = 0.3) {
       labels = 1:7, ordered_result = TRUE)
 }
 
-# Generate Likert items (10 per construct, correlated within construct)
+# Generate Likert items (10 per construct)
+# Different noise levels create different within-construct correlations:
+#   - Satisfaction: very low noise (sd=0.1) → high correlation → fewer items survive pruning
+#   - Engagement: medium noise (sd=0.4) → moderate correlation
+#   - Loyalty: high noise (sd=0.8) → low correlation → more items survive pruning
 satisfaction_items <- data.frame(
   lapply(1:10, function(i) {
-    to_likert(satisfaction_latent + rnorm(n_respondents, sd = 0.2))
+    to_likert(satisfaction_latent + rnorm(n_respondents, sd = 0.1))
   })
 )
 names(satisfaction_items) <- paste0("satisfaction_", 1:10)
 
 engagement_items <- data.frame(
   lapply(1:10, function(i) {
-    to_likert(engagement_latent + rnorm(n_respondents, sd = 0.2))
+    to_likert(engagement_latent + rnorm(n_respondents, sd = 0.4))
   })
 )
 names(engagement_items) <- paste0("engagement_", 1:10)
 
 loyalty_items <- data.frame(
   lapply(1:10, function(i) {
-    to_likert(loyalty_latent + rnorm(n_respondents, sd = 0.2))
+    to_likert(loyalty_latent + rnorm(n_respondents, sd = 0.8))
   })
 )
 names(loyalty_items) <- paste0("loyalty_", 1:10)

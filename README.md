@@ -1,5 +1,7 @@
 # corrselect
 
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
+
 **Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
 
 The `corrselect` package provides simple, high-level functions for **predictor pruning** using association-based and model-based approaches. Whether you need to reduce multicollinearity before modeling or clean correlated predictors in your dataset, `corrselect` offers fast, deterministic solutions with minimal code.

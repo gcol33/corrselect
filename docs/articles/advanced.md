@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.5            0.2
-#> 2   20           0.7            0.4
-#> 3   50           1.5            0.7
-#> 4  100           4.6            1.4
-#> 5  200          22.8            3.5
-#> 6  300          84.8            6.6
-#> 7  500         313.2           15.5
-#> 8 1000            NA           57.0
+#> 1   10           0.5            0.3
+#> 2   20           0.8            0.5
+#> 3   50           1.5            0.8
+#> 4  100           4.7            1.6
+#> 5  200          22.9            3.3
+#> 6  300          85.9            6.6
+#> 7  500         307.6           15.2
+#> 8 1000            NA           57.9
 ```
 
 ``` r
@@ -740,11 +740,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 4.2 ms
+#> Recomputing each time: 4.1 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
 #> Precomputed matrix: 2.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 2.1x faster
+#> Speedup: 2.0x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1342,7 +1342,7 @@ pipeline <- function(data, response) {
 ``` r
 
 sessionInfo()
-#> R version 4.5.1 (2025-06-13 ucrt)
+#> R version 4.5.2 (2025-10-31 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1370,7 +1370,7 @@ sessionInfo()
 #>  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1
 #>  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    
 #> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  
-#> [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       bslib_0.9.0      
+#> [17] systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2       bslib_0.9.0      
 #> [21] evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   
 #> [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4 MASS_7.3-65
 ```

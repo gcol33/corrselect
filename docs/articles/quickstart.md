@@ -426,7 +426,7 @@ Section 5.
 ``` r
 
 sessionInfo()
-#> R version 4.5.1 (2025-06-13 ucrt)
+#> R version 4.5.2 (2025-10-31 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -454,7 +454,7 @@ sessionInfo()
 #>  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1
 #>  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    
 #> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  
-#> [17] systemfonts_1.3.1 compiler_4.5.1    tools_4.5.1       bslib_0.9.0      
+#> [17] systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2       bslib_0.9.0      
 #> [21] evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   
 #> [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4
 ```

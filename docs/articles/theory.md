@@ -1821,7 +1821,7 @@ suffices (e.g., automated pipelines).
 ``` r
 
 sessionInfo()
-#> R version 4.5.1 (2025-06-13 ucrt)
+#> R version 4.5.2 (2025-10-31 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1848,9 +1848,9 @@ sessionInfo()
 #>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.50        rlang_1.1.6      
 #>  [5] xfun_0.53         textshaping_1.0.3 jsonlite_2.0.0    htmltools_0.5.8.1
 #>  [9] sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5    jquerylib_0.1.4  
-#> [13] fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4   compiler_4.5.1   
+#> [13] fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4   compiler_4.5.2   
 #> [17] fs_1.6.6          htmlwidgets_1.6.4 Rcpp_1.1.0        pkgconfig_2.0.3  
 #> [21] systemfonts_1.3.1 digest_0.6.37     R6_2.6.1          magrittr_2.0.4   
-#> [25] bslib_0.9.0       tools_4.5.1       pkgdown_2.2.0     cachem_1.1.0     
+#> [25] bslib_0.9.0       tools_4.5.2       pkgdown_2.2.0     cachem_1.1.0     
 #> [29] desc_1.4.3
 ```

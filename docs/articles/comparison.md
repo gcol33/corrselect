@@ -721,7 +721,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ``` r
 
 sessionInfo()
-#> R version 4.5.1 (2025-06-13 ucrt)
+#> R version 4.5.2 (2025-10-31 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -749,18 +749,18 @@ sessionInfo()
 #>  [4] farver_2.1.2         S7_0.2.0             fastmap_1.2.0       
 #>  [7] pROC_1.19.0.1        caret_7.0-1          digest_0.6.37       
 #> [10] rpart_4.1.24         timechange_0.3.0     lifecycle_1.0.4     
-#> [13] survival_3.8-3       magrittr_2.0.4       compiler_4.5.1      
-#> [16] rlang_1.1.6          sass_0.4.10          tools_4.5.1         
+#> [13] survival_3.8-3       magrittr_2.0.4       compiler_4.5.2      
+#> [16] rlang_1.1.6          sass_0.4.10          tools_4.5.2         
 #> [19] yaml_2.3.10          Boruta_9.0.0         data.table_1.17.8   
 #> [22] knitr_1.50           htmlwidgets_1.6.4    plyr_1.8.9          
 #> [25] RColorBrewer_1.1-3   abind_1.4-8          withr_3.0.2         
 #> [28] purrr_1.2.0          desc_1.4.3           nnet_7.3-20         
-#> [31] grid_4.5.1           stats4_4.5.1         future_1.67.0       
+#> [31] grid_4.5.2           stats4_4.5.2         future_1.67.0       
 #> [34] ggplot2_4.0.0        globals_0.18.0       scales_1.4.0        
 #> [37] iterators_1.0.14     MASS_7.3-65          cli_3.6.5           
 #> [40] rmarkdown_2.30       generics_0.1.4       future.apply_1.20.0 
 #> [43] reshape2_1.4.4       cachem_1.1.0         stringr_1.5.2       
-#> [46] splines_4.5.1        parallel_4.5.1       vctrs_0.6.5         
+#> [46] splines_4.5.2        parallel_4.5.2       vctrs_0.6.5         
 #> [49] hardhat_1.4.2        glmnet_4.1-10        Matrix_1.7-4        
 #> [52] jsonlite_2.0.0       Formula_1.2-5        listenv_0.9.1       
 #> [55] systemfonts_1.3.1    foreach_1.5.2        gower_1.0.2         

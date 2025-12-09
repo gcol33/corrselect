@@ -1,5 +1,8 @@
 # corrselect
 
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
+
 **Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
 
 The `corrselect` package provides simple, high-level functions for
