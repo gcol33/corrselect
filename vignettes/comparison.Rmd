@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 8,
-  fig.height = 5
+  fig.height = 5,
+  dev = "svglite",
+  fig.ext = "svg"
 )
 library(corrselect)
 ```
@@ -569,8 +571,6 @@ if (requireNamespace("Boruta", quietly = TRUE)) {
 final_model <- lm(response ~ ., data = model_data[, c("response", important_vars)])
 ```
 
----
-
 ## References
 
 - **caret**: Kuhn, M. (2008). Building predictive models in R using the caret package. *Journal of Statistical Software*, 28(5), 1-26. [doi:10.18637/jss.v028.i05](https://doi.org/10.18637/jss.v028.i05)
@@ -581,8 +581,6 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 
 - **VIF**: Belsley, D. A., Kuh, E., & Welsch, R. E. (1980). *Regression Diagnostics: Identifying Influential Data and Sources of Collinearity*. Wiley. [doi:10.1002/0471725153](https://doi.org/10.1002/0471725153)
 
----
-
 ## See Also
 
 - `vignette("quickstart")` - Interface overview and usage examples
@@ -590,7 +588,9 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 - `vignette("advanced")` - Algorithm selection and performance tuning
 - `vignette("theory")` - Graph-theoretic foundations and formal proofs
 
+## Session Info
 
-
-
+```{r}
+sessionInfo()
+```
 

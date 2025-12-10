@@ -1,7 +1,10 @@
 # corrselect
 
 [![CRAN
+status](https://www.r-pkg.org/badges/version/corrselect)](https://CRAN.R-project.org/package=corrselect)
+[![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
+[![R-CMD-check](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yaml)
 
 **Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
 

@@ -92,7 +92,7 @@ selection and workflow composition. See
 <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> for interface descriptions and
 <code><a href="../articles/theory.html">vignette("theory")</a></code> for mathematical foundations.</p>
 <p><strong>Functions used</strong>: <code><a href="../reference/corrPrune.html">corrPrune()</a></code>,
-<code><a href="../reference/modelPrune.html">modelPrune()</a></code> — see <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> for
+<code><a href="../reference/modelPrune.html">modelPrune()</a></code>, see <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> for
 full signatures and parameter details.</p>
 <p>Each workflow showcases different aspects of the package:</p>
 <ol style="list-style-type: decimal">
@@ -1282,7 +1282,7 @@ of exact methods.</p>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span>,</span>
 <span>            <span class="va">greedy_ms</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Reduced from 200 → 177 genes (19.8 ms)</span></span></code></pre></div>
+<span><span class="co">#&gt; Reduced from 200 → 177 genes (9.9 ms)</span></span></code></pre></div>
 <p>The greedy algorithm completed in milliseconds while ensuring all
 pairwise correlations remain below 0.8.</p>
 </div>
@@ -1399,11 +1399,11 @@ widens dramatically as the number of variables increases.</p>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact mode: 11 genes kept (6.4 ms)</span></span>
+<span><span class="co">#&gt; Exact mode: 11 genes kept (3.5 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.8 ms)</span></span>
+<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.5 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 7.8x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 7.7x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
 mode completes in milliseconds.</p>

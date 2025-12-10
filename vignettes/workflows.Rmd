@@ -15,13 +15,18 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
+  dev = "svglite",
+  fig.ext = "svg",
   cache = TRUE  # Cache expensive computations to speed up builds
 )
+library(corrselect)
 ```
 
 ## Overview
 
 This vignette demonstrates integration of corrselect into complete modeling workflows, from raw predictors to final models under correlation constraints. Four applied settings illustrate interface selection and workflow composition. See `vignette("quickstart")` for interface descriptions and `vignette("theory")` for mathematical foundations.
+
+**Functions used**: `corrPrune()`, `modelPrune()`, see `vignette("quickstart")` for full signatures and parameter details.
 
 Each workflow showcases different aspects of the package:
 
@@ -48,7 +53,6 @@ This approach balances model fit with interpretability and numerical stability.
 ### Data
 
 ```{r}
-library(corrselect)
 data(bioclim_example)
 
 # Data structure
@@ -59,7 +63,7 @@ head(names(bioclim_example))
 summary(bioclim_example$species_richness)
 ```
 
-The dataset contains 500 sampling locations with 19 bioclimatic predictors and a species richness response. The bioclimatic variables are standard WorldClim metrics (BIO1-BIO19) measuring temperature and precipitation patterns.
+The dataset contains 100 sampling locations with 19 bioclimatic predictors and a species richness response. The bioclimatic variables are standard WorldClim metrics (BIO1-BIO19) measuring temperature and precipitation patterns.
 
 ### Correlation-based pruning
 
@@ -201,9 +205,9 @@ print(comparison)
 
 **Key insights**:
 
-- The full model has severe multicollinearity (κ > 1000)
-- Correlation-based pruning reduces κ by ~10x while losing minimal fit
-- VIF-based refinement achieves excellent stability (κ < 100) with only marginal R² decrease
+- The full model has substantial multicollinearity (high κ)
+- Correlation-based pruning reduces κ while losing minimal fit
+- VIF-based refinement can further improve stability with only marginal R² decrease
 
 ### Visualization
 
@@ -375,7 +379,7 @@ dim(survey_example)
 str(survey_example[, 1:10])  # First 10 columns
 ```
 
-The dataset contains 500 respondents, 30 Likert-scale items (10 each for satisfaction, engagement, loyalty), plus demographics (age, gender, education) and an overall satisfaction outcome.
+The dataset contains 200 respondents, 30 Likert-scale items (10 each for satisfaction, engagement, loyalty), plus demographics (age, gender, education) and an overall satisfaction outcome.
 
 ### Prune with protected variables
 
@@ -409,7 +413,7 @@ selected <- attr(survey_clean, "selected_vars")
 print(selected)
 ```
 
-The pruning reduced the questionnaire from 31 items to ~10 items while ensuring age was retained. The remaining items span all three constructs, avoiding the loss of entire domains.
+The pruning reduced the questionnaire substantially while ensuring age was retained. The remaining items span all three constructs, avoiding the loss of entire domains.
 
 ### Construct coverage
 
@@ -537,25 +541,30 @@ The dataset contains gene expression measurements for 200 genes across 100 sampl
 The greedy algorithm iteratively selects variables, prioritizing those with the lowest maximum correlation to already-selected variables. This heuristic runs in O(p²) time compared to the exponential complexity of exact methods.
 
 ```{r}
+library(microbenchmark)
+
 # Extract gene expression data (exclude ID and outcome)
 gene_expr <- genes_example[, -(1:2)]
 
-# Greedy pruning
-system.time({
+# Greedy pruning with timing
+greedy_timing <- microbenchmark(
   genes_pruned <- corrPrune(
     data = gene_expr,
     threshold = 0.8,
     mode = "greedy"  # Fast for large p
-  )
-})
+  ),
+  times = 3
+)
+greedy_ms <- median(greedy_timing$time) / 1e6
 
 # Reduction
-cat(sprintf("Reduced from %d → %d genes\n",
+cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
-            ncol(genes_pruned)))
+            ncol(genes_pruned),
+            greedy_ms))
 ```
 
-The greedy algorithm completed in milliseconds, reducing the gene set by ~50% while ensuring all pairwise correlations remain below 0.8.
+The greedy algorithm completed in milliseconds while ensuring all pairwise correlations remain below 0.8.
 
 ### Dimensionality reduction
 
@@ -578,8 +587,6 @@ text(1.9, reduction_data[2] + 10, paste(reduction_data[2], "genes\n(",
 To demonstrate the speed advantage of the greedy algorithm, we benchmark both approaches on a smaller subset. The performance gap widens dramatically as the number of variables increases.
 
 ```{r}
-library(microbenchmark)
-
 # Subset for comparison (use smaller subset for vignette build speed)
 gene_subset <- gene_expr[, 1:20]  # Reduced from 50 to 20 for faster builds
 
@@ -607,7 +614,7 @@ cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greed
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
 ```
 
-The greedy mode is substantially faster. For the full 200-gene dataset, exact enumeration would be prohibitively slow, while greedy mode completes in seconds.
+The greedy mode is substantially faster. For the full 200-gene dataset, exact enumeration would be prohibitively slow, while greedy mode completes in milliseconds.
 
 ### Classification
 
@@ -665,7 +672,7 @@ cat(sprintf("Observations per subject: %d\n",
             nrow(longitudinal_example) / length(unique(longitudinal_example$subject))))
 ```
 
-The dataset has 500 observations from 50 subjects across 2 sites, with 10 measurements per subject. We have 5 correlated fixed-effect predictors (x1-x5).
+The dataset has 500 observations from 50 subjects across 5 sites, with 10 measurements per subject. We have 5 correlated fixed-effect predictors (x1-x5).
 
 ### Prune fixed effects
 
@@ -841,16 +848,12 @@ These four workflows demonstrate how **corrselect** integrates into diverse anal
 - **modelPrune()**: Second-stage refinement that accounts for model-specific multicollinearity (VIF)
 - **Combining both**: Often yields best results (correlation pruning → VIF refinement → final model)
 
----
-
 # See Also
 
 - `vignette("quickstart")` - Interface overview
 - `vignette("advanced")` - Custom engines and algorithmic control
 - `vignette("comparison")` - Comparison with alternatives
 - `vignette("theory")` - Mathematical foundations
-
----
 
 # References
 
@@ -862,7 +865,9 @@ These four workflows demonstrate how **corrselect** integrates into diverse anal
 **Methods**:
 - See package documentation and JOSS paper for algorithm details
 
+## Session Info
 
-
-
+```{r}
+sessionInfo()
+```
 

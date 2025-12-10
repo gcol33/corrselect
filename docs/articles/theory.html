@@ -356,7 +356,7 @@ Identifies the maximum (largest) valid subset.</p>
 </ul>
 <p>This balances optimality with computational cost.</p>
 <blockquote>
-<p><strong>Key Points — Terminology</strong></p>
+<p><strong>Key Points: Terminology</strong></p>
 <ul>
 <li>
 <strong>Association matrix</strong>: Symmetric matrix of pairwise
@@ -436,9 +436,9 @@ where every pair has correlation below τ.</p>
 <h3 id="why-maximal-not-maximum">Why “Maximal” Not “Maximum”?<a class="anchor" aria-label="anchor" href="#why-maximal-not-maximum"></a>
 </h3>
 <p>A <strong>maximal</strong> subset cannot be extended by adding more
-variables—it’s locally complete.</p>
+variables, it’s locally complete.</p>
 <p>A <strong>maximum</strong> subset is the single largest possible
-subset—globally optimal.</p>
+subset, globally optimal.</p>
 <p>corrselect finds <strong>all maximal</strong> subsets because:</p>
 <ul>
 <li>Real datasets often have multiple equally good solutions</li>
@@ -1130,7 +1130,7 @@ representing a valid variable subset.</p>
 </h3>
 <p>This toy example shows why corrselect enumerates all solutions:</p>
 <ul>
-<li>There’s no single “best” subset—all 4 are equally valid</li>
+<li>There’s no single “best” subset, all 4 are equally valid</li>
 <li>Choice depends on domain knowledge (which variables are
 theoretically important?)</li>
 <li>Seeing all options reveals the correlation structure (two clusters:
@@ -1139,7 +1139,7 @@ theoretically important?)</li>
 <p>Real datasets have similar structure but with more variables and more
 complex clustering.</p>
 <blockquote>
-<p><strong>Key Points — Intuitive Overview</strong></p>
+<p><strong>Key Points: Intuitive Overview</strong></p>
 <ul>
 <li>corrselect finds variable subsets where no pair exceeds a
 correlation threshold</li>
@@ -1312,7 +1312,7 @@ satisfies:</p>
 |a_{ki}| &lt; \tau \quad \text{for all } i \in S
 </annotation></semantics></math></p>
 <blockquote>
-<p><strong>Key Points — Problem Formulation</strong></p>
+<p><strong>Key Points: Problem Formulation</strong></p>
 <ul>
 <li>Input: p × p association matrix A, threshold τ ∈ (0,1)</li>
 <li>Valid subset: S where |a_ij| &lt; τ for all pairs i,j ∈ S</li>
@@ -1772,7 +1772,7 @@ solutions. In practice, you might choose based on domain knowledge
 (prefer variables with established theory) or downstream model
 performance.</p>
 <blockquote>
-<p><strong>Key Points — Graph-Theoretic Interpretation</strong></p>
+<p><strong>Key Points: Graph-Theoretic Interpretation</strong></p>
 <ul>
 <li>Build threshold graph: nodes = variables, edges connect pairs with
 |a_ij| &lt; τ</li>
@@ -1930,7 +1930,7 @@ greedy for larger
 valid variable subset that satisfies the threshold constraint and
 includes the required variables.</p>
 <blockquote>
-<p><strong>Key Points — From Theory to Implementation</strong></p>
+<p><strong>Key Points: From Theory to Implementation</strong></p>
 <ul>
 <li>
 <code>threshold</code> = τ (correlation cutoff)</li>
@@ -2103,7 +2103,7 @@ vs
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>2</mn><mi>p</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(2^p)</annotation></semantics></math>
 for exact enumeration.</p>
 <blockquote>
-<p><strong>Key Points — Search Algorithms</strong></p>
+<p><strong>Key Points: Search Algorithms</strong></p>
 <ul>
 <li>
 <strong>Exact mode</strong>: ELS or Bron-Kerbosch enumerate all
@@ -2637,7 +2637,7 @@ dense correlation structure (high
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>),
 or when a single solution suffices (e.g., automated pipelines).</p>
 <blockquote>
-<p><strong>Key Points — Design Philosophy</strong></p>
+<p><strong>Key Points: Design Philosophy</strong></p>
 <ul>
 <li>
 <strong>Maximal not maximum</strong>: All locally optimal subsets

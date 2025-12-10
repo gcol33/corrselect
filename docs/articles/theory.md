@@ -186,7 +186,7 @@ Chooses the method automatically:
 
 This balances optimality with computational cost.
 
-> **Key Points — Terminology**
+> **Key Points: Terminology**
 >
 > - **Association matrix**: Symmetric matrix of pairwise relationships
 >   (correlations, Cramér’s V, etc.)
@@ -242,10 +242,10 @@ where every pair has correlation below τ.
 
 ### Why “Maximal” Not “Maximum”?
 
-A **maximal** subset cannot be extended by adding more variables—it’s
+A **maximal** subset cannot be extended by adding more variables, it’s
 locally complete.
 
-A **maximum** subset is the single largest possible subset—globally
+A **maximum** subset is the single largest possible subset, globally
 optimal.
 
 corrselect finds **all maximal** subsets because:
@@ -601,7 +601,7 @@ show(results)
 
 This toy example shows why corrselect enumerates all solutions:
 
-- There’s no single “best” subset—all 4 are equally valid
+- There’s no single “best” subset, all 4 are equally valid
 - Choice depends on domain knowledge (which variables are theoretically
   important?)
 - Seeing all options reveals the correlation structure (two clusters:
@@ -610,7 +610,7 @@ This toy example shows why corrselect enumerates all solutions:
 Real datasets have similar structure but with more variables and more
 complex clustering.
 
-> **Key Points — Intuitive Overview**
+> **Key Points: Intuitive Overview**
 >
 > - corrselect finds variable subsets where no pair exceeds a
 >   correlation threshold
@@ -714,7 +714,7 @@ satisfies:
 |a_{ki}| < \tau \quad \text{for all } i \in S
 ```
 
-> **Key Points — Problem Formulation**
+> **Key Points: Problem Formulation**
 >
 > - Input: p × p association matrix A, threshold τ ∈ (0,1)
 > - Valid subset: S where \|a_ij\| \< τ for all pairs i,j ∈ S
@@ -957,7 +957,7 @@ example, both subsets have equal size and are equally valid solutions.
 In practice, you might choose based on domain knowledge (prefer
 variables with established theory) or downstream model performance.
 
-> **Key Points — Graph-Theoretic Interpretation**
+> **Key Points: Graph-Theoretic Interpretation**
 >
 > - Build threshold graph: nodes = variables, edges connect pairs with
 >   \|a_ij\| \< τ
@@ -1066,7 +1066,7 @@ The returned object contains all maximal cliques, each representing a
 valid variable subset that satisfies the threshold constraint and
 includes the required variables.
 
-> **Key Points — From Theory to Implementation**
+> **Key Points: From Theory to Implementation**
 >
 > - `threshold` = τ (correlation cutoff)
 > - `force_in` = F (variables required in all subsets)
@@ -1199,7 +1199,7 @@ Returns a single valid subset (not necessarily maximal or optimal).
 
 Complexity: $`O(p^2)`$ vs $`O(2^p)`$ for exact enumeration.
 
-> **Key Points — Search Algorithms**
+> **Key Points: Search Algorithms**
 >
 > - **Exact mode**: ELS or Bron-Kerbosch enumerate all maximal cliques
 > - **ELS**: O(d · 3^{d/3}), faster on sparse graphs, better with
@@ -1611,7 +1611,7 @@ one (greedy mode). Why offer exhaustive enumeration?
 correlation structure (high $`\tau`$), or when a single solution
 suffices (e.g., automated pipelines).
 
-> **Key Points — Design Philosophy**
+> **Key Points: Design Philosophy**
 >
 > - **Maximal not maximum**: All locally optimal subsets enumerated, not
 >   just the globally largest

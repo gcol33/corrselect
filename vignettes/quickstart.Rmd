@@ -14,9 +14,30 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 7,
-  fig.height = 5
+  fig.height = 5,
+  dev = "svglite",
+  fig.ext = "svg"
 )
+library(corrselect)
 ```
+
+## Installation
+
+```{r, eval = FALSE}
+# Install from CRAN
+install.packages("corrselect")
+
+# Or install development version from GitHub
+# install.packages("devtools")
+devtools::install_github("GillesColling/corrselect")
+```
+
+**Suggested packages** (for extended functionality):
+
+- `lme4`, `glmmTMB`: Mixed-effects models in `modelPrune()`
+- `WGCNA`: Biweight midcorrelation (`bicor`)
+- `energy`: Distance correlation
+- `minerva`: Maximal information coefficient
 
 ## What corrselect Does
 
@@ -62,14 +83,11 @@ corrselect provides three levels of interface:
 - No data preprocessing
 - Useful for repeated analyses
 
----
-
 ## Quick Examples
 
 ### corrPrune(): Association-Based Pruning
 
 ```{r}
-library(corrselect)
 data(mtcars)
 
 # Remove correlated predictors (threshold = 0.7)
@@ -145,9 +163,10 @@ df <- data.frame(
 # Handle mixed types automatically
 results_mixed <- assocSelect(df, threshold = 0.5)
 show(results_mixed)
-```
 
----
+# Verify all pairwise associations are below threshold
+cat("Max pairwise association:", max(results_mixed@max_corr), "\n")
+```
 
 ## Protecting Variables
 
@@ -165,21 +184,13 @@ pruned_force <- corrPrune(
 "mpg" %in% names(pruned_force)
 ```
 
----
-
 ## Threshold Selection
 
-Common threshold guidelines:
+Common thresholds: **0.5** (strict), **0.7** (moderate, recommended default), **0.9** (lenient).
 
-| Threshold | Interpretation | Use Case |
-|-----------|----------------|----------|
-| 0.5 | Strict | When multicollinearity is critical |
-| 0.7 | Moderate | General-purpose default |
-| 0.9 | Lenient | When retaining variables is priority |
+Lower thresholds are stricter because they allow fewer variable pairs to coexist, resulting in smaller subsets. Higher thresholds permit stronger correlations, retaining more variables.
 
-For detailed threshold selection strategies including visualization techniques and sensitivity analysis, see `vignette("advanced")`.
-
----
+For detailed threshold selection strategies including visualization techniques, VIF guidelines, and sensitivity analysis, see `vignette("advanced")`.
 
 ## Interface Selection Guide
 
@@ -187,12 +198,142 @@ For detailed threshold selection strategies including visualization techniques a
 |----------|----------|----------------|
 | Quick dimensionality reduction | `corrPrune()` | `threshold`, `mode` |
 | Model-based refinement | `modelPrune()` | `limit` (VIF threshold), `engine` |
-| Enumerate all valid subsets | `corrSelect()` | `threshold` |
+| Enumerate all maximal subsets | `corrSelect()` | `threshold` |
 | Mixed-type data | `assocSelect()` | `threshold` |
 | Precomputed matrices | `MatSelect()` | `threshold`, `method` |
 | Protect key variables | Any function | `force_in` |
 
----
+## Quick Reference
+
+### corrPrune()
+
+Removes redundant predictors based on pairwise correlation.
+
+```r
+corrPrune(data, threshold = 0.7, measure = "auto", mode = "auto",
+          force_in = NULL, by = NULL, group_q = 1, max_exact_p = 100)
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `data` | Data frame or matrix | *required* |
+| `threshold` | Maximum allowed correlation | `0.7` |
+| `measure` | Correlation type: `"auto"`, `"pearson"`, `"spearman"`, `"kendall"` | `"auto"` |
+| `mode` | Algorithm: `"auto"`, `"exact"`, `"greedy"` | `"auto"` |
+| `force_in` | Variables that must be retained | `NULL` |
+
+**Returns**: Data frame with pruned variables. Attributes: `selected_vars`, `removed_vars`.
+
+### modelPrune()
+
+Iteratively removes predictors with high VIF from a regression model.
+```r
+modelPrune(formula, data, engine = "lm", criterion = "vif",
+           limit = 5, force_in = NULL, max_steps = NULL, ...)
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `formula` | Model formula (e.g., `y ~ .`) | *required* |
+| `data` | Data frame | *required* |
+| `engine` | `"lm"`, `"glm"`, `"lme4"`, `"glmmTMB"`, or custom | `"lm"` |
+| `limit` | Maximum allowed VIF | `5` |
+| `force_in` | Variables that must be retained | `NULL` |
+
+**Returns**: Pruned data frame. Attributes: `selected_vars`, `removed_vars`, `final_model`.
+
+### corrSelect()
+
+Enumerates all maximal subsets satisfying correlation threshold (numeric data).
+
+```r
+corrSelect(df, threshold = 0.7, method = NULL, force_in = NULL,
+           cor_method = "pearson", ...)
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `df` | Data frame (numeric columns only) | *required* |
+| `threshold` | Maximum allowed correlation | `0.7` |
+| `method` | Algorithm: `"bron-kerbosch"`, `"els"` | auto |
+| `cor_method` | `"pearson"`, `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, `"maximal"` | `"pearson"` |
+| `force_in` | Variables required in all subsets | `NULL` |
+
+**Returns**: `CorrCombo` S4 object with slots: `subset_list`, `avg_corr`, `min_corr`, `max_corr`.
+
+### assocSelect()
+
+Enumerates all maximal subsets for mixed-type data (numeric, factor, ordered).
+
+```r
+assocSelect(df, threshold = 0.7, method = NULL, force_in = NULL,
+            method_num_num = "pearson", method_num_ord = "spearman",
+            method_ord_ord = "spearman", ...)
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `df` | Data frame (any column types) | *required* |
+| `threshold` | Maximum allowed association | `0.7` |
+| `method_num_num` | Numeric-numeric: `"pearson"`, `"spearman"`, etc. | `"pearson"` |
+| `method_num_ord` | Numeric-ordered: `"spearman"`, `"kendall"` | `"spearman"` |
+| `method_ord_ord` | Ordered-ordered: `"spearman"`, `"kendall"` | `"spearman"` |
+
+**Returns**: `CorrCombo` S4 object.
+
+### MatSelect()
+
+Direct matrix interface for precomputed correlation/association matrices.
+
+```r
+MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `mat` | Symmetric correlation/association matrix | *required* |
+| `threshold` | Maximum allowed value | `0.7` |
+| `method` | Algorithm: `"bron-kerbosch"`, `"els"` | auto |
+| `force_in` | Variables required in all subsets | `NULL` |
+
+**Returns**: `CorrCombo` S4 object.
+
+### corrSubset()
+
+Extracts a specific subset from a `CorrCombo` result.
+
+```r
+corrSubset(res, df, which = "best", keepExtra = FALSE)
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `res` | `CorrCombo` object from `corrSelect`/`assocSelect`/`MatSelect` | *required* |
+| `df` | Original data frame | *required* |
+| `which` | Subset index or `"best"` (lowest avg correlation) | `"best"` |
+| `keepExtra` | Include non-numeric columns in output? | `FALSE` |
+
+**Returns**: Data frame containing only the selected variables.
+
+## Troubleshooting
+
+**"No valid subsets found" error**
+- Threshold too strict: all variable pairs exceed it
+- Solution: Increase threshold or use `force_in` to keep at least one variable
+
+**VIF computation fails in modelPrune()**
+- Perfect multicollinearity (R² = 1) present
+- Solution: Use `corrPrune(threshold = 0.99)` first to remove near-duplicates
+
+**Forced variables conflict**
+- Variables in `force_in` are too highly correlated with each other
+- Solution: Increase threshold or reduce `force_in` set
+
+**Slow performance with many variables**
+- Exact mode is exponential for large p
+- Solution: Use `mode = "greedy"` for p > 25
+
+For comprehensive troubleshooting with code examples, see `vignette("advanced")`, Section 5.
 
 ## See Also
 
@@ -202,3 +343,8 @@ For detailed threshold selection strategies including visualization techniques a
 - `vignette("theory")` - Theoretical foundations and formulation
 - `?corrPrune`, `?modelPrune`, `?corrSelect`, `?assocSelect`, `?MatSelect`
 
+## Session Info
+
+```{r}
+sessionInfo()
+```

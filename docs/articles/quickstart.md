@@ -385,7 +385,7 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 
 ## Troubleshooting
 
-**“No valid subsets found” error** - Threshold too strict—all variable
+**“No valid subsets found” error** - Threshold too strict: all variable
 pairs exceed it - Solution: Increase threshold or use `force_in` to keep
 at least one variable
 
