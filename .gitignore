@@ -27,3 +27,7 @@ NUL
 # Build artifacts
 vignettes/.build.timestamp
 nvignettes/*.htmlnvignettes/*_files/
+
+# JOSS paper build artifacts (only paper.md and paper.bib are needed)
+paper/paper.pdf
+paper/jats/
