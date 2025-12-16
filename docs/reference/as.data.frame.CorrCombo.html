@@ -91,29 +91,11 @@ maximum length are padded with <code>NA</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span>, threshold <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      VarName01 VarName02 VarName03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset01 [avg=0.261]        V3        V7       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset02 [avg=0.295]        V1        V7       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset03 [avg=0.300]        V8        V9       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset04 [avg=0.331]        V2        V7       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset05 [avg=0.343]        V9        V7       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset06 [avg=0.350]        V3        V8       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset07 [avg=0.374]        V2        V8       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset08 [avg=0.384]        V6        V7       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset09 [avg=0.388]        V6        V8       V10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset10 [avg=0.086]        V3        V4      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset11 [avg=0.098]        V5        V8      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset12 [avg=0.208]        V1        V4      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset13 [avg=0.220]        V2        V4      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset14 [avg=0.295]        V9        V4      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset15 [avg=0.319]        V6        V4      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subset16 [avg=0.407]        V5        V7      &lt;NA&gt;</span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span>, threshold <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

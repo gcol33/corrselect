@@ -183,50 +183,38 @@ feasible before pruning begins.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Linear model with VIF-based pruning</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, engine <span class="op">=</span> <span class="st">"lm"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mpg"  "drat" "qsec" "vs"   "am"   "gear" "carb"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Force certain predictors to remain</span></span></span>
-<span class="r-in"><span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, force_in <span class="op">=</span> <span class="st">"drat"</span>, limit <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># GLM example (requires family argument)</span></span></span>
-<span class="r-in"><span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, engine <span class="op">=</span> <span class="st">"glm"</span>,</span></span>
-<span class="r-in"><span>                     family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: algorithm did not converge</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: fitted probabilities numerically 0 or 1 occurred</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: algorithm did not converge</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: fitted probabilities numerically 0 or 1 occurred</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: algorithm did not converge</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: fitted probabilities numerically 0 or 1 occurred</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: algorithm did not converge</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: fitted probabilities numerically 0 or 1 occurred</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: algorithm did not converge</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>glm.fit: fitted probabilities numerically 0 or 1 occurred</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Custom engine example (INLA)</span></span></span>
-<span class="r-in"><span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"inla"</span>,</span></span>
-<span class="r-in"><span>  fit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="fu">inla</span><span class="fu">::</span><span class="fu">inla</span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span>,</span></span>
-<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">$</span><span class="va">family</span> <span class="op"><a href="https://rdrr.io/r/base/Control.html" class="external-link">%||%</a></span> <span class="st">"gaussian"</span>,</span></span>
-<span class="r-in"><span>               control.compute <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>config <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span>,</span></span>
-<span class="r-in"><span>  diagnostics <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">fixed_effects</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">[</span>, <span class="st">"sd"</span><span class="op">]</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="va">scores</span><span class="op">[</span><span class="va">fixed_effects</span><span class="op">]</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="va">x3</span>, data <span class="op">=</span> <span class="va">df</span>,</span></span>
-<span class="r-in"><span>                     engine <span class="op">=</span> <span class="va">inla_engine</span>, limit <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># Linear model with VIF-based pruning</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
+<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, engine <span class="op">=</span> <span class="st">"lm"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Force certain predictors to remain</span></span>
+<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, force_in <span class="op">=</span> <span class="st">"drat"</span>, limit <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># GLM example (requires family argument)</span></span>
+<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, engine <span class="op">=</span> <span class="st">"glm"</span>,</span>
+<span>                     family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
+<span><span class="co"># Custom engine example (INLA)</span></span>
+<span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"inla"</span>,</span>
+<span>  fit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">inla</span><span class="fu">::</span><span class="fu">inla</span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">$</span><span class="va">family</span> <span class="op"><a href="https://rdrr.io/r/base/Control.html" class="external-link">%||%</a></span> <span class="st">"gaussian"</span>,</span>
+<span>               control.compute <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>config <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  diagnostics <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">fixed_effects</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">[</span>, <span class="st">"sd"</span><span class="op">]</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">)</span></span>
+<span>    <span class="va">scores</span><span class="op">[</span><span class="va">fixed_effects</span><span class="op">]</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu">modelPrune</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span> <span class="op">+</span> <span class="va">x3</span>, data <span class="op">=</span> <span class="va">df</span>,</span>
+<span>                     engine <span class="op">=</span> <span class="va">inla_engine</span>, limit <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="co"># }</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

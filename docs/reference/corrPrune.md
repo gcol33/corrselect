@@ -153,7 +153,6 @@ for model-based predictor pruning.
 data(mtcars)
 pruned <- corrPrune(mtcars, threshold = 0.7)
 names(pruned)
-#> [1] "mpg"  "drat" "qsec" "gear" "carb"
 
 # Force certain variables to be included
 pruned <- corrPrune(mtcars, threshold = 0.7, force_in = "mpg")

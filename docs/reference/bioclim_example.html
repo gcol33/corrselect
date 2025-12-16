@@ -151,24 +151,20 @@ environmental predictors before fitting species distribution models.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The 19 WorldClim bioclimatic variables (https://www.worldclim.org/data/bioclim.html)</span></span></span>
-<span class="r-in"><span><span class="co"># Many are highly correlated, making them ideal for pruning</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Remove highly correlated variables</span></span></span>
-<span class="r-in"><span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">pruned</span><span class="op">)</span>  <span class="co"># Reduced from 19 to ~8 variables</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Model-based pruning with VIF</span></span></span>
-<span class="r-in"><span><span class="va">model_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">species_richness</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
-<span class="r-in"><span>                         data <span class="op">=</span> <span class="va">bioclim_example</span>,</span></span>
-<span class="r-in"><span>                         limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">model_data</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "BIO1"  "BIO3"  "BIO4"  "BIO6"  "BIO8"  "BIO9"  "BIO10" "BIO11" "BIO12"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "BIO13" "BIO14" "BIO15" "BIO16" "BIO17" "BIO18" "BIO19"</span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># The 19 WorldClim bioclimatic variables (https://www.worldclim.org/data/bioclim.html)</span></span>
+<span><span class="co"># Many are highly correlated, making them ideal for pruning</span></span>
+<span></span>
+<span><span class="co"># Remove highly correlated variables</span></span>
+<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">bioclim_example</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">pruned</span><span class="op">)</span>  <span class="co"># Reduced from 19 to ~8 variables</span></span>
+<span></span>
+<span><span class="co"># Model-based pruning with VIF</span></span>
+<span><span class="va">model_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">species_richness</span> <span class="op">~</span> <span class="va">.</span>,</span>
+<span>                         data <span class="op">=</span> <span class="va">bioclim_example</span>,</span>
+<span>                         limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">model_data</span>, <span class="st">"selected_vars"</span><span class="op">)</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

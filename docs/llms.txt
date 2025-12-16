@@ -91,8 +91,8 @@ These features make the package useful in domains like:
 
 ``` r
 
-# Install from GitHub
-remotes::install_github("gcol33/corrselect")
+# install.packages("pak")
+pak::pak("gcol33/corrselect")
 ```
 
 ## Usage Examples

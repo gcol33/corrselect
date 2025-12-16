@@ -147,21 +147,6 @@ df <- data.frame(
 
 ## keep every subset whose internal associations <= 0.6
 assocSelect(df, threshold = 0.6)
-#> CorrCombo object
-#> -----------------
-#>   Method:      bron-kerbosch
-#>   Correlation: mixed
-#>   AssocMethod: numeric_numeric = pearson, numeric_factor = eta, numeric_ordered
-#>                = spearman, factor_ordered = cramersv
-#>   Threshold:   0.600
-#>   Subsets:     1 maximal subsets
-#>   Data Rows:   15 used in correlation
-#>   Pivot:       TRUE
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] height, weight, group, score      0.219  0.475     4
 
 ## use Kendall for all rank-based comparisons and force 'height' to appear
 assocSelect(df,
@@ -170,19 +155,4 @@ assocSelect(df,
             method_num_ord  = "kendall",
             method_ord_ord  = "kendall",
             force_in        = "height")
-#> CorrCombo object
-#> -----------------
-#>   Method:      els
-#>   Correlation: mixed
-#>   AssocMethod: numeric_numeric = kendall, numeric_factor = eta, numeric_ordered
-#>                = kendall, factor_ordered = cramersv
-#>   Threshold:   0.500
-#>   Subsets:     1 maximal subsets
-#>   Data Rows:   15 used in correlation
-#>   Forced-in:   height
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] height, weight, group, score      0.193  0.365     4
 ```

@@ -92,17 +92,4 @@ show(new("CorrCombo",
   cor_method = "mixed",
   n_rows_used = as.integer(5)
 ))
-#> CorrCombo object
-#> -----------------
-#>   Method:      els
-#>   Correlation: mixed
-#>   Threshold:   0.500
-#>   Subsets:     2 maximal subsets
-#>   Data Rows:   5 used in correlation
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] A, B                              0.200  0.300     2
-#>   [ 2] A, C                              0.300  0.400     2
 ```

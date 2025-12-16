@@ -118,64 +118,10 @@ df$label <- factor(sample(c("A", "B"), n, replace = TRUE))
 
 # Basic usage
 corrSelect(df, threshold = 0.8)
-#> The following variables were excluded from the correlation analysis:
-#>   - label: unordered factor (excluded)
-#> CorrCombo object
-#> -----------------
-#>   Method:      bron-kerbosch
-#>   Correlation: pearson
-#>   Threshold:   0.800
-#>   Subsets:     4 maximal subsets
-#>   Data Rows:   100 used in correlation
-#>   Pivot:       TRUE
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] V1, V2, V3, V4, V7, V9, ...       0.075  0.241    17
-#>   [ 2] V1, V2, V3, V4, V6, V9, ...       0.075  0.259    17
-#>   [ 3] V1, V2, V3, V4, V8, V9, ...       0.075  0.269    17
-#>   [ 4] V1, V2, V3, V4, V5, V9, ...       0.076  0.288    17
 
 # Try Bron–Kerbosch with pivoting
 corrSelect(df, threshold = 0.6, method = "bron-kerbosch", use_pivot = TRUE)
-#> The following variables were excluded from the correlation analysis:
-#>   - label: unordered factor (excluded)
-#> CorrCombo object
-#> -----------------
-#>   Method:      bron-kerbosch
-#>   Correlation: pearson
-#>   Threshold:   0.600
-#>   Subsets:     4 maximal subsets
-#>   Data Rows:   100 used in correlation
-#>   Pivot:       TRUE
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] V1, V2, V3, V4, V7, V9, ...       0.075  0.241    17
-#>   [ 2] V1, V2, V3, V4, V6, V9, ...       0.075  0.259    17
-#>   [ 3] V1, V2, V3, V4, V8, V9, ...       0.075  0.269    17
-#>   [ 4] V1, V2, V3, V4, V5, V9, ...       0.076  0.288    17
 
 # Force in a specific variable and use Spearman correlation
 corrSelect(df, threshold = 0.6, force_in = "V10", cor_method = "spearman")
-#> The following variables were excluded from the correlation analysis:
-#>   - label: unordered factor (excluded)
-#> CorrCombo object
-#> -----------------
-#>   Method:      els
-#>   Correlation: spearman
-#>   Threshold:   0.600
-#>   Subsets:     4 maximal subsets
-#>   Data Rows:   100 used in correlation
-#>   Forced-in:   V10
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] V1, V2, V3, V4, V7, V9, ...       0.076  0.239    17
-#>   [ 2] V1, V2, V3, V4, V5, V9, ...       0.076  0.269    17
-#>   [ 3] V1, V2, V3, V4, V8, V9, ...       0.076  0.246    17
-#>   [ 4] V1, V2, V3, V4, V6, V9, ...       0.076  0.252    17
 ```

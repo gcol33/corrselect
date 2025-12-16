@@ -66,14 +66,12 @@ data(cor_example)
 
 # Matrix dimensions
 dim(cor_example)
-#> [1] 20 20
 
 # Visualize structure
 if (requireNamespace("corrplot", quietly = TRUE)) {
   corrplot::corrplot(cor_example, method = "color", type = "upper",
                      tl.col = "black", tl.cex = 0.7)
 }
-
 
 # Distribution of correlations
 hist(cor_example[upper.tri(cor_example)],
@@ -82,24 +80,8 @@ hist(cor_example[upper.tri(cor_example)],
      xlab = "Correlation",
      col = "steelblue")
 
-
 # Use with MatSelect
 library(corrselect)
 results <- MatSelect(cor_example, threshold = 0.7, method = "els")
 show(results)
-#> CorrCombo object
-#> -----------------
-#>   Method:      els
-#>   Threshold:   0.700
-#>   Subsets:     5 maximal subsets
-#>   Data Rows:   20 used in correlation
-#> 
-#> Top combinations:
-#>   No.  Variables                          Avg    Max    Size
-#>   ------------------------------------------------------------
-#>   [ 1] V2, V6, V7, V8, V9, V10, ...      0.173  0.627    16
-#>   [ 2] V4, V6, V7, V8, V9, V10, ...      0.176  0.627    16
-#>   [ 3] V1, V6, V7, V8, V9, V10, ...      0.181  0.627    16
-#>   [ 4] V3, V6, V7, V8, V9, V10, ...      0.182  0.627    16
-#>   [ 5] V5, V6, V7, V8, V9, V10, ...      0.183  0.627    16
 ```

@@ -715,7 +715,7 @@ cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
             ncol(genes_pruned),
             greedy_ms))
-#> Reduced from 200 → 177 genes (9.9 ms)
+#> Reduced from 200 → 177 genes (18.2 ms)
 ```
 
 The greedy algorithm completed in milliseconds while ensuring all
@@ -776,11 +776,11 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (3.5 ms)
+#> Exact mode: 11 genes kept (6.2 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.5 ms)
+#> Greedy mode: 10 genes kept (0.7 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 7.7x faster
+#> Speedup: 8.3x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,

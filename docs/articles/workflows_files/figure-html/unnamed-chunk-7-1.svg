@@ -28,7 +28,7 @@
     }
   ]]></style>
 </defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
+<rect width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
   <clipPath id='cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA='>
     <rect x='0.00' y='0.00' width='504.00' height='360.00' />
@@ -130,8 +130,8 @@
 <rect x='428.53' y='201.98' width='17.07' height='0.078' style='stroke-width: 0.75; stroke: none; fill: #3380CC; fill-opacity: 0.50;' />
 <rect x='449.87' y='201.98' width='17.07' height='0.89' style='stroke-width: 0.75; stroke: none; fill: #3380CC; fill-opacity: 0.50;' />
 <rect rx='4' x='361.43' y='59.04' width='112.33' height='43.20' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
-<rect x='372.23' y='69.84' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #CC3333; fill-opacity: 0.50;' />
-<rect x='372.23' y='84.24' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #3E3F3A; fill: #3380CC; fill-opacity: 0.50;' />
+<rect x='372.23' y='69.84' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #CC3333; fill-opacity: 0.50;' />
+<rect x='372.23' y='84.24' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #3380CC; fill-opacity: 0.50;' />
 <text x='391.67' y='77.74' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='70.02px' lengthAdjust='spacingAndGlyphs'>Full (19 vars)</text>
 <text x='391.67' y='92.14' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='76.69px' lengthAdjust='spacingAndGlyphs'>Final (12 vars)</text>
 </g>

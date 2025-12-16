@@ -174,7 +174,6 @@ for exhaustive subset enumeration.
 data(mtcars)
 pruned <- modelPrune(mpg ~ ., data = mtcars, engine = "lm", limit = 5)
 names(pruned)
-#> [1] "mpg"  "drat" "qsec" "vs"   "am"   "gear" "carb"
 
 # Force certain predictors to remain
 pruned <- modelPrune(mpg ~ ., data = mtcars, force_in = "drat", limit = 20)
@@ -182,16 +181,6 @@ pruned <- modelPrune(mpg ~ ., data = mtcars, force_in = "drat", limit = 20)
 # GLM example (requires family argument)
 pruned <- modelPrune(am ~ ., data = mtcars, engine = "glm",
                      family = binomial(), limit = 5)
-#> Warning: glm.fit: algorithm did not converge
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: glm.fit: algorithm did not converge
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: glm.fit: algorithm did not converge
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: glm.fit: algorithm did not converge
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: glm.fit: algorithm did not converge
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 
 if (FALSE) { # \dontrun{
 # Custom engine example (INLA)

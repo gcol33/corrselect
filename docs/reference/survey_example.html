@@ -111,33 +111,20 @@ items in mixed-type data (ordered factors + numeric variables).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># This dataset has mixed types: numeric (age, overall_satisfaction),</span></span></span>
-<span class="r-in"><span><span class="co"># factors (gender, education), and ordered factors (Likert items)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	200 obs. of  10 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ respondent_id       : int  1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ age                 : num  38 32 18 18 19 39 33 26 26 42 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ gender              : Factor w/ 3 levels "Female","Male",..: 2 3 1 2 2 1 1 2 2 1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ education           : Ord.factor w/ 4 levels "High School"&lt;..: 3 1 4 2 2 1 1 1 2 3 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ overall_satisfaction: num  58 40 44 40 58 67 61 49 51 52 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ satisfaction_1      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 4 5 3 4 5 4 5 4 6 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ satisfaction_2      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 3 4 6 6 4 4 4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ satisfaction_3      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 6 3 4 4 3 4 5 3 4 4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ satisfaction_4      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 3 4 4 4 5 4 3 2 4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ satisfaction_5      : Ord.factor w/ 7 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 7 4 5 4 5 4 3 5 3 6 ...</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># Use assocSelect() for mixed-type data pruning</span></span></span>
-<span class="r-in"><span><span class="co"># This may take a few seconds with 34 variables</span></span></span>
-<span class="r-in"><span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="assocSelect.html">assocSelect</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,  <span class="co"># Exclude respondent_id</span></span></span>
-<span class="r-in"><span>                      threshold <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
-<span class="r-in"><span>                      method_ord_ord <span class="op">=</span> <span class="st">"spearman"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned</span>, <span class="st">"selected_vars"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># This dataset has mixed types: numeric (age, overall_satisfaction),</span></span>
+<span><span class="co"># factors (gender, education), and ordered factors (Likert items)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># \donttest{</span></span>
+<span><span class="co"># Use assocSelect() for mixed-type data pruning</span></span>
+<span><span class="co"># This may take a few seconds with 34 variables</span></span>
+<span><span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="assocSelect.html">assocSelect</a></span><span class="op">(</span><span class="va">survey_example</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>,  <span class="co"># Exclude respondent_id</span></span>
+<span>                      threshold <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                      method_ord_ord <span class="op">=</span> <span class="st">"spearman"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pruned</span>, <span class="st">"selected_vars"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># }</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -131,13 +131,10 @@ data(bioclim_example)
 # Remove highly correlated variables
 pruned <- corrPrune(bioclim_example[, -1], threshold = 0.7)
 ncol(pruned)  # Reduced from 19 to ~8 variables
-#> [1] 12
 
 # Model-based pruning with VIF
 model_data <- modelPrune(species_richness ~ .,
                          data = bioclim_example,
                          limit = 5)
 attr(model_data, "selected_vars")
-#>  [1] "BIO1"  "BIO3"  "BIO4"  "BIO6"  "BIO8"  "BIO9"  "BIO10" "BIO11" "BIO12"
-#> [10] "BIO13" "BIO14" "BIO15" "BIO16" "BIO17" "BIO18" "BIO19"
 ```
