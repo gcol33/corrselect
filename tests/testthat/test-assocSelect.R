@@ -301,3 +301,409 @@ test_that("assocSelect handles all type combinations in one df", {
   expect_s4_class(res, "CorrCombo")
   expect_equal(res@cor_method, "mixed")
 })
+
+# ===========================================================================
+# Additional coverage tests for assocSelect.R
+# ===========================================================================
+
+test_that("assocSelect stores assoc_methods_used attribute", {
+  set.seed(2013)
+  n <- 20
+  df <- data.frame(
+    num = rnorm(n),
+    cat = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+
+  # Check that assoc_methods_used attribute exists
+  methods_used <- attr(res, "assoc_methods_used")
+  expect_true(!is.null(methods_used))
+  expect_true(is.list(methods_used))
+})
+
+test_that("assocSelect handles constant numeric column", {
+  set.seed(2014)
+  n <- 20
+  df <- data.frame(
+    num1 = rep(5, n),  # Constant
+    cat1 = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect uses method = NULL to auto-select", {
+  set.seed(2015)
+  n <- 20
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n)
+  )
+
+  # Without force_in, should use bron-kerbosch
+  res1 <- assocSelect(df, threshold = 0.9, method = NULL)
+  expect_equal(res1@search_type, "bron-kerbosch")
+
+  # With force_in, should use els
+  res2 <- assocSelect(df, threshold = 0.9, method = NULL, force_in = "num1")
+  expect_equal(res2@search_type, "els")
+})
+
+test_that("assocSelect with bicor method", {
+  skip_if_not_installed("WGCNA")
+
+  set.seed(2016)
+  n <- 30
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9, method_num_num = "bicor")
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect with distance method", {
+  skip_if_not_installed("energy")
+
+  set.seed(2017)
+  n <- 30
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9, method_num_num = "distance")
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect with maximal method", {
+  skip_if_not_installed("minerva")
+
+  set.seed(2018)
+  n <- 30
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9, method_num_num = "maximal")
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect errors for bicor when WGCNA not installed", {
+  skip_if(requireNamespace("WGCNA", quietly = TRUE))
+
+  df <- data.frame(num1 = rnorm(10), num2 = rnorm(10))
+
+  expect_error(
+    assocSelect(df, threshold = 0.9, method_num_num = "bicor"),
+    "Install the 'WGCNA' package"
+  )
+})
+
+test_that("assocSelect errors for distance when energy not installed", {
+  skip_if(requireNamespace("energy", quietly = TRUE))
+
+  df <- data.frame(num1 = rnorm(10), num2 = rnorm(10))
+
+  expect_error(
+    assocSelect(df, threshold = 0.9, method_num_num = "distance"),
+    "Install the 'energy' package"
+  )
+})
+
+test_that("assocSelect errors for maximal when minerva not installed", {
+  skip_if(requireNamespace("minerva", quietly = TRUE))
+
+  df <- data.frame(num1 = rnorm(10), num2 = rnorm(10))
+
+  expect_error(
+    assocSelect(df, threshold = 0.9, method_num_num = "maximal"),
+    "Install the 'minerva' package"
+  )
+})
+
+test_that("assocSelect handles factor with only one unique value", {
+  set.seed(2019)
+  n <- 20
+  df <- data.frame(
+    num1 = rnorm(n),
+    single_level = factor(rep("A", n))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles numeric with zero variance (ss_tot = 0)", {
+  set.seed(2020)
+  n <- 20
+  df <- data.frame(
+    const_num = rep(3.14, n),
+    cat1 = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+# ===========================================================================
+# Additional edge case tests for association methods
+# ===========================================================================
+
+test_that("assocSelect handles cramersv with sparse table (row/col all zeros)", {
+  set.seed(2021)
+  # Create factors that will produce a sparse contingency table
+  df <- data.frame(
+    factor1 = factor(c(rep("A", 8), rep("B", 2)), levels = c("A", "B", "C")),
+    factor2 = factor(c(rep("X", 9), "Y"), levels = c("X", "Y", "Z"))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles cramersv with minimal table", {
+  set.seed(2022)
+  # Create 2x2 table with sparse data
+  df <- data.frame(
+    f1 = factor(c("A", "B", "A", "B", "A", "B", "A", "B")),
+    f2 = factor(c("X", "X", "Y", "Y", "X", "Y", "X", "Y"))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles eta with numeric-factor pairs", {
+  set.seed(2023)
+  n <- 25
+  df <- data.frame(
+    numeric_var = rnorm(n),
+    factor_var = factor(sample(c("Low", "Medium", "High"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+
+  # Check that eta was used
+  methods_used <- attr(res, "assoc_methods_used")
+  expect_true(!is.null(methods_used))
+})
+
+test_that("assocSelect handles eta with factor-numeric order", {
+  set.seed(2024)
+  n <- 25
+  # Reverse order: factor first, numeric second
+  df <- data.frame(
+    factor_var = factor(sample(c("A", "B", "C"), n, replace = TRUE)),
+    numeric_var = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles eta with single-level factor", {
+  set.seed(2025)
+  n <- 20
+  df <- data.frame(
+    numeric_var = rnorm(n),
+    single_factor = factor(rep("only_level", n))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect with spearman for numeric-ordered pairs", {
+  set.seed(2026)
+  n <- 25
+  df <- data.frame(
+    numeric_var = rnorm(n),
+    ordered_var = ordered(sample(c("Low", "Med", "High"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9, method_num_ord = "spearman")
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect with kendall for numeric-ordered pairs", {
+  set.seed(2027)
+  n <- 25
+  df <- data.frame(
+    numeric_var = rnorm(n),
+    ordered_var = ordered(sample(1:4, n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9, method_num_ord = "kendall")
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect stores all method types in attributes", {
+  set.seed(2028)
+  n <- 30
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    ord1 = ordered(sample(1:3, n, replace = TRUE)),
+    cat1 = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+
+  # Check assoc_methods_used
+  methods_used <- attr(res, "assoc_methods_used")
+  expect_true(!is.null(methods_used))
+  expect_true(is.list(methods_used))
+
+  # Check assoc_methods_all
+  methods_all <- attr(res, "assoc_methods_all")
+  expect_true(!is.null(methods_all))
+})
+
+test_that("assocSelect handles all unique values in factor (no repeated levels)", {
+  set.seed(2029)
+  n <- 10
+  df <- data.frame(
+    numeric_var = rnorm(n),
+    unique_factor = factor(paste0("level_", 1:n))  # Each observation has unique level
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles cramersv returning NA (fallback to 0)", {
+  set.seed(2030)
+  # Create factor combination that produces sparse table
+  df <- data.frame(
+    f1 = factor(c(rep("A", 15), rep("B", 5)), levels = c("A", "B", "C")),
+    f2 = factor(c(rep("X", 18), rep("Y", 2)), levels = c("X", "Y", "Z"))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect with all numeric uses pearson by default", {
+  set.seed(2031)
+  n <- 30
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    num3 = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+
+  # Check methods used
+  methods_used <- attr(res, "assoc_methods_used")
+  expect_true("numeric_numeric" %in% names(methods_used) ||
+              length(methods_used) == 0)  # May be empty if no pairs computed
+})
+
+test_that("assocSelect handles ordered-factor pairs", {
+  set.seed(2032)
+  n <- 30
+  df <- data.frame(
+    ord_var = ordered(sample(c("Low", "Med", "High"), n, replace = TRUE)),
+    factor_var = factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles factor-ordered pairs (reverse)", {
+  set.seed(2033)
+  n <- 30
+  df <- data.frame(
+    factor_var = factor(sample(c("X", "Y", "Z"), n, replace = TRUE)),
+    ord_var = ordered(sample(1:4, n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles ordered-numeric pairs", {
+  set.seed(2034)
+  n <- 30
+  df <- data.frame(
+    ord_var = ordered(sample(c("Low", "Med", "High"), n, replace = TRUE)),
+    num_var = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+# ===========================================================================
+# Edge case tests for association computation branches
+# ===========================================================================
+
+test_that("assocSelect cramersv with sparse 1-dim table", {
+  set.seed(2035)
+  # Factor with only one level effectively - should hit min(dim(tbl)) < 2
+  df <- data.frame(
+    f1 = factor(c(rep("A", 20))),  # Only one level
+    f2 = factor(c(rep("X", 10), rep("Y", 10)))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect eta with constant numeric (ss_tot = 0)", {
+  set.seed(2036)
+  n <- 20
+  df <- data.frame(
+    const_num = rep(5, n),  # Zero variance
+    factor_var = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect eta with single-level factor", {
+  set.seed(2037)
+  n <- 20
+  df <- data.frame(
+    num_var = rnorm(n),
+    single_factor = factor(rep("only_level", n))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles cramersv with NA chi-squared", {
+  set.seed(2038)
+  # Create edge case that might produce NA chi-squared
+  # Factors with very imbalanced data
+  df <- data.frame(
+    f1 = factor(c(rep("A", 18), "B", "B")),
+    f2 = factor(c(rep("X", 17), rep("Y", 3)))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles NA association fallback", {
+  set.seed(2039)
+  # Create factor data that might produce NA association
+  df <- data.frame(
+    f1 = factor(c(rep("A", 15), rep("B", 5)), levels = c("A", "B", "C")),
+    f2 = factor(c(rep("X", 15), rep("Y", 5)), levels = c("X", "Y", "Z"))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})

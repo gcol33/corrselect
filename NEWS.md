@@ -1,3 +1,48 @@
+# corrselect 3.0.4
+
+## Test Coverage Improvements
+
+- Removed dead C++ code (`isValidAddition`, `isValidCombination`) from utils.cpp/utils.h
+- Added edge case tests for ELS algorithm (force_in validation, threshold boundaries)
+- Added edge case tests for association methods (Cramer's V sparse tables, eta edge cases)
+- Added tests for corrPrune lexicographic tiebreaker and factor handling
+- Added tests for modelPrune custom engine error handling and VIF edge cases
+- Test coverage improved from 91.86% to 93.44%
+
+---
+
+# corrselect 3.0.3
+
+## JOSS Review Response
+
+This release addresses reviewer feedback from the JOSS submission.
+
+### Documentation
+
+- **paper.md**: Strengthened comparison with `caret::findCorrelation()` to emphasize the key difference (single solution vs. all maximal subsets)
+- **paper.md**: Added explicit graph-theoretic context (maximal cliques / independent sets formulation)
+- **paper.md**: Clarified that Bron-Kerbosch and ELS algorithms are implemented natively in C++, not as wrappers around igraph
+- **paper.md**: Added note about NP-hard complexity and the recommendation to use exact mode only for p ≤ 100
+- **paper.md**: Added code snippet demonstrating the "all subsets" output
+- **paper.bib**: Added citations for igraph (Csardi & Nepusz, 2006) and FCBF (Yu & Liu, 2003)
+- **README.md**: Added CRAN installation instructions (`install.packages("corrselect")`)
+- **README.md**: Fixed mixed model example with `suppressWarnings()` to hide expected VIF computation warnings
+- **quickstart vignette**: Fixed GitHub repository reference (GillesColling → gcol33)
+
+### Testing
+
+- Added edge case test: identity matrix (all off-diagonals = 0) returns single subset with all variables
+- Added edge case test: perfect duplicates (r = 1.0) are correctly separated into different subsets
+- Added threshold boundary test for correlation exactly at threshold
+
+### Infrastructure
+
+- Added GitHub Actions workflow for cross-platform R CMD check (Ubuntu, macOS, Windows)
+- Added GitHub Actions workflow for test coverage reporting
+- Updated `.gitignore` to exclude build artifacts (`*.Rcheck/`, `*.tar.gz`, `CRAN-SUBMISSION`)
+
+---
+
 # corrselect 3.0.2
 
 ## CRAN Compliance

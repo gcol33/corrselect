@@ -95,7 +95,7 @@ setMethod("show", "CorrCombo", function(object) {
   }
 
   cat(sprintf("  Threshold:   %.3f\n", object@threshold))
-  cat(sprintf("  Subsets:     %d valid combinations\n", n))
+  cat(sprintf("  Subsets:     %d maximal subsets\n", n))
   cat(sprintf("  Data Rows:   %d used in correlation\n", object@n_rows_used))
 
   if (object@search_type == "bron-kerbosch") {

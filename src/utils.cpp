@@ -4,14 +4,6 @@
 
 using namespace Rcpp;
 
-// Check if all values with newIdx stay below the threshold
-bool isValidAddition(const NumericMatrix& corMatrix, const Combo& current, int newIdx, double threshold) {
-  for (int i : current) {
-    if (std::abs(corMatrix(i, newIdx)) > threshold) return false;
-  }
-  return true;
-}
-
 // Compute mean absolute correlation for a subset
 double meanAbsCorrelation(const NumericMatrix& corMatrix, const Combo& comb) {
   double sum = 0.0;
@@ -39,17 +31,4 @@ bool validateMatrixStructure(const NumericMatrix& corMatrix) {
   }
 
   return isSymmetric || isUpper;
-}
-// Check if all pairwise correlations in the combo are below the threshold
-bool isValidCombination(const NumericMatrix& corMatrix,
-                        const Combo& comb,
-                        double threshold) {
-  for (size_t i = 0; i < comb.size(); ++i) {
-    for (size_t j = i + 1; j < comb.size(); ++j) {
-      if (std::abs(corMatrix(comb[i], comb[j])) > threshold) {
-        return false;
-      }
-    }
-  }
-  return true;
 }

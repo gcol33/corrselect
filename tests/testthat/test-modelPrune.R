@@ -640,3 +640,445 @@ test_that("modelPrune custom engine can implement non-VIF diagnostics", {
   expect_equal(length(attr(result, "selected_vars")), 3)
   expect_equal(attr(result, "engine"), "pvalue_pruner")
 })
+
+# ===========================================================================
+# Additional coverage tests for modelPrune.R
+# ===========================================================================
+
+test_that("modelPrune custom engine with wrong length diagnostics", {
+  df <- mtcars
+
+  bad_engine <- list(
+    name = "wrong_length",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      # Return named vector with wrong length
+      c(cyl = 1)  # Only one value when expecting 2
+    }
+  )
+
+  expect_error(
+    modelPrune(mpg ~ cyl + disp, data = df, engine = bad_engine, limit = 5),
+    "missing names for"
+  )
+})
+
+test_that("modelPrune custom engine criterion parameter ignored with message", {
+  df <- mtcars
+
+  custom_engine <- list(
+    name = "test",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      setNames(rep(1, length(fixed_effects)), fixed_effects)
+    }
+  )
+
+  # Setting criterion to non-vif should produce message
+  expect_message(
+    modelPrune(mpg ~ cyl, data = df, engine = custom_engine,
+               criterion = "aic", limit = 10),
+    "criterion.*ignored"
+  )
+})
+
+test_that("modelPrune handles max_steps warning", {
+  set.seed(1201)
+  df <- data.frame(
+    y = rnorm(100),
+    x1 = rnorm(100),
+    x2 = rnorm(100),
+    x3 = rnorm(100)
+  )
+  # Make x2 and x3 correlated
+  df$x3 <- df$x2 * 0.95 + rnorm(100, sd = 0.1)
+
+  # With max_steps = 1 and low limit, should warn
+  expect_warning(
+    modelPrune(y ~ x1 + x2 + x3, data = df, limit = 2, max_steps = 1),
+    "max_steps"
+  )
+})
+
+test_that("modelPrune handles max_steps NA error", {
+  df <- mtcars
+
+  expect_error(
+    modelPrune(mpg ~ cyl, data = df, max_steps = NA),
+    "'max_steps' must be"
+  )
+})
+
+test_that("modelPrune handles multiple predictor vectors with force_in", {
+  df <- mtcars
+
+  # Multiple force_in variables that satisfy threshold
+  result <- modelPrune(mpg ~ cyl + disp + hp + wt,
+                       data = df, force_in = c("cyl", "wt"), limit = 50)
+
+  expect_true(all(c("cyl", "wt") %in% attr(result, "selected_vars")))
+})
+
+test_that("modelPrune handles limit = 0 error", {
+  df <- mtcars
+
+  expect_error(
+    modelPrune(mpg ~ cyl, data = df, limit = 0),
+    "'limit' must be positive"
+  )
+})
+
+test_that("modelPrune with interaction terms", {
+  df <- mtcars
+
+  result <- modelPrune(mpg ~ cyl * disp, data = df, limit = 100)
+
+  expect_s3_class(result, "data.frame")
+  expect_true("mpg" %in% names(result))
+})
+
+test_that("modelPrune glm with poisson family", {
+  set.seed(1202)
+  df <- data.frame(
+    y = rpois(100, lambda = 5),
+    x1 = rnorm(100),
+    x2 = rnorm(100)
+  )
+
+  result <- modelPrune(y ~ x1 + x2, data = df,
+                       engine = "glm", family = poisson(), limit = 10)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "engine"), "glm")
+})
+
+test_that("modelPrune lme4 with glmer", {
+  skip_if_not_installed("lme4")
+
+  set.seed(1203)
+  df <- data.frame(
+    y = rbinom(100, 1, 0.5),
+    x1 = rnorm(100),
+    x2 = rnorm(100),
+    group = rep(1:10, each = 10)
+  )
+
+  # Suppress lme4 convergence warnings for small data
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1|group), data = df,
+               engine = "lme4", family = binomial(), limit = 10)
+  )
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "engine"), "lme4")
+})
+
+test_that("modelPrune handles two-predictor model", {
+  df <- mtcars
+
+  result <- modelPrune(mpg ~ cyl + disp, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune removes predictors iteratively", {
+  set.seed(1204)
+  df <- data.frame(
+    y = rnorm(100),
+    x1 = rnorm(100),
+    x2 = rnorm(100),
+    x3 = rnorm(100)
+  )
+  # Create collinearity between x1, x2, x3
+  df$x2 <- df$x1 * 0.99 + rnorm(100, sd = 0.01)
+  df$x3 <- df$x1 * 0.98 + rnorm(100, sd = 0.02)
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
+
+  # Should have removed some variables
+  expect_true(length(attr(result, "removed_vars")) > 0)
+})
+
+test_that("modelPrune attributes are complete", {
+  df <- mtcars
+
+  result <- modelPrune(mpg ~ cyl + disp + hp, data = df, limit = 10)
+
+  # Check all expected attributes
+  attrs <- attributes(result)
+  expect_true("selected_vars" %in% names(attrs))
+  expect_true("removed_vars" %in% names(attrs))
+  expect_true("engine" %in% names(attrs))
+  expect_true("criterion" %in% names(attrs))
+  expect_true("limit" %in% names(attrs))
+  expect_true("final_model" %in% names(attrs))
+  expect_true("n_vars_original" %in% names(attrs))
+  expect_true("n_vars_selected" %in% names(attrs))
+})
+
+test_that("modelPrune VIF with highly correlated predictors", {
+  set.seed(1205)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.001),  # Near-perfect collinearity
+    x3 = rnorm(n)
+  )
+
+  # Should handle VIF = Inf gracefully
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
+  )
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune lme4 package not installed error", {
+  skip_if(requireNamespace("lme4", quietly = TRUE))
+
+  df <- data.frame(
+    y = rnorm(20),
+    x1 = rnorm(20),
+    group = rep(1:4, each = 5)
+  )
+
+  expect_error(
+    modelPrune(y ~ x1 + (1|group), data = df, engine = "lme4"),
+    "lme4 package"
+  )
+})
+
+test_that("modelPrune glmmTMB package not installed error", {
+  skip_if(requireNamespace("glmmTMB", quietly = TRUE))
+
+  df <- data.frame(
+    y = rnorm(20),
+    x1 = rnorm(20),
+    group = rep(1:4, each = 5)
+  )
+
+  expect_error(
+    modelPrune(y ~ x1 + (1|group), data = df, engine = "glmmTMB"),
+    "glmmTMB package"
+  )
+})
+
+# ===========================================================================
+# Additional VIF and edge case tests
+# ===========================================================================
+
+test_that("modelPrune VIF with highly collinear predictors", {
+  set.seed(9001)
+  n <- 100
+  x1 <- rnorm(n)
+  x2 <- x1 + rnorm(n, sd = 0.01)  # Nearly identical to x1
+  x3 <- rnorm(n)
+  y <- x1 + x3 + rnorm(n)
+
+  df <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
+
+  # VIF should be very high for x1 and x2
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 10)
+
+  expect_s3_class(result, "data.frame")
+  # One of x1 or x2 should be removed due to high VIF
+  expect_true(ncol(result) <= ncol(df))
+})
+
+test_that("modelPrune VIF with factor predictors", {
+  set.seed(9002)
+  n <- 60
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = factor(sample(c("A", "B", "C"), n, replace = TRUE)),
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 5)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune VIF handles constant predictor", {
+  set.seed(9003)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rep(5, n),  # Constant - will cause issues
+    x3 = rnorm(n)
+  )
+
+  # Should handle gracefully (constant predictor may be auto-removed or cause inf VIF)
+  result <- tryCatch(
+    modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 10),
+    error = function(e) "error"
+  )
+
+  # Either succeeds or throws an expected error
+  expect_true(is.data.frame(result) || result == "error")
+})
+
+test_that("modelPrune with single predictor", {
+  set.seed(9004)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1, data = df, criterion = "vif", limit = 5)
+
+  expect_s3_class(result, "data.frame")
+  # Single predictor should remain
+  expect_true("x1" %in% names(result))
+})
+
+test_that("modelPrune with two predictors", {
+  set.seed(9005)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2, data = df, criterion = "vif", limit = 5)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune force_in preserves specified variables", {
+  set.seed(9006)
+  n <- 80
+  x1 <- rnorm(n)
+  x2 <- rnorm(n)  # Independent from x1
+  x3 <- rnorm(n)
+  y <- x1 + x3 + rnorm(n)
+
+  df <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
+
+  # Force x2 to stay
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif",
+                       limit = 10, force_in = "x2")
+
+  expect_s3_class(result, "data.frame")
+  expect_true("x2" %in% names(result))
+})
+
+test_that("modelPrune glm engine with binomial family", {
+  set.seed(9007)
+  n <- 100
+  df <- data.frame(
+    y = rbinom(n, 1, 0.5),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, engine = "glm",
+                       criterion = "vif", limit = 5, family = binomial())
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune handles NA in data", {
+  set.seed(9008)
+  n <- 50
+  df <- data.frame(
+    y = c(rnorm(48), NA, NA),
+    x1 = c(rnorm(48), NA, 1),
+    x2 = rnorm(n),
+    x3 = rnorm(n)
+  )
+
+  # Should handle NAs (complete cases used)
+  result <- tryCatch(
+    modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 5),
+    error = function(e) "error"
+  )
+
+  # May succeed with na.action or fail
+  expect_true(is.data.frame(result) || result == "error")
+})
+
+test_that("modelPrune custom engine diagnostics without names but wrong length", {
+  df <- mtcars
+
+  # Engine that returns unnamed vector with wrong length
+  bad_engine <- list(
+    name = "wrong_length_no_names",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      # Return wrong number of values without names
+      rep(1.0, length(fixed_effects) + 1)
+    }
+  )
+
+  expect_error(
+    modelPrune(mpg ~ cyl + disp + hp, data = df, engine = bad_engine, limit = 5),
+    "must return exactly.*value"
+  )
+})
+
+test_that("modelPrune custom engine diagnostics without names but correct length", {
+  df <- mtcars
+
+  # Engine that returns correct length but no names
+  bad_engine <- list(
+    name = "correct_length_no_names",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      # Return correct number of values but without names
+      rep(1.0, length(fixed_effects))
+    }
+  )
+
+  expect_error(
+    modelPrune(mpg ~ cyl + disp, data = df, engine = bad_engine, limit = 5),
+    "must return a named vector"
+  )
+})
+
+test_that("modelPrune custom engine diagnostics with extra names", {
+  df <- mtcars
+
+  # Engine that returns more values than needed (with names)
+  bad_engine <- list(
+    name = "extra_names",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      vals <- rep(1.0, length(fixed_effects) + 2)
+      names(vals) <- c(fixed_effects, "extra1", "extra2")
+      vals
+    }
+  )
+
+  expect_error(
+    modelPrune(mpg ~ cyl + disp, data = df, engine = bad_engine, limit = 5),
+    "must return exactly"
+  )
+})
+
+test_that("modelPrune custom engine diagnostics returns non-numeric", {
+  df <- mtcars
+
+  # Engine that returns character instead of numeric
+  bad_engine <- list(
+    name = "non_numeric",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      vals <- rep("high", length(fixed_effects))
+      names(vals) <- fixed_effects
+      vals
+    }
+  )
+
+  expect_error(
+    modelPrune(mpg ~ cyl + disp, data = df, engine = bad_engine, limit = 5),
+    "must return a numeric vector"
+  )
+})

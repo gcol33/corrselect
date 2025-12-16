@@ -501,3 +501,189 @@ test_that("MatSelect handles threshold = 1 (keep all pairs)", {
   expect_equal(length(res@subset_list), 1)
   expect_setequal(res@subset_list[[1]], c("A", "B", "C"))
 })
+
+# ===========================================================================
+# Additional coverage tests for corrSelect.R
+# ===========================================================================
+
+test_that("corrSelect warns about constant columns", {
+  set.seed(1001)
+  df <- data.frame(
+    x = rnorm(20),
+    const = rep(5, 20),  # Constant column (sd = 0)
+    y = rnorm(20)
+  )
+
+  expect_warning(
+    res <- corrSelect(df, threshold = 0.8),
+    "constant.*excluded"
+  )
+
+  # Result should exclude the constant column
+  expect_s4_class(res, "CorrCombo")
+  expect_false("const" %in% res@names)
+})
+
+test_that("corrSelect handles multiple constant columns", {
+  set.seed(1002)
+  df <- data.frame(
+    x = rnorm(20),
+    const1 = rep(1, 20),
+    const2 = rep(2, 20),
+    y = rnorm(20)
+  )
+
+  expect_warning(
+    res <- corrSelect(df, threshold = 0.8),
+    "constant.*excluded"
+  )
+
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("corrSelect errors when all remaining columns are constant", {
+  df <- data.frame(
+    const1 = rep(1, 10),
+    const2 = rep(2, 10),
+    factor_col = factor(letters[1:10])
+  )
+
+  expect_warning(
+    expect_error(
+      corrSelect(df, threshold = 0.7),
+      "Less than two numeric columns"
+    ),
+    "constant.*excluded"
+  )
+})
+
+test_that("corrSelect prints message about skipped non-numeric columns", {
+  set.seed(1003)
+  df <- data.frame(
+    num1 = rnorm(10),
+    num2 = rnorm(10),
+    factor_col = factor(c("a", "b")[sample(1:2, 10, replace = TRUE)]),
+    ordered_col = ordered(c("low", "med", "high")[sample(1:3, 10, replace = TRUE)]),
+    char_col = letters[1:10]
+  )
+
+  expect_message(
+    res <- corrSelect(df, threshold = 0.8),
+    "excluded"
+  )
+
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("corrSelect force_in errors when variable excluded from correlation", {
+  set.seed(1004)
+  df <- data.frame(
+    num1 = rnorm(20),
+    const = rep(5, 20),  # Will be excluded due to being constant
+    num2 = rnorm(20)
+  )
+
+  # Try to force_in a constant column (which gets excluded)
+  expect_warning(
+    expect_error(
+      corrSelect(df, threshold = 0.8, force_in = "const"),
+      "excluded from correlation"
+    ),
+    "constant"
+  )
+})
+
+test_that("corrSelect force_in with invalid index errors", {
+  df <- data.frame(a = rnorm(10), b = rnorm(10))
+
+  expect_error(
+    corrSelect(df, threshold = 0.8, force_in = c(0, 1)),
+    "valid 1-based column indices"
+  )
+
+  expect_error(
+    corrSelect(df, threshold = 0.8, force_in = c(1, 10)),
+    "valid 1-based column indices"
+  )
+})
+
+test_that("corrSelect with threshold validation", {
+  df <- data.frame(a = rnorm(10), b = rnorm(10))
+
+  expect_error(
+    corrSelect(df, threshold = "0.5"),
+    "must be a single numeric value"
+  )
+
+  expect_error(
+    corrSelect(df, threshold = c(0.5, 0.7)),
+    "must be a single numeric value"
+  )
+
+  expect_error(
+    corrSelect(df, threshold = NA_real_),
+    "must be a single numeric value"
+  )
+
+  expect_error(
+    corrSelect(df, threshold = 0),
+    "must be in the range"
+  )
+
+  expect_error(
+    corrSelect(df, threshold = 1.5),
+    "must be in the range"
+  )
+})
+
+test_that("corrSelect errors for bicor when WGCNA not installed", {
+  skip_if(requireNamespace("WGCNA", quietly = TRUE))
+
+  df <- data.frame(a = rnorm(10), b = rnorm(10))
+
+  expect_error(
+    corrSelect(df, threshold = 0.8, cor_method = "bicor"),
+    "Install the 'WGCNA' package"
+  )
+})
+
+test_that("corrSelect errors for distance when energy not installed", {
+  skip_if(requireNamespace("energy", quietly = TRUE))
+
+  df <- data.frame(a = rnorm(10), b = rnorm(10))
+
+  expect_error(
+    corrSelect(df, threshold = 0.8, cor_method = "distance"),
+    "Install the 'energy' package"
+  )
+})
+
+test_that("corrSelect errors for maximal when minerva not installed", {
+  skip_if(requireNamespace("minerva", quietly = TRUE))
+
+  df <- data.frame(a = rnorm(10), b = rnorm(10))
+
+  expect_error(
+    corrSelect(df, threshold = 0.8, cor_method = "maximal"),
+    "Install the 'minerva' package"
+  )
+})
+
+test_that("corrSelect method parameter validation", {
+  df <- data.frame(a = rnorm(10), b = rnorm(10))
+
+  expect_error(
+    corrSelect(df, threshold = 0.8, method = "invalid"),
+    "should be one of"
+  )
+})
+
+test_that("corrSelect handles data.table input", {
+  skip_if_not_installed("data.table")
+
+  set.seed(1005)
+  dt <- data.table::data.table(a = rnorm(10), b = rnorm(10), c = rnorm(10))
+
+  res <- corrSelect(dt, threshold = 0.8)
+  expect_s4_class(res, "CorrCombo")
+})
