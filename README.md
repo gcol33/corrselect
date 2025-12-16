@@ -3,7 +3,7 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/corrselect)](https://CRAN.R-project.org/package=corrselect)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
 [![R-CMD-check](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml)
-[![Codecov test coverage](https://codecov.io/gh/gcol33/corrselect/graph/badge.svg)](https://codecov.io/gh/gcol33/corrselect)
+[![Codecov test coverage](https://codecov.io/gh/gcol33/corrselect/graph/badge.svg)](https://app.codecov.io/gh/gcol33/corrselect)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
