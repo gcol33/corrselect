@@ -499,3 +499,129 @@ test_that("corrPrune greedy mode works with different correlation measures", {
   result_kendall <- corrPrune(df, threshold = 0.7, measure = "kendall", mode = "greedy")
   expect_equal(attr(result_kendall, "measure"), "kendall")
 })
+
+# ===========================================================================
+# Additional data handling tests for corrPrune
+# ===========================================================================
+
+# Note: For full mixed-type data support, use assocSelect() which is designed
+# for that purpose. corrPrune works best with numeric-only data.
+
+test_that("corrPrune handles integer columns (converted to numeric)", {
+  set.seed(1004)
+  n <- 30
+  df <- data.frame(
+    int1 = as.integer(sample(1:100, n, replace = TRUE)),
+    int2 = as.integer(sample(1:100, n, replace = TRUE))
+  )
+
+  result <- corrPrune(df, threshold = 0.7, mode = "exact")
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "measure"), "pearson")
+})
+
+test_that("corrPrune errors on unsupported column types", {
+  df <- data.frame(
+    num1 = 1:10,
+    date1 = Sys.Date() + 1:10
+  )
+
+  expect_error(
+    corrPrune(df, threshold = 0.7),
+    "Unsupported column types"
+  )
+})
+
+test_that("corrPrune errors on unsupported measure for numeric data", {
+  set.seed(1005)
+  df <- data.frame(x = rnorm(10), y = rnorm(10))
+
+  expect_error(
+    corrPrune(df, threshold = 0.7, measure = "eta"),
+    "not yet implemented"
+  )
+})
+
+test_that("corrPrune lexicographic tie-breaking works correctly", {
+  set.seed(1006)
+  n <- 50
+  # Create data where multiple subsets might have same size and avg correlation
+  df <- data.frame(
+    a = rnorm(n),
+    b = rnorm(n),
+    c = rnorm(n),
+    d = rnorm(n)
+  )
+
+  # Run multiple times to verify determinism
+  result1 <- corrPrune(df, threshold = 0.95, mode = "exact")
+  result2 <- corrPrune(df, threshold = 0.95, mode = "exact")
+
+  expect_identical(names(result1), names(result2))
+})
+
+test_that("corrPrune handles all rows with NA (errors)", {
+  df <- data.frame(
+    x1 = c(NA, NA, NA),
+    x2 = c(NA, NA, NA)
+  )
+
+  # Should error - either "All rows contain missing values" or NA in matrix
+  expect_error(
+    corrPrune(df, threshold = 0.7)
+  )
+})
+
+test_that("corrPrune handles near-constant numeric columns", {
+  set.seed(1013)
+  n <- 30
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    near_const = c(5, 5, 5, 5, 5.001, rep(5, n - 5))  # Near-constant with tiny variance
+  )
+
+  result <- corrPrune(df, threshold = 0.8, mode = "exact")
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("corrPrune returns correct attributes", {
+  set.seed(1014)
+  n <- 50
+  df <- data.frame(
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.7, mode = "exact")
+
+  # Check all expected attributes
+  expect_true(!is.null(attr(result, "selected_vars")))
+  expect_true(!is.null(attr(result, "removed_vars")))
+  expect_true(!is.null(attr(result, "mode")))
+  expect_true(!is.null(attr(result, "measure")))
+  expect_true(!is.null(attr(result, "threshold")))
+  expect_true(!is.null(attr(result, "n_vars_original")))
+  expect_true(!is.null(attr(result, "n_vars_selected")))
+
+  # Verify consistency
+  expect_equal(attr(result, "n_vars_selected"), ncol(result))
+  expect_equal(length(attr(result, "selected_vars")), ncol(result))
+})
+
+test_that("corrPrune removes highly correlated variables", {
+  set.seed(1015)
+  n <- 100
+  x1 <- rnorm(n)
+  x2 <- x1 + rnorm(n, sd = 0.01)  # Very highly correlated with x1
+  x3 <- rnorm(n)  # Independent
+
+  df <- data.frame(x1 = x1, x2 = x2, x3 = x3)
+
+  result <- corrPrune(df, threshold = 0.5, mode = "exact")
+
+  # Should have removed either x1 or x2 due to high correlation
+  expect_true(ncol(result) < ncol(df))
+  expect_false(all(c("x1", "x2") %in% names(result)))
+})
