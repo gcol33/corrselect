@@ -26,8 +26,20 @@ NUL
 
 # Build artifacts
 vignettes/.build.timestamp
-nvignettes/*.htmlnvignettes/*_files/
+vignettes/*.html
+vignettes/*_files/
+vignettes/*_cache/
+
+# R CMD check directory
+*.Rcheck/
+corrselect.Rcheck/
+
+# Source packages
+*.tar.gz
 
 # JOSS paper build artifacts (only paper.md and paper.bib are needed)
 paper/paper.pdf
 paper/jats/
+
+# CRAN submission file (regenerated on each submission)
+CRAN-SUBMISSION

@@ -17,7 +17,3 @@ greedyPruneBackend <- function(assoc_matrix, threshold, force_in = NULL) {
     .Call(`_corrselect_greedyPruneBackend`, assoc_matrix, threshold, force_in)
 }
 
-runSpectral <- function(corMatrix, threshold, forcedVec, lengthLimit, k_param = NULL) {
-    .Call(`_corrselect_runSpectral`, corMatrix, threshold, forcedVec, lengthLimit, k_param)
-}
-
