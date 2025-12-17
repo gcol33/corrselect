@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,58 @@
       <small>Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0.4" id="corrselect-304">corrselect 3.0.4<a class="anchor" aria-label="anchor" href="#corrselect-304"></a></h2>
+<div class="section level3">
+<h3 id="test-coverage-improvements-3-0-4">Test Coverage Improvements<a class="anchor" aria-label="anchor" href="#test-coverage-improvements-3-0-4"></a></h3>
+<ul><li>Removed dead C++ code (<code>isValidAddition</code>, <code>isValidCombination</code>) from utils.cpp/utils.h</li>
+<li>Added edge case tests for ELS algorithm (force_in validation, threshold boundaries)</li>
+<li>Added edge case tests for association methods (Cramer’s V sparse tables, eta edge cases)</li>
+<li>Added tests for corrPrune lexicographic tiebreaker and factor handling</li>
+<li>Added tests for modelPrune custom engine error handling and VIF edge cases</li>
+<li>Test coverage improved from 91.86% to 93.44%</li>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0.3" id="corrselect-303">corrselect 3.0.3<a class="anchor" aria-label="anchor" href="#corrselect-303"></a></h2>
+<div class="section level3">
+<h3 id="joss-review-response-3-0-3">JOSS Review Response<a class="anchor" aria-label="anchor" href="#joss-review-response-3-0-3"></a></h3>
+<p>This release addresses reviewer feedback from the JOSS submission.</p>
+<div class="section level4">
+<h4 id="documentation-3-0-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-3-0-3"></a></h4>
+<ul><li>
+<strong>paper.md</strong>: Strengthened comparison with <code><a href="https://rdrr.io/pkg/caret/man/findCorrelation.html" class="external-link">caret::findCorrelation()</a></code> to emphasize the key difference (single solution vs. all maximal subsets)</li>
+<li>
+<strong>paper.md</strong>: Added explicit graph-theoretic context (maximal cliques / independent sets formulation)</li>
+<li>
+<strong>paper.md</strong>: Clarified that Bron-Kerbosch and ELS algorithms are implemented natively in C++, not as wrappers around igraph</li>
+<li>
+<strong>paper.md</strong>: Added note about NP-hard complexity and the recommendation to use exact mode only for p ≤ 100</li>
+<li>
+<strong>paper.md</strong>: Added code snippet demonstrating the “all subsets” output</li>
+<li>
+<strong>paper.bib</strong>: Added citations for igraph (Csardi &amp; Nepusz, 2006) and FCBF (Yu &amp; Liu, 2003)</li>
+<li>
+<strong>README.md</strong>: Added CRAN installation instructions (<code>install.packages("corrselect")</code>)</li>
+<li>
+<strong>README.md</strong>: Fixed mixed model example with <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings()</a></code> to hide expected VIF computation warnings</li>
+<li>
+<strong>quickstart vignette</strong>: Fixed GitHub repository reference (GillesColling → gcol33)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="testing-3-0-3">Testing<a class="anchor" aria-label="anchor" href="#testing-3-0-3"></a></h4>
+<ul><li>Added edge case test: identity matrix (all off-diagonals = 0) returns single subset with all variables</li>
+<li>Added edge case test: perfect duplicates (r = 1.0) are correctly separated into different subsets</li>
+<li>Added threshold boundary test for correlation exactly at threshold</li>
+</ul></div>
+<div class="section level4">
+<h4 id="infrastructure-3-0-3">Infrastructure<a class="anchor" aria-label="anchor" href="#infrastructure-3-0-3"></a></h4>
+<ul><li>Added GitHub Actions workflow for cross-platform R CMD check (Ubuntu, macOS, Windows)</li>
+<li>Added GitHub Actions workflow for test coverage reporting</li>
+<li>Updated <code>.gitignore</code> to exclude build artifacts (<code>*.Rcheck/</code>, <code>*.tar.gz</code>, <code>CRAN-SUBMISSION</code>)</li>
+</ul><hr></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0.2" id="corrselect-302">corrselect 3.0.2<a class="anchor" aria-label="anchor" href="#corrselect-302"></a></h2><p class="text-muted">CRAN release: 2025-11-29</p>
 <div class="section level3">

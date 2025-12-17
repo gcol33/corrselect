@@ -8,8 +8,8 @@
 install.packages("corrselect")
 
 # Or install development version from GitHub
-# install.packages("devtools")
-devtools::install_github("GillesColling/corrselect")
+# install.packages("pak")
+pak::pak("gcol33/corrselect")
 ```
 
 **Suggested packages** (for extended functionality):
@@ -447,7 +447,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.0.2
+#> [1] corrselect_3.0.5
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    

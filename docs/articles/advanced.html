@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2025-12-16</h4>
+            <h4 data-toc-skip class="date">2025-12-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -222,14 +222,14 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu">benchmark_corrPrune</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
-<span><span class="co">#&gt; 1   10           0.5            0.2</span></span>
-<span><span class="co">#&gt; 2   20           0.6            0.4</span></span>
-<span><span class="co">#&gt; 3   50           1.6            0.7</span></span>
-<span><span class="co">#&gt; 4  100           4.4            1.4</span></span>
-<span><span class="co">#&gt; 5  200          22.4            3.4</span></span>
-<span><span class="co">#&gt; 6  300          86.6            6.8</span></span>
-<span><span class="co">#&gt; 7  500         312.8           15.7</span></span>
-<span><span class="co">#&gt; 8 1000            NA           57.7</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   10           0.8            0.4</span></span>
+<span><span class="co">#&gt; 2   20           0.9            0.6</span></span>
+<span><span class="co">#&gt; 3   50           1.6            1.3</span></span>
+<span><span class="co">#&gt; 4  100           3.8            2.9</span></span>
+<span><span class="co">#&gt; 5  200           9.1            5.8</span></span>
+<span><span class="co">#&gt; 6  300          20.6            9.1</span></span>
+<span><span class="co">#&gt; 7  500          51.8           21.7</span></span>
+<span><span class="co">#&gt; 8 1000            NA           63.8</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -315,21 +315,20 @@ number of predictors <strong>Guarantee</strong>: Finds the
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng==)'>
-<line x1='78.96' y1='254.48' x2='79.73' y2='251.67' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='86.74' y1='239.66' x2='90.15' y2='236.30' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='101.08' y1='226.98' x2='112.23' y2='218.79' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='124.55' y1='211.47' x2='157.04' y2='196.21' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='170.32' y1='190.67' x2='202.32' y2='178.92' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='216.11' y1='174.89' x2='293.09' y2='157.83' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='307.26' y1='155.29' x2='520.60' y2='125.89' style='stroke-width: 1.50; stroke: #3380CC;' />
-<circle cx='77.07' cy='261.43' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='81.62' cy='244.72' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='95.28' cy='231.24' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='118.04' cy='214.53' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='163.56' cy='193.15' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='209.08' cy='176.44' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='300.12' cy='156.28' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='527.73' cy='124.91' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<line x1='85.05' y1='235.97' x2='91.85' y2='223.41' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='100.00' y1='211.64' x2='113.31' y2='196.34' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='124.48' y1='187.70' x2='157.11' y2='171.50' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='170.41' y1='166.08' x2='202.23' y2='155.81' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='215.95' y1='151.46' x2='293.25' y2='127.40' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='307.24' y1='124.15' x2='520.62' y2='91.18' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='77.07' cy='255.52' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='81.62' cy='242.30' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='95.28' cy='217.08' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='118.04' cy='190.90' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='163.56' cy='168.29' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='209.08' cy='153.60' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='300.12' cy='125.25' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='527.73' cy='90.08' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
 <line x1='72.51' y1='286.56' x2='527.73' y2='286.56' style='stroke-width: 0.75;' />
@@ -345,40 +344,42 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <text x='345.65' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
 <text x='436.69' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
 <text x='527.73' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='26.69px' lengthAdjust='spacingAndGlyphs'>1000</text>
-<line x1='59.04' y1='278.13' x2='59.04' y2='72.87' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='278.13' x2='59.04' y2='75.42' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='278.13' x2='51.84' y2='278.13' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='239.35' x2='51.84' y2='239.35' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='222.64' x2='51.84' y2='222.64' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='183.85' x2='51.84' y2='183.85' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='167.15' x2='51.84' y2='167.15' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='128.36' x2='51.84' y2='128.36' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='111.66' x2='51.84' y2='111.66' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='72.87' x2='51.84' y2='72.87' style='stroke-width: 0.75;' />
-<text transform='translate(41.76,278.13) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.1</text>
-<text transform='translate(41.76,239.35) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
-<text transform='translate(41.76,183.85) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>5.0</text>
-<text transform='translate(41.76,128.36) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>50.0</text>
-<text transform='translate(41.76,72.87) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>500.0</text>
+<line x1='59.04' y1='248.24' x2='51.84' y2='248.24' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='225.63' x2='51.84' y2='225.63' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='203.02' x2='51.84' y2='203.02' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='173.14' x2='51.84' y2='173.14' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='150.53' x2='51.84' y2='150.53' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='127.92' x2='51.84' y2='127.92' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='98.03' x2='51.84' y2='98.03' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='75.42' x2='51.84' y2='75.42' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,278.13) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text transform='translate(41.76,248.24) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text transform='translate(41.76,203.02) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>2.0</text>
+<text transform='translate(41.76,173.14) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>5.0</text>
+<text transform='translate(41.76,127.92) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>20.0</text>
+<text transform='translate(41.76,75.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>100.0</text>
 <polygon points='59.04,286.56 545.76,286.56 545.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
 <text x='302.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='167.16px' lengthAdjust='spacingAndGlyphs'>Exact vs Greedy Scaling</text>
 <text x='302.40' y='341.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='131.36px' lengthAdjust='spacingAndGlyphs'>Number of Predictors (p)</text>
 <text transform='translate(12.96,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='156.95px' lengthAdjust='spacingAndGlyphs'>Time (milliseconds, log scale)</text>
 </g>
 <g clip-path='url(#cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng==)'>
-<line x1='85.22' y1='228.72' x2='91.67' y2='217.55' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='100.19' y1='206.05' x2='113.12' y2='192.20' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='123.49' y1='182.23' x2='158.10' y2='152.41' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='169.41' y1='143.52' x2='203.23' y2='119.31' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='215.90' y1='112.81' x2='293.31' y2='86.49' style='stroke-width: 1.50; stroke: #CC3333;' />
-<circle cx='77.07' cy='239.35' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='81.62' cy='234.95' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='95.28' cy='211.31' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='118.04' cy='186.93' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='163.56' cy='147.71' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='209.08' cy='115.12' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='300.12' cy='84.17' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<line x1='85.86' y1='223.25' x2='91.04' y2='216.13' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='99.80' y1='204.70' x2='113.52' y2='187.69' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='124.14' y1='178.27' x2='157.45' y2='157.42' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='169.77' y1='149.96' x2='202.87' y2='130.59' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='215.92' y1='124.69' x2='293.29' y2='99.13' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='77.07' cy='232.91' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='81.62' cy='229.07' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='95.28' cy='210.30' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='118.04' cy='182.09' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='163.56' cy='153.60' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='209.08' cy='126.95' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='300.12' cy='96.87' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <line x1='300.12' y1='286.56' x2='300.12' y2='59.04' style='stroke-width: 0.75; stroke: #7F7F7F; stroke-dasharray: 4.00,4.00;' />
-<text x='307.32' y='87.04' style='font-size: 12.00px;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>Exact mode limit</text>
+<text x='307.32' y='92.94' style='font-size: 12.00px;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>Exact mode limit</text>
 <rect rx='4' x='59.04' y='59.04' width='80.38' height='43.20' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='62.28' y1='73.44' x2='83.88' y2='73.44' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='62.28' y1='87.84' x2='83.88' y2='87.84' style='stroke-width: 1.50; stroke: #3380CC;' />
@@ -967,11 +968,11 @@ correlation matrix:</p>
 <span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 4.5 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 5.3 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Precomputed matrix: 2.1 ms</span></span>
+<span><span class="co">#&gt; Precomputed matrix: 1.3 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 2.2x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 4.2x faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li>Testing multiple thresholds</li>
@@ -1781,7 +1782,7 @@ methods vignette</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.2    </span></span>
+<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.5    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>
@@ -1815,78 +1816,116 @@ methods vignette</li>
 
 
   <script>
-/* SVG Copy Button Functionality */
+/* SVG Copy Button Functionality - Copy as PNG Image */
 (function() {
   "use strict";
 
+  // Convert SVG to PNG and copy to clipboard
+  async function copySvgAsImage(svg, btn) {
+    try {
+      // Get SVG dimensions
+      var svgRect = svg.getBoundingClientRect();
+      var width = svgRect.width;
+      var height = svgRect.height;
+
+      // Use higher resolution for better quality (2x)
+      var scale = 2;
+      var canvas = document.createElement("canvas");
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+      var ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      // Clone SVG and prepare for rendering
+      var clone = svg.cloneNode(true);
+      clone.classList.remove("inline-svg");
+
+      // Get computed styles and inline them for proper rendering
+      var svgStyles = window.getComputedStyle(svg);
+
+      // Serialize SVG
+      var serializer = new XMLSerializer();
+      var svgString = serializer.serializeToString(clone);
+
+      // Create a blob and URL for the SVG
+      var svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      var url = URL.createObjectURL(svgBlob);
+
+      // Create image and draw to canvas
+      var img = new Image();
+      img.onload = async function() {
+        // Fill white background (for transparency)
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, width, height);
+
+        // Draw the SVG
+        ctx.drawImage(img, 0, 0, width, height);
+        URL.revokeObjectURL(url);
+
+        // Convert canvas to blob and copy to clipboard
+        canvas.toBlob(async function(blob) {
+          try {
+            var item = new ClipboardItem({ "image/png": blob });
+            await navigator.clipboard.write([item]);
+
+            // Show success tooltip
+            showTooltip(btn, "Copied!");
+          } catch (err) {
+            console.error("Failed to copy image:", err);
+            showTooltip(btn, "Copy failed - try right-click");
+          }
+        }, "image/png");
+      };
+
+      img.onerror = function() {
+        URL.revokeObjectURL(url);
+        console.error("Failed to load SVG as image");
+        showTooltip(btn, "Copy failed");
+      };
+
+      img.src = url;
+
+    } catch (err) {
+      console.error("Error copying SVG:", err);
+      showTooltip(btn, "Copy failed");
+    }
+  }
+
+  // Show tooltip message
+  function showTooltip(btn, message) {
+    var originalTitle = btn.getAttribute("data-bs-original-title") || btn.getAttribute("title");
+    btn.setAttribute("data-bs-original-title", message);
+    var tooltip = bootstrap.Tooltip.getInstance(btn);
+    if (tooltip) {
+      tooltip.show();
+    }
+    setTimeout(function() {
+      btn.setAttribute("data-bs-original-title", originalTitle);
+    }, 1500);
+  }
+
   // Initialize SVG copy buttons after DOM is ready
   document.addEventListener("DOMContentLoaded", function() {
-    if (typeof ClipboardJS === "undefined") {
-      console.warn("ClipboardJS not loaded - SVG copy buttons disabled");
+    // Check for Clipboard API support
+    if (!navigator.clipboard || !navigator.clipboard.write) {
+      console.warn("Clipboard API not supported - SVG copy buttons disabled");
       return;
     }
 
-    // Initialize clipboard for SVG copy buttons
-    var svgClipboard = new ClipboardJS(".btn-copy-svg", {
-      text: function(trigger) {
-        var container = trigger.closest(".svg-container");
-        if (!container) return "";
+    // Add click handlers to all SVG copy buttons
+    document.querySelectorAll(".btn-copy-svg").forEach(function(btn) {
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        var container = btn.closest(".svg-container");
+        if (!container) return;
 
         var svg = container.querySelector("svg");
-        if (!svg) return "";
+        if (!svg) return;
 
-        // Clone SVG to avoid modifying the original
-        var clone = svg.cloneNode(true);
+        copySvgAsImage(svg, btn);
+      });
 
-        // Remove inline-svg class (not needed in copied version)
-        clone.classList.remove("inline-svg");
-
-        // Add XML declaration and serialize
-        var serializer = new XMLSerializer();
-        var svgString = serializer.serializeToString(clone);
-
-        // Add XML declaration if not present
-        if (!svgString.startsWith("<?xml")) {
-          svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgString;
-        }
-
-        return svgString;
-      }
-    });
-
-    // Handle success
-    svgClipboard.on("success", function(e) {
-      var btn = e.trigger;
-      var originalTitle = btn.getAttribute("data-bs-original-title") || btn.getAttribute("title");
-
-      // Update tooltip to show "Copied!"
-      btn.setAttribute("data-bs-original-title", "Copied!");
-      var tooltip = bootstrap.Tooltip.getInstance(btn);
-      if (tooltip) {
-        tooltip.show();
-      }
-
-      // Reset after delay
-      setTimeout(function() {
-        btn.setAttribute("data-bs-original-title", originalTitle);
-      }, 1500);
-
-      e.clearSelection();
-    });
-
-    // Handle error
-    svgClipboard.on("error", function(e) {
-      var btn = e.trigger;
-      btn.setAttribute("data-bs-original-title", "Press Ctrl+C to copy");
-      var tooltip = bootstrap.Tooltip.getInstance(btn);
-      if (tooltip) {
-        tooltip.show();
-      }
-    });
-
-    // Initialize tooltips for SVG copy buttons
-    var svgCopyButtons = document.querySelectorAll(".btn-copy-svg");
-    svgCopyButtons.forEach(function(btn) {
+      // Initialize Bootstrap tooltip
       new bootstrap.Tooltip(btn, { container: "body" });
     });
   });

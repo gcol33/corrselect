@@ -4,6 +4,9 @@
 status](https://www.r-pkg.org/badges/version/corrselect)](https://CRAN.R-project.org/package=corrselect)
 [![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
+[![R-CMD-check](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml)
+[![Codecov test
+coverage](https://codecov.io/gh/gcol33/corrselect/graph/badge.svg)](https://app.codecov.io/gh/gcol33/corrselect)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -91,6 +94,10 @@ These features make the package useful in domains like:
 
 ``` r
 
+# Install from CRAN
+install.packages("corrselect")
+
+# Or install development version from GitHub
 # install.packages("pak")
 pak::pak("gcol33/corrselect")
 ```
@@ -137,14 +144,14 @@ pruned <- modelPrune(am_binary ~ cyl + disp + hp,
 
 # Mixed model (requires lme4)
 if (requireNamespace("lme4", quietly = TRUE)) {
-  df <- data.frame(
-    y = rnorm(100),
-    x1 = rnorm(100),
-    x2 = rnorm(100),
-    group = rep(1:10, each = 10)
+  # Use built-in sleepstudy data with polynomial terms
+  sleep <- lme4::sleepstudy
+  sleep$Days2 <- sleep$Days^2
+  suppressWarnings(
+    pruned <- modelPrune(Reaction ~ Days + Days2 + (1|Subject),
+                         data = sleep, engine = "lme4", limit = 5)
   )
-  pruned <- modelPrune(y ~ x1 + x2 + (1|group),
-                       data = df, engine = "lme4", limit = 5)
+  attr(pruned, "selected_vars")
 }
 
 # Custom engine (advanced: works with any modeling package)
