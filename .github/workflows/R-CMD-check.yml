@@ -38,18 +38,29 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      # Remove energy from DESCRIPTION on oldrel-1 (gsl requires R >= 4.5.0)
-      - name: Remove energy dependency on oldrel
-        if: matrix.config.r == 'oldrel-1'
-        run: |
-          sed -i '/energy,/d' DESCRIPTION
-
+      # On oldrel-1, skip energy (gsl requires R >= 4.5.0)
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: matrix.config.r != 'oldrel-1'
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        if: matrix.config.r == 'oldrel-1'
+        with:
+          extra-packages: any::rcmdcheck, energy=?ignore
+          needs: check
+
       - uses: r-lib/actions/check-r-package@v2
+        if: matrix.config.r != 'oldrel-1'
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      - uses: r-lib/actions/check-r-package@v2
+        if: matrix.config.r == 'oldrel-1'
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: false
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
