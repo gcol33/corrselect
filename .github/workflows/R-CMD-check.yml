@@ -38,11 +38,16 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      # Remove energy from DESCRIPTION on oldrel-1 (gsl requires R >= 4.5.0)
+      - name: Remove energy dependency on oldrel
+        if: matrix.config.r == 'oldrel-1'
+        run: |
+          sed -i '/energy,/d' DESCRIPTION
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
           needs: check
-          pak-ignore: ${{ matrix.config.r == 'oldrel-1' && 'energy' || '' }}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
