@@ -79,15 +79,15 @@ For larger predictor sets or low thresholds where exact enumeration becomes infe
 
 ## Model-Based Pruning
 
-In contrast to model-agnostic methods, `modelPrune()` addresses multicollinearity using variance inflation factors (VIF) computed within a modeling context. This supervised approach requires a response variable and considers joint relationships among predictors rather than pairwise associations alone.
+Unlike the model-agnostic functions, `modelPrune()` addresses multicollinearity using variance inflation factors (VIF) computed within a modeling context. This supervised approach requires a response variable and considers joint relationships among predictors rather than pairwise associations alone.
 
 - **`modelPrune()`**: Iteratively removes the predictor with the highest VIF until all remaining predictors fall below a user-specified limit. Supports multiple modeling engines (`lm`, `glm`, `lme4`, `glmmTMB`) and custom engine definitions for integration with any R modeling package (e.g., INLA, mgcv, brms). For mixed-effects models, only fixed effects are pruned while random effect structures are preserved.
 
 # Related Work
 
-Heuristic correlation filters are widely used but are order-dependent and return only a single result. `corrselect` extends this space by providing both fast deterministic pruning and exhaustive enumeration, support for mixed data types, VIF-based model pruning, and user control via `force_in`. The model-agnostic functions are interpretable and independent of any particular modeling framework, while the graph-theoretic foundation links admissible subsets to maximal cliques and independent sets.
+Heuristic correlation filters are widely used but are order-dependent and return only a single result. `corrselect` goes further by providing both fast deterministic pruning and exhaustive enumeration, support for mixed data types, VIF-based model pruning, and user control via `force_in`. The model-agnostic functions are interpretable and independent of any particular modeling framework, while the graph-theoretic foundation links admissible subsets to maximal cliques and independent sets.
 
-Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, potentially non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, the model-agnostic functions in `corrselect` are fast, deterministic, and formulate subset selection as a well-defined optimization problem.
+Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks and may be non-deterministic or hard to interpret when predictors are collinear. By contrast, the model-agnostic functions in `corrselect` are fast, deterministic, and formulate subset selection as a well-defined optimization problem.
 
 # Applications
 
