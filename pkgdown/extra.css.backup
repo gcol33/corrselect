@@ -12,36 +12,76 @@ svg.inline-svg {
   border-radius: .375rem;
   overflow: hidden;
   display: block;
+  margin-bottom: 1rem;
+}
+
+/* Mobile: code block text wrapping (LaTeX-style) */
+/* Wrap at spaces, break long tokens only when necessary, no horizontal scroll */
+@media (max-width: 575.98px) {
+  pre.sourceCode,
+  .sourceCode pre {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    overflow-x: hidden !important;
+    hyphens: auto !important;
+    -webkit-hyphens: auto !important;
+  }
+  pre.sourceCode code,
+  .sourceCode pre code {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    hyphens: auto !important;
+    -webkit-hyphens: auto !important;
+  }
 }
 
 /* Mobile: match code block full-width behavior */
 /* Code blocks use negative margins to expand on mobile - plots should too */
+/* Use :has() to target the parent <p> that contains an SVG/img */
+/* Note: SVGs may be wrapped in .svg-container for copy button functionality */
 @media (max-width: 575.98px) {
-  .section > p > img.r-plt,
-  .section > .figure,
-  .section > figure,
-  .section > p > svg.inline-svg,
+  /* Target the p element wrapping standalone SVGs/imgs to expand full width */
+  p:has(> svg.inline-svg),
+  p:has(> img.r-plt),
+  p:has(> .svg-container) {
+    margin-left: calc(var(--bs-gutter-x, 1.5rem) * -.5) !important;
+    margin-right: calc(var(--bs-gutter-x, 1.5rem) * -.5) !important;
+    width: calc(100% + var(--bs-gutter-x, 1.5rem)) !important;
+    max-width: none !important;
+  }
+  /* SVGs/imgs inside the expanded p (direct or via .svg-container) */
+  p > svg.inline-svg,
+  p > img.r-plt,
+  p > .svg-container > svg.inline-svg {
+    border-radius: 0 !important;
+    border: 1px solid #DFD7CA !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  /* Dark mode mobile border - must use full border shorthand to override */
+  [data-bs-theme="dark"] p > svg.inline-svg,
+  [data-bs-theme="dark"] p > img.r-plt,
+  [data-bs-theme="dark"] p > .svg-container > svg.inline-svg {
+    border: 1px solid #495057 !important;
+  }
+  /* Figure elements */
+  .section .figure,
+  .section figure,
   div > div > .figure,
   div > div > figure {
-    margin-left: calc(var(--bs-gutter-x, 1.5rem) * -.5);
-    margin-right: calc(var(--bs-gutter-x, 1.5rem) * -.5);
-    width: calc(100% + var(--bs-gutter-x, 1.5rem));
-    max-width: none;
+    margin-left: calc(var(--bs-gutter-x, 1.5rem) * -.5) !important;
+    margin-right: calc(var(--bs-gutter-x, 1.5rem) * -.5) !important;
+    width: calc(100% + var(--bs-gutter-x, 1.5rem)) !important;
+    max-width: none !important;
     border-radius: 0;
-    border-left: none;
-    border-right: none;
   }
-  .section > .figure img,
-  .section > figure img,
-  .section > p > img.r-plt,
-  .section > p > svg.inline-svg,
+  .section .figure img,
+  .section figure img,
   div > div > .figure img,
   div > div > figure img {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    width: 100%;
-    max-width: none;
+    border-radius: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 }
 
@@ -114,7 +154,7 @@ svg.inline-svg .svglite > g > rect[rx] {
   stroke: none !important;
 }
 
-/* Legend box backgrounds - override inline fill: #F5F6F8 */
+/* Legend box backgrounds - override inline fill */
 /* Exclude svg-bg which is the main plot background */
 [data-bs-theme="dark"] svg.inline-svg .svglite rect[style*="fill: #F5F6F8"]:not(.svg-bg),
 [data-bs-theme="dark"] svg.inline-svg .svglite rect.legend-bg {
@@ -123,12 +163,12 @@ svg.inline-svg .svglite > g > rect[rx] {
 
 /* Grid lines */
 /* White grid lines need to become dark in light mode, stay light in dark mode */
-/* Light mode: dark grid (#3E3F3A) on light bg (#F5F6F8) */
+/* Light mode: dark grid on light bg */
 svg.inline-svg .svglite polyline[style*="stroke: #FFFFFF"],
 svg.inline-svg .svglite polyline[style*="stroke: #ffffff"] {
   stroke: #3E3F3A !important;
 }
-/* Dark mode: light grid (#DFD7CA) on dark bg (#343739) */
+/* Dark mode: light grid on dark bg */
 [data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #FFFFFF"],
 [data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #ffffff"],
 [data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #3E3F3A"],
@@ -151,3 +191,47 @@ svg.inline-svg .svglite polyline[style*="stroke: #ffffff"] {
 [data-bs-theme="dark"] svg.inline-svg line[style*="stroke: gray"] {
   stroke: #495057 !important;
 }
+
+/* SVG copy button - container positioning */
+.svg-container {
+  position: relative;
+  display: block;
+}
+
+/* SVG copy button styling - matches code block copy button */
+.btn-copy-svg {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+  z-index: 10;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Show button on hover */
+.svg-container:hover .btn-copy-svg,
+.svg-container:focus-within .btn-copy-svg {
+  opacity: 1;
+}
+
+/* Keep button visible when focused (for keyboard users) */
+.btn-copy-svg:focus {
+  opacity: 1;
+}
+
+/* Mobile: always show button (no hover on touch) */
+@media (max-width: 575.98px) {
+  .btn-copy-svg {
+    opacity: 0.7;
+  }
+  .svg-container:hover .btn-copy-svg {
+    opacity: 1;
+  }
+  /* Adjust position for full-width mobile SVGs */
+  .svg-container {
+    position: relative;
+  }
+}
+
