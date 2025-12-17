@@ -21,7 +21,7 @@ Version 3.0 introduces `corrPrune()` for association-based pruning and `modelPru
 
 # Statement of Need
 
-Collinearity among predictors is common in applied modeling and can degrade inference and prediction [@Dormann2013]. Popular utilities such as `caret::findCorrelation()` apply greedy, order-dependent filtering and return a single solution—typically removing the variable with the highest mean correlation at each step. This heuristic approach discards potentially useful subsets and provides no guarantee of optimality. Correlation-based filter methods such as FCBF [@YuLiu2003] similarly employ greedy strategies. Embedded and wrapper methods like the elastic net [@ZouHastie2005] or recursive feature elimination [@Witten2009] can be powerful but couple selection to a specific model and reduce transparency.
+Collinearity among predictors is common in applied modeling and can degrade inference and prediction [@Dormann2013]. Popular utilities such as `caret::findCorrelation()` apply greedy, order-dependent filtering and return a single solution, typically removing the variable with the highest mean correlation at each step. This heuristic approach discards potentially useful subsets and provides no guarantee of optimality: where `caret` returns one subset, `corrselect` in exact mode might reveal a dozen equally valid alternatives. Having the full set of options helps when domain knowledge should guide final variable selection, or when researchers need to assess the sensitivity of their conclusions to predictor choice. Supervised filter methods such as FCBF [@YuLiu2003] address a related but distinct problem: selecting features correlated with a target variable while removing redundancy. Embedded and wrapper methods like the elastic net [@ZouHastie2005] or recursive feature elimination [@Witten2009] can be powerful but couple selection to a specific model and reduce transparency.
 
 `corrselect` addresses these limitations through two interfaces. For routine workflows, `corrPrune()` and `modelPrune()` provide simple, deterministic pruning with a single function call. For exhaustive exploration, the package formulates a global admissible set problem: given variables $X_1,\dots,X_p$ and pairwise measures $r_{ij}$, find all maximal subsets $S$ such that
 
@@ -29,25 +29,19 @@ $$
 |r_{ij}| \le t \quad \text{for all } i \ne j \in S ,
 $$
 
-with a user threshold $t \in (0,1)$. Unlike greedy methods that return a single result, `corrselect` in exact mode enumerates *all* maximal admissible subsets, enabling researchers to explore the full solution space. This dual approach balances practicality with methodological rigor.
+with a user threshold $t \in (0,1)$. This is equivalent to finding all maximal cliques in the compatibility graph, a well-studied problem in computer science. Unlike greedy methods that return a single result, `corrselect` in exact mode enumerates *all* maximal admissible subsets, enabling researchers to explore the full solution space. This dual approach balances practicality with methodological rigor.
 
 # Functionality
 
-## High-Level Pruning Functions
+The package provides two complementary approaches to predictor pruning: model-agnostic methods that operate on predictors alone, and model-based methods that require fitting a model.
 
-Two functions provide streamlined interfaces for common pruning tasks:
+## Model-Agnostic Pruning
 
-- **`corrPrune()`**: Association-based predictor pruning. Given a data frame and correlation threshold, returns a pruned data frame with pairwise associations below the threshold. Supports exact mode (exhaustive search, recommended for $p \le 100$) and greedy mode (fast polynomial-time algorithm for large $p$). Automatic measure selection handles numeric, factor, and ordered variables. The `force_in` parameter protects key predictors from removal.
+Model-agnostic pruning removes redundant predictors based on pairwise correlation or association measures, without requiring a response variable. This unsupervised approach is useful for pre-modeling dimensionality reduction or when the outcome is not yet defined. The package provides both a simple pruning interface and exhaustive enumeration functions:
 
-- **`modelPrune()`**: Model-based pruning using variance inflation factors (VIF). Iteratively removes predictors with VIF exceeding a user-specified limit until all remaining predictors satisfy the constraint. Supports multiple modeling engines (`lm`, `glm`, `lme4`, `glmmTMB`) and custom engine definitions for integration with any R modeling package (e.g., INLA, mgcv, brms). For mixed-effects models, only fixed effects are pruned while random effect structures are preserved.
+- **`corrPrune()`**: Returns a pruned data frame with pairwise associations below a user-specified threshold. Supports exact mode (exhaustive search, recommended for $p \le 100$) and greedy mode (fast polynomial-time algorithm for large $p$). Automatic measure selection handles numeric, factor, and ordered variables. The `force_in` parameter protects key predictors from removal.
 
-## Exhaustive Enumeration Functions
-
-Three functions implement complete subset enumeration:
-
-- **`corrSelect()`**: Takes a numeric data frame, computes pairwise correlations in $[-1,1]$, and enumerates all maximal admissible subsets at threshold $t$.
-- **`assocSelect()`**: Handles mixed-type data using normalized association measures in $[0,1]$, including Pearson, Spearman, and Kendall correlations, biweight midcorrelation [@Langfelder2008], distance correlation [@Szekely2007; @Szekely2009], the maximal information coefficient [@Reshef2011], ANOVA $\eta^2$, and Cramér's V.
-- **`MatSelect()`**: Operates directly on a symmetric association matrix.
+- **`corrSelect()`**, **`assocSelect()`**, **`MatSelect()`**: Exhaustive enumeration functions that return all maximal admissible subsets rather than a single solution. `corrSelect()` handles numeric data with correlations in $[-1,1]$; `assocSelect()` handles mixed-type data using normalized association measures in $[0,1]$, including Pearson, Spearman, and Kendall correlations, biweight midcorrelation [@Langfelder2008], distance correlation [@Szekely2007; @Szekely2009], the maximal information coefficient [@Reshef2011], ANOVA $\eta^2$, and Cramér's V; `MatSelect()` operates directly on a symmetric association matrix.
 
 All enumeration functions return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`). The helper function `corrSubset()` extracts filtered data frames from results.
 
@@ -70,23 +64,30 @@ as.data.frame(result)[1:3, c("subset", "size", "avg_corr")]
 
 Unlike `caret::findCorrelation()` which returns a single variable set, `corrSelect()` reveals all 12 equally valid solutions, enabling informed selection based on domain knowledge.
 
-## Algorithms
+### Algorithms
 
 The admissible set problem is mathematically equivalent to finding all maximal cliques in the "compatibility graph" where edges connect variable pairs with $|r_{ij}| \le t$, or equivalently, all maximal independent sets in the "conflict graph" where edges connect pairs exceeding the threshold. This connection to well-studied graph problems provides a solid theoretical foundation.
 
-The package implements three algorithms natively in C++ (not as wrappers around external libraries such as igraph [@igraph]):
+For exact enumeration, the package implements two algorithms natively in C++ (not as wrappers around external libraries such as igraph [@igraph]):
 
-- **Greedy pruning**: A fast deterministic algorithm with $O(p^2 \times k)$ complexity, where $k$ is the number of variables removed. Used by `corrPrune(mode = "greedy")` for large predictor sets.
-- **Eppstein-Löffler-Strash (ELS)**: A near-optimal maximal clique enumeration algorithm for sparse graphs [@Eppstein2010], particularly effective when `force_in` seeds are specified.
-- **Bron-Kerbosch**: The classical maximal clique enumeration algorithm [@Bron1973], often faster for unrestricted enumeration.
+- **Bron-Kerbosch**: The classical maximal clique enumeration algorithm [@Bron1973], used by default for unrestricted enumeration.
+- **Eppstein-Löffler-Strash (ELS)**: A near-optimal algorithm for sparse graphs [@Eppstein2010], used when `force_in` seeds are specified.
 
-Both exact methods ensure non-redundant and complete enumeration of admissible subsets. However, maximal clique enumeration is NP-hard in the general case, so exact mode is recommended only for moderate-sized problems ($p \le 100$); for larger predictor sets or low thresholds, the greedy algorithm provides a fast polynomial-time alternative.
+Both exact methods ensure non-redundant and complete enumeration of admissible subsets. However, maximal clique enumeration is NP-hard in the general case, and exact mode may become impractically slow on large or densely connected problems. On an Intel i9-14900K with correlations clustered near the threshold, $p = 100$ completed in under 1 second, $p = 150$ in ~19 seconds, $p = 175$ in ~3 minutes, and $p = 200$ in ~17 minutes. Exact mode is therefore recommended only for moderate-sized problems ($p \le 100$).
+
+For larger predictor sets or low thresholds where exact enumeration becomes infeasible, `corrPrune(mode = "greedy")` provides a fast polynomial-time alternative. Unlike `caret::findCorrelation()` which removes the variable with the highest mean correlation, this custom greedy algorithm iteratively removes the variable involved in the most threshold violations, with ties broken by maximum and then average association. This runs in $O(p^2 \times k)$ time where $k$ is the number of variables removed.
+
+## Model-Based Pruning
+
+In contrast to model-agnostic methods, `modelPrune()` addresses multicollinearity using variance inflation factors (VIF) computed within a modeling context. This supervised approach requires a response variable and considers joint relationships among predictors rather than pairwise associations alone.
+
+- **`modelPrune()`**: Iteratively removes the predictor with the highest VIF until all remaining predictors fall below a user-specified limit. Supports multiple modeling engines (`lm`, `glm`, `lme4`, `glmmTMB`) and custom engine definitions for integration with any R modeling package (e.g., INLA, mgcv, brms). For mixed-effects models, only fixed effects are pruned while random effect structures are preserved.
 
 # Related Work
 
-Heuristic correlation filters are widely used but are order-dependent and return only a single result. `corrselect` extends this space by providing both fast deterministic pruning and exhaustive enumeration, support for mixed data types, VIF-based model pruning, and user control via `force_in`. Compared with embedded or wrapper selection methods, it is model-agnostic and interpretable. Its graph-theoretic foundation links admissible subsets to maximal cliques and independent sets.
+Heuristic correlation filters are widely used but are order-dependent and return only a single result. `corrselect` extends this space by providing both fast deterministic pruning and exhaustive enumeration, support for mixed data types, VIF-based model pruning, and user control via `force_in`. The model-agnostic functions are interpretable and independent of any particular modeling framework, while the graph-theoretic foundation links admissible subsets to maximal cliques and independent sets.
 
-Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, potentially non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, `corrselect` is fast, deterministic, and model-agnostic, formulating subset selection as a well-defined optimization problem.
+Other feature selection methods include embedded approaches such as the elastic net [@ZouHastie2005], recursive feature elimination [@Witten2009], or permutation-based algorithms such as Boruta. These methods can be powerful but are tied to specific modeling frameworks, potentially non-deterministic, and less interpretable in the presence of multicollinearity. By contrast, the model-agnostic functions in `corrselect` are fast, deterministic, and formulate subset selection as a well-defined optimization problem.
 
 # Applications
 
