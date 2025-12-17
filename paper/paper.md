@@ -45,7 +45,7 @@ Model-agnostic pruning removes redundant predictors based on pairwise correlatio
 
 All enumeration functions return a `CorrCombo` object containing maximal subsets, summary statistics, and standard methods (`print`, `summary`, `as.data.frame`). The helper function `corrSubset()` extracts filtered data frames from results.
 
-A typical workflow demonstrates the key difference from greedy methods:
+For example, on the `mtcars` dataset:
 
 ```r
 library(corrselect)
