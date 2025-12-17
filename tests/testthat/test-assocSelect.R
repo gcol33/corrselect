@@ -40,6 +40,7 @@ test_that("assocSelect respects threshold and excludes high associations", {
 
 
 test_that("assocSelect allows forcing variables by name", {
+  set.seed(42)
   df <- data.frame(
     x = rnorm(10),
     y = factor(sample(letters[1:3], 10, TRUE)),
