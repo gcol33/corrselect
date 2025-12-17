@@ -114,9 +114,10 @@ pruned <- modelPrune(mpg ~ cyl + disp + hp + wt, data = mtcars, limit = 5)
 attr(pruned, "removed_vars")
 
 # GLM with binomial family
-mtcars$am_binary <- as.factor(mtcars$am)
+mtcars_glm <- mtcars
+mtcars_glm$am_binary <- as.factor(mtcars_glm$am)
 pruned <- modelPrune(am_binary ~ cyl + disp + hp,
-                     data = mtcars, engine = "glm",
+                     data = mtcars_glm, engine = "glm",
                      family = binomial(), limit = 5)
 
 # Mixed model (requires lme4)
@@ -203,7 +204,7 @@ show(res)
 Work directly with correlation matrices:
 
 ```r
-mat <- cor(mtcars)
+mat <- cor(mtcars[, sapply(mtcars, is.numeric)])
 res <- MatSelect(mat, threshold = 0.7, method = "els")
 ```
 
