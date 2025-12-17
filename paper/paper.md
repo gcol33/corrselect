@@ -21,7 +21,7 @@ Version 3.0 introduces `corrPrune()` for association-based pruning and `modelPru
 
 # Statement of Need
 
-Collinearity among predictors is common in applied modeling and can degrade inference and prediction [@Dormann2013]. Popular utilities such as `caret::findCorrelation()` apply greedy, order-dependent filtering and return a single solution, typically removing the variable with the highest mean correlation at each step. This heuristic approach discards potentially useful subsets and provides no guarantee of optimality: where `caret` returns one subset, `corrselect` in exact mode might reveal a dozen equally valid alternatives. Having the full set of options helps when domain knowledge should guide final variable selection, or when researchers need to assess the sensitivity of their conclusions to predictor choice. Supervised filter methods such as FCBF [@YuLiu2003] address a related but distinct problem: selecting features correlated with a target variable while removing redundancy. Embedded and wrapper methods like the elastic net [@ZouHastie2005] or recursive feature elimination [@Witten2009] can be powerful but couple selection to a specific model and reduce transparency.
+Collinearity among predictors is common in applied modeling and can degrade inference and prediction [@Dormann2013]. Popular utilities such as `caret::findCorrelation()` apply greedy, order-dependent filtering and return a single solution, typically removing the variable with the highest mean correlation at each step. This heuristic approach discards potentially useful subsets and provides no guarantee of optimality: where `caret` returns one subset, `corrselect` in exact mode might reveal a dozen equally valid alternatives. Having the full set of options helps when domain knowledge should guide final variable selection, or when researchers need to assess the sensitivity of their conclusions to predictor choice. Supervised filter methods such as FCBF [@YuLiu2003] select features correlated with a target variable while removing redundancy, which is a different goal than reducing pairwise redundancy alone. Embedded and wrapper methods like the elastic net [@ZouHastie2005] or recursive feature elimination [@Witten2009] can be powerful but couple selection to a specific model and reduce transparency.
 
 `corrselect` addresses these limitations through two interfaces. For routine workflows, `corrPrune()` and `modelPrune()` provide simple, deterministic pruning with a single function call. For exhaustive exploration, the package formulates a global admissible set problem: given variables $X_1,\dots,X_p$ and pairwise measures $r_{ij}$, find all maximal subsets $S$ such that
 
@@ -29,7 +29,7 @@ $$
 |r_{ij}| \le t \quad \text{for all } i \ne j \in S ,
 $$
 
-with a user threshold $t \in (0,1)$. This is equivalent to finding all maximal cliques in the compatibility graph, a well-studied problem in computer science. Unlike greedy methods that return a single result, `corrselect` in exact mode enumerates *all* maximal admissible subsets, enabling researchers to explore the full solution space. This dual approach balances practicality with methodological rigor.
+with a user threshold $t \in (0,1)$. This is equivalent to finding all maximal cliques in the compatibility graph, a well-studied problem in computer science. Unlike greedy methods that return a single result, `corrselect` in exact mode enumerates *all* maximal admissible subsets, enabling researchers to explore the full solution space. This gives users both convenience and completeness.
 
 # Functionality
 
@@ -66,7 +66,7 @@ Unlike `caret::findCorrelation()` which returns a single variable set, `corrSele
 
 ### Algorithms
 
-The admissible set problem is mathematically equivalent to finding all maximal cliques in the "compatibility graph" where edges connect variable pairs with $|r_{ij}| \le t$, or equivalently, all maximal independent sets in the "conflict graph" where edges connect pairs exceeding the threshold. This connection to well-studied graph problems provides a solid theoretical foundation.
+The admissible set problem is mathematically equivalent to finding all maximal cliques in the "compatibility graph" where edges connect variable pairs with $|r_{ij}| \le t$, or equivalently, all maximal independent sets in the "conflict graph" where edges connect pairs exceeding the threshold.
 
 For exact enumeration, the package implements two algorithms natively in C++ (not as wrappers around external libraries such as igraph [@igraph]):
 
