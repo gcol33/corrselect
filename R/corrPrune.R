@@ -59,9 +59,22 @@
 #' the constraint in at least 90% of groups.
 #'
 #' **Mode Selection**: Exact mode guarantees finding all maximal subsets and
-#' returns the largest one (with deterministic tie-breaking). Greedy mode is
-#' faster but approximate, using a deterministic removal strategy based on
-#' association scores.
+#' returns the largest one. Greedy mode is faster but approximate, using an
+#' iterative removal strategy based on association scores.
+#'
+#' **Tie-Breaking**: When multiple subsets or variables are equally good,
+#' deterministic tie-breaking is applied:
+#' \itemize{
+#'   \item \strong{Exact mode}: Selects by (1) largest subset size, (2) lowest
+#'     average correlation, (3) alphabetically first variable names. Column
+#'     order does not affect the result.
+#'   \item \strong{Greedy mode}: Removes the variable with (1) most constraint
+#'     violations, (2) highest max association, (3) highest average association,
+#'     (4) lowest column index. Column order can influence the result when
+#'     earlier criteria are tied.
+#' }
+#' To see all maximal subsets instead of a single selection, use
+#' \code{\link{corrSelect}()}.
 #'
 #' @seealso
 #' \code{\link{corrSelect}} for exhaustive subset enumeration,

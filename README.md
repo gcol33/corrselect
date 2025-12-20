@@ -102,7 +102,7 @@ pruned <- corrPrune(mtcars, threshold = 0.7, mode = "exact")
 # Use greedy mode (faster for large datasets)
 pruned <- corrPrune(mtcars, threshold = 0.7, mode = "greedy")
 
-# Check what was removed
+# Check what was retained
 attr(pruned, "selected_vars")
 ```
 
