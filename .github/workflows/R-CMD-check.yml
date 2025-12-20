@@ -26,6 +26,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # Increase timeout for slow connections
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
     steps:
       - uses: actions/checkout@v4
@@ -44,12 +46,16 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+          pak-version: stable
+        continue-on-error: false
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: matrix.config.r == 'oldrel-1'
         with:
           extra-packages: any::rcmdcheck, energy=?ignore
           needs: check
+          pak-version: stable
+        continue-on-error: false
 
       - uses: r-lib/actions/check-r-package@v2
         if: matrix.config.r != 'oldrel-1'
