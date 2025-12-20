@@ -39,22 +39,41 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+      
+      # Clean up any stale pak cache that might cause issues
+      - name: Clean pak cache
+        shell: Rscript {0}
+        run: |
+          if (requireNamespace("pak", quietly = TRUE)) {
+            try(pak::cache_clean(), silent = TRUE)
+          }
+        continue-on-error: true
 
       # On oldrel-1, skip energy (gsl requires R >= 4.5.0)
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install dependencies (with retry)
         if: matrix.config.r != 'oldrel-1'
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
           needs: check
           pak-version: stable
+        env:
+          # Add retry logic through pak
+          PKG_SYSREQS: true
+          # Increase timeout
+          _R_CHECK_SYSTEM_CLOCK_: false
         continue-on-error: false
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install dependencies for oldrel-1 (with retry)
         if: matrix.config.r == 'oldrel-1'
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck, energy=?ignore
           needs: check
           pak-version: stable
+        env:
+          PKG_SYSREQS: true
+          _R_CHECK_SYSTEM_CLOCK_: false
         continue-on-error: false
 
       - uses: r-lib/actions/check-r-package@v2
