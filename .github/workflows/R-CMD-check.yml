@@ -43,13 +43,21 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install gsl
 
-      # On oldrel-1, skip energy (gsl requires R >= 4.5.0)
+      # Standard install (Linux and Windows)
       - uses: r-lib/actions/setup-r-dependencies@v2
-        if: matrix.config.r != 'oldrel-1'
+        if: runner.os != 'macOS' && matrix.config.r != 'oldrel-1'
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
+      # macOS: skip Bioconductor packages with complex deps (WGCNA ecosystem)
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os == 'macOS'
+        with:
+          extra-packages: any::rcmdcheck, GO.db=?ignore, WGCNA=?ignore, preprocessCore=?ignore, impute=?ignore
+          needs: check
+
+      # oldrel-1: skip energy (gsl requires R >= 4.5.0)
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: matrix.config.r == 'oldrel-1'
         with:
@@ -57,7 +65,15 @@ jobs:
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
-        if: matrix.config.r != 'oldrel-1'
+        if: runner.os != 'macOS' && matrix.config.r != 'oldrel-1'
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      - uses: r-lib/actions/check-r-package@v2
+        if: runner.os == 'macOS'
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: false
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
