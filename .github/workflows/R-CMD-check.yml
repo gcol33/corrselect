@@ -54,7 +54,8 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: runner.os == 'macOS'
         with:
-          extra-packages: any::rcmdcheck, GO.db=?ignore, WGCNA=?ignore, preprocessCore=?ignore, impute=?ignore
+          dependencies: 'hard'
+          extra-packages: any::rcmdcheck
           needs: check
 
       # oldrel-1: skip energy (gsl requires R >= 4.5.0)
