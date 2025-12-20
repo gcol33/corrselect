@@ -48,6 +48,7 @@ jobs:
         if: runner.os != 'macOS' && matrix.config.r != 'oldrel-1'
         with:
           extra-packages: any::rcmdcheck
+          cache-version: 2
           needs: check
 
       # macOS: skip Bioconductor packages with complex deps (WGCNA ecosystem)
@@ -56,6 +57,7 @@ jobs:
         with:
           dependencies: 'hard'
           extra-packages: any::rcmdcheck
+          cache-version: 2
           needs: check
 
       # oldrel-1: skip energy (gsl requires R >= 4.5.0)
