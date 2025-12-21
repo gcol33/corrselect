@@ -68,6 +68,7 @@ test_that("min and max correlations are valid", {
 })
 
 test_that("works with tibble-like input", {
+  skip_if_not_installed("tibble")
   df <- as.data.frame(tibble::tibble(x = rnorm(5), y = rnorm(5)))
   res <- corrSelect(df, threshold = 0.9, method = "els")
   expect_s4_class(res, "CorrCombo")

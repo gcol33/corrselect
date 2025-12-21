@@ -57,6 +57,7 @@ test_that("assocSelect errors on bad method type", {
 })
 
 test_that("assocSelect works with tibble input", {
+  skip_if_not_installed("tibble")
   df <- tibble::tibble(
     a = rnorm(10),
     b = factor(sample(c("a", "b", "c"), 10, TRUE)),
