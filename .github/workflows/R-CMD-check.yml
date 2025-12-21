@@ -50,11 +50,12 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
 
-      # macOS: remove Bioconductor packages and energy from DESCRIPTION before dependency resolution
+      # macOS: remove problematic packages and delete lockfile to force fresh resolution
       - name: Remove problematic deps on macOS
         if: runner.os == 'macOS'
         run: |
           sed -i.bak '/GO.db/d; /WGCNA/d; /preprocessCore/d; /impute/d; /energy/d' DESCRIPTION
+          rm -f .github/pkg.lock
 
       # Standard install (Linux, Windows, macOS)
       - uses: r-lib/actions/setup-r-dependencies@v2
