@@ -50,19 +50,28 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
 
-      # macOS: remove problematic packages and delete lockfile to force fresh resolution
+      # macOS: remove problematic packages from DESCRIPTION
       - name: Remove problematic deps on macOS
         if: runner.os == 'macOS'
         run: |
-          sed -i.bak '/GO.db/d; /WGCNA/d; /preprocessCore/d; /impute/d; /energy/d' DESCRIPTION
-          rm -f .github/pkg.lock
+          sed -i.bak '/GO.db/d; /WGCNA/d; /preprocessCore/d; /impute/d; /energy/d; /caret/d; /Boruta/d' DESCRIPTION
 
-      # Standard install (Linux, Windows, macOS)
+      # Standard install (Linux, Windows - not macOS, not oldrel-1)
       - uses: r-lib/actions/setup-r-dependencies@v2
-        if: matrix.config.r != 'oldrel-1'
+        if: runner.os != 'macOS' && matrix.config.r != 'oldrel-1'
         with:
           extra-packages: any::rcmdcheck
           cache-version: 2
+          needs: check
+
+      # macOS: force source installs to avoid missing binary issues
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os == 'macOS'
+        env:
+          R_COMPILE_AND_INSTALL_PACKAGES: always
+        with:
+          extra-packages: any::rcmdcheck
+          cache-version: 3
           needs: check
 
       # oldrel-1: skip energy (gsl requires R >= 4.5.0)
