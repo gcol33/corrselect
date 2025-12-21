@@ -59,8 +59,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: runner.os == 'macOS'
         with:
-          dependencies: 'hard'
-          extra-packages: any::rcmdcheck
+          extra-packages: any::rcmdcheck, GO.db=?ignore, WGCNA=?ignore, preprocessCore=?ignore, impute=?ignore
           cache-version: 2
           needs: check
 
