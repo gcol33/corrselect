@@ -42,30 +42,18 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      # Install GSL for energy package on macOS (not auto-installed by r-lib/actions)
-      - name: Install macOS system dependencies
+      # macOS: remove Bioconductor packages and energy from DESCRIPTION before dependency resolution
+      - name: Remove problematic deps on macOS
         if: runner.os == 'macOS'
-        run: brew install gsl
+        run: |
+          sed -i.bak '/GO.db/d; /WGCNA/d; /preprocessCore/d; /impute/d; /energy/d' DESCRIPTION
 
-      # Standard install (Linux and Windows)
+      # Standard install (Linux, Windows, macOS)
       - uses: r-lib/actions/setup-r-dependencies@v2
-        if: runner.os != 'macOS' && matrix.config.r != 'oldrel-1'
+        if: matrix.config.r != 'oldrel-1'
         with:
           extra-packages: any::rcmdcheck
           cache-version: 2
-          needs: check
-
-      # macOS: skip Bioconductor packages with complex deps (WGCNA ecosystem)
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        if: runner.os == 'macOS'
-        with:
-          extra-packages: |
-            any::rcmdcheck
-            GO.db=?ignore
-            WGCNA=?ignore
-            preprocessCore=?ignore
-            impute=?ignore
-          cache-version: 3
           needs: check
 
       # oldrel-1: skip energy (gsl requires R >= 4.5.0)
