@@ -69,9 +69,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           options(repos = c(CRAN = "https://cloud.r-project.org"))
-          install.packages("remotes")
-          remotes::install_deps(dependencies = TRUE)
-          install.packages("rcmdcheck")
+          install.packages(c("remotes", "Rcpp", "rcmdcheck"))
+          remotes::install_deps(dependencies = TRUE, upgrade = "never")
         shell: Rscript {0}
 
       # oldrel-1: skip energy (gsl requires R >= 4.5.0)
