@@ -50,11 +50,12 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
 
-      # macOS: remove packages with missing ARM64 binaries from DESCRIPTION
-      - name: Remove problematic deps on macOS
+      # macOS: remove Bioconductor packages (no ARM64 binaries on RSPM)
+      # CRAN packages (WGCNA, energy, caret, etc.) have ARM64 binaries and work fine
+      - name: Remove Bioconductor deps on macOS
         if: runner.os == 'macOS'
         run: |
-          sed -i.bak '/GO.db/d; /WGCNA/d; /preprocessCore/d; /impute/d; /energy/d; /caret/d; /Boruta/d; /glmnet/d' DESCRIPTION
+          sed -i.bak '/GO.db/d; /preprocessCore/d; /impute/d' DESCRIPTION
 
       # Standard install (Linux, Windows - not macOS, not oldrel-1)
       - uses: r-lib/actions/setup-r-dependencies@v2
@@ -93,7 +94,6 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
-          error-on: '"error"'
 
       - uses: r-lib/actions/check-r-package@v2
         if: matrix.config.r == 'oldrel-1'
