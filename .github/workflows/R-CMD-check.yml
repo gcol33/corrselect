@@ -64,14 +64,12 @@ jobs:
           cache-version: 2
           needs: check
 
-      # macOS: install deps manually to force source installs
+      # macOS: install deps using remotes (CRAN has ARM64 binaries, unlike RSPM)
       - name: Install R dependencies on macOS
         if: runner.os == 'macOS'
         run: |
-          options(repos = c(CRAN = "https://cran.rstudio.com/"))
-          options(pkgType = "source")
           install.packages("remotes")
-          remotes::install_deps(dependencies = TRUE, type = "source")
+          remotes::install_deps(dependencies = TRUE)
           install.packages("rcmdcheck")
         shell: Rscript {0}
 
