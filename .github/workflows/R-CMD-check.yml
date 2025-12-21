@@ -68,6 +68,7 @@ jobs:
       - name: Install R dependencies on macOS
         if: runner.os == 'macOS'
         run: |
+          options(repos = c(CRAN = "https://cloud.r-project.org"))
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
           install.packages("rcmdcheck")
