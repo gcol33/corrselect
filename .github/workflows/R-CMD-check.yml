@@ -64,15 +64,16 @@ jobs:
           cache-version: 2
           needs: check
 
-      # macOS: force source installs only (RSPM lacks ARM64 binaries for some packages)
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      # macOS: install deps manually to force source installs
+      - name: Install R dependencies on macOS
         if: runner.os == 'macOS'
-        env:
-          PKGTYPE: source
-        with:
-          extra-packages: any::rcmdcheck
-          cache-version: 5
-          needs: check
+        run: |
+          options(repos = c(CRAN = "https://cran.rstudio.com/"))
+          options(pkgType = "source")
+          install.packages("remotes")
+          remotes::install_deps(dependencies = TRUE, type = "source")
+          install.packages("rcmdcheck")
+        shell: Rscript {0}
 
       # oldrel-1: skip energy (gsl requires R >= 4.5.0)
       - uses: r-lib/actions/setup-r-dependencies@v2
