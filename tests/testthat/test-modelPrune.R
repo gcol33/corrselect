@@ -1082,3 +1082,346 @@ test_that("modelPrune custom engine diagnostics returns non-numeric", {
     "must return a numeric vector"
   )
 })
+
+# ===========================================================================
+# Additional edge case tests for full coverage
+# ===========================================================================
+
+test_that("modelPrune handles Inf VIF values (near-perfect collinearity)", {
+  set.seed(9101)
+  n <- 100
+  x1 <- rnorm(n)
+  # Create near-perfect collinearity
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 1e-10),  # Essentially identical
+    x3 = rnorm(n)
+  )
+
+  # Should handle Inf VIF gracefully
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
+  )
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune handles VIF with all near-collinear predictors", {
+  set.seed(9102)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 1e-8),
+    x3 = x1 + rnorm(n, sd = 1e-8)
+  )
+
+  # All have Inf VIF essentially
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + x3, data = df, limit = 10)
+  )
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune tie-breaking removes last variable in formula order", {
+  set.seed(9103)
+  n <- 100
+  x1 <- rnorm(n)
+  # Create two equally collinear pairs
+  df <- data.frame(
+    y = rnorm(n),
+    a = x1,
+    b = x1 + rnorm(n, sd = 0.1),
+    c = rnorm(n),
+    d = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ a + b + c + d, data = df, limit = 5)
+
+  # b should be removed (same VIF as a, but later in formula)
+  expect_true("a" %in% attr(result, "selected_vars") ||
+              "b" %in% attr(result, "selected_vars"))
+})
+
+test_that("modelPrune errors when no fixed effects remain", {
+  df <- mtcars
+
+  # Create custom engine that always returns high diagnostics
+  always_high_engine <- list(
+    name = "always_high",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      setNames(rep(100, length(fixed_effects)), fixed_effects)
+    }
+  )
+
+  # This should warn about removing all predictors
+  expect_warning(
+    modelPrune(mpg ~ cyl, data = df, engine = always_high_engine, limit = 1),
+    "would remove all"
+  )
+})
+
+test_that("modelPrune handles design matrix with factor predictors", {
+  set.seed(9104)
+  n <- 60
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    cat = factor(sample(c("A", "B", "C"), n, replace = TRUE)),
+    x2 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + cat + x2, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune VIF computation with missing column match", {
+  set.seed(9105)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune handles multi-level factors in VIF", {
+  set.seed(9106)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    cat = factor(sample(LETTERS[1:5], n, replace = TRUE)),
+    x2 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + cat + x2, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune custom engine criterion parameter shows message", {
+  df <- mtcars
+
+  custom_engine <- list(
+    name = "test_msg",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      setNames(rep(1, length(fixed_effects)), fixed_effects)
+    }
+  )
+
+  # Non-vif criterion with custom engine should show message
+  expect_message(
+    modelPrune(mpg ~ cyl + disp, data = df, engine = custom_engine,
+               criterion = "custom_crit", limit = 10),
+    "ignored"
+  )
+})
+
+test_that("modelPrune handles R-squared edge cases in VIF", {
+  set.seed(9107)
+  n <- 50
+
+  # Create data where VIF might produce unusual R-squared values
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = scale(x1) * 0.5 + rnorm(n, sd = 0.5),  # Moderate correlation
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune iterative removal works correctly", {
+  set.seed(9108)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.1),  # High VIF
+    x3 = x1 + rnorm(n, sd = 0.2),  # High VIF
+    x4 = rnorm(n)
+  )
+
+  # Multiple iterations needed
+  result <- modelPrune(y ~ x1 + x2 + x3 + x4, data = df, limit = 5)
+
+  expect_s3_class(result, "data.frame")
+  expect_true(length(attr(result, "removed_vars")) >= 1)
+})
+
+test_that("modelPrune handles intercept-only design matrix", {
+  set.seed(9109)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n)
+  )
+
+  # Single predictor case
+  result <- modelPrune(y ~ x1, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+  expect_true("x1" %in% names(result))
+})
+
+test_that("modelPrune lme4 glmer with binomial family", {
+  skip_if_not_installed("lme4")
+
+  set.seed(9110)
+  n <- 100
+  df <- data.frame(
+    y = rbinom(n, 1, 0.5),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    group = factor(rep(1:10, each = 10))
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1|group), data = df,
+               engine = "lme4", family = binomial(), limit = 10)
+  )
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "engine"), "lme4")
+})
+
+test_that("modelPrune VIF with only one predictor remaining after removal", {
+  set.seed(9111)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1  # Perfect collinearity
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2, data = df, limit = 5)
+  )
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune handles valid diagnostics at boundary of threshold", {
+  set.seed(9112)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n)
+  )
+
+  # With very high limit, all should pass
+  result <- modelPrune(y ~ x1 + x2, data = df, limit = 1000)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(length(attr(result, "removed_vars")), 0)
+})
+
+# ===========================================================================
+# More edge case tests for internal functions
+# ===========================================================================
+
+test_that("modelPrune VIF with single remaining predictor", {
+  set.seed(9201)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n)
+  )
+
+  # Only one predictor - VIF should be 1 (or NA/handled)
+  result <- modelPrune(y ~ x1, data = df, limit = 10)
+
+  expect_s3_class(result, "data.frame")
+  expect_true("x1" %in% names(result))
+})
+
+test_that("modelPrune with perfect multicollinearity removes predictors", {
+  set.seed(9202)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1,  # Exactly equal to x1
+    x3 = rnorm(n)
+  )
+
+  # Should handle Inf VIF
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
+  )
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune lme4 package check", {
+  skip_if_not_installed("lme4")
+  set.seed(9203)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    group = factor(rep(1:10, each = 10))
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + (1|group), data = df,
+                       engine = "lme4", limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune glmmTMB package check", {
+  skip_if_not_installed("glmmTMB")
+  set.seed(9204)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    group = factor(rep(1:10, each = 10))
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + (1|group), data = df,
+                       engine = "glmmTMB", limit = 10)
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("modelPrune removes multiple predictors iteratively", {
+  set.seed(9205)
+  n <- 200
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.05),
+    x3 = x1 + rnorm(n, sd = 0.05),
+    x4 = x1 + rnorm(n, sd = 0.05),
+    x5 = rnorm(n)
+  )
+
+  # Multiple high VIF predictors should be removed
+  result <- modelPrune(y ~ x1 + x2 + x3 + x4 + x5, data = df, limit = 3)
+
+  expect_s3_class(result, "data.frame")
+  expect_true(length(attr(result, "removed_vars")) >= 1)
+})

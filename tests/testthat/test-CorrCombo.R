@@ -421,3 +421,75 @@ test_that("show() handles cor_method display", {
   expect_output(show(combo), "Correlation")
   expect_output(show(combo), "spearman")
 })
+
+# ===========================================================================
+# Additional edge case tests for CorrCombo
+# ===========================================================================
+
+test_that("show() displays only one variable per subset correctly", {
+  # Test when subset contains exactly 2 variables (the boundary case)
+  combo <- new("CorrCombo",
+               subset_list = list(c("A", "B")),
+               avg_corr = 0.2,
+               min_corr = 0.2,
+               max_corr = 0.2,
+               names = c("A", "B"),
+               threshold = 0.5,
+               forced_in = character(),
+               search_type = "els",
+               n_rows_used = 2L)
+
+  expect_output(show(combo), "A, B")
+})
+
+test_that("show() handles exactly 5 subsets without more message", {
+  subsets <- lapply(1:5, function(i) c(paste0("V", i), paste0("V", i + 5)))
+  avg_corrs <- runif(5, 0.1, 0.3)
+
+  combo <- new("CorrCombo",
+               subset_list = subsets,
+               avg_corr = avg_corrs,
+               min_corr = avg_corrs - 0.05,
+               max_corr = avg_corrs + 0.05,
+               names = paste0("V", 1:10),
+               threshold = 0.5,
+               forced_in = character(),
+               search_type = "els",
+               n_rows_used = 10L)
+
+  # Should NOT show "more combinations" with exactly 5
+  output <- capture.output(show(combo))
+  expect_false(any(grepl("more combinations", output)))
+})
+
+test_that("as.data.frame with optional parameter works", {
+  combo <- new("CorrCombo",
+               subset_list = list(c("A", "B"), c("C", "D")),
+               avg_corr = c(0.1, 0.2),
+               min_corr = c(0.1, 0.2),
+               max_corr = c(0.1, 0.2),
+               names = LETTERS[1:4],
+               threshold = 0.5,
+               forced_in = character(),
+               search_type = "els",
+               n_rows_used = 4L)
+
+  df <- as.data.frame(combo, optional = TRUE)
+  expect_s3_class(df, "data.frame")
+})
+
+test_that("CorrCombo cor_method slot is accessible", {
+  combo <- new("CorrCombo",
+               subset_list = list(c("A", "B")),
+               avg_corr = 0.2,
+               min_corr = 0.1,
+               max_corr = 0.3,
+               names = c("A", "B"),
+               threshold = 0.5,
+               forced_in = character(),
+               search_type = "els",
+               cor_method = "kendall",
+               n_rows_used = 10L)
+
+  expect_equal(combo@cor_method, "kendall")
+})

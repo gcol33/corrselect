@@ -318,3 +318,56 @@ test_that("ELS with force_in covering all variables", {
   }
 })
 
+
+# ===========================================================================
+# Additional tests for findAllMaxSets internal function edge cases
+# ===========================================================================
+
+test_that("MatSelect passes NULL force_in correctly to backend", {
+  m <- diag(1, 3)
+  colnames(m) <- paste0("V", 1:3)
+
+  # Without force_in - covers the NULL path in findAllMaxSets
+  res <- MatSelect(m, threshold = 0.5, method = "els")
+
+  expect_s4_class(res, "CorrCombo")
+  expect_equal(length(res@forced_in), 0)
+})
+
+test_that("MatSelect passes empty force_in correctly", {
+  m <- diag(1, 3)
+  colnames(m) <- paste0("V", 1:3)
+
+  # Explicitly empty force_in
+  res <- MatSelect(m, threshold = 0.5, method = "els", force_in = integer(0))
+
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("MatSelect with force_in as numeric vector", {
+  m <- diag(1, 4)
+  colnames(m) <- paste0("V", 1:4)
+
+  # Numeric indices
+  res <- MatSelect(m, threshold = 0.5, method = "els", force_in = c(1, 3))
+
+  expect_s4_class(res, "CorrCombo")
+  for (s in res@subset_list) {
+    expect_true(all(c("V1", "V3") %in% s))
+  }
+})
+
+test_that("ELS returns correct subset stats for multi-variable subsets", {
+  m <- diag(1, 4)
+  m[1, 2] <- m[2, 1] <- 0.2
+  m[1, 3] <- m[3, 1] <- 0.3
+  m[2, 3] <- m[3, 2] <- 0.25
+  colnames(m) <- paste0("V", 1:4)
+
+  res <- MatSelect(m, threshold = 0.5, method = "els")
+
+  # Check correlation stats are computed
+  expect_true(length(res@avg_corr) > 0)
+  expect_true(length(res@min_corr) > 0)
+  expect_true(length(res@max_corr) > 0)
+})

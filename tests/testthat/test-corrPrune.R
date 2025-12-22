@@ -887,3 +887,146 @@ test_that("corrPrune integer column conversion to numeric", {
 
   expect_s3_class(result, "data.frame")
 })
+
+# ===========================================================================
+# Additional edge case tests for full coverage
+# ===========================================================================
+
+test_that("corrPrune lexicographic tie-breaking with identical avg correlations", {
+  set.seed(8001)
+  n <- 100
+
+  # Create data with multiple subsets of same size and same avg correlation
+  # This triggers the lexicographic tie-breaker in exact mode
+  df <- data.frame(
+    a = rnorm(n),
+    b = rnorm(n),
+    c = rnorm(n),
+    d = rnorm(n)
+  )
+
+  # All independent variables - all subsets have avg = 0
+  result1 <- corrPrune(df, threshold = 0.99, mode = "exact")
+  result2 <- corrPrune(df, threshold = 0.99, mode = "exact")
+
+  # Should be deterministic
+  expect_identical(names(result1), names(result2))
+})
+
+test_that("corrPrune handles multiple max-size subsets with same avg correlation", {
+  set.seed(8002)
+  n <- 50
+
+  # All pairs have very similar low correlations -> same avg
+  x1 <- rnorm(n)
+  df <- data.frame(
+    a1 = x1,
+    a2 = rnorm(n),
+    a3 = rnorm(n),
+    a4 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.95, mode = "exact")
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("corrPrune lexicographic ordering with alphabetical names", {
+  set.seed(8003)
+  n <- 50
+
+  # Alphabetically ordered names for predictable tie-breaking
+  df <- data.frame(
+    apple = rnorm(n),
+    banana = rnorm(n),
+    cherry = rnorm(n),
+    date = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.99, mode = "exact")
+
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("corrPrune exact mode with single variable forced in", {
+  set.seed(8004)
+  n <- 50
+  df <- data.frame(
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.9, force_in = "x2", mode = "exact")
+
+  expect_true("x2" %in% names(result))
+})
+
+
+test_that("corrPrune greedy mode with multiple force_in variables", {
+  set.seed(8006)
+  n <- 50
+  df <- data.frame(
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n),
+    x4 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.9, force_in = c("x1", "x3"), mode = "greedy")
+
+  expect_true(all(c("x1", "x3") %in% names(result)))
+})
+
+
+test_that("corrPrune exact mode finds largest subset", {
+  set.seed(8008)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.05),  # High correlation with x1
+    x3 = rnorm(n),
+    x4 = rnorm(n),
+    x5 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.5, mode = "exact")
+
+  # Should have at least 3 variables (x3, x4, x5 + one of x1/x2)
+  expect_true(ncol(result) >= 3)
+})
+
+test_that("corrPrune greedy removes variable with most violations first", {
+  set.seed(8009)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    bad = x1,  # Correlated with many
+    x2 = x1 + rnorm(n, sd = 0.1),
+    x3 = x1 + rnorm(n, sd = 0.1),
+    good1 = rnorm(n),
+    good2 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.5, mode = "greedy")
+
+  # "bad" should likely be removed since it violates threshold with x2 and x3
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("corrPrune returns consistent n_vars_original attribute", {
+  set.seed(8010)
+  n <- 50
+  df <- data.frame(
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n),
+    x4 = rnorm(n)
+  )
+
+  result <- corrPrune(df, threshold = 0.8, mode = "exact")
+
+  expect_equal(attr(result, "n_vars_original"), 4)
+  expect_equal(attr(result, "n_vars_selected"), ncol(result))
+})

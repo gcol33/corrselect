@@ -94,3 +94,143 @@ test_that("MatSelect allows too-correlated force_in with warning handled in R", 
   expect_true(all(c("A", "A_dup") %in% all_sets))
 })
 
+
+# ===========================================================================
+# Additional coverage tests for Bron-Kerbosch algorithm
+# ===========================================================================
+
+test_that("BK handles matrix without column names", {
+  m <- diag(1, 3)
+  m[1, 2] <- m[2, 1] <- 0.3
+
+  res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch")
+
+  expect_s4_class(res, "CorrCombo")
+  # Should use default names V1, V2, V3
+  expect_true(all(grepl("^V", unlist(res@subset_list))))
+})
+
+test_that("BK handles force_in as character names", {
+  m <- diag(1, 4)
+  colnames(m) <- c("apple", "banana", "cherry", "date")
+
+  res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch",
+                   force_in = c("apple", "cherry"))
+
+  expect_s4_class(res, "CorrCombo")
+  for (s in res@subset_list) {
+    expect_true(all(c("apple", "cherry") %in% s))
+  }
+})
+
+test_that("BK errors on character force_in with unnamed matrix", {
+  m <- diag(1, 3)
+  # No column names
+
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch",
+              force_in = c("A", "B")),
+    "no column names"
+  )
+})
+
+test_that("BK errors on force_in names not in matrix", {
+  m <- diag(1, 3)
+  colnames(m) <- c("A", "B", "C")
+
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch",
+              force_in = c("A", "X")),
+    "not found in matrix"
+  )
+})
+
+test_that("BK handles non-square matrix error", {
+  m <- matrix(1, nrow = 2, ncol = 3)
+
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch"),
+    "square"
+  )
+})
+
+test_that("BK handles non-unit diagonal error", {
+  m <- diag(0.9, 3)
+
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch"),
+    "Diagonal entries.*must be 1"
+  )
+})
+
+test_that("BK handles invalid threshold (0)", {
+  m <- diag(1, 3)
+
+  expect_error(
+    MatSelect(m, threshold = 0, method = "bron-kerbosch"),
+    "threshold.*must be in the range"
+  )
+})
+
+test_that("BK handles threshold = 1 (all valid)", {
+  m <- diag(1, 3)
+  m[1, 2] <- m[2, 1] <- 0.99
+  m[1, 3] <- m[3, 1] <- 0.99
+  m[2, 3] <- m[3, 2] <- 0.99
+  colnames(m) <- c("A", "B", "C")
+
+  # With threshold = 1, all pairs are valid
+  res <- MatSelect(m, threshold = 1, method = "bron-kerbosch")
+
+  expect_s4_class(res, "CorrCombo")
+  expect_equal(length(res@subset_list), 1)
+  expect_setequal(res@subset_list[[1]], c("A", "B", "C"))
+})
+
+test_that("BK handles invalid threshold (> 1)", {
+  m <- diag(1, 3)
+
+  expect_error(
+    MatSelect(m, threshold = 1.5, method = "bron-kerbosch"),
+    "threshold.*must be in the range"
+  )
+})
+
+test_that("BK handles non-numeric matrix", {
+  m <- matrix("a", nrow = 3, ncol = 3)
+
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch"),
+    "numeric matrix"
+  )
+})
+
+test_that("BK stores use_pivot attribute correctly", {
+  m <- diag(1, 3)
+
+  res1 <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
+  res2 <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = FALSE)
+
+  expect_true(attr(res1, "use_pivot"))
+  expect_false(attr(res2, "use_pivot"))
+})
+
+test_that("BK default pivot is TRUE", {
+  m <- diag(1, 3)
+
+  res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch")
+
+  expect_true(attr(res, "use_pivot"))
+})
+
+test_that("BK handles use_pivot as various truthy values", {
+  m <- diag(1, 3)
+
+  # use_pivot = 1 should work
+  res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = 1)
+  expect_true(attr(res, "use_pivot"))
+
+  # use_pivot = 0 should work
+  res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = 0)
+  expect_false(attr(res, "use_pivot"))
+})
