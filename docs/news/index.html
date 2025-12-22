@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,29 @@
       <small>Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.1.0" id="corrselect-310">corrselect 3.1.0<a class="anchor" aria-label="anchor" href="#corrselect-310"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-3-1-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-3-1-0"></a></h3>
+<ul><li>
+<strong>corrPrune</strong>: Fixed numeric-numeric pair handling in mixed-type data (was incorrectly using Cramer’s V instead of Pearson correlation)</li>
+<li>
+<strong>corrPrune</strong>: Fixed numeric-ordered pair handling (now properly converts ordered to numeric for Spearman correlation)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="test-coverage-improvements-3-1-0">Test Coverage Improvements<a class="anchor" aria-label="anchor" href="#test-coverage-improvements-3-1-0"></a></h3>
+<p>Coverage improved from 92% to 94%:</p>
+<ul><li>Added tests for optional package measures (bicor, distance, maximal) with proper <code>skip_if_not_installed()</code> guards</li>
+<li>Added tests for lme4 and glmmTMB engines in modelPrune</li>
+<li>Added chi-squared edge case tests (sparse contingency tables, NA handling)</li>
+<li>Added VIF edge case tests (perfect collinearity, single predictor)</li>
+<li>Added lexicographic tie-breaking tests with synthetic correlation structures</li>
+<li>Added mixed-type data tests (numeric-ordered, ordered-ordered, factor-factor pairs)</li>
+<li>Added condition_number criterion tests</li>
+<li>findAllMaxSets.R now at 100% coverage</li>
+<li>corrPrune.R now at 97% coverage</li>
+</ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0.7" id="corrselect-307">corrselect 3.0.7<a class="anchor" aria-label="anchor" href="#corrselect-307"></a></h2>
 <div class="section level3">

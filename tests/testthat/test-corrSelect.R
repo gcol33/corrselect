@@ -75,6 +75,7 @@ test_that("works with tibble-like input", {
 })
 
 test_that("force_in accepts numeric indices", {
+  set.seed(1234)
   df <- data.frame(x = rnorm(10), y = rnorm(10), z = rnorm(10))
   res <- corrSelect(df, threshold = 0.8, method = "els", force_in = c(1, 3))
   expect_true(all(c("x", "z") %in% unlist(res@subset_list)))
@@ -949,3 +950,4 @@ test_that("corrSelect with maximal works", {
   result <- corrSelect(df, threshold = 0.5, cor_method = "maximal")
   expect_s4_class(result, "CorrCombo")
 })
+

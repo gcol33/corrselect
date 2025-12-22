@@ -742,7 +742,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] car_3.1-3        carData_3.0-5    corrselect_3.0.7
+#> [1] car_3.1-3        carData_3.0-5    corrselect_3.1.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] tidyselect_1.2.1     timeDate_4051.111    dplyr_1.1.4         

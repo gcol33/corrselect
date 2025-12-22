@@ -566,7 +566,7 @@ test_that("corrPrune handles all rows with NA (errors)", {
     x2 = c(NA, NA, NA)
   )
 
-  # Should error - either "All rows contain missing values" or NA in matrix
+  # Should error - either "no complete element pairs|All rows contain missing values" or NA in matrix
   expect_error(
     corrPrune(df, threshold = 0.7)
   )
@@ -1519,3 +1519,102 @@ test_that("corrSelect with maximal computes correctly", {
 # VIF: predictor column matching edge case
 # ===========================================================================
 
+
+# ===========================================================================
+# corrPrune: Deep edge case tests
+# ===========================================================================
+
+test_that("corrPrune errors when all rows have missing values", {
+  df <- data.frame(
+    x = c(NA, NA, NA, NA),
+    y = c(NA, 1, NA, NA),
+    z = c(NA, NA, 2, NA)
+  )
+
+  expect_error(
+    corrPrune(df, threshold = 0.7),
+    "no complete element pairs|All rows contain missing values"
+  )
+})
+
+test_that("corrPrune handles character columns by converting to factor", {
+  set.seed(12001)
+  n <- 20
+  df <- data.frame(
+    char_col = sample(c("apple", "banana", "cherry"), n, replace = TRUE),
+    num_col = rnorm(n),
+    stringsAsFactors = FALSE
+  )
+
+  res <- corrPrune(df, threshold = 0.9)
+  expect_s3_class(res, "data.frame")
+})
+
+test_that("corrPrune handles logical columns by converting to factor", {
+  set.seed(12002)
+  n <- 20
+  df <- data.frame(
+    bool_col = sample(c(TRUE, FALSE), n, replace = TRUE),
+    num_col = rnorm(n)
+  )
+
+  res <- corrPrune(df, threshold = 0.9)
+  expect_s3_class(res, "data.frame")
+})
+
+test_that("corrPrune handles integer columns by converting to numeric", {
+  set.seed(12003)
+  n <- 20
+  df <- data.frame(
+    int_col = as.integer(sample(1:100, n, replace = TRUE)),
+    num_col = rnorm(n)
+  )
+
+  res <- corrPrune(df, threshold = 0.9)
+  expect_s3_class(res, "data.frame")
+})
+
+# ===========================================================================
+# corrPrune: Mixed-type chi2 edge cases
+# ===========================================================================
+
+test_that("corrPrune handles factor-factor with sparse contingency table", {
+  set.seed(16001)
+  n <- 15
+  df <- data.frame(
+    f1 = factor(c(rep("A", 12), rep("B", 3))),
+    f2 = factor(c(rep("X", 13), rep("Y", 2))),
+    num = rnorm(n)
+  )
+
+  res <- corrPrune(df, threshold = 0.9)
+  expect_s3_class(res, "data.frame")
+})
+
+test_that("corrPrune handles chi2 NA in mixed-type matrix computation", {
+  set.seed(16002)
+  # Create very degenerate factor-factor pair
+  n <- 10
+  df <- data.frame(
+    f1 = factor(c(rep("A", 9), "B")),
+    f2 = factor(c(rep("X", 9), "Y")),
+    num = rnorm(n)
+  )
+
+  res <- corrPrune(df, threshold = 0.95)
+  expect_s3_class(res, "data.frame")
+})
+
+test_that("corrPrune all-numeric with all rows NA errors correctly", {
+  # All-numeric data where complete.cases returns nothing
+  df <- data.frame(
+    x = c(1, NA, NA),
+    y = c(NA, 2, NA),
+    z = c(NA, NA, 3)
+  )
+
+  expect_error(
+    corrPrune(df, threshold = 0.7, measure = "pearson"),
+    "no complete element pairs|All rows"
+  )
+})

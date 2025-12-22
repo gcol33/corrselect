@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.5            0.2
-#> 2   20           0.6            0.4
-#> 3   50           1.3            0.8
-#> 4  100           4.2            1.3
-#> 5  200          19.6            3.3
-#> 6  300          92.1           11.8
-#> 7  500         363.0           28.1
-#> 8 1000            NA           92.4
+#> 1   10           0.4            0.2
+#> 2   20           0.6            0.3
+#> 3   50           1.0            0.7
+#> 4  100           2.0            1.3
+#> 5  200           5.0            3.1
+#> 6  300          11.7           10.1
+#> 7  500          54.9           20.6
+#> 8 1000            NA           70.5
 ```
 
 ``` r
@@ -800,11 +800,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 6.3 ms
+#> Recomputing each time: 6.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 3.3 ms
+#> Precomputed matrix: 1.3 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 1.9x faster
+#> Speedup: 4.5x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1423,7 +1423,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.0.7    
+#> [1] microbenchmark_1.5.0 corrselect_3.1.0    
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    

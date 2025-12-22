@@ -1193,3 +1193,130 @@ test_that("assocSelect computes association for ordered-ordered pairs", {
   result <- assocSelect(df, threshold = 0.8, method_ord_ord = "spearman")
   expect_s4_class(result, "CorrCombo")
 })
+
+# ===========================================================================
+# Deep edge case tests for get_assoc internal function
+# ===========================================================================
+
+test_that("assocSelect handles cramersv with degenerate 1xN table", {
+  # Single-level factor paired with multi-level factor
+  set.seed(11001)
+  n <- 20
+  df <- data.frame(
+    single_level = factor(rep("A", n)),
+    multi_level = factor(sample(c("X", "Y", "Z"), n, replace = TRUE)),
+    num = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles cramersv with table having zero row", {
+  set.seed(11002)
+  df <- data.frame(
+    f1 = factor(c("A", "A", "A", "A", "B", "B"), levels = c("A", "B", "C")),
+    f2 = factor(c("X", "X", "X", "X", "Y", "Y"), levels = c("X", "Y")),
+    num = c(1, 2, 3, 4, 5, 6)
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles eta with constant numeric within groups", {
+  set.seed(11003)
+  n <- 20
+  df <- data.frame(
+    const_num = rep(5.0, n),
+    factor_var = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles eta when factor has single level", {
+  set.seed(11004)
+  n <- 15
+  df <- data.frame(
+    numeric_var = rnorm(n),
+    single_cat = factor(rep("only", n))
+  )
+
+  res <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(res, "CorrCombo")
+})
+
+# ===========================================================================
+# Deep synthetic edge cases for get_assoc internal function
+# ===========================================================================
+
+test_that("assocSelect handles cramersv with 1xN contingency table", {
+  # Create factors where one has only 1 level after droplevels
+  set.seed(15001)
+  n <- 15
+  df <- data.frame(
+    f1 = factor(rep("A", n)),  # Single level
+    f2 = factor(sample(c("X", "Y", "Z"), n, replace = TRUE)),
+    num = rnorm(n)  # Need 3rd column
+  )
+
+  res <- assocSelect(df, threshold = 0.95)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles eta with single-level factor explicitly", {
+  # Numeric paired with single-level factor
+  set.seed(15002)
+  n <- 20
+  df <- data.frame(
+    numeric_col = rnorm(n),
+    single_factor = factor(rep("only_level", n)),
+    another_num = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.95)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles eta with constant numeric (ss_tot = 0)", {
+  # Constant numeric paired with multi-level factor
+  set.seed(15003)
+  n <- 20
+  df <- data.frame(
+    constant = rep(3.14159, n),  # Zero variance
+    cat_var = factor(sample(c("A", "B", "C"), n, replace = TRUE)),
+    other_num = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.95)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles cramersv where chi2 might be NA", {
+  # Very sparse contingency table
+  set.seed(15004)
+  df <- data.frame(
+    f1 = factor(c("A", "A", "A", "B")),
+    f2 = factor(c("X", "X", "X", "Y")),
+    num = c(1, 2, 3, 4)
+  )
+
+  res <- assocSelect(df, threshold = 0.99)
+  expect_s4_class(res, "CorrCombo")
+})
+
+test_that("assocSelect handles NA fallback to 0 in association", {
+  # Create scenario where association computation returns NA
+  set.seed(15005)
+  n <- 10
+  df <- data.frame(
+    f1 = factor(c(rep("A", n-1), "B")),  # Very imbalanced
+    f2 = factor(c(rep("X", n-1), "Y")),  # Very imbalanced
+    num = rnorm(n)
+  )
+
+  res <- assocSelect(df, threshold = 0.99)
+  expect_s4_class(res, "CorrCombo")
+})
