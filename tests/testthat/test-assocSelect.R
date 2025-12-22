@@ -976,3 +976,53 @@ test_that("assocSelect errors on unsupported method", {
     "should be one of"
   )
 })
+
+
+# ===========================================================================
+# Tests for assocSelect with optional measures
+# ===========================================================================
+
+test_that("assocSelect with bicor for numeric pairs works", {
+  skip_if_not(requireNamespace("WGCNA", quietly = TRUE))
+
+  set.seed(6001)
+  n <- 50
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.5, method_num_num = "bicor")
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("assocSelect with distance correlation works", {
+  skip_if_not(requireNamespace("energy", quietly = TRUE))
+
+  set.seed(6002)
+  n <- 30
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.5, method_num_num = "distance")
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("assocSelect with maximal information coefficient works", {
+  skip_if_not(requireNamespace("minerva", quietly = TRUE))
+
+  set.seed(6003)
+  n <- 30
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.5, method_num_num = "maximal")
+  expect_s4_class(result, "CorrCombo")
+})

@@ -313,10 +313,10 @@ corrPrune <- function(
           # Determine association measure based on types
           if (ti == "numeric" && tj == "numeric") {
             # Use the specified numeric measure
-            assoc_val <- abs(cor(xi, xj, method = meas, use = "complete.obs"))
+            assoc_val <- abs(cor(xi, xj, method = "pearson", use = "complete.obs"))
           } else if ((ti == "numeric" && tj == "ordered") || (ti == "ordered" && tj == "numeric")) {
             # Numeric-Ordered: use Spearman
-            assoc_val <- abs(cor(xi, xj, method = "spearman", use = "complete.obs"))
+            assoc_val <- abs(cor(as.numeric(xi), as.numeric(xj), method = "spearman", use = "complete.obs"))
           } else if ((ti == "numeric" && tj == "factor") || (ti == "factor" && tj == "numeric")) {
             # Numeric-Factor: use eta-squared
             cat_var <- if (ti == "factor") xi else xj

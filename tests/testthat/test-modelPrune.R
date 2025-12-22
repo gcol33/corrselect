@@ -1497,3 +1497,108 @@ test_that("modelPrune condition_number with GLM engine", {
   expect_s3_class(result, "data.frame")
   expect_equal(attr(result, "criterion"), "condition_number")
 })
+
+
+# ===========================================================================
+# Tests for lme4 engine (when available)
+# ===========================================================================
+
+test_that("modelPrune with lme4 engine prunes correctly", {
+  skip_if_not(requireNamespace("lme4", quietly = TRUE))
+
+  set.seed(5001)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.1),  # Collinear
+    x3 = rnorm(n),
+    group = factor(rep(1:10, each = 10))
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + x3 + (1|group), data = df, engine = "lme4", limit = 5)
+  )
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "engine"), "lme4")
+})
+
+test_that("modelPrune lme4 with glmer (binomial)", {
+  skip_if_not(requireNamespace("lme4", quietly = TRUE))
+
+  set.seed(5002)
+  n <- 100
+  df <- data.frame(
+    y = rbinom(n, 1, 0.5),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    group = factor(rep(1:10, each = 10))
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1|group), data = df, engine = "lme4",
+               family = binomial(), limit = 10)
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+# ===========================================================================
+# Tests for glmmTMB engine (when available)
+# ===========================================================================
+
+test_that("modelPrune with glmmTMB engine works", {
+  skip_if_not(requireNamespace("glmmTMB", quietly = TRUE))
+
+  set.seed(5003)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    group = factor(rep(1:10, each = 10))
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1|group), data = df, engine = "glmmTMB", limit = 10)
+  )
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "engine"), "glmmTMB")
+})
+
+# ===========================================================================
+# Tests for condition_number with edge cases
+# ===========================================================================
+
+test_that("modelPrune condition_number handles perfectly uncorrelated data", {
+  set.seed(5004)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df,
+                       criterion = "condition_number", limit = 100)
+  expect_s3_class(result, "data.frame")
+  # All should be kept (low collinearity)
+  expect_equal(length(attr(result, "selected_vars")), 3)
+})
+
+test_that("modelPrune condition_number with glm engine", {
+  set.seed(5005)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rbinom(n, 1, 0.5),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.05),  # Very collinear
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, engine = "glm",
+                       family = binomial(), criterion = "condition_number", limit = 5)
+  expect_s3_class(result, "data.frame")
+})

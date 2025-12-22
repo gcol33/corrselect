@@ -899,3 +899,53 @@ test_that("corrSelect maximal method skipped if minerva not installed", {
   res <- corrSelect(df, threshold = 0.9, cor_method = "maximal")
   expect_s4_class(res, "CorrCombo")
 })
+
+
+# ===========================================================================
+# Tests for corrSelect with optional measures
+# ===========================================================================
+
+test_that("corrSelect with bicor works", {
+  skip_if_not(requireNamespace("WGCNA", quietly = TRUE))
+
+  set.seed(7001)
+  n <- 50
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n)
+  )
+
+  result <- corrSelect(df, threshold = 0.5, cor_method = "bicor")
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("corrSelect with distance correlation works", {
+  skip_if_not(requireNamespace("energy", quietly = TRUE))
+
+  set.seed(7002)
+  n <- 30
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n)
+  )
+
+  result <- corrSelect(df, threshold = 0.5, cor_method = "distance")
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("corrSelect with maximal works", {
+  skip_if_not(requireNamespace("minerva", quietly = TRUE))
+
+  set.seed(7003)
+  n <- 30
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n)
+  )
+
+  result <- corrSelect(df, threshold = 0.5, cor_method = "maximal")
+  expect_s4_class(result, "CorrCombo")
+})
