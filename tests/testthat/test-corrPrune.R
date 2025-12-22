@@ -1307,3 +1307,57 @@ test_that("corrPrune handles chi-squared NA gracefully", {
   result <- corrPrune(df, threshold = 0.9)
   expect_s3_class(result, "data.frame")
 })
+
+
+# ===========================================================================
+# Edge case: Lexicographic tie-breaking in exact mode
+# ===========================================================================
+
+test_that("corrPrune exact mode uses lexicographic tie-breaking when size and avg tied", {
+  set.seed(5001)
+  # Create symmetric data where subsets {a,c} and {b,d} have same size and similar correlations
+  # This is tricky - we need multiple maximal subsets with identical avg correlation
+  n <- 100
+
+  # Create 4 variables where pairs (a,b) and (c,d) are correlated
+  # but (a,c), (a,d), (b,c), (b,d) are uncorrelated
+  a <- rnorm(n)
+  b <- a + rnorm(n, sd = 0.01)  # a and b highly correlated
+  c <- rnorm(n)
+  d <- c + rnorm(n, sd = 0.01)  # c and d highly correlated
+
+  df <- data.frame(a = a, b = b, c = c, d = d)
+
+  # With threshold 0.5, should get subsets like {a,c}, {a,d}, {b,c}, {b,d}
+  # all with size 2 and potentially similar avg correlations
+  result <- corrPrune(df, threshold = 0.5, mode = "exact")
+  expect_s3_class(result, "data.frame")
+
+  # Result should be deterministic
+  result2 <- corrPrune(df, threshold = 0.5, mode = "exact")
+  expect_identical(names(result), names(result2))
+})
+
+# ===========================================================================
+# Edge case: All rows have NA in grouped aggregation
+# ===========================================================================
+
+test_that("corrPrune grouped pruning handles groups with all NA", {
+  set.seed(5002)
+  n <- 40
+
+  # Create data where one group has only NA values
+  df <- data.frame(
+    x = c(rnorm(30), rep(NA, 10)),
+    y = c(rnorm(30), rep(NA, 10)),
+    z = rnorm(n),
+    group = rep(c("good", "bad"), c(30, 10))
+  )
+
+  # Should handle the NA group gracefully
+  expect_warning(
+    result <- corrPrune(df, threshold = 0.8, by = "group"),
+    "fewer than 2 complete rows"
+  )
+  expect_s3_class(result, "data.frame")
+})

@@ -234,3 +234,12 @@ test_that("BK handles use_pivot as various truthy values", {
   res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = 0)
   expect_false(attr(res, "use_pivot"))
 })
+
+
+test_that("MatSelect handles NULL force_in with method bron-kerbosch", {
+  mat <- matrix(c(1, 0.2, 0.2, 1), 2, 2)
+  colnames(mat) <- rownames(mat) <- c("a", "b")
+
+  result <- MatSelect(mat, threshold = 0.5, method = "bron-kerbosch", force_in = NULL)
+  expect_s4_class(result, "CorrCombo")
+})

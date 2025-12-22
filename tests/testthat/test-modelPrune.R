@@ -1602,3 +1602,107 @@ test_that("modelPrune condition_number with glm engine", {
                        family = binomial(), criterion = "condition_number", limit = 5)
   expect_s3_class(result, "data.frame")
 })
+
+
+# ===========================================================================
+# Edge case: All diagnostics become NA/Inf
+# ===========================================================================
+
+test_that("modelPrune handles all NA/Inf diagnostics gracefully", {
+  set.seed(6001)
+  n <- 50
+
+  # Create perfectly collinear data
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1,  # Perfectly collinear
+    x3 = x1   # Perfectly collinear
+  )
+
+  # Should warn about NA/Inf diagnostics
+  expect_warning(
+    result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5),
+    "NA|Inf|singular|collinear|remove all|perfect fit"
+  )
+})
+
+# ===========================================================================
+# Edge case: VIF with categorical predictors (factor columns)
+# ===========================================================================
+
+test_that("modelPrune handles factor predictors correctly", {
+  set.seed(6002)
+  n <- 100
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    cat1 = factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + cat1, data = df, limit = 10)
+  expect_s3_class(result, "data.frame")
+  expect_true("cat1" %in% names(result) || "cat1" %in% attr(result, "removed_vars"))
+})
+
+# ===========================================================================
+# Edge case: condition_number with near-singular matrix
+# ===========================================================================
+
+test_that("modelPrune condition_number handles near-singular data", {
+  set.seed(6003)
+  n <- 50
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.001),  # Nearly identical
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df,
+                       criterion = "condition_number", limit = 5)
+  expect_s3_class(result, "data.frame")
+  # Should remove at least one collinear variable
+  expect_true(length(attr(result, "removed_vars")) >= 1)
+})
+
+# ===========================================================================
+# Edge case: VIF when only one predictor remains
+# ===========================================================================
+
+test_that("modelPrune handles single remaining predictor", {
+  set.seed(6004)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.01)  # Very collinear
+  )
+
+  # With very low limit, might reduce to single predictor
+  result <- modelPrune(y ~ x1 + x2, data = df, limit = 1.5)
+  expect_s3_class(result, "data.frame")
+})
+
+# ===========================================================================
+# Edge case: GLM with separation issues
+# ===========================================================================
+
+test_that("modelPrune GLM handles quasi-separation", {
+  set.seed(6005)
+  n <- 100
+  x1 <- rnorm(n)
+  # Create some separation
+  y <- as.integer(x1 > 0)
+  df <- data.frame(y = y, x1 = x1, x2 = rnorm(n), x3 = rnorm(n))
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + x3, data = df, engine = "glm",
+               family = binomial(), limit = 10)
+  )
+  expect_s3_class(result, "data.frame")
+})

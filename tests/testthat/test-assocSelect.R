@@ -1026,3 +1026,76 @@ test_that("assocSelect with maximal information coefficient works", {
   result <- assocSelect(df, threshold = 0.5, method_num_num = "maximal")
   expect_s4_class(result, "CorrCombo")
 })
+
+
+# ===========================================================================
+# Edge case tests for assocSelect
+# ===========================================================================
+
+test_that("assocSelect handles ordered-numeric pairs", {
+  set.seed(7001)
+  n <- 50
+  df <- data.frame(
+    num1 = rnorm(n),
+    ord1 = ordered(sample(1:4, n, replace = TRUE)),
+    num2 = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.8)
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("assocSelect handles ordered-ordered pairs", {
+  set.seed(7002)
+  n <- 50
+  df <- data.frame(
+    ord1 = ordered(sample(1:3, n, replace = TRUE)),
+    ord2 = ordered(sample(1:3, n, replace = TRUE)),
+    ord3 = ordered(sample(1:3, n, replace = TRUE))
+  )
+
+  result <- assocSelect(df, threshold = 0.8)
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("assocSelect handles factor-ordered pairs", {
+  set.seed(7003)
+  n <- 50
+  df <- data.frame(
+    fac1 = factor(sample(c("A", "B"), n, replace = TRUE)),
+    ord1 = ordered(sample(1:3, n, replace = TRUE)),
+    num1 = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
+
+
+test_that("assocSelect handles single-level factor gracefully", {
+  set.seed(8001)
+  n <- 30
+  df <- data.frame(
+    fac1 = factor(rep("A", n)),  # Only one level
+    num1 = rnorm(n),
+    fac2 = factor(sample(c("X", "Y"), n, replace = TRUE))
+  )
+
+  # Should handle single-level factor
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("assocSelect handles constant numeric variable", {
+  set.seed(8002)
+  n <- 30
+  df <- data.frame(
+    num1 = rep(5, n),  # Constant
+    num2 = rnorm(n),
+    fac1 = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  # Should handle constant variable (ss_tot = 0)
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
