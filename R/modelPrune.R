@@ -22,9 +22,14 @@
 #'     of diagnostic scores (one per fixed effect, higher values = worse)
 #'   - `name` (optional): character string used in error messages (default: "custom")
 #' @param criterion Character string specifying the diagnostic criterion for pruning.
-#'   For built-in engines, only `"vif"` (Variance Inflation Factor) is supported.
+#'   For built-in engines, supported values are:
+#'   - `"vif"` (default): Variance Inflation Factor. Measures how much the variance
+#'     of a coefficient is inflated due to collinearity. Values > 5-10 indicate
+#'     problematic multicollinearity.
+#'   - `"condition_number"`: Condition indices based on singular value decomposition
+#'     of the design matrix. Higher values indicate greater collinearity.
 #'   For custom engines, this parameter is ignored (diagnostics are computed by the
-#'   engine's `diagnostics` function). Default: `"vif"`.
+#'   engine's `diagnostics` function).
 #' @param limit Numeric scalar. Maximum allowed value for the criterion.
 #'   Predictors with diagnostic values exceeding this limit are iteratively removed.
 #'   Default: 5 (common VIF threshold).
@@ -185,12 +190,14 @@ modelPrune <- function(
   }
 
   # Check criterion (only for built-in engines)
+  valid_criteria <- c("vif", "condition_number")
   if (!is_custom_engine) {
     if (!is.character(criterion) || length(criterion) != 1L) {
       stop("'criterion' must be a single character string")
     }
-    if (criterion != "vif") {
-      stop("For built-in engines, only criterion = 'vif' is supported")
+    if (!criterion %in% valid_criteria) {
+      stop(sprintf("For built-in engines, criterion must be one of: %s",
+                   paste(valid_criteria, collapse = ", ")))
     }
   } else {
     # For custom engines, criterion is ignored (diagnostics come from engine)
@@ -553,6 +560,10 @@ modelPrune <- function(
     # Built-in engine
     if (criterion == "vif") {
       .compute_vif(model, engine, fixed_effects)
+    } else if (criterion == "condition_number") {
+      # Condition number for each variable's contribution to multicollinearity
+      # Uses eigenvalue decomposition of scaled design matrix
+      .compute_condition_indices(model, engine, fixed_effects)
     } else {
       stop(sprintf("Built-in criterion '%s' not implemented", criterion))
     }
@@ -705,4 +716,86 @@ modelPrune <- function(
   }
 
   X
+}
+
+#' Compute condition indices for fixed effects
+#' @noRd
+.compute_condition_indices <- function(model, engine, fixed_effects) {
+  # Determine engine string (handle both string and list inputs)
+  engine_str <- if (is.list(engine)) "custom" else engine
+
+  # Extract fixed-effects design matrix
+  X <- .extract_design_matrix(model, engine_str)
+
+  # Remove intercept column if present
+  if ("(Intercept)" %in% colnames(X)) {
+    X <- X[, colnames(X) != "(Intercept)", drop = FALSE]
+  }
+
+  # Check if X became empty
+  if (ncol(X) == 0) {
+    warning("Design matrix has no columns after removing intercept.")
+    return(setNames(rep(NA, length(fixed_effects)), fixed_effects))
+  }
+
+  # Handle edge case: single predictor
+  if (ncol(X) == 1) {
+    return(setNames(1.0, fixed_effects))
+  }
+
+  # Scale columns to unit length (required for proper condition number)
+  X_scaled <- scale(X, center = TRUE, scale = TRUE)
+
+  # Compute SVD
+  svd_result <- tryCatch(
+    svd(X_scaled),
+    error = function(e) NULL
+  )
+
+  if (is.null(svd_result)) {
+    warning("SVD failed for design matrix.")
+    return(setNames(rep(Inf, length(fixed_effects)), fixed_effects))
+  }
+
+  # Singular values
+  d <- svd_result$d
+
+  # Condition indices = max(d) / d_i
+  max_sv <- max(d)
+  condition_indices <- max_sv / d
+
+  # Map condition indices back to fixed effects
+  # For each fixed effect, find the corresponding condition index
+  # (use the maximum condition index for columns related to that effect)
+  result <- numeric(length(fixed_effects))
+  names(result) <- fixed_effects
+
+  for (i in seq_along(fixed_effects)) {
+    pred <- fixed_effects[i]
+
+    # Find columns in X that correspond to this predictor
+    matching_cols <- grep(paste0("^", pred), colnames(X), value = TRUE)
+
+    if (length(matching_cols) == 0) {
+      matching_cols <- colnames(X)[colnames(X) == pred]
+    }
+
+    if (length(matching_cols) == 0) {
+      result[i] <- NA
+    } else {
+      # Find column indices
+      col_indices <- which(colnames(X) %in% matching_cols)
+
+      # Use the maximum condition index for this effect
+      # (approximation - proper decomposition is more complex)
+      if (length(col_indices) > 0 && max(col_indices) <= length(condition_indices)) {
+        result[i] <- max(condition_indices[col_indices])
+      } else {
+        # Fallback: use overall condition number
+        result[i] <- max(condition_indices)
+      }
+    }
+  }
+
+  result
 }

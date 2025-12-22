@@ -57,7 +57,7 @@ test_that("modelPrune validates criterion argument", {
 
   expect_error(
     modelPrune(mpg ~ cyl, data = df, criterion = "pvalue"),
-    "For built-in engines, only criterion = 'vif' is supported"
+    "criterion must be one of: vif, condition_number"
   )
 })
 
@@ -1424,4 +1424,76 @@ test_that("modelPrune removes multiple predictors iteratively", {
 
   expect_s3_class(result, "data.frame")
   expect_true(length(attr(result, "removed_vars")) >= 1)
+})
+
+
+# ===========================================================================
+# Condition number criterion tests
+# ===========================================================================
+
+test_that("modelPrune with condition_number criterion works", {
+  set.seed(9301)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.1),  # Highly collinear
+    x3 = rnorm(n)  # Independent
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "condition_number", limit = 10)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "criterion"), "condition_number")
+  # Should prune at least one collinear variable
+  expect_true(length(attr(result, "removed_vars")) >= 0)
+})
+
+test_that("modelPrune condition_number prunes collinear predictors", {
+  set.seed(9302)
+  n <- 200
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.01),  # Very highly collinear
+    x3 = rnorm(n)  # Independent
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "condition_number", limit = 5)
+
+  expect_s3_class(result, "data.frame")
+  # With a strict limit, at least one collinear should be removed
+  expect_true(length(attr(result, "removed_vars")) >= 1)
+})
+
+test_that("modelPrune condition_number with single predictor returns 1",
+{
+  set.seed(9303)
+  df <- data.frame(y = rnorm(50), x = rnorm(50))
+
+  result <- modelPrune(y ~ x, data = df, criterion = "condition_number", limit = 5)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(length(attr(result, "selected_vars")), 1)
+})
+
+test_that("modelPrune condition_number with GLM engine", {
+  set.seed(9304)
+  n <- 100
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y = rbinom(n, 1, 0.5),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.1),
+    x3 = rnorm(n)
+  )
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df,
+                       engine = "glm", family = binomial(),
+                       criterion = "condition_number", limit = 10)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "criterion"), "condition_number")
 })

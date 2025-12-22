@@ -538,7 +538,7 @@ test_that("corrPrune errors on unsupported measure for numeric data", {
 
   expect_error(
     corrPrune(df, threshold = 0.7, measure = "eta"),
-    "not yet implemented"
+    "not supported"
   )
 })
 
@@ -712,17 +712,23 @@ test_that("corrPrune handles eta with constant numeric variable", {
   expect_s3_class(result, "data.frame")
 })
 
-test_that("corrPrune errors on grouped pruning (not implemented)", {
+test_that("corrPrune grouped pruning works with by parameter", {
+  set.seed(1112)
+  # Create data with three uncorrelated numeric variables and a grouping factor
+  n <- 60
   df <- data.frame(
-    x = 1:10,
-    y = 1:10,
-    group = rep(1:2, each = 5)
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = rep(c("A", "B"), each = n/2)
   )
-
-  expect_error(
-    corrPrune(df, threshold = 0.7, by = "group"),
-    "not yet implemented"
-  )
+  
+  # With grouped pruning using quantile aggregation
+  result <- corrPrune(df, threshold = 0.5, by = "group", group_q = 0.5)
+  expect_s3_class(result, "data.frame")
+  expect_true("selected_vars" %in% names(attributes(result)))
+  # Should keep all 3 numeric variables since they are uncorrelated
+  expect_equal(length(attr(result, "selected_vars")), 3)
 })
 
 test_that("corrPrune handles no valid subset (all vars correlated)", {
@@ -1029,4 +1035,112 @@ test_that("corrPrune returns consistent n_vars_original attribute", {
 
   expect_equal(attr(result, "n_vars_original"), 4)
   expect_equal(attr(result, "n_vars_selected"), ncol(result))
+})
+
+
+# ===========================================================================
+# Grouped pruning tests
+# ===========================================================================
+
+test_that("corrPrune grouped pruning aggregates with different quantiles", {
+  set.seed(2001)
+  n <- 100
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = rep(c("A", "B", "C", "D"), each = n/4)
+  )
+
+  # Test with median (0.5)
+  result1 <- corrPrune(df, threshold = 0.5, by = "group", group_q = 0.5)
+  expect_s3_class(result1, "data.frame")
+
+  # Test with max (1.0)
+  result2 <- corrPrune(df, threshold = 0.5, by = "group", group_q = 1.0)
+  expect_s3_class(result2, "data.frame")
+
+  # Test with minimum (0.0)
+  result3 <- corrPrune(df, threshold = 0.5, by = "group", group_q = 0.01)
+  expect_s3_class(result3, "data.frame")
+})
+
+test_that("corrPrune grouped pruning returns only numeric columns", {
+  set.seed(2002)
+  n <- 90
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = factor(rep(1:3, each = n/3))
+  )
+  
+  result <- corrPrune(df, threshold = 0.8, by = "group")
+  # Grouping column is not included in result (only numeric columns)
+  expect_false("group" %in% names(result))
+  # Selected variables should all be numeric
+  expect_true(all(attr(result, "selected_vars") %in% c("x", "y", "z")))
+})
+
+test_that("corrPrune grouped pruning validates by parameter", {
+  set.seed(2003)
+  df <- data.frame(x = rnorm(20), y = rnorm(20), z = factor(1:20))
+
+  expect_error(
+    corrPrune(df, threshold = 0.5, by = "nonexistent"),
+    "not found"
+  )
+})
+
+test_that("corrPrune grouped pruning with interaction of multiple by columns", {
+  set.seed(2004)
+  n <- 80
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    grp1 = rep(c("A", "B"), each = n/2),
+    grp2 = rep(c("X", "Y"), n/2)
+  )
+
+  result <- corrPrune(df, threshold = 0.5, by = c("grp1", "grp2"))
+  expect_s3_class(result, "data.frame")
+})
+
+
+# ===========================================================================
+# Grouped pruning edge case tests
+# ===========================================================================
+
+test_that("corrPrune grouped pruning with single group warns and continues", {
+  set.seed(3001)
+  n <- 50
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = factor(rep("A", n))  # Only one group
+  )
+
+  expect_warning(
+    result <- corrPrune(df, threshold = 0.5, by = "group"),
+    "Only one group found"
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("corrPrune grouped pruning with insufficient rows in a group warns", {
+  set.seed(3002)
+  n <- 50
+  df <- data.frame(
+    x = c(1, rnorm(n - 1)),
+    y = c(NA, rnorm(n - 1)),  # First row incomplete
+    z = rnorm(n),
+    group = factor(c("small", rep("large", n - 1)))  # One group has only 1 row
+  )
+
+  expect_warning(
+    result <- corrPrune(df, threshold = 0.8, by = "group"),
+    "fewer than 2 complete rows"
+  )
+  expect_s3_class(result, "data.frame")
 })

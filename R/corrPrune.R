@@ -267,8 +267,37 @@ corrPrune <- function(
       # Compute correlation matrix based on measure
       if (meas %in% c("pearson", "spearman", "kendall")) {
         mat <- abs(cor(df_clean, method = meas))
+      } else if (meas == "bicor") {
+        if (!requireNamespace("WGCNA", quietly = TRUE)) {
+          stop("Install the 'WGCNA' package for bicor.")
+        }
+        mat <- abs(WGCNA::bicor(df_clean))
+      } else if (meas == "distance") {
+        if (!requireNamespace("energy", quietly = TRUE)) {
+          stop("Install the 'energy' package for distance correlation.")
+        }
+        # Compute pairwise distance correlations
+        mat <- diag(1, p)
+        for (i in seq_len(p - 1)) {
+          for (j in (i + 1):p) {
+            mat[i, j] <- mat[j, i] <- energy::dcor(df_clean[[i]], df_clean[[j]])
+          }
+        }
+        colnames(mat) <- rownames(mat) <- names(df_clean)
+      } else if (meas == "maximal") {
+        if (!requireNamespace("minerva", quietly = TRUE)) {
+          stop("Install the 'minerva' package for maximal information coefficient.")
+        }
+        # Compute pairwise MIC
+        mat <- diag(1, p)
+        for (i in seq_len(p - 1)) {
+          for (j in (i + 1):p) {
+            mat[i, j] <- mat[j, i] <- minerva::mine(df_clean[[i]], df_clean[[j]])$MIC
+          }
+        }
+        colnames(mat) <- rownames(mat) <- names(df_clean)
       } else {
-        stop(sprintf("Measure '%s' not yet implemented for numeric data", meas))
+        stop(sprintf("Measure '%s' is not supported. Use one of: pearson, spearman, kendall, bicor, distance, maximal", meas))
       }
     } else {
       # Mixed-type: compute pairwise associations using appropriate measures
@@ -340,7 +369,52 @@ corrPrune <- function(
     n_rows_used <- nrow(data[complete.cases(data), ])
   } else {
     # Case B: Grouped association
-    stop("Grouped pruning (by/group_q) not yet implemented")
+    # Split data by grouping variable(s)
+    group_var <- interaction(data_orig[, by, drop = FALSE], drop = TRUE)
+    group_levels <- levels(group_var)
+    n_groups <- length(group_levels)
+
+    if (n_groups < 2) {
+      warning("Only one group found; proceeding without grouping.")
+      A_eff <- .compute_single_assoc_matrix(data, measure_used, types)
+      n_rows_used <- nrow(data[complete.cases(data), ])
+    } else {
+      # Compute association matrix for each group
+      p <- ncol(data)
+      assoc_arrays <- array(NA_real_, dim = c(p, p, n_groups))
+      dimnames(assoc_arrays) <- list(names(data), names(data), group_levels)
+
+      rows_per_group <- integer(n_groups)
+      for (g in seq_along(group_levels)) {
+        grp_idx <- which(group_var == group_levels[g])
+        grp_data <- data[grp_idx, , drop = FALSE]
+
+        # Skip groups with insufficient data
+        grp_complete <- grp_data[complete.cases(grp_data), , drop = FALSE]
+        rows_per_group[g] <- nrow(grp_complete)
+
+        if (nrow(grp_complete) < 2) {
+          warning(sprintf("Group '%s' has fewer than 2 complete rows; skipping.", group_levels[g]))
+          next
+        }
+
+        # Compute association matrix for this group
+        suppressWarnings({
+          assoc_arrays[, , g] <- .compute_single_assoc_matrix(grp_data, measure_used, types)
+        })
+      }
+
+      # Aggregate across groups using group_q quantile
+      A_eff <- apply(assoc_arrays, c(1, 2), function(vals) {
+        vals <- vals[!is.na(vals)]
+        if (length(vals) == 0) return(NA_real_)
+        quantile(vals, probs = group_q, na.rm = TRUE)
+      })
+      colnames(A_eff) <- rownames(A_eff) <- names(data)
+      diag(A_eff) <- 1
+
+      n_rows_used <- sum(rows_per_group)
+    }
   }
 
   # ===========================================================================
