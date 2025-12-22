@@ -224,18 +224,70 @@ This ensures reproducibility across runs, machines, and R versions.
 
 ---
 
+
+## 1.4 Grouped Pruning
+
+When correlations vary across subgroups (e.g., experimental conditions, species, sites), grouped pruning computes associations **per group** and aggregates them.
+
+### Basic Usage
+
+```{r}
+# Create data with grouping variable
+set.seed(123)
+n <- 100
+df <- data.frame(
+  x1 = rnorm(n),
+  x2 = rnorm(n),
+  x3 = rnorm(n),
+  site = rep(c("A", "B", "C", "D"), each = n/4)
+)
+
+# Prune using per-group correlations (aggregated with median)
+result <- corrPrune(df, threshold = 0.5, by = "site", group_q = 0.5)
+cat("Selected:", attr(result, "selected_vars"), "\n")
+```
+
+### Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `by` | Column name(s) for grouping |
+| `group_q` | Quantile for aggregation: 0.5 = median, 1.0 = max |
+
+### When to Use
+
+- **Multi-site studies**: Correlations may differ across locations
+- **Experimental conditions**: Treatment groups may have different correlation structures
+- **Longitudinal data**: Correlations may change over time periods
+
+---
+
 # 2. Custom Engines for modelPrune()
 
 ## 2.1 Understanding Custom Engines
 
 ### What is a Custom Engine?
 
-A custom engine allows you to integrate **any** modeling framework with `modelPrune()`, not just base R's `lm()` or `lme4`. This enables VIF-based pruning for:
+A custom engine allows you to integrate **any** modeling framework with `modelPrune()`, not just base R's `lm()` or `lme4`. This enables diagnostic-based pruning (VIF or condition number) for:
 
 - **Bayesian models** (INLA, brms, Stan)
 - **Additive models** (mgcv GAMs)
 - **Survival models** (coxph, flexsurv)
 - **Custom metrics** (AIC, BIC, posterior uncertainty)
+
+### Built-in Criteria
+
+For built-in engines (`lm`, `glm`, `lme4`, `glmmTMB`), two criteria are available:
+
+- **`vif`** (default): Variance Inflation Factor - classic multicollinearity measure
+- **`condition_number`**: SVD-based condition indices - alternative collinearity diagnostic
+
+```{r}
+# Using condition number instead of VIF
+result_cn <- modelPrune(mpg ~ ., data = mtcars, criterion = "condition_number", limit = 10)
+cat("Selected:", attr(result_cn, "selected_vars"), "\n")
+```
+
 
 ### How Custom Engines Work
 

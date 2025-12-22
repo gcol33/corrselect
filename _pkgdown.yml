@@ -66,6 +66,7 @@ reference:
       - CorrCombo-class
       - as.data.frame.CorrCombo
       - corrSubset
+      - corrselect-package
 
   - title: "Example Datasets"
     desc: "Realistic datasets for vignettes"

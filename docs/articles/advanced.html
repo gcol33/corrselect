@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2025-12-17</h4>
+            <h4 data-toc-skip class="date">2025-12-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -222,14 +222,14 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu">benchmark_corrPrune</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
-<span><span class="co">#&gt; 1   10           0.8            0.4</span></span>
-<span><span class="co">#&gt; 2   20           1.0            0.6</span></span>
-<span><span class="co">#&gt; 3   50           1.7            1.2</span></span>
-<span><span class="co">#&gt; 4  100           3.5            2.3</span></span>
-<span><span class="co">#&gt; 5  200           9.2            5.4</span></span>
-<span><span class="co">#&gt; 6  300          19.5            9.4</span></span>
-<span><span class="co">#&gt; 7  500          52.8           20.4</span></span>
-<span><span class="co">#&gt; 8 1000            NA           65.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   10           0.5            0.2</span></span>
+<span><span class="co">#&gt; 2   20           0.6            0.4</span></span>
+<span><span class="co">#&gt; 3   50           1.3            0.8</span></span>
+<span><span class="co">#&gt; 4  100           4.2            1.3</span></span>
+<span><span class="co">#&gt; 5  200          19.6            3.3</span></span>
+<span><span class="co">#&gt; 6  300          92.1           11.8</span></span>
+<span><span class="co">#&gt; 7  500         363.0           28.1</span></span>
+<span><span class="co">#&gt; 8 1000            NA           92.4</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -316,20 +316,21 @@ number of predictors <strong>Guarantee</strong>: Finds the
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng==)'>
-<line x1='85.35' y1='236.31' x2='91.54' y2='226.12' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='100.55' y1='215.07' x2='112.76' y2='203.74' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='124.19' y1='195.10' x2='157.41' y2='174.88' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='170.25' y1='168.49' x2='202.38' y2='155.79' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='216.02' y1='151.22' x2='293.18' y2='129.90' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='307.23' y1='126.80' x2='520.63' y2='91.16' style='stroke-width: 1.50; stroke: #3380CC;' />
-<circle cx='77.07' cy='255.63' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='81.62' cy='242.47' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='95.28' cy='219.97' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='118.04' cy='198.84' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='163.56' cy='171.14' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='209.08' cy='153.14' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='300.12' cy='127.99' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='527.73' cy='89.97' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<line x1='78.99' y1='254.77' x2='79.70' y2='252.22' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='86.22' y1='239.75' x2='90.67' y2='234.39' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='101.70' y1='225.61' x2='111.61' y2='220.60' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='124.51' y1='214.21' x2='157.08' y2='198.42' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='169.56' y1='191.30' x2='203.08' y2='169.06' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='216.10' y1='163.50' x2='293.10' y2='146.11' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='307.27' y1='143.64' x2='520.59' y2='117.20' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='77.07' cy='261.71' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='81.62' cy='245.28' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='95.28' cy='228.86' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='118.04' cy='217.35' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='163.56' cy='195.28' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='209.08' cy='165.08' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='300.12' cy='144.52' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='527.73' cy='116.32' r='2.70' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
 <line x1='72.51' y1='286.56' x2='527.73' y2='286.56' style='stroke-width: 0.75;' />
@@ -345,42 +346,37 @@ number of predictors <strong>Guarantee</strong>: Finds the
 <text x='345.65' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>600</text>
 <text x='436.69' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>800</text>
 <text x='527.73' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='26.69px' lengthAdjust='spacingAndGlyphs'>1000</text>
-<line x1='59.04' y1='278.13' x2='59.04' y2='76.38' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='278.13' x2='59.04' y2='59.88' style='stroke-width: 0.75;' />
 <line x1='59.04' y1='278.13' x2='51.84' y2='278.13' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='248.39' x2='51.84' y2='248.39' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='225.88' x2='51.84' y2='225.88' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='203.38' x2='51.84' y2='203.38' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='173.64' x2='51.84' y2='173.64' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='151.13' x2='51.84' y2='151.13' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='128.63' x2='51.84' y2='128.63' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='98.88' x2='51.84' y2='98.88' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='76.38' x2='51.84' y2='76.38' style='stroke-width: 0.75;' />
-<text transform='translate(41.76,278.13) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
-<text transform='translate(41.76,248.39) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
-<text transform='translate(41.76,203.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>2.0</text>
-<text transform='translate(41.76,173.64) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>5.0</text>
-<text transform='translate(41.76,128.63) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>20.0</text>
-<text transform='translate(41.76,76.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>100.0</text>
+<line x1='59.04' y1='223.57' x2='51.84' y2='223.57' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='169.01' x2='51.84' y2='169.01' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='114.44' x2='51.84' y2='114.44' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='59.88' x2='51.84' y2='59.88' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,278.13) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>1e-01</text>
+<text transform='translate(41.76,223.57) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='33.70px' lengthAdjust='spacingAndGlyphs'>1e+00</text>
+<text transform='translate(41.76,169.01) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='33.70px' lengthAdjust='spacingAndGlyphs'>1e+01</text>
+<text transform='translate(41.76,114.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='33.70px' lengthAdjust='spacingAndGlyphs'>1e+02</text>
+<text transform='translate(41.76,59.88) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='33.70px' lengthAdjust='spacingAndGlyphs'>1e+03</text>
 <polygon points='59.04,286.56 545.76,286.56 545.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
 <text x='302.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='167.16px' lengthAdjust='spacingAndGlyphs'>Exact vs Greedy Scaling</text>
 <text x='302.40' y='341.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='131.36px' lengthAdjust='spacingAndGlyphs'>Number of Predictors (p)</text>
 <text transform='translate(12.96,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='156.95px' lengthAdjust='spacingAndGlyphs'>Time (milliseconds, log scale)</text>
 </g>
 <g clip-path='url(#cpNTkuMDR8NTQ1Ljc2fDU5LjA0fDI4Ni41Ng==)'>
-<line x1='86.09' y1='220.24' x2='90.80' y2='214.30' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='100.29' y1='203.49' x2='113.02' y2='190.38' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='123.96' y1='181.13' x2='157.63' y2='157.93' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='169.90' y1='150.44' x2='202.73' y2='132.85' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='215.86' y1='127.04' x2='293.34' y2='99.52' style='stroke-width: 1.50; stroke: #CC3333;' />
-<circle cx='77.07' cy='233.13' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='81.62' cy='225.88' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='95.28' cy='208.66' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='118.04' cy='185.21' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='163.56' cy='153.84' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='209.08' cy='129.45' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='300.12' cy='97.11' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<line x1='85.92' y1='229.90' x2='90.97' y2='223.13' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='99.84' y1='211.78' x2='113.47' y2='195.13' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='123.65' y1='185.06' x2='157.94' y2='157.56' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='169.17' y1='148.54' x2='203.47' y2='120.91' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='215.86' y1='113.97' x2='293.34' y2='86.31' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='77.07' cy='240.00' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='81.62' cy='235.67' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='95.28' cy='217.35' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='118.04' cy='189.56' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='163.56' cy='153.06' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='209.08' cy='116.39' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='300.12' cy='83.89' r='2.70' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <line x1='300.12' y1='286.56' x2='300.12' y2='59.04' style='stroke-width: 0.75; stroke: #7F7F7F; stroke-dasharray: 4.00,4.00;' />
-<text x='307.32' y='92.83' style='font-size: 12.00px;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>Exact mode limit</text>
+<text x='307.32' y='86.76' style='font-size: 12.00px;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>Exact mode limit</text>
 <rect rx='4' x='59.04' y='59.04' width='80.38' height='43.20' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='62.28' y1='73.44' x2='83.88' y2='73.44' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='62.28' y1='87.84' x2='83.88' y2='87.84' style='stroke-width: 1.50; stroke: #3380CC;' />
@@ -432,6 +428,68 @@ prefer <strong>lexicographically first</strong> (alphabetical)</p>
 versions.</p>
 <hr>
 </div>
+<div class="section level3">
+<h3 id="grouped-pruning">1.4 Grouped Pruning<a class="anchor" aria-label="anchor" href="#grouped-pruning"></a>
+</h3>
+<p>When correlations vary across subgroups (e.g., experimental
+conditions, species, sites), grouped pruning computes associations
+<strong>per group</strong> and aggregates them.</p>
+<div class="section level4">
+<h4 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create data with grouping variable</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>  x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>  x3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Prune using per-group correlations (aggregated with median)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">df</span>, threshold <span class="op">=</span> <span class="fl">0.5</span>, by <span class="op">=</span> <span class="st">"site"</span>, group_q <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"selected_vars"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Selected: x1 x2 x3</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
+</h4>
+<table class="table">
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>by</code></td>
+<td>Column name(s) for grouping</td>
+</tr>
+<tr class="even">
+<td><code>group_q</code></td>
+<td>Quantile for aggregation: 0.5 = median, 1.0 = max</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level4">
+<h4 id="when-to-use">When to Use<a class="anchor" aria-label="anchor" href="#when-to-use"></a>
+</h4>
+<ul>
+<li>
+<strong>Multi-site studies</strong>: Correlations may differ across
+locations</li>
+<li>
+<strong>Experimental conditions</strong>: Treatment groups may have
+different correlation structures</li>
+<li>
+<strong>Longitudinal data</strong>: Correlations may change over
+time periods</li>
+</ul>
+<hr>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="custom-engines-for-modelprune">2. Custom Engines for modelPrune()<a class="anchor" aria-label="anchor" href="#custom-engines-for-modelprune"></a>
@@ -444,8 +502,8 @@ versions.</p>
 </h4>
 <p>A custom engine allows you to integrate <strong>any</strong> modeling
 framework with <code><a href="../reference/modelPrune.html">modelPrune()</a></code>, not just base R’s
-<code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> or <code>lme4</code>. This enables VIF-based pruning
-for:</p>
+<code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> or <code>lme4</code>. This enables diagnostic-based
+pruning (VIF or condition number) for:</p>
 <ul>
 <li>
 <strong>Bayesian models</strong> (INLA, brms, Stan)</li>
@@ -457,6 +515,26 @@ for:</p>
 <strong>Custom metrics</strong> (AIC, BIC, posterior
 uncertainty)</li>
 </ul>
+</div>
+<div class="section level4">
+<h4 id="built-in-criteria">Built-in Criteria<a class="anchor" aria-label="anchor" href="#built-in-criteria"></a>
+</h4>
+<p>For built-in engines (<code>lm</code>, <code>glm</code>,
+<code>lme4</code>, <code>glmmTMB</code>), two criteria are
+available:</p>
+<ul>
+<li>
+<strong><code>vif</code></strong> (default): Variance Inflation
+Factor - classic multicollinearity measure</li>
+<li>
+<strong><code>condition_number</code></strong>: SVD-based condition
+indices - alternative collinearity diagnostic</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Using condition number instead of VIF</span></span>
+<span><span class="va">result_cn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, criterion <span class="op">=</span> <span class="st">"condition_number"</span>, limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result_cn</span>, <span class="st">"selected_vars"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Selected: cyl disp hp drat wt qsec vs am</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="how-custom-engines-work">How Custom Engines Work<a class="anchor" aria-label="anchor" href="#how-custom-engines-work"></a>
@@ -485,7 +563,7 @@ handles the iteration logic.</p>
 <h4 id="engine-structure-requirements">Engine Structure Requirements<a class="anchor" aria-label="anchor" href="#engine-structure-requirements"></a>
 </h4>
 <p>A custom engine is a named list with two required functions:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Required: How to fit the model</span></span>
 <span>  fit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
@@ -525,7 +603,7 @@ model.</p>
 <div class="section level4">
 <h4 id="implementation">Implementation<a class="anchor" aria-label="anchor" href="#implementation"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom engine for INLA</span></span>
 <span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"inla"</span>,</span>
@@ -597,7 +675,7 @@ that model non-linear patterns.</p>
 <div class="section level4">
 <h4 id="implementation-1">Implementation<a class="anchor" aria-label="anchor" href="#implementation-1"></a>
 </h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom engine for mgcv GAMs</span></span>
 <span><span class="va">mgcv_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"mgcv_gam"</span>,</span>
@@ -663,7 +741,7 @@ AIC.</p>
 <div class="section level4">
 <h4 id="implementation-2">Implementation<a class="anchor" aria-label="anchor" href="#implementation-2"></a>
 </h4>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># AIC-based pruning engine</span></span>
 <span><span class="va">aic_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"aic_pruner"</span>,</span>
@@ -733,7 +811,7 @@ criterion.</p>
 </h4>
 <p><code><a href="../reference/modelPrune.html">modelPrune()</a></code> automatically validates custom engines to
 catch common errors early:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Invalid engine: missing 'diagnostics'</span></span>
 <span><span class="va">bad_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  fit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
@@ -780,7 +858,7 @@ more problematic predictors</li>
 <h4 id="debugging-tips">Debugging Tips<a class="anchor" aria-label="anchor" href="#debugging-tips"></a>
 </h4>
 <p>If your custom engine fails, check:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Test your fit function in isolation</span></span>
 <span><span class="va">test_model</span> <span class="op">&lt;-</span> <span class="va">my_engine</span><span class="op">$</span><span class="fu">fit</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">my_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">test_model</span><span class="op">)</span>  <span class="co"># Does it work?</span></span>
@@ -803,7 +881,7 @@ more problematic predictors</li>
 </h3>
 <p><code><a href="../reference/corrPrune.html">corrPrune()</a></code> returns a <strong>single</strong> subset.
 Sometimes you want <strong>all</strong> maximal subsets:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># corrPrune: Single subset</span></span>
 <span><span class="va">single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"corrPrune returned:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">single</span><span class="op">)</span>, <span class="st">"variables\n"</span><span class="op">)</span></span>
@@ -831,7 +909,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <h3 id="exploring-multiple-subsets">3.2 Exploring Multiple Subsets<a class="anchor" aria-label="anchor" href="#exploring-multiple-subsets"></a>
 </h3>
 <p>When multiple maximal subsets exist, you can explore them:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Display first few subsets</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"First few maximal subsets:\n"</span><span class="op">)</span></span>
@@ -870,7 +948,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <div class="section level3">
 <h3 id="extracting-specific-subsets">3.3 Extracting Specific Subsets<a class="anchor" aria-label="anchor" href="#extracting-specific-subsets"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Extract subset with lowest average correlation</span></span>
 <span>  <span class="va">best_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">avg_corr</span><span class="op">)</span></span>
@@ -900,7 +978,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 </h3>
 <p>You can define custom criteria for choosing among multiple
 subsets:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Custom criterion: Prefer subsets with specific variables</span></span>
 <span>  <span class="va">preferred_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mpg"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span><span class="op">)</span></span>
@@ -941,7 +1019,7 @@ subsets:</p>
 </h3>
 <p>For repeated pruning with different thresholds, precompute the
 correlation matrix:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create larger dataset for meaningful timing comparison</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">large_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="fl">50</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
@@ -970,11 +1048,11 @@ correlation matrix:</p>
 <span><span class="op">)</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1e6</span>  <span class="co"># Convert nanoseconds to milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 5.3 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 6.3 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Precomputed matrix: 1.2 ms</span></span>
+<span><span class="co">#&gt; Precomputed matrix: 3.3 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 4.3x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 1.9x faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li>Testing multiple thresholds</li>
@@ -989,7 +1067,7 @@ correlation matrix:</p>
 <div class="section level4">
 <h4 id="memory-efficient-correlation-computation">Memory-Efficient Correlation Computation<a class="anchor" aria-label="anchor" href="#memory-efficient-correlation-computation"></a>
 </h4>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Standard (memory-intensive for large n)</span></span>
 <span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">large_data</span><span class="op">)</span></span>
 <span></span>
@@ -1007,7 +1085,7 @@ correlation matrix:</p>
 <h4 id="sparse-correlation-matrices">Sparse Correlation Matrices<a class="anchor" aria-label="anchor" href="#sparse-correlation-matrices"></a>
 </h4>
 <p>If most correlations are low, consider sparse storage:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to sparse format (requires Matrix package)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span>
 <span></span>
@@ -1028,7 +1106,7 @@ correlation matrix:</p>
 <h3 id="parallel-processing-strategies">4.3 Parallel Processing Strategies<a class="anchor" aria-label="anchor" href="#parallel-processing-strategies"></a>
 </h3>
 <p>For multiple independent pruning operations:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create cluster</span></span>
@@ -1071,7 +1149,7 @@ p &gt; 100: Always use "greedy"</code></pre>
 </h4>
 <p><strong>Cause</strong>: Threshold too strict - all variables exceed
 it</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: All correlations &gt; 0.9</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
@@ -1090,25 +1168,25 @@ it</p>
 <p><strong>Solutions</strong>: 1. Increase threshold 2. Use
 <code>force_in</code> to keep at least one variable 3. Check data for
 near-duplicates</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Solution 1: Increase threshold</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in corrPrune(high_cor_data, threshold = 0.95): No valid subsets found that satisfy the threshold constraint</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'result' not found</span></span>
+<span><span class="co">#&gt; [1] "x1" "x2" "x3"</span></span>
 <span></span>
 <span><span class="co"># Solution 2: Force keep one variable</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.5</span>, force_in <span class="op">=</span> <span class="st">"x1"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in corrPrune(high_cor_data, threshold = 0.5, force_in = "x1"): No valid subsets found that satisfy the threshold constraint</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'result' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "x1" "x2" "x3"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="error-force_in-variables-conflict-with-threshold">Error: force_in variables conflict with threshold<a class="anchor" aria-label="anchor" href="#error-force_in-variables-conflict-with-threshold"></a>
 </h4>
 <p><strong>Cause</strong>: Variables in <code>force_in</code> have
 |correlation| &gt; threshold</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># x1 and x2 are highly correlated</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.5</span>, force_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span><span class="op">)</span><span class="op">)</span></span>
@@ -1123,7 +1201,7 @@ near-duplicates</p>
 <h4 id="error-vif-computation-fails-in-modelprune">Error: VIF computation fails in modelPrune()<a class="anchor" aria-label="anchor" href="#error-vif-computation-fails-in-modelprune"></a>
 </h4>
 <p><strong>Cause</strong>: Perfect multicollinearity (R² = 1)</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create perfect multicollinearity</span></span>
 <span><span class="va">perfect_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
@@ -1243,7 +1321,7 @@ near-duplicates</p>
 <span><span class="co">#&gt; 100 -0.35454240  0.55215771  1.85991086</span></span></code></pre></div>
 <p><strong>Solution</strong>: Use <code><a href="../reference/corrPrune.html">corrPrune()</a></code> first to
 remove perfect collinearity:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Two-step approach</span></span>
 <span><span class="va">step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">perfect_data</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, threshold <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span></span>
 <span><span class="va">step2_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">perfect_data</span><span class="op">$</span><span class="va">y</span>, <span class="va">step1</span><span class="op">)</span></span>
@@ -1299,7 +1377,7 @@ remove perfect collinearity:</p>
 <div class="section level4">
 <h4 id="empirical-approach-visualize-first">Empirical Approach: Visualize First<a class="anchor" aria-label="anchor" href="#empirical-approach-visualize-first"></a>
 </h4>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize correlation distribution</span></span>
@@ -1530,7 +1608,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="single-predictor-after-pruning">Single Predictor After Pruning<a class="anchor" aria-label="anchor" href="#single-predictor-after-pruning"></a>
 </h4>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Very strict threshold may leave only 1 variable</span></span>
 <span><span class="va">strict_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Variables remaining:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">strict_result</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -1546,7 +1624,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="all-variables-removed">All Variables Removed<a class="anchor" aria-label="anchor" href="#all-variables-removed"></a>
 </h4>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Impossible threshold</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span>
@@ -1558,7 +1636,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="mixed-type-data">Mixed-Type Data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a>
 </h4>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create mixed data</span></span>
 <span><span class="va">mixed_data</span> <span class="op">&lt;-</span> <span class="va">mtcars</span></span>
 <span><span class="va">mixed_data</span><span class="op">$</span><span class="va">cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">mixed_data</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span></span>
@@ -1600,7 +1678,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="for-exploratory-analysis">For Exploratory Analysis<a class="anchor" aria-label="anchor" href="#for-exploratory-analysis"></a>
 </h4>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Visualize correlations</span></span>
 <span><span class="fu">corrplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"circle"</span><span class="op">)</span></span>
 <span></span>
@@ -1618,7 +1696,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="for-publication-quality-analysis">For Publication-Quality Analysis<a class="anchor" aria-label="anchor" href="#for-publication-quality-analysis"></a>
 </h4>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Use exact mode for reproducibility and optimality</span></span>
 <span><span class="va">data_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span>
 <span></span>
@@ -1637,7 +1715,7 @@ plateau.</p>
 <div class="section level3">
 <h3 id="combining-with-other-methods">6.2 Combining with Other Methods<a class="anchor" aria-label="anchor" href="#combining-with-other-methods"></a>
 </h3>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Comprehensive variable selection pipeline</span></span>
 <span><span class="va">pipeline</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">response</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Step 1: Remove correlations</span></span>
@@ -1763,7 +1841,7 @@ methods vignette</li>
 <div class="section level3">
 <h3 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h3>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.2 (2025-10-31 ucrt)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
@@ -1786,7 +1864,7 @@ methods vignette</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.5    </span></span>
+<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.7    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>

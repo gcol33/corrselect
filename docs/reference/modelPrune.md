@@ -69,10 +69,16 @@ modelPrune(
 - criterion:
 
   Character string specifying the diagnostic criterion for pruning. For
-  built-in engines, only `"vif"` (Variance Inflation Factor) is
-  supported. For custom engines, this parameter is ignored (diagnostics
-  are computed by the engine's `diagnostics` function). Default:
-  `"vif"`.
+  built-in engines, supported values are:
+
+  - `"vif"` (default): Variance Inflation Factor. Measures how much the
+    variance of a coefficient is inflated due to collinearity. Values \>
+    5-10 indicate problematic multicollinearity.
+
+  - `"condition_number"`: Condition indices based on singular value
+    decomposition of the design matrix. Higher values indicate greater
+    collinearity. For custom engines, this parameter is ignored
+    (diagnostics are computed by the engine's `diagnostics` function).
 
 - limit:
 

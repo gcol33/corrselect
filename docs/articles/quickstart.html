@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2025-12-17</h4>
+            <h4 data-toc-skip class="date">2025-12-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/quickstart.Rmd" class="external-link"><code>vignettes/quickstart.Rmd</code></a></small>
       <div class="d-none name"><code>quickstart.Rmd</code></div>
@@ -420,7 +420,8 @@ techniques, VIF guidelines, and sensitivity analysis, see
 <tr class="odd">
 <td><code>measure</code></td>
 <td>Correlation type: <code>"auto"</code>, <code>"pearson"</code>,
-<code>"spearman"</code>, <code>"kendall"</code>
+<code>"spearman"</code>, <code>"kendall"</code>, <code>"bicor"</code>,
+<code>"distance"</code>, <code>"maximal"</code>
 </td>
 <td><code>"auto"</code></td>
 </tr>
@@ -435,6 +436,16 @@ techniques, VIF guidelines, and sensitivity analysis, see
 <td><code>force_in</code></td>
 <td>Variables that must be retained</td>
 <td><code>NULL</code></td>
+</tr>
+<tr class="even">
+<td><code>by</code></td>
+<td>Column name(s) for grouped pruning</td>
+<td><code>NULL</code></td>
+</tr>
+<tr class="odd">
+<td><code>group_q</code></td>
+<td>Quantile for aggregating group correlations (0-1]</td>
+<td><code>1</code></td>
 </tr>
 </tbody>
 </table>
@@ -479,11 +490,18 @@ model.</p>
 <td><code>"lm"</code></td>
 </tr>
 <tr class="even">
-<td><code>limit</code></td>
-<td>Maximum allowed VIF</td>
-<td><code>5</code></td>
+<td><code>criterion</code></td>
+<td>
+<code>"vif"</code> or <code>"condition_number"</code>
+</td>
+<td><code>"vif"</code></td>
 </tr>
 <tr class="odd">
+<td><code>limit</code></td>
+<td>Maximum allowed diagnostic value</td>
+<td><code>5</code></td>
+</tr>
+<tr class="even">
 <td><code>force_in</code></td>
 <td>Variables that must be retained</td>
 <td><code>NULL</code></td>
@@ -759,7 +777,7 @@ formulation</li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] corrselect_3.0.5</span></span>
+<span><span class="co">#&gt; [1] corrselect_3.0.7</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>

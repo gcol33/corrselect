@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,37 @@
       <small>Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0.7" id="corrselect-307">corrselect 3.0.7<a class="anchor" aria-label="anchor" href="#corrselect-307"></a></h2>
+<div class="section level3">
+<h3 id="new-features-3-0-7">New Features<a class="anchor" aria-label="anchor" href="#new-features-3-0-7"></a></h3>
+<div class="section level4">
+<h4 id="corrprune-enhancements-3-0-7">corrPrune Enhancements<a class="anchor" aria-label="anchor" href="#corrprune-enhancements-3-0-7"></a></h4>
+<ul><li>
+<strong>Grouped pruning</strong>: New <code>by</code> parameter computes association matrices per group and aggregates using the <code>group_q</code> quantile (default: 0.5 = median). Useful when correlations vary across experimental conditions or subpopulations.</li>
+<li>
+<strong>Additional measures for numeric data</strong>:
+<ul><li>
+<code>bicor</code>: Biweight midcorrelation (requires WGCNA package)</li>
+<li>
+<code>distance</code>: Distance correlation (requires energy package)</li>
+<li>
+<code>maximal</code>: Maximal information coefficient (requires minerva package)</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="modelprune-enhancements-3-0-7">modelPrune Enhancements<a class="anchor" aria-label="anchor" href="#modelprune-enhancements-3-0-7"></a></h4>
+<ul><li>
+<strong>Condition number criterion</strong>: New <code>criterion = "condition_number"</code> option uses SVD-based condition indices for detecting multicollinearity. Higher values indicate greater collinearity.</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="tests-3-0-7">Tests<a class="anchor" aria-label="anchor" href="#tests-3-0-7"></a></h3>
+<ul><li>Added comprehensive tests for grouped pruning functionality</li>
+<li>Added tests for condition_number criterion</li>
+<li>Added edge case tests for single-group and insufficient-rows scenarios</li>
+</ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0.4" id="corrselect-304">corrselect 3.0.4<a class="anchor" aria-label="anchor" href="#corrselect-304"></a></h2>
 <div class="section level3">

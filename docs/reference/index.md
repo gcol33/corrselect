@@ -32,6 +32,9 @@ Helper functions for working with results
   : Coerce CorrCombo to a Data Frame
 - [`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
   : Extract Variable Subsets from a CorrCombo Object
+- [`corrselect-package`](https://gillescolling.com/corrselect/reference/corrselect-package.md)
+  [`corrselect`](https://gillescolling.com/corrselect/reference/corrselect-package.md)
+  : corrselect: Correlation-Based and Model-Based Predictor Pruning
 
 ## Example Datasets
 

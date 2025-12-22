@@ -124,7 +124,7 @@ pruned <- corrPrune(mtcars, threshold = 0.7, mode = "exact")
 # Use greedy mode (faster for large datasets)
 pruned <- corrPrune(mtcars, threshold = 0.7, mode = "greedy")
 
-# Check what was removed
+# Check what was retained
 attr(pruned, "selected_vars")
 ```
 
@@ -137,9 +137,10 @@ pruned <- modelPrune(mpg ~ cyl + disp + hp + wt, data = mtcars, limit = 5)
 attr(pruned, "removed_vars")
 
 # GLM with binomial family
-mtcars$am_binary <- as.factor(mtcars$am)
+mtcars_glm <- mtcars
+mtcars_glm$am_binary <- as.factor(mtcars_glm$am)
 pruned <- modelPrune(am_binary ~ cyl + disp + hp,
-                     data = mtcars, engine = "glm",
+                     data = mtcars_glm, engine = "glm",
                      family = binomial(), limit = 5)
 
 # Mixed model (requires lme4)
@@ -235,7 +236,7 @@ Work directly with correlation matrices:
 
 ``` r
 
-mat <- cor(mtcars)
+mat <- cor(mtcars[, sapply(mtcars, is.numeric)])
 res <- MatSelect(mat, threshold = 0.7, method = "els")
 ```
 
@@ -286,6 +287,9 @@ Helper functions for working with results
   : Coerce CorrCombo to a Data Frame
 - [`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
   : Extract Variable Subsets from a CorrCombo Object
+- [`corrselect-package`](https://gillescolling.com/corrselect/reference/corrselect-package.md)
+  [`corrselect`](https://gillescolling.com/corrselect/reference/corrselect-package.md)
+  : corrselect: Correlation-Based and Model-Based Predictor Pruning
 
 ## Example Datasets
 

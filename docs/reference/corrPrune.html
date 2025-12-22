@@ -13,7 +13,7 @@ the association constraint."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -167,9 +167,18 @@ predictors satisfy the threshold constraint across groups. For example, with
 below <code>threshold</code> in <em>all</em> groups. With <code>group_q = 0.9</code>, they will satisfy
 the constraint in at least 90% of groups.</p>
 <p><strong>Mode Selection</strong>: Exact mode guarantees finding all maximal subsets and
-returns the largest one (with deterministic tie-breaking). Greedy mode is
-faster but approximate, using a deterministic removal strategy based on
-association scores.</p>
+returns the largest one. Greedy mode is faster but approximate, using an
+iterative removal strategy based on association scores.</p>
+<p><strong>Tie-Breaking</strong>: When multiple subsets or variables are equally good,
+deterministic tie-breaking is applied:</p><ul><li><p><strong>Exact mode</strong>: Selects by (1) largest subset size, (2) lowest
+average correlation, (3) alphabetically first variable names. Column
+order does not affect the result.</p></li>
+<li><p><strong>Greedy mode</strong>: Removes the variable with (1) most constraint
+violations, (2) highest max association, (3) highest average association,
+(4) lowest column index. Column order can influence the result when
+earlier criteria are tied.</p></li>
+</ul><p>To see all maximal subsets instead of a single selection, use
+<code><a href="corrSelect.html">corrSelect()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

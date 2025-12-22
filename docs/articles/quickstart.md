@@ -274,9 +274,11 @@ corrPrune(data, threshold = 0.7, measure = "auto", mode = "auto",
 |----|----|----|
 | `data` | Data frame or matrix | *required* |
 | `threshold` | Maximum allowed correlation | `0.7` |
-| `measure` | Correlation type: `"auto"`, `"pearson"`, `"spearman"`, `"kendall"` | `"auto"` |
+| `measure` | Correlation type: `"auto"`, `"pearson"`, `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, `"maximal"` | `"auto"` |
 | `mode` | Algorithm: `"auto"`, `"exact"`, `"greedy"` | `"auto"` |
 | `force_in` | Variables that must be retained | `NULL` |
+| `by` | Column name(s) for grouped pruning | `NULL` |
+| `group_q` | Quantile for aggregating group correlations (0-1\] | `1` |
 
 **Returns**: Data frame with pruned variables. Attributes:
 `selected_vars`, `removed_vars`.
@@ -291,13 +293,14 @@ modelPrune(formula, data, engine = "lm", criterion = "vif",
            limit = 5, force_in = NULL, max_steps = NULL, ...)
 ```
 
-| Parameter  | Description                                       | Default    |
-|------------|---------------------------------------------------|------------|
-| `formula`  | Model formula (e.g., `y ~ .`)                     | *required* |
-| `data`     | Data frame                                        | *required* |
-| `engine`   | `"lm"`, `"glm"`, `"lme4"`, `"glmmTMB"`, or custom | `"lm"`     |
-| `limit`    | Maximum allowed VIF                               | `5`        |
-| `force_in` | Variables that must be retained                   | `NULL`     |
+| Parameter   | Description                                       | Default    |
+|-------------|---------------------------------------------------|------------|
+| `formula`   | Model formula (e.g., `y ~ .`)                     | *required* |
+| `data`      | Data frame                                        | *required* |
+| `engine`    | `"lm"`, `"glm"`, `"lme4"`, `"glmmTMB"`, or custom | `"lm"`     |
+| `criterion` | `"vif"` or `"condition_number"`                   | `"vif"`    |
+| `limit`     | Maximum allowed diagnostic value                  | `5`        |
+| `force_in`  | Variables that must be retained                   | `NULL`     |
 
 **Returns**: Pruned data frame. Attributes: `selected_vars`,
 `removed_vars`, `final_model`.
@@ -447,7 +450,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.0.5
+#> [1] corrselect_3.0.7
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    

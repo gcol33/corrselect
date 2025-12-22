@@ -1,5 +1,35 @@
 # Changelog
 
+## corrselect 3.0.7
+
+### New Features
+
+#### corrPrune Enhancements
+
+- **Grouped pruning**: New `by` parameter computes association matrices
+  per group and aggregates using the `group_q` quantile (default: 0.5 =
+  median). Useful when correlations vary across experimental conditions
+  or subpopulations.
+- **Additional measures for numeric data**:
+  - `bicor`: Biweight midcorrelation (requires WGCNA package)
+  - `distance`: Distance correlation (requires energy package)
+  - `maximal`: Maximal information coefficient (requires minerva
+    package)
+
+#### modelPrune Enhancements
+
+- **Condition number criterion**: New `criterion = "condition_number"`
+  option uses SVD-based condition indices for detecting
+  multicollinearity. Higher values indicate greater collinearity.
+
+### Tests
+
+- Added comprehensive tests for grouped pruning functionality
+- Added tests for condition_number criterion
+- Added edge case tests for single-group and insufficient-rows scenarios
+
+------------------------------------------------------------------------
+
 ## corrselect 3.0.4
 
 ### Test Coverage Improvements

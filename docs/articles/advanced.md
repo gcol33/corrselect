@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.8            0.4
-#> 2   20           1.0            0.6
-#> 3   50           1.7            1.2
-#> 4  100           3.5            2.3
-#> 5  200           9.2            5.4
-#> 6  300          19.5            9.4
-#> 7  500          52.8           20.4
-#> 8 1000            NA           65.8
+#> 1   10           0.5            0.2
+#> 2   20           0.6            0.4
+#> 3   50           1.3            0.8
+#> 4  100           4.2            1.3
+#> 5  200          19.6            3.3
+#> 6  300          92.1           11.8
+#> 7  500         363.0           28.1
+#> 8 1000            NA           92.4
 ```
 
 ``` r
@@ -244,6 +244,48 @@ This ensures reproducibility across runs, machines, and R versions.
 
 ------------------------------------------------------------------------
 
+### 1.4 Grouped Pruning
+
+When correlations vary across subgroups (e.g., experimental conditions,
+species, sites), grouped pruning computes associations **per group** and
+aggregates them.
+
+#### Basic Usage
+
+``` r
+
+# Create data with grouping variable
+set.seed(123)
+n <- 100
+df <- data.frame(
+  x1 = rnorm(n),
+  x2 = rnorm(n),
+  x3 = rnorm(n),
+  site = rep(c("A", "B", "C", "D"), each = n/4)
+)
+
+# Prune using per-group correlations (aggregated with median)
+result <- corrPrune(df, threshold = 0.5, by = "site", group_q = 0.5)
+cat("Selected:", attr(result, "selected_vars"), "\n")
+#> Selected: x1 x2 x3
+```
+
+#### Parameters
+
+| Parameter | Description                                       |
+|-----------|---------------------------------------------------|
+| `by`      | Column name(s) for grouping                       |
+| `group_q` | Quantile for aggregation: 0.5 = median, 1.0 = max |
+
+#### When to Use
+
+- **Multi-site studies**: Correlations may differ across locations
+- **Experimental conditions**: Treatment groups may have different
+  correlation structures
+- **Longitudinal data**: Correlations may change over time periods
+
+------------------------------------------------------------------------
+
 ## 2. Custom Engines for modelPrune()
 
 ### 2.1 Understanding Custom Engines
@@ -253,12 +295,30 @@ This ensures reproducibility across runs, machines, and R versions.
 A custom engine allows you to integrate **any** modeling framework with
 [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md),
 not just base R’s [`lm()`](https://rdrr.io/r/stats/lm.html) or `lme4`.
-This enables VIF-based pruning for:
+This enables diagnostic-based pruning (VIF or condition number) for:
 
 - **Bayesian models** (INLA, brms, Stan)
 - **Additive models** (mgcv GAMs)
 - **Survival models** (coxph, flexsurv)
 - **Custom metrics** (AIC, BIC, posterior uncertainty)
+
+#### Built-in Criteria
+
+For built-in engines (`lm`, `glm`, `lme4`, `glmmTMB`), two criteria are
+available:
+
+- **`vif`** (default): Variance Inflation Factor - classic
+  multicollinearity measure
+- **`condition_number`**: SVD-based condition indices - alternative
+  collinearity diagnostic
+
+``` r
+
+# Using condition number instead of VIF
+result_cn <- modelPrune(mpg ~ ., data = mtcars, criterion = "condition_number", limit = 10)
+cat("Selected:", attr(result_cn, "selected_vars"), "\n")
+#> Selected: cyl disp hp drat wt qsec vs am
+```
 
 #### How Custom Engines Work
 
@@ -740,11 +800,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 5.3 ms
+#> Recomputing each time: 6.3 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 1.2 ms
+#> Precomputed matrix: 3.3 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 4.3x faster
+#> Speedup: 1.9x faster
 ```
 
 **Use precomputed matrices when**:
@@ -871,13 +931,13 @@ one variable 3. Check data for near-duplicates
 result <- corrPrune(high_cor_data, threshold = 0.95)
 #> Error in corrPrune(high_cor_data, threshold = 0.95): No valid subsets found that satisfy the threshold constraint
 print(names(result))
-#> Error: object 'result' not found
+#> [1] "x1" "x2" "x3"
 
 # Solution 2: Force keep one variable
 result <- corrPrune(high_cor_data, threshold = 0.5, force_in = "x1")
 #> Error in corrPrune(high_cor_data, threshold = 0.5, force_in = "x1"): No valid subsets found that satisfy the threshold constraint
 print(names(result))
-#> Error: object 'result' not found
+#> [1] "x1" "x2" "x3"
 ```
 
 #### Error: force_in variables conflict with threshold
@@ -1122,7 +1182,7 @@ lenient (0.9, green) thresholds. Right panel: line plot showing number
 of variables retained versus threshold, demonstrating sensitivity
 analysis with plateau beginning around 0.7, helping identify optimal
 threshold for balancing redundancy reduction and information
-retention.](advanced_files/figure-html/unnamed-chunk-26-1.svg)
+retention.](advanced_files/figure-html/unnamed-chunk-28-1.svg)
 
 **Strategy**: Choose threshold where curve begins to plateau.
 
@@ -1363,7 +1423,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.0.5    
+#> [1] microbenchmark_1.5.0 corrselect_3.0.7    
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
