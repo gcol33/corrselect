@@ -1099,3 +1099,97 @@ test_that("assocSelect handles constant numeric variable", {
   result <- assocSelect(df, threshold = 0.9)
   expect_s4_class(result, "CorrCombo")
 })
+
+
+# ===========================================================================
+# assocSelect: eta with single-level factor (line 197)
+# ===========================================================================
+
+test_that("assocSelect computes eta with single-level factor", {
+  set.seed(10001)
+  n <- 30
+
+  # Factor with single level paired with numeric
+  df <- data.frame(
+    single_fac = factor(rep("A", n)),
+    num_var = rnorm(n)
+  )
+
+  # This should trigger the eta calculation where length(unique(cat)) < 2
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
+
+# ===========================================================================
+# assocSelect: eta with constant numeric (line 199)
+# ===========================================================================
+
+test_that("assocSelect computes eta with constant numeric variable", {
+  set.seed(10002)
+  n <- 30
+
+  # Numeric constant paired with factor
+  df <- data.frame(
+    const_num = rep(5.5, n),  # Constant -> ss_tot = 0
+    multi_fac = factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
+  )
+
+  # This should trigger ss_tot == 0 in eta calculation
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
+
+# ===========================================================================
+# assocSelect: cramersv with sparse table (line 187)
+# ===========================================================================
+
+test_that("assocSelect handles cramersv with sparse contingency table", {
+  set.seed(10003)
+  n <- 30
+
+  # Create factors where contingency table has zero rows/cols
+  df <- data.frame(
+    fac1 = factor(c(rep("A", n-1), "B")),  # Almost all A, one B
+    fac2 = factor(c("X", rep("Y", n-1)))   # One X, almost all Y
+  )
+
+  # This might trigger the sparse table check
+  result <- assocSelect(df, threshold = 0.99)
+  expect_s4_class(result, "CorrCombo")
+})
+
+# ===========================================================================
+# assocSelect: numeric-ordered with spearman (line 219, 226)
+# ===========================================================================
+
+test_that("assocSelect computes spearman for numeric-ordered pairs", {
+  set.seed(10004)
+  n <- 50
+
+  df <- data.frame(
+    num1 = rnorm(n),
+    ord1 = ordered(sample(1:5, n, replace = TRUE)),
+    num2 = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.8, method_num_ord = "spearman")
+  expect_s4_class(result, "CorrCombo")
+})
+
+# ===========================================================================
+# assocSelect: ordered-ordered pairs (line 235)
+# ===========================================================================
+
+test_that("assocSelect computes association for ordered-ordered pairs", {
+  set.seed(10005)
+  n <- 50
+
+  df <- data.frame(
+    ord1 = ordered(sample(1:4, n, replace = TRUE)),
+    ord2 = ordered(sample(1:4, n, replace = TRUE)),
+    num1 = rnorm(n)
+  )
+
+  result <- assocSelect(df, threshold = 0.8, method_ord_ord = "spearman")
+  expect_s4_class(result, "CorrCombo")
+})

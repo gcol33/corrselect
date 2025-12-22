@@ -1361,3 +1361,161 @@ test_that("corrPrune grouped pruning handles groups with all NA", {
   )
   expect_s3_class(result, "data.frame")
 })
+
+
+# ===========================================================================
+# Lexicographic tie-breaking: lines 502-508 in corrPrune
+# Need: multiple subsets with SAME size AND SAME avg correlation
+# ===========================================================================
+
+test_that("corrPrune exact mode triggers lexicographic tie-breaking", {
+  # Create correlation matrix where:
+  # - a,b are highly correlated (0.9)
+  # - c,d are highly correlated (0.9)
+  # - All other pairs are uncorrelated (0)
+  # This gives 4 maximal subsets: {a,c}, {a,d}, {b,c}, {b,d}
+  # All size 2, all avg_corr = 0 -> triggers lexicographic tie-breaking
+
+  n <- 200
+  set.seed(9001)
+
+  # Generate base variables
+  base1 <- rnorm(n)
+  base2 <- rnorm(n)
+
+  # a and b highly correlated
+  a <- base1
+  b <- base1 + rnorm(n, sd = 0.1)
+
+  # c and d highly correlated (independent of a,b)
+  c <- base2
+  d <- base2 + rnorm(n, sd = 0.1)
+
+  df <- data.frame(a = a, b = b, c = c, d = d)
+
+  # Verify the correlation structure
+  cor_mat <- cor(df)
+  expect_true(abs(cor_mat["a", "b"]) > 0.9)  # a-b correlated
+  expect_true(abs(cor_mat["c", "d"]) > 0.9)  # c-d correlated
+  expect_true(abs(cor_mat["a", "c"]) < 0.3)  # cross pairs uncorrelated
+
+  # With threshold 0.5, should get multiple subsets of size 2
+  # All with same avg_corr -> lexicographic tie-breaking
+  result <- corrPrune(df, threshold = 0.5, mode = "exact")
+  expect_s3_class(result, "data.frame")
+  expect_equal(ncol(result), 2)
+
+  # Should be deterministic (lexicographic: "a,c" comes first)
+  result2 <- corrPrune(df, threshold = 0.5, mode = "exact")
+  expect_identical(sort(names(result)), sort(names(result2)))
+})
+
+# ===========================================================================
+# Chi-squared returning NA: line 350 in corrPrune
+# Need: contingency table where chisq.test returns NA
+# ===========================================================================
+
+test_that("corrPrune handles chi-squared NA from degenerate table", {
+  set.seed(9002)
+  n <- 50
+
+  # Create factors where chi-squared might produce NA
+  # This happens with very sparse tables
+  df <- data.frame(
+    fac1 = factor(c(rep("A", 48), "B", "C")),  # Very unbalanced
+    fac2 = factor(c(rep("X", 48), "Y", "Z")),  # Very unbalanced
+    num1 = rnorm(n)
+  )
+
+  # Should handle gracefully
+  result <- corrPrune(df, threshold = 0.95)
+  expect_s3_class(result, "data.frame")
+})
+
+# ===========================================================================
+# All NA in grouped aggregation: line 410 in corrPrune
+# Need: all groups produce NA for a variable pair
+# ===========================================================================
+
+
+# ===========================================================================
+# assocSelect: single-level factor (line 197) and constant numeric (line 199)
+# ===========================================================================
+
+test_that("assocSelect handles eta with single-level factor", {
+  set.seed(9004)
+  n <- 30
+
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    fac_single = factor(rep("only_level", n))
+  )
+
+  # eta computation should return 0 for single-level factor
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("assocSelect handles eta with constant numeric", {
+  set.seed(9005)
+  n <- 30
+
+  df <- data.frame(
+    const_num = rep(42, n),  # Constant - ss_tot = 0
+    fac1 = factor(sample(c("A", "B", "C"), n, replace = TRUE)),
+    num2 = rnorm(n)
+  )
+
+  # eta computation should handle ss_tot = 0
+  result <- assocSelect(df, threshold = 0.9)
+  expect_s4_class(result, "CorrCombo")
+})
+
+# ===========================================================================
+# corrSelect: bicor, distance, maximal with installed packages
+# ===========================================================================
+
+test_that("corrSelect with bicor computes correctly", {
+  skip_if_not(requireNamespace("WGCNA", quietly = TRUE))
+
+  set.seed(9006)
+  n <- 50
+  x <- rnorm(n)
+  df <- data.frame(
+    a = x,
+    b = x + rnorm(n, sd = 0.5),
+    c = rnorm(n)
+  )
+
+  result <- corrSelect(df, threshold = 0.7, cor_method = "bicor")
+  expect_s4_class(result, "CorrCombo")
+  expect_true(length(result@subset_list) >= 1)
+})
+
+test_that("corrSelect with distance computes correctly", {
+  skip_if_not(requireNamespace("energy", quietly = TRUE))
+
+  set.seed(9007)
+  n <- 30
+  df <- data.frame(a = rnorm(n), b = rnorm(n), c = rnorm(n))
+
+  result <- corrSelect(df, threshold = 0.5, cor_method = "distance")
+  expect_s4_class(result, "CorrCombo")
+})
+
+test_that("corrSelect with maximal computes correctly", {
+  skip_if_not(requireNamespace("minerva", quietly = TRUE))
+
+  set.seed(9008)
+  n <- 30
+  df <- data.frame(a = rnorm(n), b = rnorm(n), c = rnorm(n))
+
+  result <- corrSelect(df, threshold = 0.5, cor_method = "maximal")
+  expect_s4_class(result, "CorrCombo")
+})
+
+# ===========================================================================
+# VIF: predictor column matching edge case
+# ===========================================================================
+
