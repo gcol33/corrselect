@@ -93,7 +93,7 @@
 #' # Use greedy mode for faster computation
 #' pruned <- corrPrune(mtcars, threshold = 0.7, mode = "greedy")
 #'
-#' @importFrom stats cor complete.cases
+#' @importFrom stats cor complete.cases quantile
 #' @export
 corrPrune <- function(
   data,
