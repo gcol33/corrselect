@@ -209,6 +209,16 @@ mat <- cor(mtcars[, sapply(mtcars, is.numeric)])
 res <- MatSelect(mat, threshold = 0.7, method = "els")
 ```
 
+## Support
+
+> "Software is like sex: it's better when it's free." — Linus Torvalds
+
+I'm a PhD student who builds R packages in my free time because I believe good tools should be free and open. I started these projects for my own work and figured others might find them useful too.
+
+If this package saved you some time, buying me a coffee is a nice way to say thanks. It helps with my coffee addiction.
+
+[![Buy Me A Coffee](https://img.shields.io/badge/-Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/gcol33)
+
 ## License
 
 MIT (see the LICENSE.md file)
