@@ -220,6 +220,7 @@ MIT (see the LICENSE.md file)
   author = {Colling, Gilles},
   title = {corrselect: Correlation-Based and Model-Based Predictor Pruning},
   year = {2025},
-  url = {https://github.com/gcol33/corrselect}
+  url = {https://CRAN.R-project.org/package=corrselect},
+  doi = {10.32614/CRAN.package.corrselect}
 }
 ```
