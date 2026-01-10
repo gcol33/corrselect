@@ -212,3 +212,14 @@ res <- MatSelect(mat, threshold = 0.7, method = "els")
 ## License
 
 MIT (see the LICENSE.md file)
+
+## Citation
+
+```bibtex
+@software{corrselect,
+  author = {Colling, Gilles},
+  title = {corrselect: Correlation-Based and Model-Based Predictor Pruning},
+  year = {2025},
+  url = {https://github.com/gcol33/corrselect}
+}
+```
