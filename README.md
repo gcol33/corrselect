@@ -209,6 +209,14 @@ mat <- cor(mtcars[, sapply(mtcars, is.numeric)])
 res <- MatSelect(mat, threshold = 0.7, method = "els")
 ```
 
+## Documentation
+
+- [Quick Start](https://gillescolling.com/corrselect/articles/quickstart.html)
+- [Workflows](https://gillescolling.com/corrselect/articles/workflows.html)
+- [Comparison](https://gillescolling.com/corrselect/articles/comparison.html)
+- [Advanced Usage](https://gillescolling.com/corrselect/articles/advanced.html)
+- [Theory](https://gillescolling.com/corrselect/articles/theory.html)
+
 ## Support
 
 > "Software is like sex: it's better when it's free." — Linus Torvalds
