@@ -231,14 +231,8 @@ svg.inline-svg .svglite polyline[style*="stroke: #ffffff"] {
   opacity: 1;
 }
 
-/* Mobile: always show button (no hover on touch) */
+/* Mobile: show button on tap/focus (no hover on touch) */
 @media (max-width: 575.98px) {
-  .btn-copy-svg {
-    opacity: 0.7;
-  }
-  .svg-container:hover .btn-copy-svg {
-    opacity: 1;
-  }
   /* Adjust position for full-width mobile SVGs */
   .svg-container {
     position: relative;
