@@ -124,11 +124,23 @@ svg.inline-svg .svg-bg {
   stroke: none !important;
 }
 
-[data-bs-theme="dark"] svg.inline-svg .svglite line,
-[data-bs-theme="dark"] svg.inline-svg .svglite polyline,
-[data-bs-theme="dark"] svg.inline-svg .svglite polygon,
-[data-bs-theme="dark"] svg.inline-svg .svglite path,
-[data-bs-theme="dark"] svg.inline-svg .svglite circle {
+/* Dark mode stroke - only override the default theme stroke color (#3E3F3A) */
+/* This preserves colored edges/lines (e.g., red/blue/green threshold lines) */
+/* Elements using the CSS default stroke (not inline style) need dark mode inversion */
+[data-bs-theme="dark"] svg.inline-svg .svglite line:not([style*="stroke:"]),
+[data-bs-theme="dark"] svg.inline-svg .svglite polyline:not([style*="stroke:"]),
+[data-bs-theme="dark"] svg.inline-svg .svglite polygon:not([style*="stroke:"]),
+[data-bs-theme="dark"] svg.inline-svg .svglite path:not([style*="stroke:"]),
+[data-bs-theme="dark"] svg.inline-svg .svglite circle:not([style*="stroke:"]) {
+  stroke: #DFD7CA !important;
+}
+
+/* Only override strokes that use the light theme default color (#3E3F3A) */
+[data-bs-theme="dark"] svg.inline-svg .svglite line[style*="stroke: #3E3F3A"],
+[data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #3E3F3A"],
+[data-bs-theme="dark"] svg.inline-svg .svglite polygon[style*="stroke: #3E3F3A"],
+[data-bs-theme="dark"] svg.inline-svg .svglite path[style*="stroke: #3E3F3A"],
+[data-bs-theme="dark"] svg.inline-svg .svglite circle[style*="stroke: #3E3F3A"] {
   stroke: #DFD7CA !important;
 }
 
