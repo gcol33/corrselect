@@ -4,6 +4,8 @@
 status](https://www.r-pkg.org/badges/version/corrselect)](https://CRAN.R-project.org/package=corrselect)
 [![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
+[![Monthly
+downloads](https://cranlogs.r-pkg.org/badges/corrselect)](https://cran.r-project.org/package=corrselect)
 [![R-CMD-check](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml)
 [![Codecov test
 coverage](https://codecov.io/gh/gcol33/corrselect/graph/badge.svg)](https://app.codecov.io/gh/gcol33/corrselect)
@@ -240,18 +242,45 @@ mat <- cor(mtcars[, sapply(mtcars, is.numeric)])
 res <- MatSelect(mat, threshold = 0.7, method = "els")
 ```
 
-## JOSS Paper
+## Documentation
 
-This repository includes a short paper prepared for submission to the
-*Journal of Open Source Software (JOSS)*. You can find the manuscript
-and references in the `paper/` directory:
+- [Quick
+  Start](https://gillescolling.com/corrselect/articles/quickstart.html)
+- [Workflows](https://gillescolling.com/corrselect/articles/workflows.html)
+- [Comparison](https://gillescolling.com/corrselect/articles/comparison.html)
+- [Advanced
+  Usage](https://gillescolling.com/corrselect/articles/advanced.html)
+- [Theory](https://gillescolling.com/corrselect/articles/theory.html)
 
-- `paper/paper.md` – main text
-- `paper/paper.bib` – bibliography
+## Support
+
+> “Software is like sex: it’s better when it’s free.” — Linus Torvalds
+
+I’m a PhD student who builds R packages in my free time because I
+believe good tools should be free and open. I started these projects for
+my own work and figured others might find them useful too.
+
+If this package saved you some time, buying me a coffee is a nice way to
+say thanks. It helps with my coffee addiction.
+
+[![Buy Me A
+Coffee](https://img.shields.io/badge/-Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/gcol33)
 
 ## License
 
 MIT (see the LICENSE.md file)
+
+## Citation
+
+``` bibtex
+@software{corrselect,
+  author = {Colling, Gilles},
+  title = {corrselect: Correlation-Based and Model-Based Predictor Pruning},
+  year = {2025},
+  url = {https://CRAN.R-project.org/package=corrselect},
+  doi = {10.32614/CRAN.package.corrselect}
+}
+```
 
 # Package index
 

@@ -2,6 +2,8 @@
 
 ## corrselect 3.1.0
 
+CRAN release: 2026-01-08
+
 ### Bug Fixes
 
 - **corrPrune**: Fixed numeric-numeric pair handling in mixed-type data

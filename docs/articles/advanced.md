@@ -137,14 +137,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.4            0.2
-#> 2   20           0.6            0.3
-#> 3   50           1.0            0.7
-#> 4  100           2.0            1.3
-#> 5  200           5.0            3.1
-#> 6  300          11.7           10.1
-#> 7  500          54.9           20.6
-#> 8 1000            NA           70.5
+#> 1   10           0.5            0.3
+#> 2   20           0.6            0.4
+#> 3   50           1.4            0.7
+#> 4  100           4.1            1.3
+#> 5  200          20.3            3.5
+#> 6  300          74.3            6.8
+#> 7  500         268.4           17.4
+#> 8 1000            NA           57.7
 ```
 
 ``` r
@@ -800,11 +800,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 6.0 ms
+#> Recomputing each time: 3.8 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 1.3 ms
+#> Precomputed matrix: 1.9 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 4.5x faster
+#> Speedup: 2.0x faster
 ```
 
 **Use precomputed matrices when**:
@@ -929,13 +929,15 @@ one variable 3. Check data for near-duplicates
 
 # Solution 1: Increase threshold
 result <- corrPrune(high_cor_data, threshold = 0.95)
-#> Error in corrPrune(high_cor_data, threshold = 0.95): No valid subsets found that satisfy the threshold constraint
+#> Error in `corrPrune()`:
+#> ! No valid subsets found that satisfy the threshold constraint
 print(names(result))
 #> [1] "x1" "x2" "x3"
 
 # Solution 2: Force keep one variable
 result <- corrPrune(high_cor_data, threshold = 0.5, force_in = "x1")
-#> Error in corrPrune(high_cor_data, threshold = 0.5, force_in = "x1"): No valid subsets found that satisfy the threshold constraint
+#> Error in `corrPrune()`:
+#> ! No valid subsets found that satisfy the threshold constraint
 print(names(result))
 #> [1] "x1" "x2" "x3"
 ```
@@ -1426,11 +1428,12 @@ sessionInfo()
 #> [1] microbenchmark_1.5.0 corrselect_3.1.0    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
-#>  [5] xfun_0.53         cachem_1.1.0      knitr_1.50        htmltools_0.5.8.1
-#>  [9] rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5         svglite_2.2.2    
-#> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3 jquerylib_0.1.4  
-#> [17] systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2       bslib_0.9.0      
-#> [21] evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10       jsonlite_2.0.0   
-#> [25] rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4 MASS_7.3-65
+#>  [1] vctrs_0.6.5       svglite_2.2.2     cli_3.6.5         knitr_1.51       
+#>  [5] rlang_1.1.6       xfun_0.55         otel_0.2.0        textshaping_1.0.4
+#>  [9] jsonlite_2.0.0    glue_1.8.0        htmltools_0.5.9   sass_0.4.10      
+#> [13] rmarkdown_2.30    evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65      
+#> [17] fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5   compiler_4.5.2   
+#> [21] fs_1.6.6          htmlwidgets_1.6.4 Rcpp_1.1.1        systemfonts_1.3.1
+#> [25] digest_0.6.39     R6_2.6.1          pillar_1.11.1     bslib_0.9.0      
+#> [29] tools_4.5.2       pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
 ```

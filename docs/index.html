@@ -71,7 +71,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="corrselect">corrselect<a class="anchor" aria-label="anchor" href="#corrselect"></a>
 </h1></div>
-<p><a href="https://CRAN.R-project.org/package=corrselect" class="external-link"><img src="https://www.r-pkg.org/badges/version/corrselect" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/corrselect" alt="CRAN downloads"></a> <a href="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/gcol33/corrselect" class="external-link"><img src="https://codecov.io/gh/gcol33/corrselect/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
+<p><a href="https://CRAN.R-project.org/package=corrselect" class="external-link"><img src="https://www.r-pkg.org/badges/version/corrselect" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/corrselect" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/corrselect" alt="Monthly downloads"></a> <a href="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/gcol33/corrselect" class="external-link"><img src="https://codecov.io/gh/gcol33/corrselect/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
 <p><strong>Fast and Flexible Predictor Pruning for Data Analysis and Modeling</strong></p>
 <p>The <code>corrselect</code> package provides simple, high-level functions for <strong>predictor pruning</strong> using association-based and model-based approaches. Whether you need to reduce multicollinearity before modeling or clean correlated predictors in your dataset, <code>corrselect</code> offers fast, deterministic solutions with minimal code.</p>
 <div class="section level2">
@@ -215,7 +215,7 @@
 <span><span class="co"># Mixed model (requires lme4)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"lme4"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Use built-in sleepstudy data with polynomial terms</span></span>
-<span>  <span class="va">sleep</span> <span class="op">&lt;-</span> <span class="fu">lme4</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/lme4/man/sleepstudy.html" class="external-link">sleepstudy</a></span></span>
+<span>  <span class="va">sleep</span> <span class="op">&lt;-</span> <span class="fu">lme4</span><span class="fu">::</span><span class="va">sleepstudy</span></span>
 <span>  <span class="va">sleep</span><span class="op">$</span><span class="va">Days2</span> <span class="op">&lt;-</span> <span class="va">sleep</span><span class="op">$</span><span class="va">Days</span><span class="op">^</span><span class="fl">2</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span>
 <span>    <span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">Reaction</span> <span class="op">~</span> <span class="va">Days</span> <span class="op">+</span> <span class="va">Days2</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,</span>
@@ -338,20 +338,41 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="joss-paper">JOSS Paper<a class="anchor" aria-label="anchor" href="#joss-paper"></a>
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>This repository includes a short paper prepared for submission to the <em>Journal of Open Source Software (JOSS)</em>. You can find the manuscript and references in the <code>paper/</code> directory:</p>
 <ul>
-<li>
-<code>paper/paper.md</code> – main text</li>
-<li>
-<code>paper/paper.bib</code> – bibliography</li>
+<li><a href="https://gillescolling.com/corrselect/articles/quickstart.html">Quick Start</a></li>
+<li><a href="https://gillescolling.com/corrselect/articles/workflows.html">Workflows</a></li>
+<li><a href="https://gillescolling.com/corrselect/articles/comparison.html">Comparison</a></li>
+<li><a href="https://gillescolling.com/corrselect/articles/advanced.html">Advanced Usage</a></li>
+<li><a href="https://gillescolling.com/corrselect/articles/theory.html">Theory</a></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="support">Support<a class="anchor" aria-label="anchor" href="#support"></a>
+</h2>
+<blockquote>
+<p>“Software is like sex: it’s better when it’s free.” — Linus Torvalds</p>
+</blockquote>
+<p>I’m a PhD student who builds R packages in my free time because I believe good tools should be free and open. I started these projects for my own work and figured others might find them useful too.</p>
+<p>If this package saved you some time, buying me a coffee is a nice way to say thanks. It helps with my coffee addiction.</p>
+<p><a href="https://buymeacoffee.com/gcol33" class="external-link"><img src="https://img.shields.io/badge/-Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&amp;logoColor=black" alt="Buy Me A Coffee"></a></p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
 <p>MIT (see the LICENSE.md file)</p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co">@software{corrselect,</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">  author = {Colling, Gilles},</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">  title = {corrselect: Correlation-Based and Model-Based Predictor Pruning},</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">  year = {2025},</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">  url = {https://CRAN.R-project.org/package=corrselect},</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">  doi = {10.32614/CRAN.package.corrselect}</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">}</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
