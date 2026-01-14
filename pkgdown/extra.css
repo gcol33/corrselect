@@ -245,3 +245,23 @@ svg.inline-svg .svglite polyline[style*="stroke: #ffffff"] {
   }
 }
 
+/* Math equations - responsive on mobile */
+/* MathJax display equations */
+.MathJax_Display,
+mjx-container[display="true"],
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.5rem 0;
+}
+
+/* Inline math - allow wrapping */
+mjx-container:not([display="true"]),
+.katex:not(.katex-display .katex) {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  vertical-align: middle;
+}
+

@@ -4,6 +4,8 @@ template:
   bootstrap: 5
   bootswatch: sandstone
   light-switch: true
+  includes:
+    in_header: pkgdown/mathjax-config.html
 
 figures:
   dev: svg
