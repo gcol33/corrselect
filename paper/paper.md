@@ -9,7 +9,7 @@ affiliations:
     index: 1
 date: 2025-09-09
 repository: https://github.com/gcol33/corrselect
-archive_doi: 10.5281/zenodo.17088305
+archive_doi: 10.5281/zenodo.18429041
 bibliography: paper.bib
 ---
 
