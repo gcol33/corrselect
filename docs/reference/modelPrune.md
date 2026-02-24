@@ -45,11 +45,14 @@ modelPrune(
     [`stats::glm()`](https://rdrr.io/r/stats/glm.html) (requires
     `family` argument)
 
-  - `"lme4"`: Mixed models via `lme4::lmer()` or `lme4::glmer()`
-    (requires lme4 package)
+  - `"lme4"`: Mixed models via
+    [`lme4::lmer()`](https://rdrr.io/pkg/lme4/man/lmer.html) or
+    [`lme4::glmer()`](https://rdrr.io/pkg/lme4/man/glmer.html) (requires
+    lme4 package)
 
   - `"glmmTMB"`: Generalized linear mixed models via
-    `glmmTMB::glmmTMB()` (requires glmmTMB package)
+    [`glmmTMB::glmmTMB()`](https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html)
+    (requires glmmTMB package)
 
   **Custom engine** (named list with required components):
 

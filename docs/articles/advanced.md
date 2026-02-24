@@ -7,10 +7,14 @@ method developers:
 
 1.  **Understanding the Algorithms** - Exact vs greedy, complexity
     analysis
+
 2.  **Custom Engines** - Integrate any modeling package (INLA, mgcv,
     brms)
+
 3.  **Exact Subset Enumeration** - Multiple maximal subsets
+
 4.  **Performance Optimization** - Speed and memory considerations
+
 5.  **Troubleshooting** - Common issues and solutions
 
 **Target audience**: Users comfortable with R programming and
@@ -46,8 +50,11 @@ cat("Exact mode kept:", ncol(exact_result), "variables\n")
 **Use exact mode when**:
 
 - p ≤ 20 (feasible runtime)
+
 - You need guaranteed optimal solution
+
 - Reproducibility is critical
+
 - You’re writing a paper (justify optimality)
 
 #### Greedy Mode (Heuristic)
@@ -66,8 +73,11 @@ cat("Greedy mode kept:", ncol(greedy_result), "variables\n")
 **Use greedy mode when**:
 
 - p \> 20 (exact becomes slow)
+
 - Speed is priority
+
 - Near-optimal is acceptable
+
 - High-dimensional data (p \> 100)
 
 #### Auto Mode (Recommended)
@@ -137,14 +147,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.5            0.3
-#> 2   20           0.6            0.4
-#> 3   50           1.4            0.7
-#> 4  100           4.1            1.3
-#> 5  200          20.1            3.3
-#> 6  300          73.8            6.5
-#> 7  500         266.9           15.5
-#> 8 1000            NA           57.0
+#> 1   10           0.6            0.3
+#> 2   20           0.7            0.4
+#> 3   50           1.6            0.7
+#> 4  100           4.4            1.6
+#> 5  200          21.3            3.5
+#> 6  300          76.7            7.0
+#> 7  500         276.9           16.6
+#> 8 1000            NA           61.7
 ```
 
 ``` r
@@ -237,8 +247,9 @@ cat("Identical:", identical(names(result1), names(result2)), "\n")
 ```
 
 **Tie-breaking rules**: 1. Prefer variables with lower **mean absolute
-correlation** with others 2. If still tied, prefer **lexicographically
-first** (alphabetical)
+correlation** with others
+
+2.  If still tied, prefer **lexicographically first** (alphabetical)
 
 This ensures reproducibility across runs, machines, and R versions.
 
@@ -280,8 +291,10 @@ cat("Selected:", attr(result, "selected_vars"), "\n")
 #### When to Use
 
 - **Multi-site studies**: Correlations may differ across locations
+
 - **Experimental conditions**: Treatment groups may have different
   correlation structures
+
 - **Longitudinal data**: Correlations may change over time periods
 
 ------------------------------------------------------------------------
@@ -298,8 +311,11 @@ not just base R’s [`lm()`](https://rdrr.io/r/stats/lm.html) or `lme4`.
 This enables diagnostic-based pruning (VIF or condition number) for:
 
 - **Bayesian models** (INLA, brms, Stan)
+
 - **Additive models** (mgcv GAMs)
+
 - **Survival models** (coxph, flexsurv)
+
 - **Custom metrics** (AIC, BIC, posterior uncertainty)
 
 #### Built-in Criteria
@@ -309,6 +325,7 @@ available:
 
 - **`vif`** (default): Variance Inflation Factor - classic
   multicollinearity measure
+
 - **`condition_number`**: SVD-based condition indices - alternative
   collinearity diagnostic
 
@@ -327,9 +344,13 @@ The
 algorithm follows this iterative process:
 
 1.  **Fit** the model with current predictors
+
 2.  **Diagnose** each predictor (compute a “badness” metric)
+
 3.  **Identify** the worst predictor (highest diagnostic value)
+
 4.  **Remove** if it exceeds the `limit` threshold
+
 5.  **Repeat** until all predictors satisfy the limit
 
 Your custom engine defines steps 1 and 2;
@@ -418,8 +439,10 @@ pruned <- modelPrune(
 #### How It Works
 
 1.  **fit**: Calls `INLA::inla()` to compute posterior distributions
+
 2.  **diagnostics**: Extracts posterior standard deviations from
     `model$summary.fixed`
+
 3.  **limit**: Threshold for acceptable uncertainty (e.g., 0.5 means
     remove predictors with posterior SD \> 0.5)
 
@@ -478,8 +501,10 @@ pruned <- modelPrune(
 1.  **fit**: Calls
     [`mgcv::gam()`](https://rdrr.io/pkg/mgcv/man/gam.html) to fit the
     additive model
+
 2.  **diagnostics**: Extracts p-values for **parametric terms only**
     (not smooth terms)
+
 3.  **limit**: Significance threshold (e.g., 0.05 for traditional α =
     0.05)
 
@@ -545,8 +570,10 @@ pruned <- modelPrune(
 #### How It Works
 
 1.  **fit**: Standard linear model
+
 2.  **diagnostics**: For each variable, refit the model **without** that
     variable and compute ΔAIC
+
 3.  **limit**: Threshold for ΔAIC (e.g., -2 means “remove if AIC
     improves by more than 2 points”)
 
@@ -589,14 +616,20 @@ tryCatch({
 Your custom engine must satisfy these requirements:
 
 1.  **Structure**: Named list with `fit` and `diagnostics` functions
+
 2.  **fit returns model object**: Must return something the
     `diagnostics` function can consume
+
 3.  **diagnostics returns numeric vector**: No characters, factors, or
     other types
+
 4.  **Correct length**: One diagnostic value per fixed effect (excluding
     intercept)
+
 5.  **Named vector**: Names must match variable names exactly
+
 6.  **No missing values**: NA, NaN, or Inf will cause errors
+
 7.  **Higher = worse**: Diagnostic values must increase for more
     problematic predictors
 
@@ -800,17 +833,19 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 4.9 ms
+#> Recomputing each time: 4.6 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 2.0 ms
+#> Precomputed matrix: 2.2 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 2.5x faster
+#> Speedup: 2.1x faster
 ```
 
 **Use precomputed matrices when**:
 
 - Testing multiple thresholds
+
 - Cross-validation workflows
+
 - Sensitivity analysis
 
 ### 4.2 Memory Considerations for Large Data
@@ -922,8 +957,11 @@ tryCatch({
 #> Error: No valid subsets found that satisfy the threshold constraint
 ```
 
-**Solutions**: 1. Increase threshold 2. Use `force_in` to keep at least
-one variable 3. Check data for near-duplicates
+**Solutions**: 1. Increase threshold
+
+2.  Use `force_in` to keep at least one variable
+
+3.  Check data for near-duplicates
 
 ``` r
 
@@ -1108,16 +1146,19 @@ print(attr(result, "selected_vars"))
 **Conservative (strict)**:
 
 - threshold = 0.5: Very low redundancy, may lose information
+
 - Use when: Interpretability is critical, small sample size
 
 **Moderate (recommended)**:
 
 - threshold = 0.7: Balances redundancy and information retention
+
 - Use when: Standard regression, general analysis
 
 **Lenient**:
 
 - threshold = 0.9: Only removes near-duplicates
+
 - Use when: Large sample size, prediction focus
 
 #### For modelPrune() (VIF Limit)
@@ -1125,16 +1166,19 @@ print(attr(result, "selected_vars"))
 **Strict**:
 
 - limit = 2: Very low multicollinearity, may over-prune
+
 - Use when: Small sample size, interpretability critical
 
 **Moderate (recommended)**:
 
 - limit = 5: Standard threshold in literature
+
 - Use when: General regression analysis
 
 **Lenient**:
 
 - limit = 10: Tolerates more multicollinearity
+
 - Use when: Large sample size, prediction focus
 
 #### Empirical Approach: Visualize First
@@ -1333,25 +1377,33 @@ pipeline <- function(data, response) {
 #### Algorithms
 
 - Use **exact mode** for p ≤ 20 (optimal, reproducible)
+
 - Use **greedy mode** for p \> 20 (fast, near-optimal)
+
 - Use **auto mode** to let corrselect decide
 
 #### Custom Engines
 
 - Integrate any modeling package (INLA, mgcv, brms)
+
 - Define custom pruning criteria (AIC, BIC, p-values)
+
 - Two required functions: `fit` and `diagnostics`
 
 #### Optimization
 
 - Precompute correlation matrices for multiple thresholds
+
 - Use greedy mode for large p
+
 - Parallelize across analyses, not within
 
 #### Troubleshooting
 
 - Visualize correlation distribution before choosing threshold
+
 - Use `force_in` to protect important variables
+
 - Two-step pruning (corrPrune → modelPrune) for robustness
 
 ------------------------------------------------------------------------
@@ -1363,6 +1415,7 @@ pipeline <- function(data, response) {
 - Eppstein, D., Löffler, M., & Strash, D. (2010). Listing all maximal
   cliques in sparse graphs in near-optimal time. *Symposium on
   Algorithms and Computation*.
+
 - Bron, C., & Kerbosch, J. (1973). Algorithm 457: Finding all cliques of
   an undirected graph. *Communications of the ACM*, 16(9), 575-577.
 
@@ -1370,6 +1423,7 @@ pipeline <- function(data, response) {
 
 - O’Brien, R. M. (2007). A caution regarding rules of thumb for variance
   inflation factors. *Quality & Quantity*, 41(5), 673-690.
+
 - Belsley, D. A., Kuh, E., & Welsch, R. E. (1980). *Regression
   Diagnostics*. Wiley.
 
@@ -1378,6 +1432,7 @@ pipeline <- function(data, response) {
 - INLA: Rue, H., Martino, S., & Chopin, N. (2009). Approximate Bayesian
   inference for latent Gaussian models. *Journal of the Royal
   Statistical Society: Series B*, 71(2), 319-392.
+
 - mgcv: Wood, S. N. (2017). *Generalized Additive Models: An
   Introduction with R* (2nd ed.). Chapman and Hall/CRC.
 
@@ -1387,15 +1442,21 @@ pipeline <- function(data, response) {
 
 - [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   5-minute introduction
+
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Real-world examples
+
 - [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   vs caret, Boruta, glmnet
+
 - `vignette("corrselect_vignette")` - Original exact methods vignette
+
 - [`?corrPrune`](https://gillescolling.com/corrselect/reference/corrPrune.md) -
   Association-based pruning
+
 - [`?modelPrune`](https://gillescolling.com/corrselect/reference/modelPrune.md) -
   Model-based pruning
+
 - [`?corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md) -
   Exact subset enumeration
 
@@ -1428,8 +1489,8 @@ sessionInfo()
 #> [1] microbenchmark_1.5.0 corrselect_3.1.0    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] vctrs_0.6.5       svglite_2.2.2     cli_3.6.5         knitr_1.51       
-#>  [5] rlang_1.1.6       xfun_0.55         otel_0.2.0        textshaping_1.0.4
+#>  [1] vctrs_0.7.0       svglite_2.2.2     cli_3.6.5         knitr_1.51       
+#>  [5] rlang_1.1.7       xfun_0.55         otel_0.2.0        textshaping_1.0.4
 #>  [9] jsonlite_2.0.0    glue_1.8.0        htmltools_0.5.9   sass_0.4.10      
 #> [13] rmarkdown_2.30    evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65      
 #> [17] fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5   compiler_4.5.2   

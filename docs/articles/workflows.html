@@ -88,7 +88,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-01-14</h4>
+            <h4 data-toc-skip class="date">2026-02-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/workflows.Rmd" class="external-link"><code>vignettes/workflows.Rmd</code></a></small>
       <div class="d-none name"><code>workflows.Rmd</code></div>
@@ -110,18 +110,14 @@ selection and workflow composition. See
 full signatures and parameter details.</p>
 <p>Each workflow showcases different aspects of the package:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Ecological Modeling</strong>: Two-stage pruning (correlation
-+ VIF) for environmental predictors</li>
-<li>
-<strong>Survey Data</strong>: Protecting key variables while
-reducing redundancy in questionnaires</li>
-<li>
-<strong>High-Dimensional Data</strong>: Greedy algorithms for gene
-expression (p &gt;&gt; n scenarios)</li>
-<li>
-<strong>Mixed Models</strong>: VIF-based pruning of fixed effects in
-hierarchical data</li>
+<li><p><strong>Ecological Modeling</strong>: Two-stage pruning
+(correlation + VIF) for environmental predictors</p></li>
+<li><p><strong>Survey Data</strong>: Protecting key variables while
+reducing redundancy in questionnaires</p></li>
+<li><p><strong>High-Dimensional Data</strong>: Greedy algorithms for
+gene expression (p &gt;&gt; n scenarios)</p></li>
+<li><p><strong>Mixed Models</strong>: VIF-based pruning of fixed effects
+in hierarchical data</p></li>
 </ol>
 <hr>
 </div>
@@ -137,11 +133,10 @@ maximum temperature). Using all variables leads to multicollinearity,
 unstable coefficients, and poor model interpretation.</p>
 <p><strong>Strategy</strong>: Two-stage pruning:</p>
 <ol style="list-style-type: decimal">
-<li>
-<code><a href="../reference/corrPrune.html">corrPrune()</a></code> removes pairwise correlations &gt; 0.7</li>
-<li>
-<code><a href="../reference/modelPrune.html">modelPrune()</a></code> refines further using variance inflation
-factors (VIF)</li>
+<li><p><code><a href="../reference/corrPrune.html">corrPrune()</a></code> removes pairwise correlations &gt;
+0.7</p></li>
+<li><p><code><a href="../reference/modelPrune.html">modelPrune()</a></code> refines further using variance
+inflation factors (VIF)</p></li>
 </ol>
 <p>This approach balances model fit with interpretability and numerical
 stability.</p>
@@ -249,7 +244,7 @@ below the threshold.</p>
 <span>       col    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
 <span>       bty    <span class="op">=</span> <span class="st">"o"</span>,</span>
 <span>       bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='504.00pt' height='360.00pt' viewBox='0 0 504.00 360.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -384,7 +379,7 @@ below the threshold.</p>
 <rect rx='4' x='363.16' y='59.04' width='110.60' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <rect x='373.96' y='69.84' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #CC3333; fill-opacity: 0.40;' />
 <rect x='373.96' y='84.24' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='373.96' y='98.64' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: none;' /> fill: #F5F6F8;' /> fill: #F5F6F8;' /> fill: #F5F6F8;' /> fill: #F5F6F8;' /> fill: #F5F6F8;' /> fill: #F5F6F8;' /> fill: #F5F6F8;' />
+<rect x='373.96' y='98.64' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: none;' /> fill: #F5F6F8;' />
 <line x1='382.60' y1='102.24' x2='404.20' y2='102.24' style='stroke-width: 1.50; stroke-dasharray: 8.00,8.00;' />
 <text x='415.00' y='77.74' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Before</text>
 <text x='415.00' y='92.14' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='25.33px' lengthAdjust='spacingAndGlyphs'>After</text>
@@ -398,15 +393,12 @@ below the threshold.</p>
 </h4>
 <p>We fit three models to compare the effect of pruning:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Full model</strong>: All 19 bioclimatic variables
-(baseline)</li>
-<li>
-<strong>After corrPrune</strong>: Variables with correlations &lt;
-0.7</li>
-<li>
-<strong>After modelPrune</strong>: Further refined using VIF &lt;
-5</li>
+<li><p><strong>Full model</strong>: All 19 bioclimatic variables
+(baseline)</p></li>
+<li><p><strong>After corrPrune</strong>: Variables with correlations
+&lt; 0.7</p></li>
+<li><p><strong>After modelPrune</strong>: Further refined using VIF &lt;
+5</p></li>
 </ol>
 <p>The VIF criterion complements correlation-based pruning by detecting
 multicollinearity involving more than two variables simultaneously.</p>
@@ -470,10 +462,12 @@ coefficient estimates.</p>
 <span><span class="co">#&gt; 3 + modelPrune         12 0.8962848 538.1157</span></span></code></pre></div>
 <p><strong>Key insights</strong>:</p>
 <ul>
-<li>The full model has substantial multicollinearity (high κ)</li>
-<li>Correlation-based pruning reduces κ while losing minimal fit</li>
-<li>VIF-based refinement can further improve stability with only
-marginal R² decrease</li>
+<li><p>The full model has substantial multicollinearity (high
+κ)</p></li>
+<li><p>Correlation-based pruning reduces κ while losing minimal
+fit</p></li>
+<li><p>VIF-based refinement can further improve stability with only
+marginal R² decrease</p></li>
 </ul>
 </div>
 <div class="section level4">
@@ -549,7 +543,7 @@ were redundant for prediction.</p>
 <span>  bg <span class="op">=</span> <span class="st">"white"</span>,</span>
 <span>  x.intersp <span class="op">=</span> <span class="fl">0.8</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='360.00pt' viewBox='0 0 576.00 360.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -674,12 +668,12 @@ were redundant for prediction.</p>
 unstable. The plot below compares coefficients between the full model
 (19 variables) and the final pruned model. Notice how:</p>
 <ul>
-<li>Variables dropped in the pruned model (shown as red-only bars) had
-unstable estimates</li>
-<li>Variables retained in both models (overlapping bars) show more
-consistent magnitudes</li>
-<li>The pruned model yields clearer, more interpretable effect
-sizes</li>
+<li><p>Variables dropped in the pruned model (shown as red-only bars)
+had unstable estimates</p></li>
+<li><p>Variables retained in both models (overlapping bars) show more
+consistent magnitudes</p></li>
+<li><p>The pruned model yields clearer, more interpretable effect
+sizes</p></li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract coefficients (excluding intercept)</span></span>
@@ -746,8 +740,7 @@ sizes</li>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="section">
-<div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='504.00pt' height='360.00pt' viewBox='0 0 504.00 360.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -885,8 +878,7 @@ sizes</li>
 <text x='391.67' y='92.14' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='76.69px' lengthAdjust='spacingAndGlyphs'>Final (12 vars)</text>
 </g>
 </g>
-</svg></div><a class="anchor" aria-label="anchor" href="#section"></a>
-</h3>
+</svg></div>
 </div>
 </div>
 <div class="section level2">
@@ -902,10 +894,11 @@ quality.</p>
 <p><strong>Strategy</strong>: Use <code><a href="../reference/corrPrune.html">corrPrune()</a></code> with
 <code>force_in</code> to:</p>
 <ol style="list-style-type: decimal">
-<li>Ensure critical variables (like age) appear in the final model</li>
-<li>Remove redundant Likert items within constructs</li>
-<li>Maintain balanced representation across satisfaction, engagement,
-and loyalty domains</li>
+<li><p>Ensure critical variables (like age) appear in the final
+model</p></li>
+<li><p>Remove redundant Likert items within constructs</p></li>
+<li><p>Maintain balanced representation across satisfaction, engagement,
+and loyalty domains</p></li>
 </ol>
 <div class="section level4">
 <h4 id="data-1">Data<a class="anchor" aria-label="anchor" href="#data-1"></a>
@@ -1026,7 +1019,7 @@ construct and (2) the overall variable reduction.</p>
 <span>        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_numeric</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">1.9</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_clean</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">survey_clean</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='360.00pt' viewBox='0 0 576.00 360.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -1241,11 +1234,12 @@ deficiency.</p>
 <p><strong>Strategy</strong>: Use <code>mode = "greedy"</code> for fast,
 approximate pruning:</p>
 <ul>
-<li>The greedy algorithm scales linearly with the number of
-variables</li>
-<li>While not guaranteed to find the largest subset, it provides a
-high-quality solution orders of magnitude faster</li>
-<li>Ideal for exploratory analysis in high-dimensional settings</li>
+<li><p>The greedy algorithm scales linearly with the number of
+variables</p></li>
+<li><p>While not guaranteed to find the largest subset, it provides a
+high-quality solution orders of magnitude faster</p></li>
+<li><p>Ideal for exploratory analysis in high-dimensional
+settings</p></li>
 </ul>
 <div class="section level4">
 <h4 id="data-2">Data<a class="anchor" aria-label="anchor" href="#data-2"></a>
@@ -1296,7 +1290,7 @@ of exact methods.</p>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gene_expr</span><span class="op">)</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">genes_pruned</span><span class="op">)</span>,</span>
 <span>            <span class="va">greedy_ms</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Reduced from 200 → 177 genes (18.2 ms)</span></span></code></pre></div>
+<span><span class="co">#&gt; Reduced from 200 → 177 genes (10.4 ms)</span></span></code></pre></div>
 <p>The greedy algorithm completed in milliseconds while ensuring all
 pairwise correlations remain below 0.8.</p>
 </div>
@@ -1315,7 +1309,7 @@ pairwise correlations remain below 0.8.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="va">reduction_data</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">reduction_data</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">"genes"</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">1.9</span>, <span class="va">reduction_data</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> <span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">reduction_data</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="st">"genes\n("</span>,</span>
 <span>     <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="va">reduction_data</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="va">reduction_data</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"% retained)"</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='360.00pt' viewBox='0 0 576.00 360.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -1413,11 +1407,11 @@ widens dramatically as the number of variables increases.</p>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Exact mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">exact_result</span><span class="op">)</span>, <span class="va">exact_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact mode: 11 genes kept (6.2 ms)</span></span>
+<span><span class="co">#&gt; Exact mode: 11 genes kept (3.5 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Greedy mode: %d genes kept (%.1f ms)\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.7 ms)</span></span>
+<span><span class="co">#&gt; Greedy mode: 10 genes kept (0.5 ms)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">exact_time</span> <span class="op">/</span> <span class="va">greedy_time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: 8.3x faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: 6.6x faster</span></span></code></pre></div>
 <p>The greedy mode is substantially faster. For the full 200-gene
 dataset, exact enumeration would be prohibitively slow, while greedy
 mode completes in milliseconds.</p>
@@ -1463,11 +1457,11 @@ predictors.</p>
 <p><strong>Strategy</strong>: Use <code><a href="../reference/modelPrune.html">modelPrune()</a></code> with
 <code>engine = "lme4"</code>:</p>
 <ul>
-<li>Only fixed effects are pruned based on VIF</li>
-<li>Random effects <code>(1|subject)</code> and <code>(1|site)</code>
-are preserved in the model formula</li>
-<li>This maintains the hierarchical structure while reducing
-collinearity</li>
+<li><p>Only fixed effects are pruned based on VIF</p></li>
+<li><p>Random effects <code>(1|subject)</code> and <code>(1|site)</code>
+are preserved in the model formula</p></li>
+<li><p>This maintains the hierarchical structure while reducing
+collinearity</p></li>
 </ul>
 <p><strong>Note</strong>: This workflow requires the <code>lme4</code>
 package and is shown with <code>eval=FALSE</code> for portability.</p>
@@ -1580,11 +1574,11 @@ multicollinearity by comparing VIF values before and after pruning.</p>
 <span>                                 <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" + "</span><span class="op">)</span>,</span>
 <span>                                 <span class="st">"+ (1|subject) + (1|site)"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">model_full_mixed</span> <span class="op">&lt;-</span> <span class="fu">lmer</span><span class="op">(</span><span class="va">full_formula</span>, data <span class="op">=</span> <span class="va">longitudinal_example</span><span class="op">)</span></span>
+<span><span class="va">model_full_mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">full_formula</span>, data <span class="op">=</span> <span class="va">longitudinal_example</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Extract fixed effects design matrices</span></span>
-<span><span class="va">X_full</span> <span class="op">&lt;-</span> <span class="fu">getME</span><span class="op">(</span><span class="va">model_full_mixed</span>, <span class="st">"X"</span><span class="op">)</span></span>
-<span><span class="va">X_pruned</span> <span class="op">&lt;-</span> <span class="fu">getME</span><span class="op">(</span><span class="va">final_mixed</span>, <span class="st">"X"</span><span class="op">)</span></span>
+<span><span class="va">X_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/getME.html" class="external-link">getME</a></span><span class="op">(</span><span class="va">model_full_mixed</span>, <span class="st">"X"</span><span class="op">)</span></span>
+<span><span class="va">X_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/getME.html" class="external-link">getME</a></span><span class="op">(</span><span class="va">final_mixed</span>, <span class="st">"X"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute VIF</span></span>
 <span><span class="va">compute_vif</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1679,18 +1673,14 @@ retained fixed effects:</p>
 integrates into diverse analytical pipelines:</p>
 <p><strong>Key takeaways</strong>:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Ecological modeling</strong>: Two-stage pruning (correlation
-→ VIF) balances fit and stability</li>
-<li>
-<strong>Survey analysis</strong>: <code>force_in</code> protects
-theoretically important variables while reducing redundancy</li>
-<li>
-<strong>High-dimensional data</strong>: Greedy mode enables fast
-pruning when p &gt;&gt; n</li>
-<li>
-<strong>Mixed models</strong>: VIF-based pruning respects
-hierarchical structure by targeting only fixed effects</li>
+<li><p><strong>Ecological modeling</strong>: Two-stage pruning
+(correlation → VIF) balances fit and stability</p></li>
+<li><p><strong>Survey analysis</strong>: <code>force_in</code> protects
+theoretically important variables while reducing redundancy</p></li>
+<li><p><strong>High-dimensional data</strong>: Greedy mode enables fast
+pruning when p &gt;&gt; n</p></li>
+<li><p><strong>Mixed models</strong>: VIF-based pruning respects
+hierarchical structure by targeting only fixed effects</p></li>
 </ol>
 <p><strong>Workflow selection guide</strong>:</p>
 <table class="table">
@@ -1737,31 +1727,25 @@ hierarchical structure by targeting only fixed effects</li>
 </table>
 <p><strong>When to use each approach</strong>:</p>
 <ul>
-<li>
-<strong>corrPrune()</strong>: First-stage dimensionality reduction
-based purely on pairwise correlations</li>
-<li>
-<strong>modelPrune()</strong>: Second-stage refinement that accounts
-for model-specific multicollinearity (VIF)</li>
-<li>
-<strong>Combining both</strong>: Often yields best results
-(correlation pruning → VIF refinement → final model)</li>
+<li><p><strong>corrPrune()</strong>: First-stage dimensionality
+reduction based purely on pairwise correlations</p></li>
+<li><p><strong>modelPrune()</strong>: Second-stage refinement that
+accounts for model-specific multicollinearity (VIF)</p></li>
+<li><p><strong>Combining both</strong>: Often yields best results
+(correlation pruning → VIF refinement → final model)</p></li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
 <ul>
-<li>
-<code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> - Interface overview</li>
-<li>
-<code><a href="../articles/advanced.html">vignette("advanced")</a></code> - Custom engines and algorithmic
-control</li>
-<li>
-<code><a href="../articles/comparison.html">vignette("comparison")</a></code> - Comparison with
-alternatives</li>
-<li>
-<code><a href="../articles/theory.html">vignette("theory")</a></code> - Mathematical foundations</li>
+<li><p><code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> - Interface overview</p></li>
+<li><p><code><a href="../articles/advanced.html">vignette("advanced")</a></code> - Custom engines and
+algorithmic control</p></li>
+<li><p><code><a href="../articles/comparison.html">vignette("comparison")</a></code> - Comparison with
+alternatives</p></li>
+<li><p><code><a href="../articles/theory.html">vignette("theory")</a></code> - Mathematical
+foundations</p></li>
 </ul>
 </div>
 <div class="section level2">
@@ -1769,11 +1753,11 @@ alternatives</li>
 </h2>
 <p><strong>Thresholds</strong>:</p>
 <ul>
-<li>O’Brien, R. M. (2007). A caution regarding rules of thumb for
+<li><p>O’Brien, R. M. (2007). A caution regarding rules of thumb for
 variance inflation factors. <em>Quality &amp; Quantity</em>, 41(5),
-673-690.</li>
-<li>Dormann, C. F., et al. (2013). Collinearity: a review of methods to
-deal with it. <em>Ecography</em>, 36(1), 27-46.</li>
+673-690.</p></li>
+<li><p>Dormann, C. F., et al. (2013). Collinearity: a review of methods
+to deal with it. <em>Ecography</em>, 36(1), 27-46.</p></li>
 </ul>
 <p><strong>Methods</strong>: - See package documentation and JOSS paper
 for algorithm details</p>
@@ -1803,16 +1787,17 @@ for algorithm details</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.0.2    </span></span>
+<span><span class="co">#&gt; [1] microbenchmark_1.5.0 corrselect_3.1.0    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          codetools_0.2-20 </span></span>
-<span><span class="co">#&gt;  [5] fastmap_1.2.0     xfun_0.53         cachem_1.1.0      knitr_1.50       </span></span>
-<span><span class="co">#&gt;  [9] htmltools_0.5.8.1 rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5        </span></span>
-<span><span class="co">#&gt; [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3</span></span>
-<span><span class="co">#&gt; [17] jquerylib_0.1.4   systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2      </span></span>
-<span><span class="co">#&gt; [21] bslib_0.9.0       evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10      </span></span>
-<span><span class="co">#&gt; [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.7      </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.55         otel_0.2.0        textshaping_1.0.4 jsonlite_2.0.0   </span></span>
+<span><span class="co">#&gt;  [9] htmltools_0.5.9   sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   </span></span>
+<span><span class="co">#&gt; [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5  </span></span>
+<span><span class="co">#&gt; [17] compiler_4.5.2    codetools_0.2-20  fs_1.6.6          htmlwidgets_1.6.4</span></span>
+<span><span class="co">#&gt; [21] Rcpp_1.1.1        systemfonts_1.3.1 digest_0.6.39     R6_2.6.1         </span></span>
+<span><span class="co">#&gt; [25] bslib_0.9.0       tools_4.5.2       pkgdown_2.2.0     cachem_1.1.0     </span></span>
+<span><span class="co">#&gt; [29] desc_1.4.3</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

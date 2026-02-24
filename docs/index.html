@@ -229,7 +229,7 @@
 <span><span class="co"># Mixed model (requires lme4)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"lme4"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Use built-in sleepstudy data with polynomial terms</span></span>
-<span>  <span class="va">sleep</span> <span class="op">&lt;-</span> <span class="fu">lme4</span><span class="fu">::</span><span class="va">sleepstudy</span></span>
+<span>  <span class="va">sleep</span> <span class="op">&lt;-</span> <span class="fu">lme4</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/lme4/man/sleepstudy.html" class="external-link">sleepstudy</a></span></span>
 <span>  <span class="va">sleep</span><span class="op">$</span><span class="va">Days2</span> <span class="op">&lt;-</span> <span class="va">sleep</span><span class="op">$</span><span class="va">Days</span><span class="op">^</span><span class="fl">2</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span>
 <span>    <span class="va">pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">Reaction</span> <span class="op">~</span> <span class="va">Days</span> <span class="op">+</span> <span class="va">Days2</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,</span>
@@ -425,7 +425,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://github.com/gcol33" class="external-link">Gilles Colling</a> <br><small class="roles"> Author, maintainer </small>   </li>
+<a href="https://github.com/gcol33" class="external-link">Gilles Colling</a> <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0003-3070-6066" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 

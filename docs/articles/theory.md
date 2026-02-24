@@ -22,22 +22,31 @@ For algorithmic control and performance tuning, see
 
 1.  [Terminology](#terminology): Core definitions (association,
     threshold, valid subset, clique)
+
 2.  [Intuitive Overview](#intuitive-overview): Conceptual introduction
     with toy examples
+
 3.  [Problem Formulation](#problem-formulation): Formal mathematical
     statement
+
 4.  [Graph-Theoretic Interpretation](#graph-theoretic-interpretation):
     Threshold graphs and maximal cliques
+
 5.  [From Theory to Implementation](#from-theory-to-implementation): How
     concepts map to function arguments
+
 6.  [Search Algorithms](#search-algorithms): Exact enumeration vs greedy
     heuristic
+
 7.  [Algorithm Pseudocode](#algorithm-pseudocode): ELS, Bron-Kerbosch,
     Greedy
+
 8.  [Technical Details](#forced-variables): Forced variables,
     complexity, output structure
+
 9.  [Design Philosophy](#design-philosophy): Why maximal? Why hard
     threshold? Why graphs?
+
 10. [References](#references): Academic literature and further reading
 
 ------------------------------------------------------------------------
@@ -56,8 +65,10 @@ that quantifies the relationship between two variables.
 Common cases:
 
 - **Numeric–numeric:** Pearson’s $`\rho`$, Spearman’s $`\rho_s`$,
-  Kendall’s $`\tau_K`$  
-- **Categorical–categorical:** Cramér’s V  
+  Kendall’s $`\tau_K`$
+
+- **Categorical–categorical:** Cramér’s V
+
 - **Numeric–factor:** eta-squared $`\eta^2`$
 
 All measures used in the package are normalized so that  
@@ -83,8 +94,10 @@ and cannot both appear in a valid subset.
 
 Common choices:
 
-- $`\tau = 0.7`$: modelling  
-- $`\tau = 0.8`$: genomics  
+- $`\tau = 0.7`$: modelling
+
+- $`\tau = 0.8`$: genomics
+
 - $`\tau = 0.5`$: stringent pruning
 
 ------------------------------------------------------------------------
@@ -112,7 +125,8 @@ possible subset.)
 
 An undirected graph $`G = (V, E)`$ where:
 
-- each vertex in $`V`$ represents a variable  
+- each vertex in $`V`$ represents a variable
+
 - an edge $`(i,j)`$ exists exactly when $`|a_{ij}| < \tau`$
 
 Edges therefore connect *compatible* (low-association) variables.
@@ -181,7 +195,8 @@ Identifies the maximum (largest) valid subset.
 
 Chooses the method automatically:
 
-- exact mode for $`p \le 20`$  
+- exact mode for $`p \le 20`$
+
 - greedy mode for $`p > 20`$
 
 This balances optimality with computational cost.
@@ -212,7 +227,9 @@ Imagine you have a dataset with many predictors, some of which are
 highly correlated. For example:
 
 - Temperature at noon and temperature at 2pm (likely correlated ~0.9)
+
 - Monthly income and annual income (perfectly correlated)
+
 - Survey items “I am satisfied” and “I feel happy” (correlated ~0.7)
 
 When building statistical models, including highly correlated predictors
@@ -220,7 +237,9 @@ creates problems:
 
 1.  **Coefficient instability**: Small data changes cause large
     coefficient swings
+
 2.  **Inflated variance**: Standard errors become unreliable
+
 3.  **Interpretability issues**: Hard to isolate individual predictor
     effects
 
@@ -232,8 +251,10 @@ variables as possible.
 corrselect transforms this statistical problem into a **graph problem**:
 
 1.  **Represent variables as nodes** in a graph
+
 2.  **Draw edges between compatible variables** (correlation below
     threshold τ)
+
 3.  **Find maximal groups** where all nodes are connected (maximal
     cliques)
 
@@ -251,8 +272,11 @@ optimal.
 corrselect finds **all maximal** subsets because:
 
 - Real datasets often have multiple equally good solutions
+
 - You may prefer a smaller subset containing specific variables
+
 - Comparing alternatives reveals correlation structure
+
 - Exact enumeration is feasible for typical problem sizes
 
 ### Toy Example (4 Variables)
@@ -283,13 +307,17 @@ print(cor_4var)
 Observations:
 
 - **V1 and V2 are highly correlated** (0.85) - likely redundant
+
 - **V3 and V4 are moderately correlated** (0.75)
+
 - **Between-group correlations are low** (0.10-0.18)
 
 Set threshold τ = 0.7. Which pairs violate the threshold?
 
 - V1-V2: \|0.85\| ≥ 0.7 ✗ (too high)
+
 - V3-V4: \|0.75\| ≥ 0.7 ✗ (too high)
+
 - All other pairs: \< 0.7 ✓ (acceptable)
 
 ### Graph Representation
@@ -340,8 +368,11 @@ print(adj_matrix * 1)
 in a valid subset.
 
 - **V1 connects to**: V3, V4 (not V2)
+
 - **V2 connects to**: V3, V4 (not V1)
+
 - **V3 connects to**: V1, V2 (not V4)
+
 - **V4 connects to**: V1, V2 (not V3)
 
 ### Visual Graph Representation
@@ -417,21 +448,28 @@ below threshold.](theory_files/figure-html/unnamed-chunk-3-1.svg)
 **Graph interpretation**:
 
 - **Nodes**: Each variable is a vertex
+
 - **Edges** (blue lines): Connect variables with correlation \< 0.7
   (compatible pairs)
+
 - **Missing edges** (no connection): Variables with correlation ≥ 0.7
   (cannot coexist)
+
   - V1-V2: No edge (corr = 0.85)
+
   - V3-V4: No edge (corr = 0.75)
 
 **Maximal cliques** (groups where everyone connects to everyone):
 
 1.  {V1, V3}: V1—V3 edge exists ✓, cannot add V2 (no V1—V2 edge) or V4
     (no V3—V4 edge)
+
 2.  {V1, V4}: V1—V4 edge exists ✓, cannot add V2 (no V1—V2 edge) or V3
     (no V3—V4 edge)
+
 3.  {V2, V3}: V2—V3 edge exists ✓, cannot add V1 (no V1—V2 edge) or V4
     (no V3—V4 edge)
+
 4.  {V2, V4}: V2—V4 edge exists ✓, cannot add V1 (no V1—V2 edge) or V3
     (no V3—V4 edge)
 
@@ -522,10 +560,13 @@ maximal cliques.](theory_files/figure-html/unnamed-chunk-4-1.svg)
 
 - Variables within high-correlation blocks (red, orange) have **few or
   no edges** because their pairwise correlations exceed 0.7
+
 - Variables within low-correlation blocks (light blue, dark blue) have
   **many edges** because their correlations are below 0.7
+
 - Maximal cliques tend to include variables from multiple
   low-correlation blocks
+
 - This explains why corrselect tends to select variables from Block 3
   and Block 4: they have more compatible neighbors
 
@@ -536,10 +577,15 @@ A **clique** is a group where every pair is connected. In our graph:
 **Potential cliques**:
 
 - {V1, V3}: Both connect to each other ✓
+
 - {V1, V4}: Both connect to each other ✓
+
 - {V2, V3}: Both connect to each other ✓
+
 - {V2, V4}: Both connect to each other ✓
+
 - {V1, V3, V4}: Does V3 connect to V4? No ✗
+
 - {V2, V3, V4}: Does V3 connect to V4? No ✗
 
 **Maximal cliques:** Can any 2-variable clique be extended?
@@ -593,8 +639,11 @@ show(results)
 **Result interpretation**:
 
 - 4 maximal subsets found (as predicted)
+
 - All have size 2 (cannot be extended further)
+
 - Each satisfies \|correlation\| \< 0.7 for all pairs
+
 - Mean/max correlations are low (well below threshold)
 
 ### Key Insight
@@ -602,8 +651,10 @@ show(results)
 This toy example shows why corrselect enumerates all solutions:
 
 - There’s no single “best” subset, all 4 are equally valid
+
 - Choice depends on domain knowledge (which variables are theoretically
   important?)
+
 - Seeing all options reveals the correlation structure (two clusters:
   {V1,V2} and {V3,V4})
 
@@ -649,7 +700,9 @@ only search for groups containing all VIPs.
 
 - Association matrix $`A \in \mathbb{R}^{p \times p}`$ with
   $`a_{ij} = a_{ji}`$ and $`a_{ii} = 1`$ for all $`i`$
+
 - Threshold $`\tau \in (0, 1)`$
+
 - Optional forced-in set $`F \subseteq \{1, \dots, p\}`$
 
 **Constraints:**
@@ -657,6 +710,7 @@ only search for groups containing all VIPs.
 A subset $`S \subseteq \{1, \dots, p\}`$ is valid if:
 
 1.  $`F \subseteq S`$ (if $`F`$ specified)
+
 2.  $`|a_{ij}| < \tau`$ for all $`i, j \in S`$ with $`i \neq j`$
 
 **Objective:**
@@ -737,7 +791,9 @@ This representation is powerful because:
 
 1.  **Efficiency**: Graph algorithms exploit structural properties
     (sparsity, degeneracy) for faster computation
+
 2.  **Exactness**: We can enumerate all solutions, not just find one
+
 3.  **Forced variables**: Graph algorithms naturally handle constraints
     (forced-in sets)
 
@@ -749,6 +805,7 @@ is exactly a **clique** in a graph where edges represent compatibility.
 Define the **threshold graph** $`G = (V, E)`$ where:
 
 - $`V = \{1, \dots, p\}`$ (nodes represent variables)
+
 - $`(i, j) \in E`$ if and only if $`|a_{ij}| < \tau`$ (edges connect
   compatible variables)
 
@@ -911,6 +968,7 @@ correlation is *below* 0.7 (compatible variables). Note that:
 - **Within high-correlation groups**: V1-V3 have no edges connecting
   them (correlations exceed 0.7). Similarly, V4-V6 are not fully
   connected.
+
 - **Between groups**: All V1-V3 to V4-V6 pairs have edges (low
   between-group correlation).
 
@@ -948,6 +1006,7 @@ pairs within the subset.
 
 - **Subset 1** (V1, V2, V3): Mean correlation 0.80, max 0.85 - highly
   redundant within-group
+
 - **Subset 2** (V4, V5, V6): Mean correlation 0.60, max 0.65 -
   moderately correlated within-group
 
@@ -981,6 +1040,7 @@ Controls which edges appear in the threshold graph.
 
 - `corrPrune(data, threshold = 0.7)` keeps an edge only if
   $`|a_{ij}| < 0.7`$
+
 - Lower thresholds → stricter pruning → sparser graphs → smaller valid
   subsets
 
@@ -988,8 +1048,10 @@ Controls which edges appear in the threshold graph.
 
 - [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
   returns **all** maximal cliques (full exact enumeration)
+
 - [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
   returns **one** maximal clique (greedy or exact, depending on mode)
+
 - Each clique corresponds exactly to a valid variable subset satisfying
   the threshold constraint
 
@@ -998,6 +1060,7 @@ Controls which edges appear in the threshold graph.
 Ensures that certain variables appear in every returned subset.
 
 - `corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))`
+
 - Internally, the algorithm verifies that $`F`$ itself is a valid subset
   (all pairs in $`F`$ satisfy $`|a_{ij}| < \tau`$)
 
@@ -1087,8 +1150,10 @@ Two algorithms enumerate all maximal cliques exactly:
 Uses degeneracy ordering to structure the search:
 
 1.  Compute degeneracy ordering $`v_1, \dots, v_p`$
+
 2.  For each $`v_i`$, extend cliques within candidates
     $`\{v_{i+1}, \dots, v_p\}`$
+
 3.  Recursively build cliques, pruning when no extension is possible
 
 Formally, define:
@@ -1130,7 +1195,9 @@ Pivot $`u \in P \cup X`$ reduces recursive calls.
     Output: All maximal cliques containing F
 
     1. Validate F forms a clique in G
+
     2. Compute degeneracy ordering: v₁, v₂, ..., vₚ
+
     3. Initialize results = []
 
     4. For each vertex vᵢ in ordering:
@@ -1161,6 +1228,7 @@ Pivot $`u \in P \cup X`$ reduces recursive calls.
                   P = V (candidates)
                   X = ∅ (excluded)
     2. Call BK(R, P, X, results)
+
     3. Return results
 
     Subroutine: BK(R, P, X, results)
@@ -1187,7 +1255,9 @@ Pivot $`u \in P \cup X`$ reduces recursive calls.
 
 - **ELS**: $`O(d \cdot 3^{d/3})`$ where $`d`$ is degeneracy (much faster
   on sparse graphs)
+
 - **Bron-Kerbosch**: $`O(3^{p/3})`$ worst case, improved with pivoting
+
 - **Greedy** (below): $`O(p^2)`$ deterministic polynomial time
 
 ### Greedy Heuristic
@@ -1282,9 +1352,11 @@ $`G`$.
 
 **Properties:**
 
-- **Exact:** enumerates all maximal cliques  
+- **Exact:** enumerates all maximal cliques
+
 - **Efficient on sparse graphs:** performs best when the threshold graph
-  has low density  
+  has low density
+
 - **Forced-in support:** implemented by initializing the search with
   $`R = F`$
 
@@ -1345,15 +1417,19 @@ $`G`$.
 
 **Properties:**
 
-- **Exact:** enumerates all maximal cliques  
+- **Exact:** enumerates all maximal cliques
+
 - **Pivoting reduces recursion:** fewer recursive calls and tighter
-  branching  
+  branching
+
 - **Classical algorithm (1973)**
 
 **Pivot selection:**
 
-- Choosing $`u`$ with maximum degree in $`P`$ minimizes branching  
-- Without pivoting: $`O(2^p)`$ recursive calls (exponential)  
+- Choosing $`u`$ with maximum degree in $`P`$ minimizes branching
+
+- Without pivoting: $`O(2^p)`$ recursive calls (exponential)
+
 - With pivoting: $`O(3^{p/3})`$ recursive calls (still exponential but
   significantly tighter)
 
@@ -1394,15 +1470,19 @@ $`O(p^2 k)`$, where $`k`$ is the number of variables removed.
 
 **Properties:**
 
-- **Fast:** polynomial-time procedure  
-- **Deterministic:** identical input always yields identical output  
-- **Non-optimal:** does not guarantee a maximal or largest subset  
+- **Fast:** polynomial-time procedure
+
+- **Deterministic:** identical input always yields identical output
+
+- **Non-optimal:** does not guarantee a maximal or largest subset
+
 - **Forced-in support:** variables in $`F`$ are never removed
 
 **Tie-breaking:** When several variables share the same average absolute
 correlation:
 
-1.  Prefer the variable with the lower median absolute correlation  
+1.  Prefer the variable with the lower median absolute correlation
+
 2.  If still tied, prefer the lexicographically first variable name
 
 ------------------------------------------------------------------------
@@ -1417,8 +1497,10 @@ returned subsets.
 Modify the search:
 
 - Require $`F \subseteq S`$ for all valid $`S`$
+
 - Verify $`|a_{ij}| < \tau`$ for all $`i, j \in F`$ (else problem is
   infeasible)
+
 - Search for maximal extensions of $`F`$ within remaining variables
 
 Formally, find maximal cliques in $`G`$ containing $`F`$.
@@ -1446,6 +1528,7 @@ Worst-case: $`O(3^{p/3})`$ maximal cliques possible
 Performance depends on graph density:
 
 - Sparse (low $`\tau`$): fewer edges, faster enumeration
+
 - Dense (high $`\tau`$): many edges, exponential growth
 
 ### Greedy Heuristic
@@ -1463,17 +1546,25 @@ Deterministic: same input produces same output
 All selection functions return a `CorrCombo` S4 object containing:
 
 - `subset_list`: list of character vectors (variable names per subset)
+
 - `avg_corr`: numeric vector (mean $`|a_{ij}|`$ within each subset)
+
 - `min_corr`: numeric vector (min $`|a_{ij}|`$ within each subset)
+
 - `max_corr`: numeric vector (max $`|a_{ij}|`$ within each subset)
+
 - `threshold`: value of $`\tau`$
+
 - `forced_in`: forced variable names
+
 - `cor_method`: correlation/association measure used
+
 - `n_rows_used`: sample size after removing missing values
 
 Results are sorted by:
 
 1.  Subset size (descending)
+
 2.  Average absolute association (ascending)
 
 ------------------------------------------------------------------------
@@ -1638,22 +1729,26 @@ suffices (e.g., automated pipelines).
   Science 6506, 403–414.  
   [doi:10.1007/978-3-642-17517-6_36](https://doi.org/10.1007/978-3-642-17517-6_36)
   - **Foundation for the ELS algorithm:** degeneracy-based maximal
-    clique enumeration  
-  - Complexity $`O(d \cdot 3^{d/3})`$, where $`d`$ is graph degeneracy  
+    clique enumeration
+
+  - Complexity $`O(d \cdot 3^{d/3})`$, where $`d`$ is graph degeneracy
+
   - Used when `force_in` is specified
 - **Bron, C., & Kerbosch, J. (1973).**  
   *Algorithm 457: Finding all cliques of an undirected graph.*  
   Communications of the ACM, 16(9), 575–577.  
   [doi:10.1145/362342.362367](https://doi.org/10.1145/362342.362367)
   - **Foundation for the Bron–Kerbosch algorithm:** classic backtracking
-    with pivoting  
+    with pivoting
+
   - Default exact enumeration method
 - **Tomita, E., Tanaka, A., & Takahashi, H. (2006).**  
   *The worst-case time complexity for generating all maximal cliques and
   computational experiments.*  
   Theoretical Computer Science, 363(1), 28–42.  
   [doi:10.1016/j.tcs.2006.06.015](https://doi.org/10.1016/j.tcs.2006.06.015)
-  - **Pivoting strategy:** refined pivot rules for Bron–Kerbosch  
+  - **Pivoting strategy:** refined pivot rules for Bron–Kerbosch
+
   - Establishes the $`O(3^{p/3})`$ worst-case bound
 
 **Graph degeneracy**:
@@ -1662,8 +1757,10 @@ suffices (e.g., automated pipelines).
   clustering and graph coloring algorithms. *Journal of the ACM*, 30(3),
   417-427.
   [doi:10.1145/2402.322385](https://doi.org/10.1145/2402.322385)
+
   - **Degeneracy ordering**: Fundamental concept for sparse graph
     algorithms
+
   - Used in ELS algorithm for efficient enumeration
 
 **Independent sets and vertex cover**:
@@ -1672,8 +1769,10 @@ suffices (e.g., automated pipelines).
   algorithm for generating all the maximal independent sets. *SIAM
   Journal on Computing*, 6(3), 505-517.
   [doi:10.1137/0206036](https://doi.org/10.1137/0206036)
+
   - **Maximal independent set enumeration**: Theoretical foundation for
     threshold graph problem
+
   - Complements maximal clique enumeration (clique in complement graph)
 
 ### Multicollinearity and Variable Selection
@@ -1684,20 +1783,28 @@ suffices (e.g., automated pipelines).
   Diagnostics: Identifying Influential Data and Sources of
   Collinearity*. Wiley.
   [doi:10.1002/0471725153](https://doi.org/10.1002/0471725153)
+
   - **Standard reference**: VIF computation and condition indices for
     collinearity diagnosis
+
   - Foundation for modelPrune() approach
+
 - O’Brien, R. M. (2007). A caution regarding rules of thumb for variance
   inflation factors. *Quality & Quantity*, 41(5), 673-690.
   [doi:10.1007/s11135-006-9018-6](https://doi.org/10.1007/s11135-006-9018-6)
+
   - **Critical evaluation**: Common VIF thresholds (5, 10) may be
     inappropriate in some contexts
+
   - Recommends context-specific threshold selection
+
 - Marquaridt, D. W. (1970). Generalized inverses, ridge regression,
   biased linear estimation, and nonlinear estimation. *Technometrics*,
   12(3), 591-612. [doi:10.2307/1267205](https://doi.org/10.2307/1267205)
+
   - **Ridge regression**: Alternative approach to handling
     multicollinearity via regularization
+
   - Contrasts with hard variable removal (corrselect approach)
 
 **Correlation-based variable selection**:
@@ -1705,13 +1812,18 @@ suffices (e.g., automated pipelines).
 - Guyon, I., & Elisseeff, A. (2003). An introduction to variable and
   feature selection. *Journal of Machine Learning Research*, 3,
   1157-1182.
+
   - **Survey**: Overview of filter, wrapper, and embedded methods for
     variable selection
+
   - Context for correlation-based filtering (filter method)
+
 - Hall, M. A. (1999). Correlation-based feature selection for machine
   learning. PhD thesis, University of Waikato.
+
   - **Correlation-based feature selection (CFS)**: Alternative criterion
     combining feature-class correlation and feature-feature correlation
+
   - Differs from corrselect’s pairwise-only approach
 
 ### Association Measures
@@ -1721,15 +1833,20 @@ suffices (e.g., automated pipelines).
 - Pearson, K. (1895). Notes on regression and inheritance in the case of
   two parents. *Proceedings of the Royal Society of London*, 58,
   240-242.
+
   - **Pearson correlation**: Standard linear association measure
+
 - Spearman, C. (1904). The proof and measurement of association between
   two things. *American Journal of Psychology*, 15(1), 72-101.
   [doi:10.2307/1412159](https://doi.org/10.2307/1412159)
+
   - **Spearman’s rank correlation**: Monotonic association for ordered
     data
+
 - Kendall, M. G. (1938). A new measure of rank correlation.
   *Biometrika*, 30(1/2), 81-93.
   [doi:10.2307/2332226](https://doi.org/10.2307/2332226)
+
   - **Kendall’s tau**: Alternative rank-based measure, robust to
     outliers
 
@@ -1737,21 +1854,27 @@ suffices (e.g., automated pipelines).
 
 - Cramér, H. (1946). *Mathematical Methods of Statistics*. Princeton
   University Press.
+
   - **Cramér’s V**: Chi-squared-based association for categorical
     variables
+
   - Used in assocSelect() for factor-factor pairs
+
 - Pearson, K. (1900). On the criterion that a given system of deviations
   from the probable in the case of a correlated system of variables is
   such that it can be reasonably supposed to have arisen from random
   sampling. *Philosophical Magazine*, 50(302), 157-175.
+
   - **Chi-squared test**: Foundation for Cramér’s V
 
 **Mixed-type associations**:
 
 - Kelley, T. L. (1935). An unbiased correlation ratio measure.
   *Proceedings of the National Academy of Sciences*, 21(9), 554-559.
+
   - **Eta-squared (correlation ratio)**: Association between numeric and
     categorical variables
+
   - Used in assocSelect() for numeric-factor pairs
 
 ### Threshold Graph Theory
@@ -1760,11 +1883,15 @@ suffices (e.g., automated pipelines).
   Related Topics*. Amsterdam: Elsevier, Annals of Discrete Mathematics,
   Vol. 56.
   [doi:10.1016/S0167-5060(13)71063-X](https://doi.org/10.1016/S0167-5060(13)71063-X)
+
   - **Comprehensive reference**: Mathematical properties of threshold
     graphs
+
   - Theoretical foundation for threshold-based graph construction
+
 - Chvátal, V., & Hammer, P. L. (1977). Aggregation of inequalities in
   integer programming. *Annals of Discrete Mathematics*, 1, 145-162.
+
   - **Threshold graph characterization**: Alternative definitions and
     recognition algorithms
 
@@ -1772,13 +1899,18 @@ suffices (e.g., automated pipelines).
 
 - Garey, M. R., & Johnson, D. S. (1979). *Computers and Intractability:
   A Guide to the Theory of NP-Completeness*. W.H. Freeman.
+
   - **Standard reference**: Complexity classes, NP-completeness
+
   - Context for understanding exponential enumeration complexity
+
 - Moon, J. W., & Moser, L. (1965). On cliques in graphs. *Israel Journal
   of Mathematics*, 3(1), 23-28.
   [doi:10.1007/BF02760024](https://doi.org/10.1007/BF02760024)
+
   - **Theoretical bound**: Proof that graphs can have up to $`3^{p/3}`$
     maximal cliques
+
   - Justifies worst-case complexity for exact enumeration
 
 ### Applications
@@ -1789,8 +1921,10 @@ suffices (e.g., automated pipelines).
   deal with it and a simulation study evaluating their performance.
   *Ecography*, 36(1), 27-46.
   [doi:10.1111/j.1600-0587.2012.07348.x](https://doi.org/10.1111/j.1600-0587.2012.07348.x)
+
   - **Species distribution models**: Evaluation of multicollinearity
     approaches in ecology
+
   - Recommends threshold of $`\tau = 0.7`$ for bioclimatic variables
 
 **Genomics**:
@@ -1799,8 +1933,10 @@ suffices (e.g., automated pipelines).
   selection techniques in bioinformatics. *Bioinformatics*, 23(19),
   2507-2517.
   [doi:10.1093/bioinformatics/btm344](https://doi.org/10.1093/bioinformatics/btm344)
+
   - **High-dimensional biology**: Variable selection in genomics and
     proteomics
+
   - Context for correlation-based filtering in gene expression analysis
 
 ------------------------------------------------------------------------
@@ -1809,10 +1945,13 @@ suffices (e.g., automated pipelines).
 
 - [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   Interface overview and examples
+
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Real-world workflow examples
+
 - [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Algorithmic control and custom engines
+
 - [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   Comparison with alternatives
 
@@ -1845,7 +1984,7 @@ sessionInfo()
 #> [1] igraph_2.2.1     corrselect_3.1.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.6      
+#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.7      
 #>  [5] xfun_0.55         otel_0.2.0        textshaping_1.0.4 jsonlite_2.0.0   
 #>  [9] htmltools_0.5.9   sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
 #> [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5  

@@ -26,9 +26,13 @@ library(corrselect)
 This vignette covers advanced topics for power users, researchers, and method developers:
 
 1. **Understanding the Algorithms** - Exact vs greedy, complexity analysis
+
 2. **Custom Engines** - Integrate any modeling package (INLA, mgcv, brms)
+
 3. **Exact Subset Enumeration** - Multiple maximal subsets
+
 4. **Performance Optimization** - Speed and memory considerations
+
 5. **Troubleshooting** - Common issues and solutions
 
 **Target audience**: Users comfortable with R programming and statistical methods
@@ -60,8 +64,11 @@ cat("Exact mode kept:", ncol(exact_result), "variables\n")
 **Use exact mode when**:
 
 - p ≤ 20 (feasible runtime)
+
 - You need guaranteed optimal solution
+
 - Reproducibility is critical
+
 - You're writing a paper (justify optimality)
 
 ### Greedy Mode (Heuristic)
@@ -79,8 +86,11 @@ cat("Greedy mode kept:", ncol(greedy_result), "variables\n")
 **Use greedy mode when**:
 
 - p > 20 (exact becomes slow)
+
 - Speed is priority
+
 - Near-optimal is acceptable
+
 - High-dimensional data (p > 100)
 
 ### Auto Mode (Recommended)
@@ -218,6 +228,7 @@ cat("Identical:", identical(names(result1), names(result2)), "\n")
 
 **Tie-breaking rules**:
 1. Prefer variables with lower **mean absolute correlation** with others
+
 2. If still tied, prefer **lexicographically first** (alphabetical)
 
 This ensures reproducibility across runs, machines, and R versions.
@@ -257,7 +268,9 @@ cat("Selected:", attr(result, "selected_vars"), "\n")
 ### When to Use
 
 - **Multi-site studies**: Correlations may differ across locations
+
 - **Experimental conditions**: Treatment groups may have different correlation structures
+
 - **Longitudinal data**: Correlations may change over time periods
 
 ---
@@ -271,8 +284,11 @@ cat("Selected:", attr(result, "selected_vars"), "\n")
 A custom engine allows you to integrate **any** modeling framework with `modelPrune()`, not just base R's `lm()` or `lme4`. This enables diagnostic-based pruning (VIF or condition number) for:
 
 - **Bayesian models** (INLA, brms, Stan)
+
 - **Additive models** (mgcv GAMs)
+
 - **Survival models** (coxph, flexsurv)
+
 - **Custom metrics** (AIC, BIC, posterior uncertainty)
 
 ### Built-in Criteria
@@ -280,6 +296,7 @@ A custom engine allows you to integrate **any** modeling framework with `modelPr
 For built-in engines (`lm`, `glm`, `lme4`, `glmmTMB`), two criteria are available:
 
 - **`vif`** (default): Variance Inflation Factor - classic multicollinearity measure
+
 - **`condition_number`**: SVD-based condition indices - alternative collinearity diagnostic
 
 ```{r}
@@ -294,9 +311,13 @@ cat("Selected:", attr(result_cn, "selected_vars"), "\n")
 The `modelPrune()` algorithm follows this iterative process:
 
 1. **Fit** the model with current predictors
+
 2. **Diagnose** each predictor (compute a "badness" metric)
+
 3. **Identify** the worst predictor (highest diagnostic value)
+
 4. **Remove** if it exceeds the `limit` threshold
+
 5. **Repeat** until all predictors satisfy the limit
 
 Your custom engine defines steps 1 and 2; `modelPrune()` handles the iteration logic.
@@ -375,7 +396,9 @@ pruned <- modelPrune(
 ### How It Works
 
 1. **fit**: Calls `INLA::inla()` to compute posterior distributions
+
 2. **diagnostics**: Extracts posterior standard deviations from `model$summary.fixed`
+
 3. **limit**: Threshold for acceptable uncertainty (e.g., 0.5 means remove predictors with posterior SD > 0.5)
 
 **Interpretation**: Variables with high posterior SD have coefficients that are uncertain given the data. Removing them reduces model complexity without losing much information.
@@ -424,7 +447,9 @@ pruned <- modelPrune(
 ### How It Works
 
 1. **fit**: Calls `mgcv::gam()` to fit the additive model
+
 2. **diagnostics**: Extracts p-values for **parametric terms only** (not smooth terms)
+
 3. **limit**: Significance threshold (e.g., 0.05 for traditional α = 0.05)
 
 **Important**: `modelPrune()` only removes parametric (linear) terms. Smooth terms specified with `s()`, `te()`, etc. are **never removed** automatically, as they're part of the model structure.
@@ -481,7 +506,9 @@ pruned <- modelPrune(
 ### How It Works
 
 1. **fit**: Standard linear model
+
 2. **diagnostics**: For each variable, refit the model **without** that variable and compute ΔAIC
+
 3. **limit**: Threshold for ΔAIC (e.g., -2 means "remove if AIC improves by more than 2 points")
 
 **Key insight**: The score is **negated** (multiplied by -1) to maintain the "higher is worse" convention. A variable with score > -2 means removing it would worsen AIC by more than 2, so it's kept.
@@ -515,11 +542,17 @@ tryCatch({
 Your custom engine must satisfy these requirements:
 
 1. **Structure**: Named list with `fit` and `diagnostics` functions
+
 2. **fit returns model object**: Must return something the `diagnostics` function can consume
+
 3. **diagnostics returns numeric vector**: No characters, factors, or other types
+
 4. **Correct length**: One diagnostic value per fixed effect (excluding intercept)
+
 5. **Named vector**: Names must match variable names exactly
+
 6. **No missing values**: NA, NaN, or Inf will cause errors
+
 7. **Higher = worse**: Diagnostic values must increase for more problematic predictors
 
 ### Debugging Tips
@@ -676,7 +709,9 @@ cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
 **Use precomputed matrices when**:
 
 - Testing multiple thresholds
+
 - Cross-validation workflows
+
 - Sensitivity analysis
 
 ## 4.2 Memory Considerations for Large Data
@@ -786,7 +821,9 @@ tryCatch({
 
 **Solutions**:
 1. Increase threshold
+
 2. Use `force_in` to keep at least one variable
+
 3. Check data for near-duplicates
 
 ```{r, error=TRUE}
@@ -851,16 +888,19 @@ print(attr(result, "selected_vars"))
 **Conservative (strict)**:
 
 - threshold = 0.5: Very low redundancy, may lose information
+
 - Use when: Interpretability is critical, small sample size
 
 **Moderate (recommended)**:
 
 - threshold = 0.7: Balances redundancy and information retention
+
 - Use when: Standard regression, general analysis
 
 **Lenient**:
 
 - threshold = 0.9: Only removes near-duplicates
+
 - Use when: Large sample size, prediction focus
 
 ### For modelPrune() (VIF Limit)
@@ -868,16 +908,19 @@ print(attr(result, "selected_vars"))
 **Strict**:
 
 - limit = 2: Very low multicollinearity, may over-prune
+
 - Use when: Small sample size, interpretability critical
 
 **Moderate (recommended)**:
 
 - limit = 5: Standard threshold in literature
+
 - Use when: General regression analysis
 
 **Lenient**:
 
 - limit = 10: Tolerates more multicollinearity
+
 - Use when: Large sample size, prediction focus
 
 ### Empirical Approach: Visualize First
@@ -1037,22 +1080,30 @@ pipeline <- function(data, response) {
 
 ### Algorithms
 - Use **exact mode** for p ≤ 20 (optimal, reproducible)
+
 - Use **greedy mode** for p > 20 (fast, near-optimal)
+
 - Use **auto mode** to let corrselect decide
 
 ### Custom Engines
 - Integrate any modeling package (INLA, mgcv, brms)
+
 - Define custom pruning criteria (AIC, BIC, p-values)
+
 - Two required functions: `fit` and `diagnostics`
 
 ### Optimization
 - Precompute correlation matrices for multiple thresholds
+
 - Use greedy mode for large p
+
 - Parallelize across analyses, not within
 
 ### Troubleshooting
 - Visualize correlation distribution before choosing threshold
+
 - Use `force_in` to protect important variables
+
 - Two-step pruning (corrPrune → modelPrune) for robustness
 
 ---
@@ -1062,16 +1113,19 @@ pipeline <- function(data, response) {
 **Algorithms**:
 
 - Eppstein, D., Löffler, M., & Strash, D. (2010). Listing all maximal cliques in sparse graphs in near-optimal time. *Symposium on Algorithms and Computation*.
+
 - Bron, C., & Kerbosch, J. (1973). Algorithm 457: Finding all cliques of an undirected graph. *Communications of the ACM*, 16(9), 575-577.
 
 **Multicollinearity**:
 
 - O'Brien, R. M. (2007). A caution regarding rules of thumb for variance inflation factors. *Quality & Quantity*, 41(5), 673-690.
+
 - Belsley, D. A., Kuh, E., & Welsch, R. E. (1980). *Regression Diagnostics*. Wiley.
 
 **Software**:
 
 - INLA: Rue, H., Martino, S., & Chopin, N. (2009). Approximate Bayesian inference for latent Gaussian models. *Journal of the Royal Statistical Society: Series B*, 71(2), 319-392.
+
 - mgcv: Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). Chapman and Hall/CRC.
 
 ---
@@ -1079,11 +1133,17 @@ pipeline <- function(data, response) {
 ## See Also
 
 - `vignette("quickstart")` - 5-minute introduction
+
 - `vignette("workflows")` - Real-world examples
+
 - `vignette("comparison")` - vs caret, Boruta, glmnet
+
 - `vignette("corrselect_vignette")` - Original exact methods vignette
+
 - `?corrPrune` - Association-based pruning
+
 - `?modelPrune` - Model-based pruning
+
 - `?corrSelect` - Exact subset enumeration
 
 ## Session Info

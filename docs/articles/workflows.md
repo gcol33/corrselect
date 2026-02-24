@@ -22,10 +22,13 @@ Each workflow showcases different aspects of the package:
 
 1.  **Ecological Modeling**: Two-stage pruning (correlation + VIF) for
     environmental predictors
+
 2.  **Survey Data**: Protecting key variables while reducing redundancy
     in questionnaires
+
 3.  **High-Dimensional Data**: Greedy algorithms for gene expression (p
     \>\> n scenarios)
+
 4.  **Mixed Models**: VIF-based pruning of fixed effects in hierarchical
     data
 
@@ -46,6 +49,7 @@ and poor model interpretation.
 
 1.  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
     removes pairwise correlations \> 0.7
+
 2.  [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
     refines further using variance inflation factors (VIF)
 
@@ -174,7 +178,9 @@ pruning.](workflows_files/figure-html/unnamed-chunk-3-1.svg)
 We fit three models to compare the effect of pruning:
 
 1.  **Full model**: All 19 bioclimatic variables (baseline)
+
 2.  **After corrPrune**: Variables with correlations \< 0.7
+
 3.  **After modelPrune**: Further refined using VIF \< 5
 
 The VIF criterion complements correlation-based pruning by detecting
@@ -246,7 +252,9 @@ print(comparison)
 **Key insights**:
 
 - The full model has substantial multicollinearity (high κ)
+
 - Correlation-based pruning reduces κ while losing minimal fit
+
 - VIF-based refinement can further improve stability with only marginal
   R² decrease
 
@@ -342,8 +350,10 @@ unstable. The plot below compares coefficients between the full model
 
 - Variables dropped in the pruned model (shown as red-only bars) had
   unstable estimates
+
 - Variables retained in both models (overlapping bars) show more
   consistent magnitudes
+
 - The pruned model yields clearer, more interpretable effect sizes
 
 ``` r
@@ -429,7 +439,9 @@ reduces respondent burden without losing measurement quality.
 with `force_in` to:
 
 1.  Ensure critical variables (like age) appear in the final model
+
 2.  Remove redundant Likert items within constructs
+
 3.  Maintain balanced representation across satisfaction, engagement,
     and loyalty domains
 
@@ -660,8 +672,10 @@ regression is also impossible due to rank deficiency.
 **Strategy**: Use `mode = "greedy"` for fast, approximate pruning:
 
 - The greedy algorithm scales linearly with the number of variables
+
 - While not guaranteed to find the largest subset, it provides a
   high-quality solution orders of magnitude faster
+
 - Ideal for exploratory analysis in high-dimensional settings
 
 #### Data
@@ -715,7 +729,7 @@ cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
             ncol(genes_pruned),
             greedy_ms))
-#> Reduced from 200 → 177 genes (18.2 ms)
+#> Reduced from 200 → 177 genes (10.4 ms)
 ```
 
 The greedy algorithm completed in milliseconds while ensuring all
@@ -776,11 +790,11 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (6.2 ms)
+#> Exact mode: 11 genes kept (3.5 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.7 ms)
+#> Greedy mode: 10 genes kept (0.5 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 8.3x faster
+#> Speedup: 6.6x faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
@@ -832,8 +846,10 @@ need to control multicollinearity among fixed-effect predictors.
 with `engine = "lme4"`:
 
 - Only fixed effects are pruned based on VIF
+
 - Random effects `(1|subject)` and `(1|site)` are preserved in the model
   formula
+
 - This maintains the hierarchical structure while reducing collinearity
 
 **Note**: This workflow requires the `lme4` package and is shown with
@@ -1062,10 +1078,13 @@ diverse analytical pipelines:
 
 1.  **Ecological modeling**: Two-stage pruning (correlation → VIF)
     balances fit and stability
+
 2.  **Survey analysis**: `force_in` protects theoretically important
     variables while reducing redundancy
+
 3.  **High-dimensional data**: Greedy mode enables fast pruning when p
     \>\> n
+
 4.  **Mixed models**: VIF-based pruning respects hierarchical structure
     by targeting only fixed effects
 
@@ -1083,8 +1102,10 @@ diverse analytical pipelines:
 
 - **corrPrune()**: First-stage dimensionality reduction based purely on
   pairwise correlations
+
 - **modelPrune()**: Second-stage refinement that accounts for
   model-specific multicollinearity (VIF)
+
 - **Combining both**: Often yields best results (correlation pruning →
   VIF refinement → final model)
 
@@ -1092,10 +1113,13 @@ diverse analytical pipelines:
 
 - [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   Interface overview
+
 - [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Custom engines and algorithmic control
+
 - [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   Comparison with alternatives
+
 - [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Mathematical foundations
 
@@ -1105,6 +1129,7 @@ diverse analytical pipelines:
 
 - O’Brien, R. M. (2007). A caution regarding rules of thumb for variance
   inflation factors. *Quality & Quantity*, 41(5), 673-690.
+
 - Dormann, C. F., et al. (2013). Collinearity: a review of methods to
   deal with it. *Ecography*, 36(1), 27-46.
 
@@ -1137,14 +1162,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.0.2    
+#> [1] microbenchmark_1.5.0 corrselect_3.1.0    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] digest_0.6.37     desc_1.4.3        R6_2.6.1          codetools_0.2-20 
-#>  [5] fastmap_1.2.0     xfun_0.53         cachem_1.1.0      knitr_1.50       
-#>  [9] htmltools_0.5.8.1 rmarkdown_2.30    lifecycle_1.0.4   cli_3.6.5        
-#> [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.3
-#> [17] jquerylib_0.1.4   systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2      
-#> [21] bslib_0.9.0       evaluate_1.0.5    Rcpp_1.1.0        yaml_2.3.10      
-#> [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4
+#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.7      
+#>  [5] xfun_0.55         otel_0.2.0        textshaping_1.0.4 jsonlite_2.0.0   
+#>  [9] htmltools_0.5.9   sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
+#> [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5  
+#> [17] compiler_4.5.2    codetools_0.2-20  fs_1.6.6          htmlwidgets_1.6.4
+#> [21] Rcpp_1.1.1        systemfonts_1.3.1 digest_0.6.39     R6_2.6.1         
+#> [25] bslib_0.9.0       tools_4.5.2       pkgdown_2.2.0     cachem_1.1.0     
+#> [29] desc_1.4.3
 ```

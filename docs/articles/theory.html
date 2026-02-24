@@ -88,7 +88,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-01-14</h4>
+            <h4 data-toc-skip class="date">2026-02-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/theory.Rmd" class="external-link"><code>vignettes/theory.Rmd</code></a></small>
       <div class="d-none name"><code>theory.Rmd</code></div>
@@ -116,36 +116,26 @@ performance tuning, see <code><a href="../articles/advanced.html">vignette("adva
 <h3 id="contents">Contents<a class="anchor" aria-label="anchor" href="#contents"></a>
 </h3>
 <ol style="list-style-type: decimal">
-<li>
-<a href="#terminology">Terminology</a>: Core definitions
-(association, threshold, valid subset, clique)</li>
-<li>
-<a href="#intuitive-overview">Intuitive Overview</a>: Conceptual
-introduction with toy examples</li>
-<li>
-<a href="#problem-formulation">Problem Formulation</a>: Formal
-mathematical statement</li>
-<li>
-<a href="#graph-theoretic-interpretation">Graph-Theoretic
-Interpretation</a>: Threshold graphs and maximal cliques</li>
-<li>
-<a href="#from-theory-to-implementation">From Theory to
-Implementation</a>: How concepts map to function arguments</li>
-<li>
-<a href="#search-algorithms">Search Algorithms</a>: Exact
-enumeration vs greedy heuristic</li>
-<li>
-<a href="#algorithm-pseudocode">Algorithm Pseudocode</a>: ELS,
-Bron-Kerbosch, Greedy</li>
-<li>
-<a href="#forced-variables">Technical Details</a>: Forced variables,
-complexity, output structure</li>
-<li>
-<a href="#design-philosophy">Design Philosophy</a>: Why maximal? Why
-hard threshold? Why graphs?</li>
-<li>
-<a href="#references">References</a>: Academic literature and
-further reading</li>
+<li><p><a href="#terminology">Terminology</a>: Core definitions
+(association, threshold, valid subset, clique)</p></li>
+<li><p><a href="#intuitive-overview">Intuitive Overview</a>: Conceptual
+introduction with toy examples</p></li>
+<li><p><a href="#problem-formulation">Problem Formulation</a>: Formal
+mathematical statement</p></li>
+<li><p><a href="#graph-theoretic-interpretation">Graph-Theoretic
+Interpretation</a>: Threshold graphs and maximal cliques</p></li>
+<li><p><a href="#from-theory-to-implementation">From Theory to
+Implementation</a>: How concepts map to function arguments</p></li>
+<li><p><a href="#search-algorithms">Search Algorithms</a>: Exact
+enumeration vs greedy heuristic</p></li>
+<li><p><a href="#algorithm-pseudocode">Algorithm Pseudocode</a>: ELS,
+Bron-Kerbosch, Greedy</p></li>
+<li><p><a href="#forced-variables">Technical Details</a>: Forced
+variables, complexity, output structure</p></li>
+<li><p><a href="#design-philosophy">Design Philosophy</a>: Why maximal?
+Why hard threshold? Why graphs?</p></li>
+<li><p><a href="#references">References</a>: Academic literature and
+further reading</p></li>
 </ol>
 <hr>
 </div>
@@ -163,21 +153,15 @@ documentation. All other vignettes refer back to these definitions.</p>
 that quantifies the relationship between two variables.</p>
 <p>Common cases:</p>
 <ul>
-<li>
-<strong>Numeric–numeric:</strong> Pearson’s
+<li><p><strong>Numeric–numeric:</strong> Pearson’s
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>,
 Spearman’s
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\rho_s</annotation></semantics></math>,
 Kendall’s
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>K</mi></msub><annotation encoding="application/x-tex">\tau_K</annotation></semantics></math><br>
-</li>
-<li>
-<strong>Categorical–categorical:</strong> Cramér’s V<br>
-</li>
-<li>
-<strong>Numeric–factor:</strong> eta-squared
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>η</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\eta^2</annotation></semantics></math>
-</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>K</mi></msub><annotation encoding="application/x-tex">\tau_K</annotation></semantics></math></p></li>
+<li><p><strong>Categorical–categorical:</strong> Cramér’s V</p></li>
+<li><p><strong>Numeric–factor:</strong> eta-squared
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>η</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\eta^2</annotation></semantics></math></p></li>
 </ul>
 <p>All measures used in the package are normalized so that<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">|a_{ij}| \in [0,1]</annotation></semantics></math>.</p>
 <hr>
@@ -216,17 +200,12 @@ are considered too strongly associated and cannot both appear in a valid
 subset.</p>
 <p>Common choices:</p>
 <ul>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>:
-modelling<br>
-</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">\tau = 0.8</annotation></semantics></math>:
-genomics<br>
-</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\tau = 0.5</annotation></semantics></math>:
-stringent pruning</li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>:
+modelling</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">\tau = 0.8</annotation></semantics></math>:
+genomics</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\tau = 0.5</annotation></semantics></math>:
+stringent pruning</p></li>
 </ul>
 <hr>
 </div>
@@ -267,15 +246,13 @@ possible subset.)</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G = (V, E)</annotation></semantics></math>
 where:</p>
 <ul>
-<li>each vertex in
+<li><p>each vertex in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
-represents a variable<br>
-</li>
-<li>an edge
+represents a variable</p></li>
+<li><p>an edge
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i,j)</annotation></semantics></math>
 exists exactly when
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math></p></li>
 </ul>
 <p>Edges therefore connect <em>compatible</em> (low-association)
 variables.</p>
@@ -361,12 +338,10 @@ Identifies the maximum (largest) valid subset.</p>
 </h3>
 <p>Chooses the method automatically:</p>
 <ul>
-<li>exact mode for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p \le 20</annotation></semantics></math><br>
-</li>
-<li>greedy mode for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p &gt; 20</annotation></semantics></math>
-</li>
+<li><p>exact mode for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p \le 20</annotation></semantics></math></p></li>
+<li><p>greedy mode for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p &gt; 20</annotation></semantics></math></p></li>
 </ul>
 <p>This balances optimality with computational cost.</p>
 <blockquote>
@@ -406,24 +381,21 @@ simple conceptual overview.</p>
 <p>Imagine you have a dataset with many predictors, some of which are
 highly correlated. For example:</p>
 <ul>
-<li>Temperature at noon and temperature at 2pm (likely correlated
-~0.9)</li>
-<li>Monthly income and annual income (perfectly correlated)</li>
-<li>Survey items “I am satisfied” and “I feel happy” (correlated
-~0.7)</li>
+<li><p>Temperature at noon and temperature at 2pm (likely correlated
+~0.9)</p></li>
+<li><p>Monthly income and annual income (perfectly correlated)</p></li>
+<li><p>Survey items “I am satisfied” and “I feel happy” (correlated
+~0.7)</p></li>
 </ul>
 <p>When building statistical models, including highly correlated
 predictors creates problems:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Coefficient instability</strong>: Small data changes cause
-large coefficient swings</li>
-<li>
-<strong>Inflated variance</strong>: Standard errors become
-unreliable</li>
-<li>
-<strong>Interpretability issues</strong>: Hard to isolate individual
-predictor effects</li>
+<li><p><strong>Coefficient instability</strong>: Small data changes
+cause large coefficient swings</p></li>
+<li><p><strong>Inflated variance</strong>: Standard errors become
+unreliable</p></li>
+<li><p><strong>Interpretability issues</strong>: Hard to isolate
+individual predictor effects</p></li>
 </ol>
 <p>The solution: <strong>remove redundant predictors</strong> while
 keeping as many variables as possible.</p>
@@ -434,14 +406,11 @@ keeping as many variables as possible.</p>
 <p>corrselect transforms this statistical problem into a <strong>graph
 problem</strong>:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Represent variables as nodes</strong> in a graph</li>
-<li>
-<strong>Draw edges between compatible variables</strong>
-(correlation below threshold τ)</li>
-<li>
-<strong>Find maximal groups</strong> where all nodes are connected
-(maximal cliques)</li>
+<li><p><strong>Represent variables as nodes</strong> in a graph</p></li>
+<li><p><strong>Draw edges between compatible variables</strong>
+(correlation below threshold τ)</p></li>
+<li><p><strong>Find maximal groups</strong> where all nodes are
+connected (maximal cliques)</p></li>
 </ol>
 <p>Each maximal clique represents a valid subset: a group of variables
 where every pair has correlation below τ.</p>
@@ -455,10 +424,11 @@ variables, it’s locally complete.</p>
 subset, globally optimal.</p>
 <p>corrselect finds <strong>all maximal</strong> subsets because:</p>
 <ul>
-<li>Real datasets often have multiple equally good solutions</li>
-<li>You may prefer a smaller subset containing specific variables</li>
-<li>Comparing alternatives reveals correlation structure</li>
-<li>Exact enumeration is feasible for typical problem sizes</li>
+<li><p>Real datasets often have multiple equally good solutions</p></li>
+<li><p>You may prefer a smaller subset containing specific
+variables</p></li>
+<li><p>Comparing alternatives reveals correlation structure</p></li>
+<li><p>Exact enumeration is feasible for typical problem sizes</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -485,19 +455,18 @@ subset, globally optimal.</p>
 <span><span class="co">#&gt; V4 0.15 0.18 0.75 1.00</span></span></code></pre></div>
 <p>Observations:</p>
 <ul>
-<li>
-<strong>V1 and V2 are highly correlated</strong> (0.85) - likely
-redundant</li>
-<li>
-<strong>V3 and V4 are moderately correlated</strong> (0.75)</li>
-<li>
-<strong>Between-group correlations are low</strong> (0.10-0.18)</li>
+<li><p><strong>V1 and V2 are highly correlated</strong> (0.85) - likely
+redundant</p></li>
+<li><p><strong>V3 and V4 are moderately correlated</strong>
+(0.75)</p></li>
+<li><p><strong>Between-group correlations are low</strong>
+(0.10-0.18)</p></li>
 </ul>
 <p>Set threshold τ = 0.7. Which pairs violate the threshold?</p>
 <ul>
-<li>V1-V2: |0.85| ≥ 0.7 ✗ (too high)</li>
-<li>V3-V4: |0.75| ≥ 0.7 ✗ (too high)</li>
-<li>All other pairs: &lt; 0.7 ✓ (acceptable)</li>
+<li><p>V1-V2: |0.85| ≥ 0.7 ✗ (too high)</p></li>
+<li><p>V3-V4: |0.75| ≥ 0.7 ✗ (too high)</p></li>
+<li><p>All other pairs: &lt; 0.7 ✓ (acceptable)</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -541,14 +510,10 @@ Maximal cliques (maximal variable subsets):
 <p><strong>Interpretation</strong>: An edge exists between Vi and Vj if
 they can coexist in a valid subset.</p>
 <ul>
-<li>
-<strong>V1 connects to</strong>: V3, V4 (not V2)</li>
-<li>
-<strong>V2 connects to</strong>: V3, V4 (not V1)</li>
-<li>
-<strong>V3 connects to</strong>: V1, V2 (not V4)</li>
-<li>
-<strong>V4 connects to</strong>: V1, V2 (not V3)</li>
+<li><p><strong>V1 connects to</strong>: V3, V4 (not V2)</p></li>
+<li><p><strong>V2 connects to</strong>: V3, V4 (not V1)</p></li>
+<li><p><strong>V3 connects to</strong>: V1, V2 (not V4)</p></li>
+<li><p><strong>V4 connects to</strong>: V1, V2 (not V3)</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -610,7 +575,7 @@ they can coexist in a valid subset.</p>
 <span></span>
 <span><span class="co"># Add box around graph</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/box.html" class="external-link">box</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='432.00pt' viewBox='0 0 576.00 432.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -690,31 +655,29 @@ they can coexist in a valid subset.</p>
 </svg></div></p>
 <p><strong>Graph interpretation</strong>:</p>
 <ul>
+<li><p><strong>Nodes</strong>: Each variable is a vertex</p></li>
+<li><p><strong>Edges</strong> (blue lines): Connect variables with
+correlation &lt; 0.7 (compatible pairs)</p></li>
 <li>
-<strong>Nodes</strong>: Each variable is a vertex</li>
-<li>
-<strong>Edges</strong> (blue lines): Connect variables with
-correlation &lt; 0.7 (compatible pairs)</li>
-<li>
-<strong>Missing edges</strong> (no connection): Variables with
-correlation ≥ 0.7 (cannot coexist)
+<p><strong>Missing edges</strong> (no connection): Variables with
+correlation ≥ 0.7 (cannot coexist)</p>
 <ul>
-<li>V1-V2: No edge (corr = 0.85)</li>
-<li>V3-V4: No edge (corr = 0.75)</li>
+<li><p>V1-V2: No edge (corr = 0.85)</p></li>
+<li><p>V3-V4: No edge (corr = 0.75)</p></li>
 </ul>
 </li>
 </ul>
 <p><strong>Maximal cliques</strong> (groups where everyone connects to
 everyone):</p>
 <ol style="list-style-type: decimal">
-<li>{V1, V3}: V1—V3 edge exists ✓, cannot add V2 (no V1—V2 edge) or V4
-(no V3—V4 edge)</li>
-<li>{V1, V4}: V1—V4 edge exists ✓, cannot add V2 (no V1—V2 edge) or V3
-(no V3—V4 edge)</li>
-<li>{V2, V3}: V2—V3 edge exists ✓, cannot add V1 (no V1—V2 edge) or V4
-(no V3—V4 edge)</li>
-<li>{V2, V4}: V2—V4 edge exists ✓, cannot add V1 (no V1—V2 edge) or V3
-(no V3—V4 edge)</li>
+<li><p>{V1, V3}: V1—V3 edge exists ✓, cannot add V2 (no V1—V2 edge) or
+V4 (no V3—V4 edge)</p></li>
+<li><p>{V1, V4}: V1—V4 edge exists ✓, cannot add V2 (no V1—V2 edge) or
+V3 (no V3—V4 edge)</p></li>
+<li><p>{V2, V3}: V2—V3 edge exists ✓, cannot add V1 (no V1—V2 edge) or
+V4 (no V3—V4 edge)</p></li>
+<li><p>{V2, V4}: V2—V4 edge exists ✓, cannot add V1 (no V1—V2 edge) or
+V3 (no V3—V4 edge)</p></li>
 </ol>
 <p>This visual representation makes the graph-theoretic formulation
 concrete: finding maximal valid variable subsets is equivalent to
@@ -785,7 +748,7 @@ has 20 variables with known block structure:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     union</span></span>
 <span><span class="co">#&gt; Found 5 maximal cliques at threshold 0.7</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='576.00pt' viewBox='0 0 576.00 576.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -1032,26 +995,26 @@ has 20 variables with known block structure:</p>
 <circle cx='133.10' cy='256.06' r='11.43' style='stroke-width: 0.75; fill: #4575B4;' />
 </g>
 <g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHw1NzYuMDA=)'>
-<text class='preserve-color' x='240.63' y='77.00' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V1</text>
-<text class='preserve-color' x='428.52' y='100.00' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V2</text>
-<text class='preserve-color' x='257.39' y='534.14' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V3</text>
-<text class='preserve-color' x='410.24' y='519.50' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V4</text>
-<text class='preserve-color' x='66.45' y='161.74' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V5</text>
-<text class='preserve-color' x='471.63' y='202.95' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V6</text>
-<text class='preserve-color' x='397.24' y='331.05' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V7</text>
-<text class='preserve-color' x='300.31' y='396.07' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V8</text>
-<text class='preserve-color' x='507.15' y='363.78' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V9</text>
-<text class='preserve-color' x='320.37' y='167.06' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V10</text>
-<text class='preserve-color' x='375.74' y='243.77' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.16px' lengthAdjust='spacingAndGlyphs'>V11</text>
-<text class='preserve-color' x='196.29' y='182.59' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V12</text>
-<text class='preserve-color' x='190.87' y='442.20' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V13</text>
-<text class='preserve-color' x='414.92' y='420.03' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V14</text>
-<text class='preserve-color' x='259.45' y='270.36' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V15</text>
-<text class='preserve-color' x='193.52' y='352.09' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V16</text>
-<text class='preserve-color' x='516.57' y='278.83' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V17</text>
-<text class='preserve-color' x='59.43' y='308.70' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V18</text>
-<text class='preserve-color' x='92.10' y='392.87' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V19</text>
-<text class='preserve-color' x='133.10' y='259.23' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V20</text>
+<text x='240.63' y='77.00' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V1</text>
+<text x='428.52' y='100.00' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V2</text>
+<text x='257.39' y='534.14' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V3</text>
+<text x='410.24' y='519.50' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V4</text>
+<text x='66.45' y='161.74' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V5</text>
+<text x='471.63' y='202.95' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V6</text>
+<text x='397.24' y='331.05' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V7</text>
+<text x='300.31' y='396.07' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V8</text>
+<text x='507.15' y='363.78' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='11.72px' lengthAdjust='spacingAndGlyphs'>V9</text>
+<text x='320.37' y='167.06' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V10</text>
+<text x='375.74' y='243.77' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.16px' lengthAdjust='spacingAndGlyphs'>V11</text>
+<text x='196.29' y='182.59' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V12</text>
+<text x='190.87' y='442.20' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V13</text>
+<text x='414.92' y='420.03' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V14</text>
+<text x='259.45' y='270.36' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V15</text>
+<text x='193.52' y='352.09' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V16</text>
+<text x='516.57' y='278.83' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V17</text>
+<text x='59.43' y='308.70' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V18</text>
+<text x='92.10' y='392.87' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V19</text>
+<text x='133.10' y='259.23' text-anchor='middle' style='font-size: 9.60px; font-family: "Times New Roman";' textLength='16.52px' lengthAdjust='spacingAndGlyphs'>V20</text>
 </g>
 <g clip-path='url(#cpMTQuNDB8NTYxLjYwfDQzLjIwfDU2MS42MA==)'>
 <rect rx='4' x='14.40' y='43.20' width='162.81' height='57.60' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
@@ -1068,16 +1031,16 @@ has 20 variables with known block structure:</p>
 </svg></div></p>
 <p><strong>Interpretation</strong>:</p>
 <ul>
-<li>Variables within high-correlation blocks (red, orange) have
+<li><p>Variables within high-correlation blocks (red, orange) have
 <strong>few or no edges</strong> because their pairwise correlations
-exceed 0.7</li>
-<li>Variables within low-correlation blocks (light blue, dark blue) have
-<strong>many edges</strong> because their correlations are below
-0.7</li>
-<li>Maximal cliques tend to include variables from multiple
-low-correlation blocks</li>
-<li>This explains why corrselect tends to select variables from Block 3
-and Block 4: they have more compatible neighbors</li>
+exceed 0.7</p></li>
+<li><p>Variables within low-correlation blocks (light blue, dark blue)
+have <strong>many edges</strong> because their correlations are below
+0.7</p></li>
+<li><p>Maximal cliques tend to include variables from multiple
+low-correlation blocks</p></li>
+<li><p>This explains why corrselect tends to select variables from Block
+3 and Block 4: they have more compatible neighbors</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1087,12 +1050,12 @@ and Block 4: they have more compatible neighbors</li>
 In our graph:</p>
 <p><strong>Potential cliques</strong>:</p>
 <ul>
-<li>{V1, V3}: Both connect to each other ✓</li>
-<li>{V1, V4}: Both connect to each other ✓</li>
-<li>{V2, V3}: Both connect to each other ✓</li>
-<li>{V2, V4}: Both connect to each other ✓</li>
-<li>{V1, V3, V4}: Does V3 connect to V4? No ✗</li>
-<li>{V2, V3, V4}: Does V3 connect to V4? No ✗</li>
+<li><p>{V1, V3}: Both connect to each other ✓</p></li>
+<li><p>{V1, V4}: Both connect to each other ✓</p></li>
+<li><p>{V2, V3}: Both connect to each other ✓</p></li>
+<li><p>{V2, V4}: Both connect to each other ✓</p></li>
+<li><p>{V1, V3, V4}: Does V3 connect to V4? No ✗</p></li>
+<li><p>{V2, V3, V4}: Does V3 connect to V4? No ✗</p></li>
 </ul>
 <p><strong>Maximal cliques:</strong> Can any 2-variable clique be
 extended?</p>
@@ -1133,10 +1096,10 @@ representing a valid variable subset.</p>
 <span><span class="co">#&gt;   [ 4] V2, V4                            0.180  0.180     2</span></span></code></pre></div>
 <p><strong>Result interpretation</strong>:</p>
 <ul>
-<li>4 maximal subsets found (as predicted)</li>
-<li>All have size 2 (cannot be extended further)</li>
-<li>Each satisfies |correlation| &lt; 0.7 for all pairs</li>
-<li>Mean/max correlations are low (well below threshold)</li>
+<li><p>4 maximal subsets found (as predicted)</p></li>
+<li><p>All have size 2 (cannot be extended further)</p></li>
+<li><p>Each satisfies |correlation| &lt; 0.7 for all pairs</p></li>
+<li><p>Mean/max correlations are low (well below threshold)</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1144,11 +1107,11 @@ representing a valid variable subset.</p>
 </h3>
 <p>This toy example shows why corrselect enumerates all solutions:</p>
 <ul>
-<li>There’s no single “best” subset, all 4 are equally valid</li>
-<li>Choice depends on domain knowledge (which variables are
-theoretically important?)</li>
-<li>Seeing all options reveals the correlation structure (two clusters:
-{V1,V2} and {V3,V4})</li>
+<li><p>There’s no single “best” subset, all 4 are equally valid</p></li>
+<li><p>Choice depends on domain knowledge (which variables are
+theoretically important?)</p></li>
+<li><p>Seeing all options reveals the correlation structure (two
+clusters: {V1,V2} and {V3,V4})</p></li>
 </ul>
 <p>Real datasets have similar structure but with more variables and more
 complex clustering.</p>
@@ -1195,39 +1158,33 @@ so we only search for groups containing all VIPs.</p>
 </h3>
 <p><strong>Input:</strong></p>
 <ul>
-<li>Association matrix
+<li><p>Association matrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow></msup></mrow><annotation encoding="application/x-tex">A \in \mathbb{R}^{p \times p}</annotation></semantics></math>
 with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>a</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">a_{ij} = a_{ji}</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">a_{ii} = 1</annotation></semantics></math>
 for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-</li>
-<li>Threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau \in (0, 1)</annotation></semantics></math>
-</li>
-<li>Optional forced-in set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">F \subseteq \{1, \dots, p\}</annotation></semantics></math>
-</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math></p></li>
+<li><p>Threshold
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau \in (0, 1)</annotation></semantics></math></p></li>
+<li><p>Optional forced-in set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">F \subseteq \{1, \dots, p\}</annotation></semantics></math></p></li>
 </ul>
 <p><strong>Constraints:</strong></p>
 <p>A subset
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S \subseteq \{1, \dots, p\}</annotation></semantics></math>
 is valid if:</p>
 <ol style="list-style-type: decimal">
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">F \subseteq S</annotation></semantics></math>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">F \subseteq S</annotation></semantics></math>
 (if
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-specified)</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
+specified)</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
 for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">i, j \in S</annotation></semantics></math>
 with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>≠</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">i \neq j</annotation></semantics></math>
-</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>≠</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">i \neq j</annotation></semantics></math></p></li>
 </ol>
 <p><strong>Objective:</strong></p>
 <p>Find all maximal valid subsets
@@ -1350,15 +1307,12 @@ as edges, we transform the statistical problem into a well-studied graph
 problem with proven algorithms.</p>
 <p>This representation is powerful because:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Efficiency</strong>: Graph algorithms exploit structural
-properties (sparsity, degeneracy) for faster computation</li>
-<li>
-<strong>Exactness</strong>: We can enumerate all solutions, not just
-find one</li>
-<li>
-<strong>Forced variables</strong>: Graph algorithms naturally handle
-constraints (forced-in sets)</li>
+<li><p><strong>Efficiency</strong>: Graph algorithms exploit structural
+properties (sparsity, degeneracy) for faster computation</p></li>
+<li><p><strong>Exactness</strong>: We can enumerate all solutions, not
+just find one</p></li>
+<li><p><strong>Forced variables</strong>: Graph algorithms naturally
+handle constraints (forced-in sets)</p></li>
 </ol>
 <p>The key insight: a group of mutually compatible variables (valid
 subset) is exactly a <strong>clique</strong> in a graph where edges
@@ -1371,14 +1325,12 @@ represent compatibility.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G = (V, E)</annotation></semantics></math>
 where:</p>
 <ul>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">V = \{1, \dots, p\}</annotation></semantics></math>
-(nodes represent variables)</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">(i, j) \in E</annotation></semantics></math>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">V = \{1, \dots, p\}</annotation></semantics></math>
+(nodes represent variables)</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">(i, j) \in E</annotation></semantics></math>
 if and only if
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-(edges connect compatible variables)</li>
+(edges connect compatible variables)</p></li>
 </ul>
 <p><strong>Note the reversal</strong>: An edge
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
@@ -1513,7 +1465,7 @@ maximal cliques in
 <span>       bty <span class="op">=</span> <span class="st">"o"</span>,</span>
 <span>       bg <span class="op">=</span> <span class="st">"white"</span>,</span>
 <span>       cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container" tabindex="0"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
+<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='288.00pt' viewBox='0 0 576.00 288.00' class="r-plt inline-svg" style="max-width:100%;width:100%;height:auto;">
 <g class='svglite'>
 <defs>
@@ -1704,12 +1656,12 @@ maximal cliques in
 <circle cx='483.20' cy='93.60' r='10.80' style='stroke-width: 1.50; fill: #3380CC; fill-opacity: 0.70;' />
 <circle cx='501.60' cy='136.80' r='10.80' style='stroke-width: 1.50; fill: #3380CC; fill-opacity: 0.70;' />
 <circle cx='520.00' cy='165.60' r='10.80' style='stroke-width: 1.50; fill: #3380CC; fill-opacity: 0.70;' />
-<text class='preserve-color' x='391.20' y='97.05' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V1</text>
-<text class='preserve-color' x='409.60' y='125.85' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V2</text>
-<text class='preserve-color' x='372.80' y='154.59' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V3</text>
-<text class='preserve-color' x='483.20' y='97.05' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V4</text>
-<text class='preserve-color' x='501.60' y='140.18' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V5</text>
-<text class='preserve-color' x='520.00' y='168.99' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V6</text>
+<text x='391.20' y='97.05' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V1</text>
+<text x='409.60' y='125.85' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V2</text>
+<text x='372.80' y='154.59' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V3</text>
+<text x='483.20' y='97.05' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V4</text>
+<text x='501.60' y='140.18' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V5</text>
+<text x='520.00' y='168.99' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FFFFFF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='11.73px' lengthAdjust='spacingAndGlyphs'>V6</text>
 <rect rx='4' x='347.04' y='174.24' width='90.77' height='40.32' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='349.31' y1='204.48' x2='364.43' y2='204.48' style='stroke-width: 1.12; stroke: #B3B3B3;' />
 <circle cx='356.87' cy='184.32' r='5.40' style='stroke-width: 1.50; fill: #CC3333; fill-opacity: 0.70;' />
@@ -1734,13 +1686,11 @@ blue/white).</p>
 An edge connects two variables if their absolute correlation is
 <em>below</em> 0.7 (compatible variables). Note that:</p>
 <ul>
-<li>
-<strong>Within high-correlation groups</strong>: V1-V3 have no edges
-connecting them (correlations exceed 0.7). Similarly, V4-V6 are not
-fully connected.</li>
-<li>
-<strong>Between groups</strong>: All V1-V3 to V4-V6 pairs have edges
-(low between-group correlation).</li>
+<li><p><strong>Within high-correlation groups</strong>: V1-V3 have no
+edges connecting them (correlations exceed 0.7). Similarly, V4-V6 are
+not fully connected.</p></li>
+<li><p><strong>Between groups</strong>: All V1-V3 to V4-V6 pairs have
+edges (low between-group correlation).</p></li>
 </ul>
 <p>This graph structure immediately reveals the two maximal cliques:
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>V</mi><mn>1</mn><mo>,</mo><mi>V</mi><mn>2</mn><mo>,</mo><mi>V</mi><mn>3</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{V1, V2, V3\}</annotation></semantics></math>
@@ -1772,12 +1722,10 @@ the visual graph analysis. Both subsets satisfy
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; 0.7</annotation></semantics></math>
 for all pairs within the subset.</p>
 <ul>
-<li>
-<strong>Subset 1</strong> (V1, V2, V3): Mean correlation 0.80, max
-0.85 - highly redundant within-group</li>
-<li>
-<strong>Subset 2</strong> (V4, V5, V6): Mean correlation 0.60, max
-0.65 - moderately correlated within-group</li>
+<li><p><strong>Subset 1</strong> (V1, V2, V3): Mean correlation 0.80,
+max 0.85 - highly redundant within-group</p></li>
+<li><p><strong>Subset 2</strong> (V4, V5, V6): Mean correlation 0.60,
+max 0.65 - moderately correlated within-group</p></li>
 </ul>
 <p>Neither subset can be extended: adding any variable from the other
 group would introduce a pair with correlation above 0.7. For this
@@ -1814,12 +1762,11 @@ outlined below.</p>
 </h3>
 <p>Controls which edges appear in the threshold graph.</p>
 <ul>
-<li>
-<code>corrPrune(data, threshold = 0.7)</code> keeps an edge only if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; 0.7</annotation></semantics></math>
-</li>
-<li>Lower thresholds → stricter pruning → sparser graphs → smaller valid
-subsets</li>
+<li><p><code>corrPrune(data, threshold = 0.7)</code> keeps an edge only
+if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; 0.7</annotation></semantics></math></p></li>
+<li><p>Lower thresholds → stricter pruning → sparser graphs → smaller
+valid subsets</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1827,14 +1774,12 @@ subsets</li>
 <strong>Maximal cliques → Returned subsets</strong><a class="anchor" aria-label="anchor" href="#maximal-cliques-returned-subsets"></a>
 </h3>
 <ul>
-<li>
-<code><a href="../reference/corrSelect.html">corrSelect()</a></code> returns <strong>all</strong> maximal
-cliques (full exact enumeration)</li>
-<li>
-<code><a href="../reference/corrPrune.html">corrPrune()</a></code> returns <strong>one</strong> maximal clique
-(greedy or exact, depending on mode)</li>
-<li>Each clique corresponds exactly to a valid variable subset
-satisfying the threshold constraint</li>
+<li><p><code><a href="../reference/corrSelect.html">corrSelect()</a></code> returns <strong>all</strong> maximal
+cliques (full exact enumeration)</p></li>
+<li><p><code><a href="../reference/corrPrune.html">corrPrune()</a></code> returns <strong>one</strong> maximal
+clique (greedy or exact, depending on mode)</p></li>
+<li><p>Each clique corresponds exactly to a valid variable subset
+satisfying the threshold constraint</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1845,13 +1790,13 @@ satisfying the threshold constraint</li>
 </h3>
 <p>Ensures that certain variables appear in every returned subset.</p>
 <ul>
-<li><code>corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))</code></li>
-<li>Internally, the algorithm verifies that
+<li><p><code>corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))</code></p></li>
+<li><p>Internally, the algorithm verifies that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
 itself is a valid subset (all pairs in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
 satisfy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>)</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>)</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1975,16 +1920,14 @@ includes the required variables.</p>
 </h4>
 <p>Uses degeneracy ordering to structure the search:</p>
 <ol style="list-style-type: decimal">
-<li>Compute degeneracy ordering
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">v_1, \dots, v_p</annotation></semantics></math>
-</li>
-<li>For each
+<li><p>Compute degeneracy ordering
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">v_1, \dots, v_p</annotation></semantics></math></p></li>
+<li><p>For each
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>i</mi></msub><annotation encoding="application/x-tex">v_i</annotation></semantics></math>,
 extend cliques within candidates
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>v</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{v_{i+1}, \dots, v_p\}</annotation></semantics></math>
-</li>
-<li>Recursively build cliques, pruning when no extension is
-possible</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>v</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{v_{i+1}, \dots, v_p\}</annotation></semantics></math></p></li>
+<li><p>Recursively build cliques, pruning when no extension is
+possible</p></li>
 </ol>
 <p>Formally, define:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">extend</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>,</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">{</mo><mi>R</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>P</mi><mo>=</mo><mi>∅</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><munder><mo>⋃</mo><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></munder><mtext mathvariant="normal">extend</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mi>P</mi><mo>∩</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
@@ -2034,7 +1977,9 @@ Input: Threshold graph G = (V, E), forced variables F ⊆ V
 Output: All maximal cliques containing F
 
 1. Validate F forms a clique in G
+
 2. Compute degeneracy ordering: v₁, v₂, ..., vₚ
+
 3. Initialize results = []
 
 4. For each vertex vᵢ in ordering:
@@ -2063,6 +2008,7 @@ Output: All maximal cliques
               P = V (candidates)
               X = ∅ (excluded)
 2. Call BK(R, P, X, results)
+
 3. Return results
 
 Subroutine: BK(R, P, X, results)
@@ -2086,20 +2032,17 @@ Subroutine: BK(R, P, X, results)
     X = X ∪ {v}      # Add v to excluded</code></pre>
 <p><strong>Complexity</strong>:</p>
 <ul>
-<li>
-<strong>ELS</strong>:
+<li><p><strong>ELS</strong>:
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>⋅</mo><msup><mn>3</mn><mrow><mi>d</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(d \cdot 3^{d/3})</annotation></semantics></math>
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-is degeneracy (much faster on sparse graphs)</li>
-<li>
-<strong>Bron-Kerbosch</strong>:
+is degeneracy (much faster on sparse graphs)</p></li>
+<li><p><strong>Bron-Kerbosch</strong>:
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-worst case, improved with pivoting</li>
-<li>
-<strong>Greedy</strong> (below):
+worst case, improved with pivoting</p></li>
+<li><p><strong>Greedy</strong> (below):
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>
-deterministic polynomial time</li>
+deterministic polynomial time</p></li>
 </ul>
 </div>
 </div>
@@ -2215,18 +2158,12 @@ is the degeneracy of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>.</p>
 <p><strong>Properties:</strong></p>
 <ul>
-<li>
-<strong>Exact:</strong> enumerates all maximal cliques<br>
-</li>
-<li>
-<strong>Efficient on sparse graphs:</strong> performs best when the
-threshold graph has low density<br>
-</li>
-<li>
-<strong>Forced-in support:</strong> implemented by initializing the
-search with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">R = F</annotation></semantics></math>
-</li>
+<li><p><strong>Exact:</strong> enumerates all maximal cliques</p></li>
+<li><p><strong>Efficient on sparse graphs:</strong> performs best when
+the threshold graph has low density</p></li>
+<li><p><strong>Forced-in support:</strong> implemented by initializing
+the search with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">R = F</annotation></semantics></math></p></li>
 </ul>
 <hr>
 </div>
@@ -2288,30 +2225,24 @@ Subroutine BK(R, P, X):
 maximal cliques (worst-case).</p>
 <p><strong>Properties:</strong></p>
 <ul>
-<li>
-<strong>Exact:</strong> enumerates all maximal cliques<br>
-</li>
-<li>
-<strong>Pivoting reduces recursion:</strong> fewer recursive calls
-and tighter branching<br>
-</li>
-<li><strong>Classical algorithm (1973)</strong></li>
+<li><p><strong>Exact:</strong> enumerates all maximal cliques</p></li>
+<li><p><strong>Pivoting reduces recursion:</strong> fewer recursive
+calls and tighter branching</p></li>
+<li><p><strong>Classical algorithm (1973)</strong></p></li>
 </ul>
 <p><strong>Pivot selection:</strong></p>
 <ul>
-<li>Choosing
+<li><p>Choosing
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
 with maximum degree in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
-minimizes branching<br>
-</li>
-<li>Without pivoting:
+minimizes branching</p></li>
+<li><p>Without pivoting:
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>2</mn><mi>p</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(2^p)</annotation></semantics></math>
-recursive calls (exponential)<br>
-</li>
-<li>With pivoting:
+recursive calls (exponential)</p></li>
+<li><p>With pivoting:
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-recursive calls (still exponential but significantly tighter)</li>
+recursive calls (still exponential but significantly tighter)</p></li>
 </ul>
 <hr>
 </div>
@@ -2354,28 +2285,22 @@ where
 is the number of variables removed.</p>
 <p><strong>Properties:</strong></p>
 <ul>
-<li>
-<strong>Fast:</strong> polynomial-time procedure<br>
-</li>
-<li>
-<strong>Deterministic:</strong> identical input always yields
-identical output<br>
-</li>
-<li>
-<strong>Non-optimal:</strong> does not guarantee a maximal or
-largest subset<br>
-</li>
-<li>
-<strong>Forced-in support:</strong> variables in
+<li><p><strong>Fast:</strong> polynomial-time procedure</p></li>
+<li><p><strong>Deterministic:</strong> identical input always yields
+identical output</p></li>
+<li><p><strong>Non-optimal:</strong> does not guarantee a maximal or
+largest subset</p></li>
+<li><p><strong>Forced-in support:</strong> variables in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-are never removed</li>
+are never removed</p></li>
 </ul>
 <p><strong>Tie-breaking:</strong> When several variables share the same
 average absolute correlation:</p>
 <ol style="list-style-type: decimal">
-<li>Prefer the variable with the lower median absolute correlation<br>
-</li>
-<li>If still tied, prefer the lexicographically first variable name</li>
+<li><p>Prefer the variable with the lower median absolute
+correlation</p></li>
+<li><p>If still tied, prefer the lexicographically first variable
+name</p></li>
 </ol>
 <hr>
 </div>
@@ -2391,19 +2316,18 @@ must appear in all returned subsets.</p>
 </h3>
 <p>Modify the search:</p>
 <ul>
-<li>Require
+<li><p>Require
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">F \subseteq S</annotation></semantics></math>
 for all valid
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
-</li>
-<li>Verify
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math></p></li>
+<li><p>Verify
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
 for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">i, j \in F</annotation></semantics></math>
-(else problem is infeasible)</li>
-<li>Search for maximal extensions of
+(else problem is infeasible)</p></li>
+<li><p>Search for maximal extensions of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-within remaining variables</li>
+within remaining variables</p></li>
 </ul>
 <p>Formally, find maximal cliques in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
@@ -2440,12 +2364,12 @@ variable-pair type.</p>
 maximal cliques possible</p>
 <p>Performance depends on graph density:</p>
 <ul>
-<li>Sparse (low
+<li><p>Sparse (low
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>):
-fewer edges, faster enumeration</li>
-<li>Dense (high
+fewer edges, faster enumeration</p></li>
+<li><p>Dense (high
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>):
-many edges, exponential growth</li>
+many edges, exponential growth</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -2469,37 +2393,29 @@ for storing associations</p>
 <p>All selection functions return a <code>CorrCombo</code> S4 object
 containing:</p>
 <ul>
-<li>
-<code>subset_list</code>: list of character vectors (variable names
-per subset)</li>
-<li>
-<code>avg_corr</code>: numeric vector (mean
+<li><p><code>subset_list</code>: list of character vectors (variable
+names per subset)</p></li>
+<li><p><code>avg_corr</code>: numeric vector (mean
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-within each subset)</li>
-<li>
-<code>min_corr</code>: numeric vector (min
+within each subset)</p></li>
+<li><p><code>min_corr</code>: numeric vector (min
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-within each subset)</li>
-<li>
-<code>max_corr</code>: numeric vector (max
+within each subset)</p></li>
+<li><p><code>max_corr</code>: numeric vector (max
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-within each subset)</li>
-<li>
-<code>threshold</code>: value of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-</li>
-<li>
-<code>forced_in</code>: forced variable names</li>
-<li>
-<code>cor_method</code>: correlation/association measure used</li>
-<li>
-<code>n_rows_used</code>: sample size after removing missing
-values</li>
+within each subset)</p></li>
+<li><p><code>threshold</code>: value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></p></li>
+<li><p><code>forced_in</code>: forced variable names</p></li>
+<li><p><code>cor_method</code>: correlation/association measure
+used</p></li>
+<li><p><code>n_rows_used</code>: sample size after removing missing
+values</p></li>
 </ul>
 <p>Results are sorted by:</p>
 <ol style="list-style-type: decimal">
-<li>Subset size (descending)</li>
-<li>Average absolute association (ascending)</li>
+<li><p>Subset size (descending)</p></li>
+<li><p>Average absolute association (ascending)</p></li>
 </ol>
 <hr>
 </div>
@@ -2688,17 +2604,14 @@ time.</em><br>
 Algorithms and Computation: ISAAC 2010, Lecture Notes in Computer
 Science 6506, 403–414.<br><a href="https://doi.org/10.1007/978-3-642-17517-6_36" class="external-link">doi:10.1007/978-3-642-17517-6_36</a>
 <ul>
-<li>
-<strong>Foundation for the ELS algorithm:</strong> degeneracy-based
-maximal clique enumeration<br>
-</li>
-<li>Complexity
+<li><p><strong>Foundation for the ELS algorithm:</strong>
+degeneracy-based maximal clique enumeration</p></li>
+<li><p>Complexity
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>⋅</mo><msup><mn>3</mn><mrow><mi>d</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(d \cdot 3^{d/3})</annotation></semantics></math>,
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-is graph degeneracy<br>
-</li>
-<li>Used when <code>force_in</code> is specified</li>
+is graph degeneracy</p></li>
+<li><p>Used when <code>force_in</code> is specified</p></li>
 </ul>
 </li>
 <li>
@@ -2706,11 +2619,9 @@ is graph degeneracy<br>
 graph.</em><br>
 Communications of the ACM, 16(9), 575–577.<br><a href="https://doi.org/10.1145/362342.362367" class="external-link">doi:10.1145/362342.362367</a>
 <ul>
-<li>
-<strong>Foundation for the Bron–Kerbosch algorithm:</strong> classic
-backtracking with pivoting<br>
-</li>
-<li>Default exact enumeration method</li>
+<li><p><strong>Foundation for the Bron–Kerbosch algorithm:</strong>
+classic backtracking with pivoting</p></li>
+<li><p>Default exact enumeration method</p></li>
 </ul>
 </li>
 <li>
@@ -2719,40 +2630,38 @@ backtracking with pivoting<br>
 and computational experiments.</em><br>
 Theoretical Computer Science, 363(1), 28–42.<br><a href="https://doi.org/10.1016/j.tcs.2006.06.015" class="external-link">doi:10.1016/j.tcs.2006.06.015</a>
 <ul>
-<li>
-<strong>Pivoting strategy:</strong> refined pivot rules for
-Bron–Kerbosch<br>
-</li>
-<li>Establishes the
+<li><p><strong>Pivoting strategy:</strong> refined pivot rules for
+Bron–Kerbosch</p></li>
+<li><p>Establishes the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-worst-case bound</li>
+worst-case bound</p></li>
 </ul>
 </li>
 </ul>
 <p><strong>Graph degeneracy</strong>:</p>
 <ul>
-<li>Matula, D. W., &amp; Beck, L. L. (1983). Smallest-last ordering and
-clustering and graph coloring algorithms. <em>Journal of the ACM</em>,
-30(3), 417-427. <a href="https://doi.org/10.1145/2402.322385" class="external-link">doi:10.1145/2402.322385</a>
-<ul>
 <li>
-<strong>Degeneracy ordering</strong>: Fundamental concept for sparse
-graph algorithms</li>
-<li>Used in ELS algorithm for efficient enumeration</li>
+<p>Matula, D. W., &amp; Beck, L. L. (1983). Smallest-last ordering
+and clustering and graph coloring algorithms. <em>Journal of the
+ACM</em>, 30(3), 417-427. <a href="https://doi.org/10.1145/2402.322385" class="external-link">doi:10.1145/2402.322385</a></p>
+<ul>
+<li><p><strong>Degeneracy ordering</strong>: Fundamental concept for
+sparse graph algorithms</p></li>
+<li><p>Used in ELS algorithm for efficient enumeration</p></li>
 </ul>
 </li>
 </ul>
 <p><strong>Independent sets and vertex cover</strong>:</p>
 <ul>
-<li>Tsukiyama, S., Ide, M., Ariyoshi, H., &amp; Shirakawa, I. (1977). A
-new algorithm for generating all the maximal independent sets. <em>SIAM
-Journal on Computing</em>, 6(3), 505-517. <a href="https://doi.org/10.1137/0206036" class="external-link">doi:10.1137/0206036</a>
-<ul>
 <li>
-<strong>Maximal independent set enumeration</strong>: Theoretical
-foundation for threshold graph problem</li>
-<li>Complements maximal clique enumeration (clique in complement
-graph)</li>
+<p>Tsukiyama, S., Ide, M., Ariyoshi, H., &amp; Shirakawa, I. (1977).
+A new algorithm for generating all the maximal independent sets.
+<em>SIAM Journal on Computing</em>, 6(3), 505-517. <a href="https://doi.org/10.1137/0206036" class="external-link">doi:10.1137/0206036</a></p>
+<ul>
+<li><p><strong>Maximal independent set enumeration</strong>: Theoretical
+foundation for threshold graph problem</p></li>
+<li><p>Complements maximal clique enumeration (clique in complement
+graph)</p></li>
 </ul>
 </li>
 </ul>
@@ -2762,57 +2671,58 @@ graph)</li>
 </h3>
 <p><strong>Variance inflation factor (VIF)</strong>:</p>
 <ul>
-<li>Belsley, D. A., Kuh, E., &amp; Welsch, R. E. (1980). <em>Regression
-Diagnostics: Identifying Influential Data and Sources of
-Collinearity</em>. Wiley. <a href="https://doi.org/10.1002/0471725153" class="external-link">doi:10.1002/0471725153</a>
-<ul>
 <li>
-<strong>Standard reference</strong>: VIF computation and condition
-indices for collinearity diagnosis</li>
-<li>Foundation for modelPrune() approach</li>
+<p>Belsley, D. A., Kuh, E., &amp; Welsch, R. E. (1980).
+<em>Regression Diagnostics: Identifying Influential Data and Sources of
+Collinearity</em>. Wiley. <a href="https://doi.org/10.1002/0471725153" class="external-link">doi:10.1002/0471725153</a></p>
+<ul>
+<li><p><strong>Standard reference</strong>: VIF computation and
+condition indices for collinearity diagnosis</p></li>
+<li><p>Foundation for modelPrune() approach</p></li>
 </ul>
 </li>
-<li>O’Brien, R. M. (2007). A caution regarding rules of thumb for
+<li>
+<p>O’Brien, R. M. (2007). A caution regarding rules of thumb for
 variance inflation factors. <em>Quality &amp; Quantity</em>, 41(5),
-673-690. <a href="https://doi.org/10.1007/s11135-006-9018-6" class="external-link">doi:10.1007/s11135-006-9018-6</a>
+673-690. <a href="https://doi.org/10.1007/s11135-006-9018-6" class="external-link">doi:10.1007/s11135-006-9018-6</a></p>
 <ul>
-<li>
-<strong>Critical evaluation</strong>: Common VIF thresholds (5, 10)
-may be inappropriate in some contexts</li>
-<li>Recommends context-specific threshold selection</li>
+<li><p><strong>Critical evaluation</strong>: Common VIF thresholds (5,
+10) may be inappropriate in some contexts</p></li>
+<li><p>Recommends context-specific threshold selection</p></li>
 </ul>
 </li>
-<li>Marquaridt, D. W. (1970). Generalized inverses, ridge regression,
-biased linear estimation, and nonlinear estimation.
-<em>Technometrics</em>, 12(3), 591-612. <a href="https://doi.org/10.2307/1267205" class="external-link">doi:10.2307/1267205</a>
-<ul>
 <li>
-<strong>Ridge regression</strong>: Alternative approach to handling
-multicollinearity via regularization</li>
-<li>Contrasts with hard variable removal (corrselect approach)</li>
+<p>Marquaridt, D. W. (1970). Generalized inverses, ridge regression,
+biased linear estimation, and nonlinear estimation.
+<em>Technometrics</em>, 12(3), 591-612. <a href="https://doi.org/10.2307/1267205" class="external-link">doi:10.2307/1267205</a></p>
+<ul>
+<li><p><strong>Ridge regression</strong>: Alternative approach to
+handling multicollinearity via regularization</p></li>
+<li><p>Contrasts with hard variable removal (corrselect
+approach)</p></li>
 </ul>
 </li>
 </ul>
 <p><strong>Correlation-based variable selection</strong>:</p>
 <ul>
-<li>Guyon, I., &amp; Elisseeff, A. (2003). An introduction to variable
-and feature selection. <em>Journal of Machine Learning Research</em>, 3,
-1157-1182.
-<ul>
 <li>
-<strong>Survey</strong>: Overview of filter, wrapper, and embedded
-methods for variable selection</li>
-<li>Context for correlation-based filtering (filter method)</li>
+<p>Guyon, I., &amp; Elisseeff, A. (2003). An introduction to
+variable and feature selection. <em>Journal of Machine Learning
+Research</em>, 3, 1157-1182.</p>
+<ul>
+<li><p><strong>Survey</strong>: Overview of filter, wrapper, and
+embedded methods for variable selection</p></li>
+<li><p>Context for correlation-based filtering (filter method)</p></li>
 </ul>
 </li>
-<li>Hall, M. A. (1999). Correlation-based feature selection for machine
-learning. PhD thesis, University of Waikato.
-<ul>
 <li>
-<strong>Correlation-based feature selection (CFS)</strong>:
+<p>Hall, M. A. (1999). Correlation-based feature selection for
+machine learning. PhD thesis, University of Waikato.</p>
+<ul>
+<li><p><strong>Correlation-based feature selection (CFS)</strong>:
 Alternative criterion combining feature-class correlation and
-feature-feature correlation</li>
-<li>Differs from corrselect’s pairwise-only approach</li>
+feature-feature correlation</p></li>
+<li><p>Differs from corrselect’s pairwise-only approach</p></li>
 </ul>
 </li>
 </ul>
@@ -2822,26 +2732,29 @@ feature-feature correlation</li>
 </h3>
 <p><strong>Numeric associations</strong>:</p>
 <ul>
-<li>Pearson, K. (1895). Notes on regression and inheritance in the case
-of two parents. <em>Proceedings of the Royal Society of London</em>, 58,
-240-242.
+<li>
+<p>Pearson, K. (1895). Notes on regression and inheritance in the
+case of two parents. <em>Proceedings of the Royal Society of
+London</em>, 58, 240-242.</p>
 <ul>
 <li>
 <strong>Pearson correlation</strong>: Standard linear association
 measure</li>
 </ul>
 </li>
-<li>Spearman, C. (1904). The proof and measurement of association
+<li>
+<p>Spearman, C. (1904). The proof and measurement of association
 between two things. <em>American Journal of Psychology</em>, 15(1),
-72-101. <a href="https://doi.org/10.2307/1412159" class="external-link">doi:10.2307/1412159</a>
+72-101. <a href="https://doi.org/10.2307/1412159" class="external-link">doi:10.2307/1412159</a></p>
 <ul>
 <li>
 <strong>Spearman’s rank correlation</strong>: Monotonic association
 for ordered data</li>
 </ul>
 </li>
-<li>Kendall, M. G. (1938). A new measure of rank correlation.
-<em>Biometrika</em>, 30(1/2), 81-93. <a href="https://doi.org/10.2307/2332226" class="external-link">doi:10.2307/2332226</a>
+<li>
+<p>Kendall, M. G. (1938). A new measure of rank correlation.
+<em>Biometrika</em>, 30(1/2), 81-93. <a href="https://doi.org/10.2307/2332226" class="external-link">doi:10.2307/2332226</a></p>
 <ul>
 <li>
 <strong>Kendall’s tau</strong>: Alternative rank-based measure,
@@ -2851,19 +2764,20 @@ robust to outliers</li>
 </ul>
 <p><strong>Categorical associations</strong>:</p>
 <ul>
-<li>Cramér, H. (1946). <em>Mathematical Methods of Statistics</em>.
-Princeton University Press.
-<ul>
 <li>
-<strong>Cramér’s V</strong>: Chi-squared-based association for
-categorical variables</li>
-<li>Used in assocSelect() for factor-factor pairs</li>
+<p>Cramér, H. (1946). <em>Mathematical Methods of Statistics</em>.
+Princeton University Press.</p>
+<ul>
+<li><p><strong>Cramér’s V</strong>: Chi-squared-based association for
+categorical variables</p></li>
+<li><p>Used in assocSelect() for factor-factor pairs</p></li>
 </ul>
 </li>
-<li>Pearson, K. (1900). On the criterion that a given system of
+<li>
+<p>Pearson, K. (1900). On the criterion that a given system of
 deviations from the probable in the case of a correlated system of
 variables is such that it can be reasonably supposed to have arisen from
-random sampling. <em>Philosophical Magazine</em>, 50(302), 157-175.
+random sampling. <em>Philosophical Magazine</em>, 50(302), 157-175.</p>
 <ul>
 <li>
 <strong>Chi-squared test</strong>: Foundation for Cramér’s V</li>
@@ -2872,14 +2786,14 @@ random sampling. <em>Philosophical Magazine</em>, 50(302), 157-175.
 </ul>
 <p><strong>Mixed-type associations</strong>:</p>
 <ul>
-<li>Kelley, T. L. (1935). An unbiased correlation ratio measure.
-<em>Proceedings of the National Academy of Sciences</em>, 21(9),
-554-559.
-<ul>
 <li>
-<strong>Eta-squared (correlation ratio)</strong>: Association
-between numeric and categorical variables</li>
-<li>Used in assocSelect() for numeric-factor pairs</li>
+<p>Kelley, T. L. (1935). An unbiased correlation ratio measure.
+<em>Proceedings of the National Academy of Sciences</em>, 21(9),
+554-559.</p>
+<ul>
+<li><p><strong>Eta-squared (correlation ratio)</strong>: Association
+between numeric and categorical variables</p></li>
+<li><p>Used in assocSelect() for numeric-factor pairs</p></li>
 </ul>
 </li>
 </ul>
@@ -2888,19 +2802,21 @@ between numeric and categorical variables</li>
 <h3 id="threshold-graph-theory">Threshold Graph Theory<a class="anchor" aria-label="anchor" href="#threshold-graph-theory"></a>
 </h3>
 <ul>
-<li>Mahadev, N. V. R., &amp; Peled, U. N. (1995). <em>Threshold Graphs
-and Related Topics</em>. Amsterdam: Elsevier, Annals of Discrete
-Mathematics, Vol. 56. <a href="https://doi.org/10.1016/S0167-5060(13)71063-X" class="external-link">doi:10.1016/S0167-5060(13)71063-X</a>
-<ul>
 <li>
-<strong>Comprehensive reference</strong>: Mathematical properties of
-threshold graphs</li>
-<li>Theoretical foundation for threshold-based graph construction</li>
+<p>Mahadev, N. V. R., &amp; Peled, U. N. (1995). <em>Threshold
+Graphs and Related Topics</em>. Amsterdam: Elsevier, Annals of Discrete
+Mathematics, Vol. 56. <a href="https://doi.org/10.1016/S0167-5060(13)71063-X" class="external-link">doi:10.1016/S0167-5060(13)71063-X</a></p>
+<ul>
+<li><p><strong>Comprehensive reference</strong>: Mathematical properties
+of threshold graphs</p></li>
+<li><p>Theoretical foundation for threshold-based graph
+construction</p></li>
 </ul>
 </li>
-<li>Chvátal, V., &amp; Hammer, P. L. (1977). Aggregation of inequalities
-in integer programming. <em>Annals of Discrete Mathematics</em>, 1,
-145-162.
+<li>
+<p>Chvátal, V., &amp; Hammer, P. L. (1977). Aggregation of
+inequalities in integer programming. <em>Annals of Discrete
+Mathematics</em>, 1, 145-162.</p>
 <ul>
 <li>
 <strong>Threshold graph characterization</strong>: Alternative
@@ -2913,24 +2829,26 @@ definitions and recognition algorithms</li>
 <h3 id="computational-complexity">Computational Complexity<a class="anchor" aria-label="anchor" href="#computational-complexity"></a>
 </h3>
 <ul>
-<li>Garey, M. R., &amp; Johnson, D. S. (1979). <em>Computers and
-Intractability: A Guide to the Theory of NP-Completeness</em>. W.H.
-Freeman.
-<ul>
 <li>
-<strong>Standard reference</strong>: Complexity classes,
-NP-completeness</li>
-<li>Context for understanding exponential enumeration complexity</li>
+<p>Garey, M. R., &amp; Johnson, D. S. (1979). <em>Computers and
+Intractability: A Guide to the Theory of NP-Completeness</em>. W.H.
+Freeman.</p>
+<ul>
+<li><p><strong>Standard reference</strong>: Complexity classes,
+NP-completeness</p></li>
+<li><p>Context for understanding exponential enumeration
+complexity</p></li>
 </ul>
 </li>
-<li>Moon, J. W., &amp; Moser, L. (1965). On cliques in graphs.
-<em>Israel Journal of Mathematics</em>, 3(1), 23-28. <a href="https://doi.org/10.1007/BF02760024" class="external-link">doi:10.1007/BF02760024</a>
-<ul>
 <li>
-<strong>Theoretical bound</strong>: Proof that graphs can have up to
+<p>Moon, J. W., &amp; Moser, L. (1965). On cliques in graphs.
+<em>Israel Journal of Mathematics</em>, 3(1), 23-28. <a href="https://doi.org/10.1007/BF02760024" class="external-link">doi:10.1007/BF02760024</a></p>
+<ul>
+<li><p><strong>Theoretical bound</strong>: Proof that graphs can have up
+to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><annotation encoding="application/x-tex">3^{p/3}</annotation></semantics></math>
-maximal cliques</li>
-<li>Justifies worst-case complexity for exact enumeration</li>
+maximal cliques</p></li>
+<li><p>Justifies worst-case complexity for exact enumeration</p></li>
 </ul>
 </li>
 </ul>
@@ -2940,30 +2858,30 @@ maximal cliques</li>
 </h3>
 <p><strong>Bioclimatic modeling</strong>:</p>
 <ul>
-<li>Dormann, C. F., et al. (2013). Collinearity: a review of methods to
-deal with it and a simulation study evaluating their performance.
-<em>Ecography</em>, 36(1), 27-46. <a href="https://doi.org/10.1111/j.1600-0587.2012.07348.x" class="external-link">doi:10.1111/j.1600-0587.2012.07348.x</a>
-<ul>
 <li>
-<strong>Species distribution models</strong>: Evaluation of
-multicollinearity approaches in ecology</li>
-<li>Recommends threshold of
+<p>Dormann, C. F., et al. (2013). Collinearity: a review of methods
+to deal with it and a simulation study evaluating their performance.
+<em>Ecography</em>, 36(1), 27-46. <a href="https://doi.org/10.1111/j.1600-0587.2012.07348.x" class="external-link">doi:10.1111/j.1600-0587.2012.07348.x</a></p>
+<ul>
+<li><p><strong>Species distribution models</strong>: Evaluation of
+multicollinearity approaches in ecology</p></li>
+<li><p>Recommends threshold of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>
-for bioclimatic variables</li>
+for bioclimatic variables</p></li>
 </ul>
 </li>
 </ul>
 <p><strong>Genomics</strong>:</p>
 <ul>
-<li>Saeys, Y., Inza, I., &amp; Larrañaga, P. (2007). A review of feature
-selection techniques in bioinformatics. <em>Bioinformatics</em>, 23(19),
-2507-2517. <a href="https://doi.org/10.1093/bioinformatics/btm344" class="external-link">doi:10.1093/bioinformatics/btm344</a>
-<ul>
 <li>
-<strong>High-dimensional biology</strong>: Variable selection in
-genomics and proteomics</li>
-<li>Context for correlation-based filtering in gene expression
-analysis</li>
+<p>Saeys, Y., Inza, I., &amp; Larrañaga, P. (2007). A review of
+feature selection techniques in bioinformatics. <em>Bioinformatics</em>,
+23(19), 2507-2517. <a href="https://doi.org/10.1093/bioinformatics/btm344" class="external-link">doi:10.1093/bioinformatics/btm344</a></p>
+<ul>
+<li><p><strong>High-dimensional biology</strong>: Variable selection in
+genomics and proteomics</p></li>
+<li><p>Context for correlation-based filtering in gene expression
+analysis</p></li>
 </ul>
 </li>
 </ul>
@@ -2974,18 +2892,14 @@ analysis</li>
 <h2 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
 <ul>
-<li>
-<code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> - Interface overview and
-examples</li>
-<li>
-<code><a href="../articles/workflows.html">vignette("workflows")</a></code> - Real-world workflow
-examples</li>
-<li>
-<code><a href="../articles/advanced.html">vignette("advanced")</a></code> - Algorithmic control and custom
-engines</li>
-<li>
-<code><a href="../articles/comparison.html">vignette("comparison")</a></code> - Comparison with
-alternatives</li>
+<li><p><code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> - Interface overview and
+examples</p></li>
+<li><p><code><a href="../articles/workflows.html">vignette("workflows")</a></code> - Real-world workflow
+examples</p></li>
+<li><p><code><a href="../articles/advanced.html">vignette("advanced")</a></code> - Algorithmic control and
+custom engines</p></li>
+<li><p><code><a href="../articles/comparison.html">vignette("comparison")</a></code> - Comparison with
+alternatives</p></li>
 </ul>
 </div>
 <div class="section level2">
@@ -3017,7 +2931,7 @@ alternatives</li>
 <span><span class="co">#&gt; [1] igraph_2.2.1     corrselect_3.1.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.6      </span></span>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.7      </span></span>
 <span><span class="co">#&gt;  [5] xfun_0.55         otel_0.2.0        textshaping_1.0.4 jsonlite_2.0.0   </span></span>
 <span><span class="co">#&gt;  [9] htmltools_0.5.9   sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   </span></span>
 <span><span class="co">#&gt; [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5  </span></span>

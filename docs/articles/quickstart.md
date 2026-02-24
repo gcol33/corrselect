@@ -16,8 +16,11 @@ pak::pak("gcol33/corrselect")
 
 - `lme4`, `glmmTMB`: Mixed-effects models in
   [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
+
 - `WGCNA`: Biweight midcorrelation (`bicor`)
+
 - `energy`: Distance correlation
+
 - `minerva`: Maximal information coefficient
 
 ## What corrselect Does
@@ -38,13 +41,17 @@ corrselect provides three levels of interface:
 correlation:
 
 - Returns a single pruned dataset
+
 - No response variable required
+
 - Fast greedy or exact search
 
 **modelPrune()** - Reduces VIF in regression models:
 
 - Returns a single pruned dataset with response
+
 - Iteratively removes high-VIF predictors
+
 - Works with lm, glm, lme4, glmmTMB
 
 ### Level 2: Structured Subset Selection
@@ -53,13 +60,17 @@ correlation:
 
 - Enumerates all maximal valid subsets satisfying threshold (see
   [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md))
+
 - Provides full metadata (size, avg_corr, max_corr, min_corr)
+
 - Exact or greedy search
 
 **assocSelect()** - Returns all maximal subsets (mixed-type data):
 
 - Handles numeric, factor, and ordered variables
+
 - Uses appropriate association measures per variable pair
+
 - Exact or greedy search
 
 ### Level 3: Low-Level Matrix Interface
@@ -67,7 +78,9 @@ correlation:
 **MatSelect()** - Direct matrix input:
 
 - Accepts precomputed correlation/association matrices
+
 - No data preprocessing
+
 - Useful for repeated analyses
 
 ## Quick Examples
@@ -105,8 +118,10 @@ This selection criterion balances three goals:
 
 1.  **Minimize redundancy**: Lower average correlation means more
     independent variables
+
 2.  **Maximize information**: Prefers diverse variable combinations over
     tightly clustered ones
+
 3.  **Deterministic behavior**: Always returns the same result for the
     same data
 
@@ -389,19 +404,26 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 ## Troubleshooting
 
 **“No valid subsets found” error** - Threshold too strict: all variable
-pairs exceed it - Solution: Increase threshold or use `force_in` to keep
-at least one variable
+pairs exceed it
+
+- Solution: Increase threshold or use `force_in` to keep at least one
+  variable
 
 **VIF computation fails in modelPrune()** - Perfect multicollinearity
-(R² = 1) present - Solution: Use `corrPrune(threshold = 0.99)` first to
-remove near-duplicates
+(R² = 1) present
+
+- Solution: Use `corrPrune(threshold = 0.99)` first to remove
+  near-duplicates
 
 **Forced variables conflict** - Variables in `force_in` are too highly
-correlated with each other - Solution: Increase threshold or reduce
-`force_in` set
+correlated with each other
+
+- Solution: Increase threshold or reduce `force_in` set
 
 **Slow performance with many variables** - Exact mode is exponential for
-large p - Solution: Use `mode = "greedy"` for p \> 25
+large p
+
+- Solution: Use `mode = "greedy"` for p \> 25
 
 For comprehensive troubleshooting with code examples, see
 [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md),
@@ -412,12 +434,16 @@ Section 5.
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Complete real-world workflows (ecological, survey, genomic, mixed
   models)
+
 - [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Algorithmic control and custom engines
+
 - [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   Comparison with caret, Boruta, glmnet
+
 - [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Theoretical foundations and formulation
+
 - [`?corrPrune`](https://gillescolling.com/corrselect/reference/corrPrune.md),
   [`?modelPrune`](https://gillescolling.com/corrselect/reference/modelPrune.md),
   [`?corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md),
@@ -459,5 +485,5 @@ sessionInfo()
 #> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.4 jquerylib_0.1.4  
 #> [17] systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2       bslib_0.9.0      
 #> [21] evaluate_1.0.5    Rcpp_1.1.1        yaml_2.3.12       otel_0.2.0       
-#> [25] jsonlite_2.0.0    rlang_1.1.6       fs_1.6.6          htmlwidgets_1.6.4
+#> [25] jsonlite_2.0.0    rlang_1.1.7       fs_1.6.6          htmlwidgets_1.6.4
 ```

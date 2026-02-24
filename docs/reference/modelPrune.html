@@ -105,8 +105,8 @@ May include random effects for mixed models (e.g., <code>y ~ x1 + x2 + (1|group)
 <dd><p>Either a character string for built-in engines, or a list defining a custom engine.</p>
 <p><strong>Built-in engines</strong> (character string):</p><ul><li><p><code>"lm"</code> (default): Linear models via <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">stats::lm()</a></code></p></li>
 <li><p><code>"glm"</code>: Generalized linear models via <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">stats::glm()</a></code> (requires <code>family</code> argument)</p></li>
-<li><p><code>"lme4"</code>: Mixed models via <code>lme4::lmer()</code> or <code>lme4::glmer()</code> (requires lme4 package)</p></li>
-<li><p><code>"glmmTMB"</code>: Generalized linear mixed models via <code>glmmTMB::glmmTMB()</code> (requires glmmTMB package)</p></li>
+<li><p><code>"lme4"</code>: Mixed models via <code><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lme4::lmer()</a></code> or <code><a href="https://rdrr.io/pkg/lme4/man/glmer.html" class="external-link">lme4::glmer()</a></code> (requires lme4 package)</p></li>
+<li><p><code>"glmmTMB"</code>: Generalized linear mixed models via <code><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html" class="external-link">glmmTMB::glmmTMB()</a></code> (requires glmmTMB package)</p></li>
 </ul><p><strong>Custom engine</strong> (named list with required components):</p><ul><li><p><code>fit</code>: function(formula, data, ...) that returns a fitted model object</p></li>
 <li><p><code>diagnostics</code>: function(model, fixed_effects) that returns a named numeric vector
 of diagnostic scores (one per fixed effect, higher values = worse)</p></li>

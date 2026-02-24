@@ -7,8 +7,11 @@ established methods for multicollinearity management and variable
 selection:
 
 1.  **caret::findCorrelation()** - Greedy correlation-based pruning
+
 2.  **Boruta** - Random forest permutation importance
+
 3.  **glmnet** - L1/L2 regularization (LASSO/Ridge)
+
 4.  **Manual VIF removal** - Iterative variance inflation factor
     thresholding
 
@@ -87,7 +90,9 @@ Block structure present: correlations range from -0.15 to 0.97.
 caret’s `findCorrelation()` applies greedy iterative removal:
 
 1.  Identify pair with maximum $`|r_{ij}|`$
+
 2.  Remove variable with larger mean absolute correlation
+
 3.  Repeat until all $`|r_{ij}| < \tau`$
 
 Non-deterministic: results depend on internal ordering. Typically
@@ -224,9 +229,12 @@ forced variable constraints, mixed data types.
 Boruta tests variable importance via random forest permutation:
 
 1.  Create shadow features (permuted copies)
+
 2.  Fit random forest on original + shadow features
+
 3.  Test:
     $`\text{importance}(X_i) > \max(\text{importance}(\text{shadow}))`$
+
 4.  Iteratively confirm/reject until convergence
 
 **Orthogonal objective**: Boruta selects predictive variables
@@ -329,7 +337,9 @@ glmnet minimizes regularized loss:
 ```
 
 - $`\alpha = 1`$: LASSO (L1 penalty, sparse $`\beta`$)
+
 - $`\alpha = 0`$: Ridge (L2 penalty, shrinkage)
+
 - $`\lambda`$: Cross-validation selected
 
 **Difference**: glmnet performs soft selection (shrinkage) optimizing
@@ -450,7 +460,9 @@ where $`R^2_j`$ results from regressing $`X_j`$ on remaining predictors.
 Thresholds:
 
 - VIF \< 5: Low collinearity
+
 - VIF \< 10: Moderate (acceptable)
+
 - VIF ≥ 10: High (problematic)
 
 Manual approach: iteratively remove max(VIF) until all VIF \< threshold.
@@ -608,11 +620,15 @@ reproducible documentation.
 
 1.  **Maximal clique enumeration**: Optimal retention under
     $`|r_{ij}| < \tau`$ constraint
+
 2.  **Deterministic**: ELS and Bron-Kerbosch algorithms guarantee
     reproducibility
+
 3.  **Flexible**: Forced variables, mixed types, greedy/exact modes
+
 4.  **Unbiased estimates**: Hard removal preserves coefficient
     interpretability
+
 5.  **Model-agnostic**: Correlation-based preprocessing
 
 ### Integrated Workflow
@@ -662,10 +678,13 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 
 - [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
   Interface overview and usage examples
+
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -
   Domain-specific workflows (genomics, ecology, surveys)
+
 - [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -
   Algorithm selection and performance tuning
+
 - [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
   Graph-theoretic foundations and formal proofs
 
@@ -700,9 +719,9 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6         xfun_0.55            bslib_0.9.0         
 #>  [4] ggplot2_4.0.1        htmlwidgets_1.6.4    recipes_1.3.1       
-#>  [7] lattice_0.22-7       vctrs_0.6.5          tools_4.5.2         
+#>  [7] lattice_0.22-7       vctrs_0.7.0          tools_4.5.2         
 #> [10] generics_0.1.4       stats4_4.5.2         parallel_4.5.2      
-#> [13] tibble_3.3.0         ModelMetrics_1.2.2.2 pkgconfig_2.0.3     
+#> [13] tibble_3.3.1         ModelMetrics_1.2.2.2 pkgconfig_2.0.3     
 #> [16] Matrix_1.7-4         data.table_1.18.0    RColorBrewer_1.1-3  
 #> [19] S7_0.2.1             desc_1.4.3           lifecycle_1.0.5     
 #> [22] compiler_4.5.2       farver_2.1.2         stringr_1.6.0       
@@ -721,7 +740,7 @@ sessionInfo()
 #> [61] lubridate_1.9.4      timechange_0.3.0     rmarkdown_2.30      
 #> [64] globals_0.18.0       otel_0.2.0           nnet_7.3-20         
 #> [67] timeDate_4051.111    evaluate_1.0.5       knitr_1.51          
-#> [70] hardhat_1.4.2        caret_7.0-1          rlang_1.1.6         
+#> [70] hardhat_1.4.2        caret_7.0-1          rlang_1.1.7         
 #> [73] Rcpp_1.1.1           glue_1.8.0           pROC_1.19.0.1       
 #> [76] ipred_0.9-15         svglite_2.2.2        jsonlite_2.0.0      
 #> [79] R6_2.6.1             plyr_1.8.9           systemfonts_1.3.1   

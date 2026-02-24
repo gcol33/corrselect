@@ -26,8 +26,11 @@ library(corrselect)
 This vignette compares corrselect's graph-theoretic approach to four established methods for multicollinearity management and variable selection:
 
 1. **caret::findCorrelation()** - Greedy correlation-based pruning
+
 2. **Boruta** - Random forest permutation importance
+
 3. **glmnet** - L1/L2 regularization (LASSO/Ridge)
+
 4. **Manual VIF removal** - Iterative variance inflation factor thresholding
 
 Each comparison examines algorithmic differences, performance characteristics, and appropriate use cases. Evaluations use the `bioclim_example` dataset (19 bioclimatic variables, $n = 100$).
@@ -86,7 +89,9 @@ Block structure present: correlations range from -0.15 to 0.97.
 caret's `findCorrelation()` applies greedy iterative removal:
 
 1. Identify pair with maximum $|r_{ij}|$
+
 2. Remove variable with larger mean absolute correlation
+
 3. Repeat until all $|r_{ij}| < \tau$
 
 Non-deterministic: results depend on internal ordering. Typically removes more variables than graph-theoretic methods.
@@ -198,8 +203,11 @@ if (requireNamespace("caret", quietly = TRUE)) {
 Boruta tests variable importance via random forest permutation:
 
 1. Create shadow features (permuted copies)
+
 2. Fit random forest on original + shadow features
+
 3. Test: $\text{importance}(X_i) > \max(\text{importance}(\text{shadow}))$
+
 4. Iteratively confirm/reject until convergence
 
 **Orthogonal objective**: Boruta selects predictive variables (supervised). corrselect removes redundant variables (unsupervised).
@@ -289,7 +297,9 @@ $$
 $$
 
 - $\alpha = 1$: LASSO (L1 penalty, sparse $\beta$)
+
 - $\alpha = 0$: Ridge (L2 penalty, shrinkage)
+
 - $\lambda$: Cross-validation selected
 
 **Difference**: glmnet performs soft selection (shrinkage) optimizing prediction. corrselect performs hard selection (removal) based on correlation structure.
@@ -397,7 +407,9 @@ $$
 where $R^2_j$ results from regressing $X_j$ on remaining predictors. Thresholds:
 
 - VIF < 5: Low collinearity
+
 - VIF < 10: Moderate (acceptable)
+
 - VIF ≥ 10: High (problematic)
 
 Manual approach: iteratively remove max(VIF) until all VIF < threshold.
@@ -545,9 +557,13 @@ if (requireNamespace("car", quietly = TRUE)) {
 ### corrselect Distinguishing Features
 
 1. **Maximal clique enumeration**: Optimal retention under $|r_{ij}| < \tau$ constraint
+
 2. **Deterministic**: ELS and Bron-Kerbosch algorithms guarantee reproducibility
+
 3. **Flexible**: Forced variables, mixed types, greedy/exact modes
+
 4. **Unbiased estimates**: Hard removal preserves coefficient interpretability
+
 5. **Model-agnostic**: Correlation-based preprocessing
 
 ### Integrated Workflow
@@ -584,8 +600,11 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ## See Also
 
 - `vignette("quickstart")` - Interface overview and usage examples
+
 - `vignette("workflows")` - Domain-specific workflows (genomics, ecology, surveys)
+
 - `vignette("advanced")` - Algorithm selection and performance tuning
+
 - `vignette("theory")` - Graph-theoretic foundations and formal proofs
 
 ## Session Info

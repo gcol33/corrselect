@@ -35,8 +35,11 @@ pak::pak("gcol33/corrselect")
 **Suggested packages** (for extended functionality):
 
 - `lme4`, `glmmTMB`: Mixed-effects models in `modelPrune()`
+
 - `WGCNA`: Biweight midcorrelation (`bicor`)
+
 - `energy`: Distance correlation
+
 - `minerva`: Maximal information coefficient
 
 ## What corrselect Does
@@ -52,13 +55,17 @@ corrselect provides three levels of interface:
 **corrPrune()** - Removes redundant predictors based on pairwise correlation:
 
 - Returns a single pruned dataset
+
 - No response variable required
+
 - Fast greedy or exact search
 
 **modelPrune()** - Reduces VIF in regression models:
 
 - Returns a single pruned dataset with response
+
 - Iteratively removes high-VIF predictors
+
 - Works with lm, glm, lme4, glmmTMB
 
 ### Level 2: Structured Subset Selection
@@ -66,13 +73,17 @@ corrselect provides three levels of interface:
 **corrSelect()** - Returns all maximal subsets (numeric data):
 
 - Enumerates all maximal valid subsets satisfying threshold (see `vignette("theory")`)
+
 - Provides full metadata (size, avg_corr, max_corr, min_corr)
+
 - Exact or greedy search
 
 **assocSelect()** - Returns all maximal subsets (mixed-type data):
 
 - Handles numeric, factor, and ordered variables
+
 - Uses appropriate association measures per variable pair
+
 - Exact or greedy search
 
 ### Level 3: Low-Level Matrix Interface
@@ -80,7 +91,9 @@ corrselect provides three levels of interface:
 **MatSelect()** - Direct matrix input:
 
 - Accepts precomputed correlation/association matrices
+
 - No data preprocessing
+
 - Useful for repeated analyses
 
 ## Quick Examples
@@ -109,7 +122,9 @@ attr(pruned, "removed_vars")
 When multiple maximal subsets exist (which is common), `corrPrune()` returns the subset with the **lowest average absolute correlation**. This selection criterion balances three goals:
 
 1. **Minimize redundancy**: Lower average correlation means more independent variables
+
 2. **Maximize information**: Prefers diverse variable combinations over tightly clustered ones
+
 3. **Deterministic behavior**: Always returns the same result for the same data
 
 To explore **all** maximal subsets instead of just the optimal one, use `corrSelect()` (see below).
@@ -322,18 +337,22 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 
 **"No valid subsets found" error**
 - Threshold too strict: all variable pairs exceed it
+
 - Solution: Increase threshold or use `force_in` to keep at least one variable
 
 **VIF computation fails in modelPrune()**
 - Perfect multicollinearity (R² = 1) present
+
 - Solution: Use `corrPrune(threshold = 0.99)` first to remove near-duplicates
 
 **Forced variables conflict**
 - Variables in `force_in` are too highly correlated with each other
+
 - Solution: Increase threshold or reduce `force_in` set
 
 **Slow performance with many variables**
 - Exact mode is exponential for large p
+
 - Solution: Use `mode = "greedy"` for p > 25
 
 For comprehensive troubleshooting with code examples, see `vignette("advanced")`, Section 5.
@@ -341,9 +360,13 @@ For comprehensive troubleshooting with code examples, see `vignette("advanced")`
 ## See Also
 
 - `vignette("workflows")` - Complete real-world workflows (ecological, survey, genomic, mixed models)
+
 - `vignette("advanced")` - Algorithmic control and custom engines
+
 - `vignette("comparison")` - Comparison with caret, Boruta, glmnet
+
 - `vignette("theory")` - Theoretical foundations and formulation
+
 - `?corrPrune`, `?modelPrune`, `?corrSelect`, `?assocSelect`, `?MatSelect`
 
 ## Session Info
