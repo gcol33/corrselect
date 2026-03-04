@@ -147,14 +147,14 @@ p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.6            0.3
+#> 1   10           0.7            0.4
 #> 2   20           0.7            0.4
-#> 3   50           1.6            0.7
-#> 4  100           4.4            1.6
-#> 5  200          21.3            3.5
-#> 6  300          76.7            7.0
-#> 7  500         276.9           16.6
-#> 8 1000            NA           61.7
+#> 3   50           1.6            1.1
+#> 4  100           5.6            2.3
+#> 5  200          20.9            3.8
+#> 6  300          85.7            7.7
+#> 7  500         358.5           26.3
+#> 8 1000            NA           92.6
 ```
 
 ``` r
@@ -833,11 +833,11 @@ time2 <- median(microbenchmark(
 )$time) / 1e6  # Convert nanoseconds to milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 4.6 ms
+#> Recomputing each time: 8.3 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 2.2 ms
+#> Precomputed matrix: 2.9 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 2.1x faster
+#> Speedup: 2.8x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1473,11 +1473,8 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
+#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal
@@ -1489,7 +1486,7 @@ sessionInfo()
 #> [1] microbenchmark_1.5.0 corrselect_3.1.0    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] vctrs_0.7.0       svglite_2.2.2     cli_3.6.5         knitr_1.51       
+#>  [1] vctrs_0.7.1       svglite_2.2.2     cli_3.6.5         knitr_1.51       
 #>  [5] rlang_1.1.7       xfun_0.55         otel_0.2.0        textshaping_1.0.4
 #>  [9] jsonlite_2.0.0    glue_1.8.0        htmltools_0.5.9   sass_0.4.10      
 #> [13] rmarkdown_2.30    evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65      

@@ -17,7 +17,7 @@ selection:
 
 Each comparison examines algorithmic differences, performance
 characteristics, and appropriate use cases. Evaluations use the
-`bioclim_example` dataset (19 bioclimatic variables, $`n = 100`$).
+`bioclim_example` dataset (19 bioclimatic variables, \\n = 100\\).
 
 See
 [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
@@ -89,11 +89,11 @@ Block structure present: correlations range from -0.15 to 0.97.
 
 caret’s `findCorrelation()` applies greedy iterative removal:
 
-1.  Identify pair with maximum $`|r_{ij}|`$
+1.  Identify pair with maximum \\\|r\_{ij}\|\\
 
 2.  Remove variable with larger mean absolute correlation
 
-3.  Repeat until all $`|r_{ij}| < \tau`$
+3.  Repeat until all \\\|r\_{ij}\| \< \tau\\
 
 Non-deterministic: results depend on internal ordering. Typically
 removes more variables than graph-theoretic methods.
@@ -134,9 +134,9 @@ cat("  Removed:", paste(attr(result_corrselect, "removed_vars"), collapse = ", "
 #>   Removed: BIO2, BIO4, BIO5, BIO7, BIO8, BIO10, BIO15
 ```
 
-corrselect retains more variables
-($`|S_{\text{corrselect}}| \ge |S_{\text{caret}}|`$) via maximal clique
-enumeration while satisfying identical threshold constraint.
+corrselect retains more variables (\\\|S\_{\text{corrselect}}\| \ge
+\|S\_{\text{caret}}\|\\) via maximal clique enumeration while satisfying
+identical threshold constraint.
 
 ### Distribution Comparison
 
@@ -207,10 +207,10 @@ removal.](comparison_files/figure-html/unnamed-chunk-5-1.svg)
 | **Algorithm** | Greedy iterative removal | Maximal clique enumeration |
 | **Optimality** | Heuristic | Exact (mode = “exact”) |
 | **Reproducibility** | Non-deterministic | Deterministic |
-| **Variables retained** | $`\le`$ optimal | Maximal |
+| **Variables retained** | \\\le\\ optimal | Maximal |
 | **Forced variables** | No | Yes (`force_in`) |
 | **Mixed data** | No | Yes (`assocSelect`) |
-| **Complexity** | $`O(p^2)`$ | $`O(p^2)`$ greedy, $`O(3^{p/3})`$ exact |
+| **Complexity** | \\O(p^2)\\ | \\O(p^2)\\ greedy, \\O(3^{p/3})\\ exact |
 
 ### Applications
 
@@ -232,8 +232,8 @@ Boruta tests variable importance via random forest permutation:
 
 2.  Fit random forest on original + shadow features
 
-3.  Test:
-    $`\text{importance}(X_i) > \max(\text{importance}(\text{shadow}))`$
+3.  Test: \\\text{importance}(X_i) \>
+    \max(\text{importance}(\text{shadow}))\\
 
 4.  Iteratively confirm/reject until convergence
 
@@ -284,14 +284,14 @@ corrselect minimizes redundancy.
 
 ### Comparison
 
-| Criterion             | Boruta                     | corrselect            |
-|-----------------------|----------------------------|-----------------------|
-| **Objective**         | Predictive power           | Redundancy removal    |
-| **Criterion**         | Permutation importance     | $`\|r_{ij}\| < \tau`$ |
-| **Response**          | Required                   | Not required          |
-| **Multicollinearity** | Indirect                   | Direct                |
-| **Stochastic**        | Yes                        | No                    |
-| **Complexity**        | High ($`\ge 100`$ forests) | Low (graph)           |
+| Criterion             | Boruta                     | corrselect              |
+|-----------------------|----------------------------|-------------------------|
+| **Objective**         | Predictive power           | Redundancy removal      |
+| **Criterion**         | Permutation importance     | \\\\r\_{ij}\\ \< \tau\\ |
+| **Response**          | Required                   | Not required            |
+| **Multicollinearity** | Indirect                   | Direct                  |
+| **Stochastic**        | Yes                        | No                      |
+| **Complexity**        | High (\\\ge 100\\ forests) | Low (graph)             |
 
 ### Sequential Application
 
@@ -332,15 +332,14 @@ redundancy removal and importance testing.
 
 glmnet minimizes regularized loss:
 
-``` math
-\min_{\beta} \frac{1}{2n} \|y - X\beta\|_2^2 + \lambda \left[\alpha \|\beta\|_1 + (1-\alpha) \|\beta\|_2^2\right]
-```
+\\ \min\_{\beta} \frac{1}{2n} \\y - X\beta\\\_2^2 + \lambda
+\left\[\alpha \\\beta\\\_1 + (1-\alpha) \\\beta\\\_2^2\right\] \\
 
-- $`\alpha = 1`$: LASSO (L1 penalty, sparse $`\beta`$)
+- \\\alpha = 1\\: LASSO (L1 penalty, sparse \\\beta\\)
 
-- $`\alpha = 0`$: Ridge (L2 penalty, shrinkage)
+- \\\alpha = 0\\: Ridge (L2 penalty, shrinkage)
 
-- $`\lambda`$: Cross-validation selected
+- \\\lambda\\: Cross-validation selected
 
 **Difference**: glmnet performs soft selection (shrinkage) optimizing
 prediction. corrselect performs hard selection (removal) based on
@@ -386,9 +385,9 @@ if (requireNamespace("glmnet", quietly = TRUE)) {
 }
 ```
 
-glmnet selects fewer variables
-($`|S_{\text{glmnet}}| \le |S_{\text{corrselect}}|`$) optimizing
-prediction. corrselect maximizes retention under correlation constraint.
+glmnet selects fewer variables (\\\|S\_{\text{glmnet}}\| \le
+\|S\_{\text{corrselect}}\|\\) optimizing prediction. corrselect
+maximizes retention under correlation constraint.
 
 ### Coefficient Comparison
 
@@ -430,12 +429,12 @@ shrinkage. corrselect preserves effect sizes.
 | **Coefficient bias** | Yes (L1/L2) | No |
 | **Multicollinearity** | Regularization | Pruning |
 | **Response** | Required | Not required |
-| **Tuning** | $`\lambda`$ (cross-validation) | $`\tau`$ (user-specified) |
+| **Tuning** | \\\lambda\\ (cross-validation) | \\\tau\\ (user-specified) |
 | **Interpretability** | Shrunk effects | Direct effects |
 
 ### Applications
 
-**glmnet**: Prediction-focused, high-dimensional ($`p > n`$), accepts
+**glmnet**: Prediction-focused, high-dimensional (\\p \> n\\), accepts
 biased coefficients.
 
 **corrselect**: Interpretable coefficients, exploratory analysis,
@@ -452,11 +451,9 @@ prediction (glmnet).
 
 Variance Inflation Factor quantifies predictor multicollinearity:
 
-``` math
-\text{VIF}_j = \frac{1}{1 - R^2_j}
-```
+\\ \text{VIF}\_j = \frac{1}{1 - R^2_j} \\
 
-where $`R^2_j`$ results from regressing $`X_j`$ on remaining predictors.
+where \\R^2_j\\ results from regressing \\X_j\\ on remaining predictors.
 Thresholds:
 
 - VIF \< 5: Low collinearity
@@ -619,7 +616,7 @@ reproducible documentation.
 ### corrselect Distinguishing Features
 
 1.  **Maximal clique enumeration**: Optimal retention under
-    $`|r_{ij}| < \tau`$ constraint
+    \\\|r\_{ij}\| \< \tau\\ constraint
 
 2.  **Deterministic**: ELS and Bron-Kerbosch algorithms guarantee
     reproducibility
@@ -701,11 +698,8 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
+#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal
@@ -719,7 +713,7 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6         xfun_0.55            bslib_0.9.0         
 #>  [4] ggplot2_4.0.1        htmlwidgets_1.6.4    recipes_1.3.1       
-#>  [7] lattice_0.22-7       vctrs_0.7.0          tools_4.5.2         
+#>  [7] lattice_0.22-7       vctrs_0.7.1          tools_4.5.2         
 #> [10] generics_0.1.4       stats4_4.5.2         parallel_4.5.2      
 #> [13] tibble_3.3.1         ModelMetrics_1.2.2.2 pkgconfig_2.0.3     
 #> [16] Matrix_1.7-4         data.table_1.18.0    RColorBrewer_1.1-3  

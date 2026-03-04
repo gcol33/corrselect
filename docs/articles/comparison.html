@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Comparison with Alternatives • corrselect</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -88,7 +94,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-02-24</h4>
+            <h4 data-toc-skip class="date">2026-03-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/comparison.Rmd" class="external-link"><code>vignettes/comparison.Rmd</code></a></small>
       <div class="d-none name"><code>comparison.Rmd</code></div>
@@ -114,8 +120,7 @@ inflation factor thresholding</p></li>
 </ol>
 <p>Each comparison examines algorithmic differences, performance
 characteristics, and appropriate use cases. Evaluations use the
-<code>bioclim_example</code> dataset (19 bioclimatic variables,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">n = 100</annotation></semantics></math>).</p>
+<code>bioclim_example</code> dataset (19 bioclimatic variables, <span class="math inline">\(n = 100\)</span>).</p>
 <p>See <code><a href="../articles/theory.html">vignette("theory")</a></code> for mathematical foundations. See
 <code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> for usage examples.</p>
 <hr>
@@ -1022,11 +1027,10 @@ characteristics, and appropriate use cases. Evaluations use the
 <p>caret’s <code>findCorrelation()</code> applies greedy iterative
 removal:</p>
 <ol style="list-style-type: decimal">
-<li><p>Identify pair with maximum
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|r_{ij}|</annotation></semantics></math></p></li>
+<li><p>Identify pair with maximum <span class="math inline">\(|r_{ij}|\)</span></p></li>
 <li><p>Remove variable with larger mean absolute correlation</p></li>
-<li><p>Repeat until all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|r_{ij}| &lt; \tau</annotation></semantics></math></p></li>
+<li><p>Repeat until all <span class="math inline">\(|r_{ij}| &lt;
+\tau\)</span></p></li>
 </ol>
 <p>Non-deterministic: results depend on internal ordering. Typically
 removes more variables than graph-theoretic methods.</p>
@@ -1062,10 +1066,9 @@ removes more variables than graph-theoretic methods.</p>
 <span><span class="co">#&gt;   Variables removed: 7</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Removed:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result_corrselect</span>, <span class="st">"removed_vars"</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Removed: BIO2, BIO4, BIO5, BIO7, BIO8, BIO10, BIO15</span></span></code></pre></div>
-<p>corrselect retains more variables
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>S</mi><mtext mathvariant="normal">corrselect</mtext></msub><mo stretchy="false" form="prefix">|</mo><mo>≥</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>S</mi><mtext mathvariant="normal">caret</mtext></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|S_{\text{corrselect}}| \ge |S_{\text{caret}}|</annotation></semantics></math>)
-via maximal clique enumeration while satisfying identical threshold
-constraint.</p>
+<p>corrselect retains more variables (<span class="math inline">\(|S_{\text{corrselect}}| \ge
+|S_{\text{caret}}|\)</span>) via maximal clique enumeration while
+satisfying identical threshold constraint.</p>
 </div>
 <div class="section level3">
 <h3 id="distribution-comparison">Distribution Comparison<a class="anchor" aria-label="anchor" href="#distribution-comparison"></a>
@@ -1349,8 +1352,7 @@ constraint.</p>
 <tr class="even">
 <td><strong>Variables retained</strong></td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≤</mo><annotation encoding="application/x-tex">\le</annotation></semantics></math>
-optimal</td>
+<span class="math inline">\(\le\)</span> optimal</td>
 <td>Maximal</td>
 </tr>
 <tr class="odd">
@@ -1365,12 +1367,9 @@ optimal</td>
 </tr>
 <tr class="odd">
 <td><strong>Complexity</strong></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math></td>
+<td><span class="math inline">\(O(p^2)\)</span></td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>
-greedy,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-exact</td>
+<span class="math inline">\(O(p^2)\)</span> greedy, <span class="math inline">\(O(3^{p/3})\)</span> exact</td>
 </tr>
 </tbody>
 </table>
@@ -1395,8 +1394,8 @@ retention, forced variable constraints, mixed data types.</p>
 <ol style="list-style-type: decimal">
 <li><p>Create shadow features (permuted copies)</p></li>
 <li><p>Fit random forest on original + shadow features</p></li>
-<li><p>Test:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">importance</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">importance</mtext><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">shadow</mtext><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{importance}(X_i) &gt; \max(\text{importance}(\text{shadow}))</annotation></semantics></math></p></li>
+<li><p>Test: <span class="math inline">\(\text{importance}(X_i) &gt;
+\max(\text{importance}(\text{shadow}))\)</span></p></li>
 <li><p>Iteratively confirm/reject until convergence</p></li>
 </ol>
 <p><strong>Orthogonal objective</strong>: Boruta selects predictive
@@ -1458,7 +1457,7 @@ corrselect minimizes redundancy.</p>
 <tr class="even">
 <td><strong>Criterion</strong></td>
 <td>Permutation importance</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">\|r_{ij}\| &lt; \tau</annotation></semantics></math></td>
+<td><span class="math inline">\(\|r_{ij}\| &lt; \tau\)</span></td>
 </tr>
 <tr class="odd">
 <td><strong>Response</strong></td>
@@ -1477,9 +1476,7 @@ corrselect minimizes redundancy.</p>
 </tr>
 <tr class="even">
 <td><strong>Complexity</strong></td>
-<td>High
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\ge 100</annotation></semantics></math>
-forests)</td>
+<td>High (<span class="math inline">\(\ge 100\)</span> forests)</td>
 <td>Low (graph)</td>
 </tr>
 </tbody>
@@ -1523,17 +1520,17 @@ requiring both redundancy removal and importance testing.</p>
 <h3 id="method-2">Method<a class="anchor" aria-label="anchor" href="#method-2"></a>
 </h3>
 <p>glmnet minimizes regularized loss:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mi mathvariant="normal">min</mi><mi>β</mi></munder><mfrac><mn>1</mn><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><mo>−</mo><mi>X</mi><mi>β</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup><mo>+</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>α</mi><mo stretchy="false" form="postfix">∥</mo><mi>β</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>1</mn></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">∥</mo><mi>β</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
-\min_{\beta} \frac{1}{2n} \|y - X\beta\|_2^2 + \lambda \left[\alpha \|\beta\|_1 + (1-\alpha) \|\beta\|_2^2\right]
-</annotation></semantics></math></p>
+<p><span class="math display">\[
+\min_{\beta} \frac{1}{2n} \|y - X\beta\|_2^2 + \lambda \left[\alpha
+\|\beta\|_1 + (1-\alpha) \|\beta\|_2^2\right]
+\]</span></p>
 <ul>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\alpha = 1</annotation></semantics></math>:
-LASSO (L1 penalty, sparse
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>)</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\alpha = 0</annotation></semantics></math>:
-Ridge (L2 penalty, shrinkage)</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>:
-Cross-validation selected</p></li>
+<li><p><span class="math inline">\(\alpha = 1\)</span>: LASSO (L1
+penalty, sparse <span class="math inline">\(\beta\)</span>)</p></li>
+<li><p><span class="math inline">\(\alpha = 0\)</span>: Ridge (L2
+penalty, shrinkage)</p></li>
+<li><p><span class="math inline">\(\lambda\)</span>: Cross-validation
+selected</p></li>
 </ul>
 <p><strong>Difference</strong>: glmnet performs soft selection
 (shrinkage) optimizing prediction. corrselect performs hard selection
@@ -1574,10 +1571,9 @@ Cross-validation selected</p></li>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  corrselect: R² ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_corrselect</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span>, <span class="fl">3</span><span class="op">)</span>,</span>
 <span>      <span class="st">"with"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">result_corrselect</span><span class="op">)</span>, <span class="st">"predictors\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>glmnet selects fewer variables
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>S</mi><mtext mathvariant="normal">glmnet</mtext></msub><mo stretchy="false" form="prefix">|</mo><mo>≤</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>S</mi><mtext mathvariant="normal">corrselect</mtext></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|S_{\text{glmnet}}| \le |S_{\text{corrselect}}|</annotation></semantics></math>)
-optimizing prediction. corrselect maximizes retention under correlation
-constraint.</p>
+<p>glmnet selects fewer variables (<span class="math inline">\(|S_{\text{glmnet}}| \le
+|S_{\text{corrselect}}|\)</span>) optimizing prediction. corrselect
+maximizes retention under correlation constraint.</p>
 </div>
 <div class="section level3">
 <h3 id="coefficient-comparison">Coefficient Comparison<a class="anchor" aria-label="anchor" href="#coefficient-comparison"></a>
@@ -1646,11 +1642,9 @@ shrinkage. corrselect preserves effect sizes.</p>
 <tr class="even">
 <td><strong>Tuning</strong></td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-(cross-validation)</td>
+<span class="math inline">\(\lambda\)</span> (cross-validation)</td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-(user-specified)</td>
+<span class="math inline">\(\tau\)</span> (user-specified)</td>
 </tr>
 <tr class="odd">
 <td><strong>Interpretability</strong></td>
@@ -1663,9 +1657,8 @@ shrinkage. corrselect preserves effect sizes.</p>
 <div class="section level3">
 <h3 id="applications-2">Applications<a class="anchor" aria-label="anchor" href="#applications-2"></a>
 </h3>
-<p><strong>glmnet</strong>: Prediction-focused, high-dimensional
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">p &gt; n</annotation></semantics></math>),
-accepts biased coefficients.</p>
+<p><strong>glmnet</strong>: Prediction-focused, high-dimensional (<span class="math inline">\(p &gt; n\)</span>), accepts biased
+coefficients.</p>
 <p><strong>corrselect</strong>: Interpretable coefficients, exploratory
 analysis, explicit correlation constraint, unregularized modeling.</p>
 <p><strong>Sequential</strong>: Correlation pruning (corrselect)
@@ -1680,14 +1673,12 @@ followed by sparse prediction (glmnet).</p>
 <h3 id="method-3">Method<a class="anchor" aria-label="anchor" href="#method-3"></a>
 </h3>
 <p>Variance Inflation Factor quantifies predictor multicollinearity:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">VIF</mtext><mi>j</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>−</mo><msubsup><mi>R</mi><mi>j</mi><mn>2</mn></msubsup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 \text{VIF}_j = \frac{1}{1 - R^2_j}
-</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>R</mi><mi>j</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">R^2_j</annotation></semantics></math>
-results from regressing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>j</mi></msub><annotation encoding="application/x-tex">X_j</annotation></semantics></math>
-on remaining predictors. Thresholds:</p>
+\]</span></p>
+<p>where <span class="math inline">\(R^2_j\)</span> results from
+regressing <span class="math inline">\(X_j\)</span> on remaining
+predictors. Thresholds:</p>
 <ul>
 <li><p>VIF &lt; 5: Low collinearity</p></li>
 <li><p>VIF &lt; 10: Moderate (acceptable)</p></li>
@@ -1917,8 +1908,7 @@ constraints, reproducible documentation.</p>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p><strong>Maximal clique enumeration</strong>: Optimal retention
-under
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|r_{ij}| &lt; \tau</annotation></semantics></math>
+under <span class="math inline">\(|r_{ij}| &lt; \tau\)</span>
 constraint</p></li>
 <li><p><strong>Deterministic</strong>: ELS and Bron-Kerbosch algorithms
 guarantee reproducibility</p></li>
@@ -1998,11 +1988,8 @@ formal proofs</p></li>
 <span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; locale:</span></span>
-<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
-<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
-<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
-<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
-<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8</span></span>
+<span><span class="co">#&gt; [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; time zone: Europe/Luxembourg</span></span>
 <span><span class="co">#&gt; tzcode source: internal</span></span>
@@ -2016,7 +2003,7 @@ formal proofs</p></li>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gtable_0.3.6         xfun_0.55            bslib_0.9.0         </span></span>
 <span><span class="co">#&gt;  [4] ggplot2_4.0.1        htmlwidgets_1.6.4    recipes_1.3.1       </span></span>
-<span><span class="co">#&gt;  [7] lattice_0.22-7       vctrs_0.7.0          tools_4.5.2         </span></span>
+<span><span class="co">#&gt;  [7] lattice_0.22-7       vctrs_0.7.1          tools_4.5.2         </span></span>
 <span><span class="co">#&gt; [10] generics_0.1.4       stats4_4.5.2         parallel_4.5.2      </span></span>
 <span><span class="co">#&gt; [13] tibble_3.3.1         ModelMetrics_1.2.2.2 pkgconfig_2.0.3     </span></span>
 <span><span class="co">#&gt; [16] Matrix_1.7-4         data.table_1.18.0    RColorBrewer_1.1-3  </span></span>

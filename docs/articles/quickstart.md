@@ -26,8 +26,8 @@ pak::pak("gcol33/corrselect")
 ## What corrselect Does
 
 corrselect identifies and removes redundant variables based on pairwise
-correlation or association. Given a threshold $`\tau`$, it finds subsets
-where all pairwise associations satisfy $`|a_{ij}| < \tau`$ (see
+correlation or association. Given a threshold \\\tau\\, it finds subsets
+where all pairwise associations satisfy \\\|a\_{ij}\| \< \tau\\ (see
 [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
 for mathematical formulation).
 
@@ -463,11 +463,8 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
+#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal

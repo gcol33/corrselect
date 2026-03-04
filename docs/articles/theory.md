@@ -59,62 +59,62 @@ All other vignettes refer back to these definitions.
 ### **Association measure**
 
 A symmetric function  
-$`a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}`$  
+\\a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}\\  
 that quantifies the relationship between two variables.
 
 Common cases:
 
-- **Numeric–numeric:** Pearson’s $`\rho`$, Spearman’s $`\rho_s`$,
-  Kendall’s $`\tau_K`$
+- **Numeric–numeric:** Pearson’s \\\rho\\, Spearman’s \\\rho_s\\,
+  Kendall’s \\\tau_K\\
 
 - **Categorical–categorical:** Cramér’s V
 
-- **Numeric–factor:** eta-squared $`\eta^2`$
+- **Numeric–factor:** eta-squared \\\eta^2\\
 
 All measures used in the package are normalized so that  
-$`|a_{ij}| \in [0,1]`$.
+\\\|a\_{ij}\| \in \[0,1\]\\.
 
 ------------------------------------------------------------------------
 
 ### **Association matrix**
 
-A symmetric $`p \times p`$ matrix $`A`$ whose entry $`a_{ij}`$ is the
-association between variables $`i`$ and $`j`$.  
-The diagonal satisfies $`a_{ii} = 1`$.  
-For correlation-based analysis, $`A`$ typically comes from
+A symmetric \\p \times p\\ matrix \\A\\ whose entry \\a\_{ij}\\ is the
+association between variables \\i\\ and \\j\\.  
+The diagonal satisfies \\a\_{ii} = 1\\.  
+For correlation-based analysis, \\A\\ typically comes from
 [`cor()`](https://rdrr.io/r/stats/cor.html).
 
 ------------------------------------------------------------------------
 
-### **Threshold** ($`\tau`$)
+### **Threshold** (\\\tau\\)
 
-A user-defined cutoff in $`(0,1)`$.  
-Pairs with $`|a_{ij}| \ge \tau`$ are considered too strongly associated
-and cannot both appear in a valid subset.
+A user-defined cutoff in \\(0,1)\\.  
+Pairs with \\\|a\_{ij}\| \ge \tau\\ are considered too strongly
+associated and cannot both appear in a valid subset.
 
 Common choices:
 
-- $`\tau = 0.7`$: modelling
+- \\\tau = 0.7\\: modelling
 
-- $`\tau = 0.8`$: genomics
+- \\\tau = 0.8\\: genomics
 
-- $`\tau = 0.5`$: stringent pruning
+- \\\tau = 0.5\\: stringent pruning
 
 ------------------------------------------------------------------------
 
 ### **Valid subset**
 
-A subset $`S \subseteq \{1,\dots,p\}`$ satisfying  
-$`|a_{ij}| < \tau`$ for all distinct $`i, j \in S`$.  
-All pairwise associations within $`S`$ remain below the threshold.
+A subset \\S \subseteq \\1,\dots,p\\\\ satisfying  
+\\\|a\_{ij}\| \< \tau\\ for all distinct \\i, j \in S\\.  
+All pairwise associations within \\S\\ remain below the threshold.
 
 ------------------------------------------------------------------------
 
 ### **Maximal valid subset**
 
 A valid subset that cannot be enlarged.  
-Formally, no variable $`v \notin S`$ satisfies $`|a_{vi}| < \tau`$ for
-all $`i \in S`$.
+Formally, no variable \\v \notin S\\ satisfies \\\|a\_{vi}\| \< \tau\\
+for all \\i \in S\\.
 
 (“Maximal” is not the same as “maximum”, which refers to the largest
 possible subset.)
@@ -123,11 +123,11 @@ possible subset.)
 
 ### **Threshold graph**
 
-An undirected graph $`G = (V, E)`$ where:
+An undirected graph \\G = (V, E)\\ where:
 
-- each vertex in $`V`$ represents a variable
+- each vertex in \\V\\ represents a variable
 
-- an edge $`(i,j)`$ exists exactly when $`|a_{ij}| < \tau`$
+- an edge \\(i,j)\\ exists exactly when \\\|a\_{ij}\| \< \tau\\
 
 Edges therefore connect *compatible* (low-association) variables.
 
@@ -149,9 +149,9 @@ Maximal cliques correspond exactly to maximal valid subsets.
 
 ### **Forced-in variables** (`force_in`)
 
-A set $`F \subseteq V`$ of variables that must appear in all returned
+A set \\F \subseteq V\\ of variables that must appear in all returned
 solutions.  
-Only maximal cliques containing all elements of $`F`$ are considered.
+Only maximal cliques containing all elements of \\F\\ are considered.
 
 ------------------------------------------------------------------------
 
@@ -160,7 +160,7 @@ Only maximal cliques containing all elements of $`F`$ are considered.
 A degeneracy-based algorithm for maximal clique enumeration.  
 Recommended when `force_in` is used.
 
-Complexity: $`O(d \cdot 3^{d/3})`$, where $`d`$ is the graph’s
+Complexity: \\O(d \cdot 3^{d/3})\\, where \\d\\ is the graph’s
 degeneracy.
 
 ------------------------------------------------------------------------
@@ -171,7 +171,7 @@ A classical backtracking algorithm for enumerating maximal cliques,
 optionally with pivoting.  
 Used by default when `force_in` is not specified.
 
-Worst-case complexity: $`O(3^{p/3})`$.
+Worst-case complexity: \\O(3^{p/3})\\.
 
 ------------------------------------------------------------------------
 
@@ -179,7 +179,7 @@ Worst-case complexity: $`O(3^{p/3})`$.
 
 A fast heuristic that constructs a single maximal clique via greedy
 selection.  
-Runs in $`O(p^2)`$.  
+Runs in \\O(p^2)\\.  
 Does not guarantee the largest possible subset.
 
 ------------------------------------------------------------------------
@@ -195,9 +195,9 @@ Identifies the maximum (largest) valid subset.
 
 Chooses the method automatically:
 
-- exact mode for $`p \le 20`$
+- exact mode for \\p \le 20\\
 
-- greedy mode for $`p > 20`$
+- greedy mode for \\p \> 20\\
 
 This balances optimality with computational cost.
 
@@ -679,10 +679,10 @@ complex clustering.
 
 ### Intuitive Problem Statement
 
-The core problem is straightforward: given a set of $`p`$ variables with
+The core problem is straightforward: given a set of \\p\\ variables with
 known pairwise associations (correlations), identify all largest
 possible subsets where every pair of variables has an association below
-a user-defined threshold $`\tau`$.
+a user-defined threshold \\\tau\\.
 
 Think of this as a social network where variables are people and edges
 represent “get along well” (low correlation). We want to find all
@@ -698,75 +698,69 @@ only search for groups containing all VIPs.
 
 **Input:**
 
-- Association matrix $`A \in \mathbb{R}^{p \times p}`$ with
-  $`a_{ij} = a_{ji}`$ and $`a_{ii} = 1`$ for all $`i`$
+- Association matrix \\A \in \mathbb{R}^{p \times p}\\ with \\a\_{ij} =
+  a\_{ji}\\ and \\a\_{ii} = 1\\ for all \\i\\
 
-- Threshold $`\tau \in (0, 1)`$
+- Threshold \\\tau \in (0, 1)\\
 
-- Optional forced-in set $`F \subseteq \{1, \dots, p\}`$
+- Optional forced-in set \\F \subseteq \\1, \dots, p\\\\
 
 **Constraints:**
 
-A subset $`S \subseteq \{1, \dots, p\}`$ is valid if:
+A subset \\S \subseteq \\1, \dots, p\\\\ is valid if:
 
-1.  $`F \subseteq S`$ (if $`F`$ specified)
+1.  \\F \subseteq S\\ (if \\F\\ specified)
 
-2.  $`|a_{ij}| < \tau`$ for all $`i, j \in S`$ with $`i \neq j`$
+2.  \\\|a\_{ij}\| \< \tau\\ for all \\i, j \in S\\ with \\i \neq j\\
 
 **Objective:**
 
-Find all maximal valid subsets $`\mathcal{S} = \{S_1, \dots, S_m\}`$
-where $`S_k`$ is maximal if no variable $`v \notin S_k`$ satisfies
-$`|a_{vi}| < \tau`$ for all $`i \in S_k`$.
+Find all maximal valid subsets \\\mathcal{S} = \\S_1, \dots, S_m\\\\
+where \\S_k\\ is maximal if no variable \\v \notin S_k\\ satisfies
+\\\|a\_{vi}\| \< \tau\\ for all \\i \in S_k\\.
 
 **Output:**
 
-Collection $`\mathcal{S}`$ containing all maximal valid subsets.
+Collection \\\mathcal{S}\\ containing all maximal valid subsets.
 
 ------------------------------------------------------------------------
 
 ### Association Matrix
 
-Given $`p`$ variables, compute an association matrix
-$`A \in \mathbb{R}^{p \times p}`$ where:
+Given \\p\\ variables, compute an association matrix \\A \in
+\mathbb{R}^{p \times p}\\ where:
 
-``` math
-a_{ij} = \text{association}(X_i, X_j)
-```
+\\ a\_{ij} = \text{association}(X_i, X_j) \\
 
-For numeric variables, $`a_{ij}`$ may be a correlation coefficient
-(Pearson, Spearman, Kendall, etc.). For mixed-type variables, $`a_{ij}`$
-is chosen based on variable types:
+For numeric variables, \\a\_{ij}\\ may be a correlation coefficient
+(Pearson, Spearman, Kendall, etc.). For mixed-type variables,
+\\a\_{ij}\\ is chosen based on variable types:
 
-| Type $`(X_i, X_j)`$ | Measure                  |
+| Type \\(X_i, X_j)\\ | Measure                  |
 |---------------------|--------------------------|
 | numeric, numeric    | Pearson/Spearman/Kendall |
-| numeric, factor     | $`\eta^2`$               |
+| numeric, factor     | \\\eta^2\\               |
 | numeric, ordered    | Spearman/Kendall         |
 | factor, factor      | Cramér’s V               |
 | factor, ordered     | Cramér’s V               |
 | ordered, ordered    | Spearman/Kendall         |
 
-All measures are bounded: $`a_{ij} \in [0, 1]`$ or
-$`a_{ij} \in [-1, 1]`$.
+All measures are bounded: \\a\_{ij} \in \[0, 1\]\\ or \\a\_{ij} \in
+\[-1, 1\]\\.
 
 ### Threshold Constraint
 
-Fix a threshold $`\tau \in (0, 1)`$. A subset
-$`S \subseteq \{1, \dots, p\}`$ is **valid** if:
+Fix a threshold \\\tau \in (0, 1)\\. A subset \\S \subseteq \\1, \dots,
+p\\\\ is **valid** if:
 
-``` math
-\forall i, j \in S,\ i \neq j: \quad |a_{ij}| < \tau
-```
+\\ \forall i, j \in S,\\ i \neq j: \quad \|a\_{ij}\| \< \tau \\
 
 ### Maximal Valid Subsets
 
-A valid subset $`S`$ is **maximal** if no variable $`k \notin S`$
+A valid subset \\S\\ is **maximal** if no variable \\k \notin S\\
 satisfies:
 
-``` math
-|a_{ki}| < \tau \quad \text{for all } i \in S
-```
+\\ \|a\_{ki}\| \< \tau \quad \text{for all } i \in S \\
 
 > **Key Points: Problem Formulation**
 >
@@ -802,27 +796,27 @@ is exactly a **clique** in a graph where edges represent compatibility.
 
 ### Threshold Graph
 
-Define the **threshold graph** $`G = (V, E)`$ where:
+Define the **threshold graph** \\G = (V, E)\\ where:
 
-- $`V = \{1, \dots, p\}`$ (nodes represent variables)
+- \\V = \\1, \dots, p\\\\ (nodes represent variables)
 
-- $`(i, j) \in E`$ if and only if $`|a_{ij}| < \tau`$ (edges connect
+- \\(i, j) \in E\\ if and only if \\\|a\_{ij}\| \< \tau\\ (edges connect
   compatible variables)
 
-**Note the reversal**: An edge $`(i, j)`$ means variables $`i`$ and
-$`j`$ have *low* correlation (can coexist). This is the complement of
+**Note the reversal**: An edge \\(i, j)\\ means variables \\i\\ and
+\\j\\ have *low* correlation (can coexist). This is the complement of
 the typical “correlation graph” where edges represent high correlation.
 
 ### Maximal Cliques
 
-A valid subset $`S`$ corresponds to a **clique** in $`G`$: all pairs in
-$`S`$ are connected.
+A valid subset \\S\\ corresponds to a **clique** in \\G\\: all pairs in
+\\S\\ are connected.
 
 A maximal valid subset corresponds to a **maximal clique**: a clique
 that cannot be extended.
 
 Finding all maximal valid subsets is equivalent to enumerating all
-maximal cliques in $`G`$.
+maximal cliques in \\G\\.
 
 ### Example: 6-Variable Threshold Graph
 
@@ -854,7 +848,7 @@ print(round(cor_6var, 2))
 #> V6 0.10 0.15 0.20 0.55 0.60 1.00
 ```
 
-Threshold graph construction with $`\tau = 0.7`$:
+Threshold graph construction with \\\tau = 0.7\\:
 
 ``` r
 
@@ -961,9 +955,9 @@ Variables V1-V3 are highly correlated with each other (correlations
 0.75-0.85, shown in red), as are V4-V6 (correlations 0.55-0.65).
 Between-block correlations are low (0.10-0.30, shown in blue/white).
 
-The right panel shows the corresponding threshold graph with
-$`\tau = 0.7`$. An edge connects two variables if their absolute
-correlation is *below* 0.7 (compatible variables). Note that:
+The right panel shows the corresponding threshold graph with \\\tau =
+0.7\\. An edge connects two variables if their absolute correlation is
+*below* 0.7 (compatible variables). Note that:
 
 - **Within high-correlation groups**: V1-V3 have no edges connecting
   them (correlations exceed 0.7). Similarly, V4-V6 are not fully
@@ -973,7 +967,7 @@ correlation is *below* 0.7 (compatible variables). Note that:
   between-group correlation).
 
 This graph structure immediately reveals the two maximal cliques:
-$`\{V1, V2, V3\}`$ and $`\{V4, V5, V6\}`$. No variable can be added to
+\\\\V1, V2, V3\\\\ and \\\\V4, V5, V6\\\\. No variable can be added to
 either clique without violating the threshold constraint.
 
 Identify maximal cliques:
@@ -1001,8 +995,8 @@ show(results)
 **Interpreting the results**:
 
 MatSelect identified two maximal subsets of size 3, exactly matching the
-visual graph analysis. Both subsets satisfy $`|a_{ij}| < 0.7`$ for all
-pairs within the subset.
+visual graph analysis. Both subsets satisfy \\\|a\_{ij}\| \< 0.7\\ for
+all pairs within the subset.
 
 - **Subset 1** (V1, V2, V3): Mean correlation 0.80, max 0.85 - highly
   redundant within-group
@@ -1034,12 +1028,12 @@ The mathematical concepts defined earlier map directly onto the function
 arguments and behavior of the package. The correspondence is outlined
 below.
 
-### **Threshold ($`\tau`$) → `threshold` argument**
+### **Threshold (\\\tau\\) → `threshold` argument**
 
 Controls which edges appear in the threshold graph.
 
-- `corrPrune(data, threshold = 0.7)` keeps an edge only if
-  $`|a_{ij}| < 0.7`$
+- `corrPrune(data, threshold = 0.7)` keeps an edge only if \\\|a\_{ij}\|
+  \< 0.7\\
 
 - Lower thresholds → stricter pruning → sparser graphs → smaller valid
   subsets
@@ -1055,14 +1049,14 @@ Controls which edges appear in the threshold graph.
 - Each clique corresponds exactly to a valid variable subset satisfying
   the threshold constraint
 
-### **Forced-in set ($`F`$) → `force_in` argument**
+### **Forced-in set (\\F\\) → `force_in` argument**
 
 Ensures that certain variables appear in every returned subset.
 
 - `corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))`
 
-- Internally, the algorithm verifies that $`F`$ itself is a valid subset
-  (all pairs in $`F`$ satisfy $`|a_{ij}| < \tau`$)
+- Internally, the algorithm verifies that \\F\\ itself is a valid subset
+  (all pairs in \\F\\ satisfy \\\|a\_{ij}\| \< \tau\\)
 
 ### **Search type → `mode` and `method` arguments**
 
@@ -1071,7 +1065,7 @@ Ensures that certain variables appear in every returned subset.
 - `mode = "greedy"`  
   Constructs a single maximal clique via a greedy heuristic
 - `mode = "auto"`  
-  Uses exact mode for $`p \le 20`$, greedy mode for larger $`p`$
+  Uses exact mode for \\p \le 20\\, greedy mode for larger \\p\\
 
 Choice of enumeration algorithm:
 
@@ -1080,7 +1074,7 @@ Choice of enumeration algorithm:
 - `method = "bron-kerbosch"`  
   Bron–Kerbosch with pivoting (default)
 
-### **Association matrix ($`A`$) → Data input and matrix-based functions**
+### **Association matrix (\\A\\) → Data input and matrix-based functions**
 
 How the association structure enters the algorithm:
 
@@ -1096,21 +1090,21 @@ How the association structure enters the algorithm:
 
 Depends directly on the threshold:
 
-- Sparse graphs (low $`\tau`$)  
+- Sparse graphs (low \\\tau\\)  
   Few edges → fast exact enumeration
-- Dense graphs (high $`\tau`$)  
+- Dense graphs (high \\\tau\\)  
   Many edges → potentially exponential growth in maximal cliques
 
-These properties motivate the `auto` mode: exact for small $`p`$, greedy
-for larger $`p`$.
+These properties motivate the `auto` mode: exact for small \\p\\, greedy
+for larger \\p\\.
 
 ### **Example mapping**
 
 Mathematical formulation:
 
-``` math
-\text{Find all maximal } S \subseteq \{1,\dots,p\} \text{ such that } |a_{ij}| < 0.7\ \forall i, j \in S,\ \text{with } \{ \text{age} \} \subseteq S.
-```
+\\ \text{Find all maximal } S \subseteq \\1,\dots,p\\ \text{ such that }
+\|a\_{ij}\| \< 0.7\\ \forall i, j \in S,\\ \text{with } \\ \text{age} \\
+\subseteq S. \\
 
 Implementation:
 
@@ -1149,42 +1143,33 @@ Two algorithms enumerate all maximal cliques exactly:
 
 Uses degeneracy ordering to structure the search:
 
-1.  Compute degeneracy ordering $`v_1, \dots, v_p`$
+1.  Compute degeneracy ordering \\v_1, \dots, v_p\\
 
-2.  For each $`v_i`$, extend cliques within candidates
-    $`\{v_{i+1}, \dots, v_p\}`$
+2.  For each \\v_i\\, extend cliques within candidates \\\\v\_{i+1},
+    \dots, v_p\\\\
 
 3.  Recursively build cliques, pruning when no extension is possible
 
 Formally, define:
 
-``` math
-\text{extend}(R, P) =
-\begin{cases}
-\{R\}, & P = \emptyset \\
-\bigcup_{v \in P} \text{extend}(R \cup \{v\}, P \cap N(v)), & \text{otherwise}
-\end{cases}
-```
+\\ \text{extend}(R, P) = \begin{cases} \\R\\, & P = \emptyset \\
+\bigcup\_{v \in P} \text{extend}(R \cup \\v\\, P \cap N(v)), &
+\text{otherwise} \end{cases} \\
 
-where $`N(v)`$ denotes neighbors of $`v`$ in $`G`$.
+where \\N(v)\\ denotes neighbors of \\v\\ in \\G\\.
 
 #### Bron–Kerbosch
 
 Classical recursive backtracking with optional pivoting.
 
-Let $`R`$ = current clique, $`P`$ = candidates, $`X`$ = excluded nodes:
+Let \\R\\ = current clique, \\P\\ = candidates, \\X\\ = excluded nodes:
 
-``` math
-\text{BK}(R, P, X) =
-\begin{cases}
-\text{report}(R), & P = X = \emptyset \\
-\text{for each } v \in P \setminus N(u): \\
-\quad \text{BK}(R \cup \{v\}, P \cap N(v), X \cap N(v)) \\
-\quad P \leftarrow P \setminus \{v\}, \quad X \leftarrow X \cup \{v\}
-\end{cases}
-```
+\\ \text{BK}(R, P, X) = \begin{cases} \text{report}(R), & P = X =
+\emptyset \\ \text{for each } v \in P \setminus N(u): \\ \quad
+\text{BK}(R \cup \\v\\, P \cap N(v), X \cap N(v)) \\ \quad P \leftarrow
+P \setminus \\v\\, \quad X \leftarrow X \cup \\v\\ \end{cases} \\
 
-Pivot $`u \in P \cup X`$ reduces recursive calls.
+Pivot \\u \in P \cup X\\ reduces recursive calls.
 
 #### Pseudocode for Practitioners
 
@@ -1253,21 +1238,21 @@ Pivot $`u \in P \cup X`$ reduces recursive calls.
 
 **Complexity**:
 
-- **ELS**: $`O(d \cdot 3^{d/3})`$ where $`d`$ is degeneracy (much faster
+- **ELS**: \\O(d \cdot 3^{d/3})\\ where \\d\\ is degeneracy (much faster
   on sparse graphs)
 
-- **Bron-Kerbosch**: $`O(3^{p/3})`$ worst case, improved with pivoting
+- **Bron-Kerbosch**: \\O(3^{p/3})\\ worst case, improved with pivoting
 
-- **Greedy** (below): $`O(p^2)`$ deterministic polynomial time
+- **Greedy** (below): \\O(p^2)\\ deterministic polynomial time
 
 ### Greedy Heuristic
 
 Iteratively removes variables with highest average absolute association
-until all pairs satisfy $`|a_{ij}| < \tau`$.
+until all pairs satisfy \\\|a\_{ij}\| \< \tau\\.
 
 Returns a single valid subset (not necessarily maximal or optimal).
 
-Complexity: $`O(p^2)`$ vs $`O(2^p)`$ for exact enumeration.
+Complexity: \\O(p^2)\\ vs \\O(2^p)\\ for exact enumeration.
 
 > **Key Points: Search Algorithms**
 >
@@ -1285,9 +1270,9 @@ Complexity: $`O(p^2)`$ vs $`O(2^p)`$ for exact enumeration.
 
 ### Eppstein–Löffler–Strash (ELS)
 
-**Input**: Graph $`G = (V, E)`$, forced-in set $`F`$
+**Input**: Graph \\G = (V, E)\\, forced-in set \\F\\
 
-**Output**: All maximal cliques containing $`F`$
+**Output**: All maximal cliques containing \\F\\
 
     Algorithm ELS(G, F):
       # Step 1: Compute degeneracy ordering
@@ -1347,8 +1332,8 @@ Complexity: $`O(p^2)`$ vs $`O(2^p)`$ for exact enumeration.
 
       return ordering
 
-**Complexity**: $`O(d \cdot 3^{d/3})`$ where $`d`$ is the degeneracy of
-$`G`$.
+**Complexity**: \\O(d \cdot 3^{d/3})\\ where \\d\\ is the degeneracy of
+\\G\\.
 
 **Properties:**
 
@@ -1357,16 +1342,16 @@ $`G`$.
 - **Efficient on sparse graphs:** performs best when the threshold graph
   has low density
 
-- **Forced-in support:** implemented by initializing the search with
-  $`R = F`$
+- **Forced-in support:** implemented by initializing the search with \\R
+  = F\\
 
 ------------------------------------------------------------------------
 
 ### Bron–Kerbosch with Pivoting
 
-**Input**: Graph $`G = (V, E)`$, forced-in set $`F`$
+**Input**: Graph \\G = (V, E)\\, forced-in set \\F\\
 
-**Output**: All maximal cliques containing $`F`$
+**Output**: All maximal cliques containing \\F\\
 
     Algorithm BronKerbosch(G, F):
       # Step 1: Initialize
@@ -1413,7 +1398,7 @@ $`G`$.
         P ← P \ {v}
         X ← X ∪ {v}
 
-**Complexity**: $`O(3^{p/3})`$ maximal cliques (worst-case).
+**Complexity**: \\O(3^{p/3})\\ maximal cliques (worst-case).
 
 **Properties:**
 
@@ -1426,19 +1411,19 @@ $`G`$.
 
 **Pivot selection:**
 
-- Choosing $`u`$ with maximum degree in $`P`$ minimizes branching
+- Choosing \\u\\ with maximum degree in \\P\\ minimizes branching
 
-- Without pivoting: $`O(2^p)`$ recursive calls (exponential)
+- Without pivoting: \\O(2^p)\\ recursive calls (exponential)
 
-- With pivoting: $`O(3^{p/3})`$ recursive calls (still exponential but
+- With pivoting: \\O(3^{p/3})\\ recursive calls (still exponential but
   significantly tighter)
 
 ------------------------------------------------------------------------
 
 ### Greedy Heuristic
 
-**Input**: Association matrix $`A`$, threshold $`\tau`$, forced-in set
-$`F`$
+**Input**: Association matrix \\A\\, threshold \\\tau\\, forced-in set
+\\F\\
 
 **Output**: Single valid subset (not necessarily maximal)
 
@@ -1466,7 +1451,7 @@ $`F`$
       return S
 
 **Complexity:**  
-$`O(p^2 k)`$, where $`k`$ is the number of variables removed.
+\\O(p^2 k)\\, where \\k\\ is the number of variables removed.
 
 **Properties:**
 
@@ -1476,7 +1461,7 @@ $`O(p^2 k)`$, where $`k`$ is the number of variables removed.
 
 - **Non-optimal:** does not guarantee a maximal or largest subset
 
-- **Forced-in support:** variables in $`F`$ are never removed
+- **Forced-in support:** variables in \\F\\ are never removed
 
 **Tie-breaking:** When several variables share the same average absolute
 correlation:
@@ -1489,30 +1474,30 @@ correlation:
 
 ## Forced Variables
 
-Constraint: variables $`F \subseteq \{1, \dots, p\}`$ must appear in all
+Constraint: variables \\F \subseteq \\1, \dots, p\\\\ must appear in all
 returned subsets.
 
 ### Graph Modification
 
 Modify the search:
 
-- Require $`F \subseteq S`$ for all valid $`S`$
+- Require \\F \subseteq S\\ for all valid \\S\\
 
-- Verify $`|a_{ij}| < \tau`$ for all $`i, j \in F`$ (else problem is
+- Verify \\\|a\_{ij}\| \< \tau\\ for all \\i, j \in F\\ (else problem is
   infeasible)
 
-- Search for maximal extensions of $`F`$ within remaining variables
+- Search for maximal extensions of \\F\\ within remaining variables
 
-Formally, find maximal cliques in $`G`$ containing $`F`$.
+Formally, find maximal cliques in \\G\\ containing \\F\\.
 
 ------------------------------------------------------------------------
 
 ## Correlation vs Association
 
-**Correlation**: $`a_{ij} \in [-1, 1]`$, use $`|a_{ij}|`$ in threshold
-constraint
+**Correlation**: \\a\_{ij} \in \[-1, 1\]\\, use \\\|a\_{ij}\|\\ in
+threshold constraint
 
-**Association**: $`a_{ij} \in [0, 1]`$, use $`a_{ij}`$ directly
+**Association**: \\a\_{ij} \in \[0, 1\]\\, use \\a\_{ij}\\ directly
 
 Mixed-type data uses association matrix with measures chosen per
 variable-pair type.
@@ -1523,19 +1508,19 @@ variable-pair type.
 
 ### Exact Enumeration
 
-Worst-case: $`O(3^{p/3})`$ maximal cliques possible
+Worst-case: \\O(3^{p/3})\\ maximal cliques possible
 
 Performance depends on graph density:
 
-- Sparse (low $`\tau`$): fewer edges, faster enumeration
+- Sparse (low \\\tau\\): fewer edges, faster enumeration
 
-- Dense (high $`\tau`$): many edges, exponential growth
+- Dense (high \\\tau\\): many edges, exponential growth
 
 ### Greedy Heuristic
 
-Time: $`O(p^2 k)`$ where $`k`$ = iterations
+Time: \\O(p^2 k)\\ where \\k\\ = iterations
 
-Space: $`O(p^2)`$ for storing associations
+Space: \\O(p^2)\\ for storing associations
 
 Deterministic: same input produces same output
 
@@ -1547,13 +1532,13 @@ All selection functions return a `CorrCombo` S4 object containing:
 
 - `subset_list`: list of character vectors (variable names per subset)
 
-- `avg_corr`: numeric vector (mean $`|a_{ij}|`$ within each subset)
+- `avg_corr`: numeric vector (mean \\\|a\_{ij}\|\\ within each subset)
 
-- `min_corr`: numeric vector (min $`|a_{ij}|`$ within each subset)
+- `min_corr`: numeric vector (min \\\|a\_{ij}\|\\ within each subset)
 
-- `max_corr`: numeric vector (max $`|a_{ij}|`$ within each subset)
+- `max_corr`: numeric vector (max \\\|a\_{ij}\|\\ within each subset)
 
-- `threshold`: value of $`\tau`$
+- `threshold`: value of \\\tau\\
 
 - `forced_in`: forced variable names
 
@@ -1602,20 +1587,20 @@ the **single maximum** subset. Why?
 
 ### Why Hard Threshold Not Soft Constraint?
 
-corrselect enforces a hard threshold: $`|a_{ij}| < \tau`$ for all pairs.
-Alternative approaches use soft constraints (penalty functions,
+corrselect enforces a hard threshold: \\\|a\_{ij}\| \< \tau\\ for all
+pairs. Alternative approaches use soft constraints (penalty functions,
 regularization). Why hard thresholds?
 
-1.  **Interpretability**: “No pair exceeds $`\tau`$” is a clear,
+1.  **Interpretability**: “No pair exceeds \\\tau\\” is a clear,
     verifiable guarantee. Soft constraints produce solutions where some
-    pairs may exceed $`\tau`$ with unknown magnitude.
+    pairs may exceed \\\tau\\ with unknown magnitude.
 
 2.  **Reproducibility**: Hard thresholds produce deterministic results.
     Soft constraints often require tuning parameters (penalty weights,
     convergence criteria) that affect reproducibility.
 
 3.  **Domain-specific requirements**: Fields like ecological modeling
-    have established thresholds (e.g., $`\tau = 0.7`$ for WorldClim
+    have established thresholds (e.g., \\\tau = 0.7\\ for WorldClim
     variables) based on empirical evidence. Hard thresholds directly
     implement these guidelines.
 
@@ -1631,7 +1616,7 @@ metaheuristics). Why?
 
 1.  **Asymptotic efficiency**: Graph algorithms exploit structural
     properties (sparsity, degeneracy) unavailable to generic solvers.
-    For sparse graphs (low $`\tau`$), this yields orders-of-magnitude
+    For sparse graphs (low \\\tau\\), this yields orders-of-magnitude
     speedups.
 
 2.  **Exact enumeration**: Graph algorithms guarantee finding all
@@ -1652,17 +1637,17 @@ corrselect considers only pairwise associations, not higher-order
 interactions (partial correlations, conditional independence). Why?
 
 1.  **Computational tractability**: Higher-order interactions require
-    exponentially more computation. For $`p`$ variables, pairwise
-    methods scale as $`O(p^2)`$, while $`k`$-way interactions scale as
-    $`O(p^k)`$.
+    exponentially more computation. For \\p\\ variables, pairwise
+    methods scale as \\O(p^2)\\, while \\k\\-way interactions scale as
+    \\O(p^k)\\.
 
-2.  **Clear interpretation**: “Variables $`i`$ and $`j`$ correlate at
-    $`r = 0.85`$” is directly interpretable. Partial correlations
+2.  **Clear interpretation**: “Variables \\i\\ and \\j\\ correlate at
+    \\r = 0.85\\” is directly interpretable. Partial correlations
     require careful conditioning set selection and can be
     counterintuitive.
 
 3.  **Robustness**: Pairwise correlations are stable with moderate
-    sample sizes. Partial correlations require $`n \gg p`$ and are
+    sample sizes. Partial correlations require \\n \gg p\\ and are
     sensitive to model misspecification.
 
 4.  **Method generality**: Pairwise associations work for any variable
@@ -1693,13 +1678,12 @@ one (greedy mode). Why offer exhaustive enumeration?
     submissions), documenting all valid solutions provides transparency
     about algorithmic choices.
 
-4.  **Computational cost**: For typical use cases ($`p \leq 30`$,
-    $`\tau \geq 0.5`$), exhaustive enumeration completes in
-    milliseconds. When infeasible, greedy mode provides a fast
-    approximation.
+4.  **Computational cost**: For typical use cases (\\p \leq 30\\, \\\tau
+    \geq 0.5\\), exhaustive enumeration completes in milliseconds. When
+    infeasible, greedy mode provides a fast approximation.
 
-**When to use greedy mode**: High-dimensional data ($`p > 50`$), dense
-correlation structure (high $`\tau`$), or when a single solution
+**When to use greedy mode**: High-dimensional data (\\p \> 50\\), dense
+correlation structure (high \\\tau\\), or when a single solution
 suffices (e.g., automated pipelines).
 
 > **Key Points: Design Philosophy**
@@ -1731,7 +1715,7 @@ suffices (e.g., automated pipelines).
   - **Foundation for the ELS algorithm:** degeneracy-based maximal
     clique enumeration
 
-  - Complexity $`O(d \cdot 3^{d/3})`$, where $`d`$ is graph degeneracy
+  - Complexity \\O(d \cdot 3^{d/3})\\, where \\d\\ is graph degeneracy
 
   - Used when `force_in` is specified
 - **Bron, C., & Kerbosch, J. (1973).**  
@@ -1749,7 +1733,7 @@ suffices (e.g., automated pipelines).
   [doi:10.1016/j.tcs.2006.06.015](https://doi.org/10.1016/j.tcs.2006.06.015)
   - **Pivoting strategy:** refined pivot rules for Bron–Kerbosch
 
-  - Establishes the $`O(3^{p/3})`$ worst-case bound
+  - Establishes the \\O(3^{p/3})\\ worst-case bound
 
 **Graph degeneracy**:
 
@@ -1908,7 +1892,7 @@ suffices (e.g., automated pipelines).
   of Mathematics*, 3(1), 23-28.
   [doi:10.1007/BF02760024](https://doi.org/10.1007/BF02760024)
 
-  - **Theoretical bound**: Proof that graphs can have up to $`3^{p/3}`$
+  - **Theoretical bound**: Proof that graphs can have up to \\3^{p/3}\\
     maximal cliques
 
   - Justifies worst-case complexity for exact enumeration
@@ -1925,7 +1909,7 @@ suffices (e.g., automated pipelines).
   - **Species distribution models**: Evaluation of multicollinearity
     approaches in ecology
 
-  - Recommends threshold of $`\tau = 0.7`$ for bioclimatic variables
+  - Recommends threshold of \\\tau = 0.7\\ for bioclimatic variables
 
 **Genomics**:
 
@@ -1968,11 +1952,8 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
+#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal

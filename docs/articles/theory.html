@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Theory and Formulation • corrselect</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -88,7 +94,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-02-24</h4>
+            <h4 data-toc-skip class="date">2026-03-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/theory.Rmd" class="external-link"><code>vignettes/theory.Rmd</code></a></small>
       <div class="d-none name"><code>theory.Rmd</code></div>
@@ -149,63 +155,47 @@ documentation. All other vignettes refer back to these definitions.</p>
 <h3 id="association-measure">
 <strong>Association measure</strong><a class="anchor" aria-label="anchor" href="#association-measure"></a>
 </h3>
-<p>A symmetric function<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>:</mo><mi>𝒳</mi><mo>×</mo><mi>𝒳</mi><mo>→</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}</annotation></semantics></math><br>
+<p>A symmetric function<br><span class="math inline">\(a: \mathcal{X} \times \mathcal{X} \to
+\mathbb{R}\)</span><br>
 that quantifies the relationship between two variables.</p>
 <p>Common cases:</p>
 <ul>
-<li><p><strong>Numeric–numeric:</strong> Pearson’s
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>,
-Spearman’s
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\rho_s</annotation></semantics></math>,
-Kendall’s
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>K</mi></msub><annotation encoding="application/x-tex">\tau_K</annotation></semantics></math></p></li>
+<li><p><strong>Numeric–numeric:</strong> Pearson’s <span class="math inline">\(\rho\)</span>, Spearman’s <span class="math inline">\(\rho_s\)</span>, Kendall’s <span class="math inline">\(\tau_K\)</span></p></li>
 <li><p><strong>Categorical–categorical:</strong> Cramér’s V</p></li>
-<li><p><strong>Numeric–factor:</strong> eta-squared
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>η</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\eta^2</annotation></semantics></math></p></li>
+<li><p><strong>Numeric–factor:</strong> eta-squared <span class="math inline">\(\eta^2\)</span></p></li>
 </ul>
-<p>All measures used in the package are normalized so that<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">|a_{ij}| \in [0,1]</annotation></semantics></math>.</p>
+<p>All measures used in the package are normalized so that<br><span class="math inline">\(|a_{ij}| \in [0,1]\)</span>.</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="association-matrix">
 <strong>Association matrix</strong><a class="anchor" aria-label="anchor" href="#association-matrix"></a>
 </h3>
-<p>A symmetric
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">p \times p</annotation></semantics></math>
-matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
-whose entry
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">a_{ij}</annotation></semantics></math>
-is the association between variables
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>.<br>
-The diagonal satisfies
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">a_{ii} = 1</annotation></semantics></math>.<br>
-For correlation-based analysis,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+<p>A symmetric <span class="math inline">\(p \times p\)</span> matrix
+<span class="math inline">\(A\)</span> whose entry <span class="math inline">\(a_{ij}\)</span> is the association between
+variables <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>.<br>
+The diagonal satisfies <span class="math inline">\(a_{ii} =
+1\)</span>.<br>
+For correlation-based analysis, <span class="math inline">\(A\)</span>
 typically comes from <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor()</a></code>.</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="threshold-tau">
-<strong>Threshold</strong>
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#threshold-tau"></a>
+<strong>Threshold</strong> (<span class="math inline">\(\tau\)</span>)<a class="anchor" aria-label="anchor" href="#threshold-tau"></a>
 </h3>
-<p>A user-defined cutoff in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,1)</annotation></semantics></math>.<br>
-Pairs with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>≥</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| \ge \tau</annotation></semantics></math>
-are considered too strongly associated and cannot both appear in a valid
+<p>A user-defined cutoff in <span class="math inline">\((0,1)\)</span>.<br>
+Pairs with <span class="math inline">\(|a_{ij}| \ge \tau\)</span> are
+considered too strongly associated and cannot both appear in a valid
 subset.</p>
 <p>Common choices:</p>
 <ul>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>:
+<li><p><span class="math inline">\(\tau = 0.7\)</span>:
 modelling</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">\tau = 0.8</annotation></semantics></math>:
+<li><p><span class="math inline">\(\tau = 0.8\)</span>:
 genomics</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\tau = 0.5</annotation></semantics></math>:
-stringent pruning</p></li>
+<li><p><span class="math inline">\(\tau = 0.5\)</span>: stringent
+pruning</p></li>
 </ul>
 <hr>
 </div>
@@ -213,13 +203,10 @@ stringent pruning</p></li>
 <h3 id="valid-subset">
 <strong>Valid subset</strong><a class="anchor" aria-label="anchor" href="#valid-subset"></a>
 </h3>
-<p>A subset
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S \subseteq \{1,\dots,p\}</annotation></semantics></math>
-satisfying<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-for all distinct
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">i, j \in S</annotation></semantics></math>.<br>
-All pairwise associations within
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+<p>A subset <span class="math inline">\(S \subseteq
+\{1,\dots,p\}\)</span> satisfying<br><span class="math inline">\(|a_{ij}| &lt; \tau\)</span> for all distinct
+<span class="math inline">\(i, j \in S\)</span>.<br>
+All pairwise associations within <span class="math inline">\(S\)</span>
 remain below the threshold.</p>
 <hr>
 </div>
@@ -228,12 +215,9 @@ remain below the threshold.</p>
 <strong>Maximal valid subset</strong><a class="anchor" aria-label="anchor" href="#maximal-valid-subset"></a>
 </h3>
 <p>A valid subset that cannot be enlarged.<br>
-Formally, no variable
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>∉</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">v \notin S</annotation></semantics></math>
-satisfies
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>v</mi><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{vi}| &lt; \tau</annotation></semantics></math>
-for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">i \in S</annotation></semantics></math>.</p>
+Formally, no variable <span class="math inline">\(v \notin S\)</span>
+satisfies <span class="math inline">\(|a_{vi}| &lt; \tau\)</span> for
+all <span class="math inline">\(i \in S\)</span>.</p>
 <p>(“Maximal” is not the same as “maximum”, which refers to the largest
 possible subset.)</p>
 <hr>
@@ -242,17 +226,13 @@ possible subset.)</p>
 <h3 id="threshold-graph">
 <strong>Threshold graph</strong><a class="anchor" aria-label="anchor" href="#threshold-graph"></a>
 </h3>
-<p>An undirected graph
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G = (V, E)</annotation></semantics></math>
+<p>An undirected graph <span class="math inline">\(G = (V, E)\)</span>
 where:</p>
 <ul>
-<li><p>each vertex in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
-represents a variable</p></li>
-<li><p>an edge
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i,j)</annotation></semantics></math>
-exists exactly when
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math></p></li>
+<li><p>each vertex in <span class="math inline">\(V\)</span> represents
+a variable</p></li>
+<li><p>an edge <span class="math inline">\((i,j)\)</span> exists exactly
+when <span class="math inline">\(|a_{ij}| &lt; \tau\)</span></p></li>
 </ul>
 <p>Edges therefore connect <em>compatible</em> (low-association)
 variables.</p>
@@ -280,12 +260,9 @@ Maximal cliques correspond exactly to maximal valid subsets.</p>
 <h3 id="forced-in-variables-force_in">
 <strong>Forced-in variables</strong> (<code>force_in</code>)<a class="anchor" aria-label="anchor" href="#forced-in-variables-force_in"></a>
 </h3>
-<p>A set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">F \subseteq V</annotation></semantics></math>
-of variables that must appear in all returned solutions.<br>
-Only maximal cliques containing all elements of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-are considered.</p>
+<p>A set <span class="math inline">\(F \subseteq V\)</span> of variables
+that must appear in all returned solutions.<br>
+Only maximal cliques containing all elements of <span class="math inline">\(F\)</span> are considered.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -294,11 +271,9 @@ are considered.</p>
 </h3>
 <p>A degeneracy-based algorithm for maximal clique enumeration.<br>
 Recommended when <code>force_in</code> is used.</p>
-<p>Complexity:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>⋅</mo><msup><mn>3</mn><mrow><mi>d</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(d \cdot 3^{d/3})</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-is the graph’s degeneracy.</p>
+<p>Complexity: <span class="math inline">\(O(d \cdot 3^{d/3})\)</span>,
+where <span class="math inline">\(d\)</span> is the graph’s
+degeneracy.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -308,8 +283,7 @@ is the graph’s degeneracy.</p>
 <p>A classical backtracking algorithm for enumerating maximal cliques,
 optionally with pivoting.<br>
 Used by default when <code>force_in</code> is not specified.</p>
-<p>Worst-case complexity:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>.</p>
+<p>Worst-case complexity: <span class="math inline">\(O(3^{p/3})\)</span>.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -318,8 +292,7 @@ Used by default when <code>force_in</code> is not specified.</p>
 </h3>
 <p>A fast heuristic that constructs a single maximal clique via greedy
 selection.<br>
-Runs in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>.<br>
+Runs in <span class="math inline">\(O(p^2)\)</span>.<br>
 Does not guarantee the largest possible subset.</p>
 <hr>
 </div>
@@ -338,10 +311,10 @@ Identifies the maximum (largest) valid subset.</p>
 </h3>
 <p>Chooses the method automatically:</p>
 <ul>
-<li><p>exact mode for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p \le 20</annotation></semantics></math></p></li>
-<li><p>greedy mode for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p &gt; 20</annotation></semantics></math></p></li>
+<li><p>exact mode for <span class="math inline">\(p \le
+20\)</span></p></li>
+<li><p>greedy mode for <span class="math inline">\(p &gt;
+20\)</span></p></li>
 </ul>
 <p>This balances optimality with computational cost.</p>
 <blockquote>
@@ -1138,12 +1111,10 @@ variables)</li>
 <div class="section level3">
 <h3 id="intuitive-problem-statement">Intuitive Problem Statement<a class="anchor" aria-label="anchor" href="#intuitive-problem-statement"></a>
 </h3>
-<p>The core problem is straightforward: given a set of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-variables with known pairwise associations (correlations), identify all
-largest possible subsets where every pair of variables has an
-association below a user-defined threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>.</p>
+<p>The core problem is straightforward: given a set of <span class="math inline">\(p\)</span> variables with known pairwise
+associations (correlations), identify all largest possible subsets where
+every pair of variables has an association below a user-defined
+threshold <span class="math inline">\(\tau\)</span>.</p>
 <p>Think of this as a social network where variables are people and
 edges represent “get along well” (low correlation). We want to find all
 maximal groups of people where everyone gets along with everyone else in
@@ -1158,72 +1129,47 @@ so we only search for groups containing all VIPs.</p>
 </h3>
 <p><strong>Input:</strong></p>
 <ul>
-<li><p>Association matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow></msup></mrow><annotation encoding="application/x-tex">A \in \mathbb{R}^{p \times p}</annotation></semantics></math>
-with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>a</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">a_{ij} = a_{ji}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">a_{ii} = 1</annotation></semantics></math>
-for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math></p></li>
-<li><p>Threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau \in (0, 1)</annotation></semantics></math></p></li>
-<li><p>Optional forced-in set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">F \subseteq \{1, \dots, p\}</annotation></semantics></math></p></li>
+<li><p>Association matrix <span class="math inline">\(A \in
+\mathbb{R}^{p \times p}\)</span> with <span class="math inline">\(a_{ij}
+= a_{ji}\)</span> and <span class="math inline">\(a_{ii} = 1\)</span>
+for all <span class="math inline">\(i\)</span></p></li>
+<li><p>Threshold <span class="math inline">\(\tau \in (0,
+1)\)</span></p></li>
+<li><p>Optional forced-in set <span class="math inline">\(F \subseteq
+\{1, \dots, p\}\)</span></p></li>
 </ul>
 <p><strong>Constraints:</strong></p>
-<p>A subset
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S \subseteq \{1, \dots, p\}</annotation></semantics></math>
-is valid if:</p>
+<p>A subset <span class="math inline">\(S \subseteq \{1, \dots,
+p\}\)</span> is valid if:</p>
 <ol style="list-style-type: decimal">
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">F \subseteq S</annotation></semantics></math>
-(if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-specified)</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">i, j \in S</annotation></semantics></math>
-with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>≠</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">i \neq j</annotation></semantics></math></p></li>
+<li><p><span class="math inline">\(F \subseteq S\)</span> (if <span class="math inline">\(F\)</span> specified)</p></li>
+<li><p><span class="math inline">\(|a_{ij}| &lt; \tau\)</span> for all
+<span class="math inline">\(i, j \in S\)</span> with <span class="math inline">\(i \neq j\)</span></p></li>
 </ol>
 <p><strong>Objective:</strong></p>
-<p>Find all maximal valid subsets
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒮</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>S</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{S} = \{S_1, \dots, S_m\}</annotation></semantics></math>
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>k</mi></msub><annotation encoding="application/x-tex">S_k</annotation></semantics></math>
-is maximal if no variable
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>∉</mo><msub><mi>S</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">v \notin S_k</annotation></semantics></math>
-satisfies
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>v</mi><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{vi}| &lt; \tau</annotation></semantics></math>
-for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><msub><mi>S</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">i \in S_k</annotation></semantics></math>.</p>
+<p>Find all maximal valid subsets <span class="math inline">\(\mathcal{S} = \{S_1, \dots, S_m\}\)</span> where
+<span class="math inline">\(S_k\)</span> is maximal if no variable <span class="math inline">\(v \notin S_k\)</span> satisfies <span class="math inline">\(|a_{vi}| &lt; \tau\)</span> for all <span class="math inline">\(i \in S_k\)</span>.</p>
 <p><strong>Output:</strong></p>
-<p>Collection
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal{S}</annotation></semantics></math>
+<p>Collection <span class="math inline">\(\mathcal{S}\)</span>
 containing all maximal valid subsets.</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="association-matrix-1">Association Matrix<a class="anchor" aria-label="anchor" href="#association-matrix-1"></a>
 </h3>
-<p>Given
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-variables, compute an association matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow></msup></mrow><annotation encoding="application/x-tex">A \in \mathbb{R}^{p \times p}</annotation></semantics></math>
-where:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mtext mathvariant="normal">association</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>,</mo><msub><mi>X</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+<p>Given <span class="math inline">\(p\)</span> variables, compute an
+association matrix <span class="math inline">\(A \in \mathbb{R}^{p
+\times p}\)</span> where:</p>
+<p><span class="math display">\[
 a_{ij} = \text{association}(X_i, X_j)
-</annotation></semantics></math></p>
-<p>For numeric variables,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">a_{ij}</annotation></semantics></math>
+\]</span></p>
+<p>For numeric variables, <span class="math inline">\(a_{ij}\)</span>
 may be a correlation coefficient (Pearson, Spearman, Kendall, etc.). For
-mixed-type variables,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">a_{ij}</annotation></semantics></math>
-is chosen based on variable types:</p>
+mixed-type variables, <span class="math inline">\(a_{ij}\)</span> is
+chosen based on variable types:</p>
 <table class="table">
 <thead><tr class="header">
-<th>Type
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>,</mo><msub><mi>X</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X_i, X_j)</annotation></semantics></math>
+<th>Type <span class="math inline">\((X_i, X_j)\)</span>
 </th>
 <th>Measure</th>
 </tr></thead>
@@ -1234,7 +1180,7 @@ is chosen based on variable types:</p>
 </tr>
 <tr class="even">
 <td>numeric, factor</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>η</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\eta^2</annotation></semantics></math></td>
+<td><span class="math inline">\(\eta^2\)</span></td>
 </tr>
 <tr class="odd">
 <td>numeric, ordered</td>
@@ -1254,34 +1200,29 @@ is chosen based on variable types:</p>
 </tr>
 </tbody>
 </table>
-<p>All measures are bounded:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">a_{ij} \in [0, 1]</annotation></semantics></math>
-or
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">a_{ij} \in [-1, 1]</annotation></semantics></math>.</p>
+<p>All measures are bounded: <span class="math inline">\(a_{ij} \in [0,
+1]\)</span> or <span class="math inline">\(a_{ij} \in [-1,
+1]\)</span>.</p>
 </div>
 <div class="section level3">
 <h3 id="threshold-constraint">Threshold Constraint<a class="anchor" aria-label="anchor" href="#threshold-constraint"></a>
 </h3>
-<p>Fix a threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau \in (0, 1)</annotation></semantics></math>.
-A subset
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S \subseteq \{1, \dots, p\}</annotation></semantics></math>
-is <strong>valid</strong> if:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>≠</mo><mi>j</mi><mo>:</mo><mspace width="1.0em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">
+<p>Fix a threshold <span class="math inline">\(\tau \in (0, 1)\)</span>.
+A subset <span class="math inline">\(S \subseteq \{1, \dots,
+p\}\)</span> is <strong>valid</strong> if:</p>
+<p><span class="math display">\[
 \forall i, j \in S,\ i \neq j: \quad |a_{ij}| &lt; \tau
-</annotation></semantics></math></p>
+\]</span></p>
 </div>
 <div class="section level3">
 <h3 id="maximal-valid-subsets">Maximal Valid Subsets<a class="anchor" aria-label="anchor" href="#maximal-valid-subsets"></a>
 </h3>
-<p>A valid subset
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
-is <strong>maximal</strong> if no variable
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∉</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">k \notin S</annotation></semantics></math>
-satisfies:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">for all </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">
+<p>A valid subset <span class="math inline">\(S\)</span> is
+<strong>maximal</strong> if no variable <span class="math inline">\(k
+\notin S\)</span> satisfies:</p>
+<p><span class="math display">\[
 |a_{ki}| &lt; \tau \quad \text{for all } i \in S
-</annotation></semantics></math></p>
+\]</span></p>
 <blockquote>
 <p><strong>Key Points: Problem Formulation</strong></p>
 <ul>
@@ -1321,42 +1262,28 @@ represent compatibility.</p>
 <div class="section level3">
 <h3 id="threshold-graph-1">Threshold Graph<a class="anchor" aria-label="anchor" href="#threshold-graph-1"></a>
 </h3>
-<p>Define the <strong>threshold graph</strong>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G = (V, E)</annotation></semantics></math>
-where:</p>
+<p>Define the <strong>threshold graph</strong> <span class="math inline">\(G = (V, E)\)</span> where:</p>
 <ul>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">V = \{1, \dots, p\}</annotation></semantics></math>
-(nodes represent variables)</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">(i, j) \in E</annotation></semantics></math>
-if and only if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-(edges connect compatible variables)</p></li>
+<li><p><span class="math inline">\(V = \{1, \dots, p\}\)</span> (nodes
+represent variables)</p></li>
+<li><p><span class="math inline">\((i, j) \in E\)</span> if and only if
+<span class="math inline">\(|a_{ij}| &lt; \tau\)</span> (edges connect
+compatible variables)</p></li>
 </ul>
-<p><strong>Note the reversal</strong>: An edge
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
-means variables
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-have <em>low</em> correlation (can coexist). This is the complement of
-the typical “correlation graph” where edges represent high
-correlation.</p>
+<p><strong>Note the reversal</strong>: An edge <span class="math inline">\((i, j)\)</span> means variables <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> have <em>low</em> correlation (can
+coexist). This is the complement of the typical “correlation graph”
+where edges represent high correlation.</p>
 </div>
 <div class="section level3">
 <h3 id="maximal-cliques">Maximal Cliques<a class="anchor" aria-label="anchor" href="#maximal-cliques"></a>
 </h3>
-<p>A valid subset
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
-corresponds to a <strong>clique</strong> in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>:
-all pairs in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
-are connected.</p>
+<p>A valid subset <span class="math inline">\(S\)</span> corresponds to
+a <strong>clique</strong> in <span class="math inline">\(G\)</span>: all
+pairs in <span class="math inline">\(S\)</span> are connected.</p>
 <p>A maximal valid subset corresponds to a <strong>maximal
 clique</strong>: a clique that cannot be extended.</p>
 <p>Finding all maximal valid subsets is equivalent to enumerating all
-maximal cliques in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>.</p>
+maximal cliques in <span class="math inline">\(G\)</span>.</p>
 </div>
 <div class="section level3">
 <h3 id="example-6-variable-threshold-graph">Example: 6-Variable Threshold Graph<a class="anchor" aria-label="anchor" href="#example-6-variable-threshold-graph"></a>
@@ -1385,8 +1312,8 @@ maximal cliques in
 <span><span class="co">#&gt; V4 0.20 0.25 0.30 1.00 0.65 0.55</span></span>
 <span><span class="co">#&gt; V5 0.15 0.20 0.25 0.65 1.00 0.60</span></span>
 <span><span class="co">#&gt; V6 0.10 0.15 0.20 0.55 0.60 1.00</span></span></code></pre></div>
-<p>Threshold graph construction with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>:</p>
+<p>Threshold graph construction with <span class="math inline">\(\tau =
+0.7\)</span>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build adjacency matrix for threshold graph</span></span>
 <span><span class="va">tau</span> <span class="op">&lt;-</span> <span class="fl">0.7</span></span>
@@ -1681,10 +1608,9 @@ structure. Variables V1-V3 are highly correlated with each other
 (correlations 0.75-0.85, shown in red), as are V4-V6 (correlations
 0.55-0.65). Between-block correlations are low (0.10-0.30, shown in
 blue/white).</p>
-<p>The right panel shows the corresponding threshold graph with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>.
-An edge connects two variables if their absolute correlation is
-<em>below</em> 0.7 (compatible variables). Note that:</p>
+<p>The right panel shows the corresponding threshold graph with <span class="math inline">\(\tau = 0.7\)</span>. An edge connects two
+variables if their absolute correlation is <em>below</em> 0.7
+(compatible variables). Note that:</p>
 <ul>
 <li><p><strong>Within high-correlation groups</strong>: V1-V3 have no
 edges connecting them (correlations exceed 0.7). Similarly, V4-V6 are
@@ -1693,11 +1619,8 @@ not fully connected.</p></li>
 edges (low between-group correlation).</p></li>
 </ul>
 <p>This graph structure immediately reveals the two maximal cliques:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>V</mi><mn>1</mn><mo>,</mo><mi>V</mi><mn>2</mn><mo>,</mo><mi>V</mi><mn>3</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{V1, V2, V3\}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>V</mi><mn>4</mn><mo>,</mo><mi>V</mi><mn>5</mn><mo>,</mo><mi>V</mi><mn>6</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{V4, V5, V6\}</annotation></semantics></math>.
-No variable can be added to either clique without violating the
-threshold constraint.</p>
+<span class="math inline">\(\{V1, V2, V3\}\)</span> and <span class="math inline">\(\{V4, V5, V6\}\)</span>. No variable can be added
+to either clique without violating the threshold constraint.</p>
 <p>Identify maximal cliques:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run MatSelect to find all maximal subsets</span></span>
@@ -1718,9 +1641,8 @@ threshold constraint.</p>
 <span><span class="co">#&gt;   [ 3] V3, V4, V5, V6                    0.425  0.650     4</span></span></code></pre></div>
 <p><strong>Interpreting the results</strong>:</p>
 <p>MatSelect identified two maximal subsets of size 3, exactly matching
-the visual graph analysis. Both subsets satisfy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; 0.7</annotation></semantics></math>
-for all pairs within the subset.</p>
+the visual graph analysis. Both subsets satisfy <span class="math inline">\(|a_{ij}| &lt; 0.7\)</span> for all pairs within
+the subset.</p>
 <ul>
 <li><p><strong>Subset 1</strong> (V1, V2, V3): Mean correlation 0.80,
 max 0.85 - highly redundant within-group</p></li>
@@ -1756,15 +1678,13 @@ function arguments and behavior of the package. The correspondence is
 outlined below.</p>
 <div class="section level3">
 <h3 id="threshold-tau-threshold-argument">
-<strong>Threshold
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>)
-→ <code>threshold</code> argument</strong><a class="anchor" aria-label="anchor" href="#threshold-tau-threshold-argument"></a>
+<strong>Threshold (<span class="math inline">\(\tau\)</span>) →
+<code>threshold</code> argument</strong><a class="anchor" aria-label="anchor" href="#threshold-tau-threshold-argument"></a>
 </h3>
 <p>Controls which edges appear in the threshold graph.</p>
 <ul>
 <li><p><code>corrPrune(data, threshold = 0.7)</code> keeps an edge only
-if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; 0.7</annotation></semantics></math></p></li>
+if <span class="math inline">\(|a_{ij}| &lt; 0.7\)</span></p></li>
 <li><p>Lower thresholds → stricter pruning → sparser graphs → smaller
 valid subsets</p></li>
 </ul>
@@ -1784,19 +1704,14 @@ satisfying the threshold constraint</p></li>
 </div>
 <div class="section level3">
 <h3 id="forced-in-set-f-force_in-argument">
-<strong>Forced-in set
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>)
-→ <code>force_in</code> argument</strong><a class="anchor" aria-label="anchor" href="#forced-in-set-f-force_in-argument"></a>
+<strong>Forced-in set (<span class="math inline">\(F\)</span>) →
+<code>force_in</code> argument</strong><a class="anchor" aria-label="anchor" href="#forced-in-set-f-force_in-argument"></a>
 </h3>
 <p>Ensures that certain variables appear in every returned subset.</p>
 <ul>
 <li><p><code>corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))</code></p></li>
-<li><p>Internally, the algorithm verifies that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-itself is a valid subset (all pairs in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-satisfy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>)</p></li>
+<li><p>Internally, the algorithm verifies that <span class="math inline">\(F\)</span> itself is a valid subset (all pairs in
+<span class="math inline">\(F\)</span> satisfy <span class="math inline">\(|a_{ij}| &lt; \tau\)</span>)</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1813,10 +1728,8 @@ Enumerates all maximal cliques using ELS or Bron–Kerbosch</li>
 Constructs a single maximal clique via a greedy heuristic</li>
 <li>
 <code>mode = "auto"</code><br>
-Uses exact mode for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">p \le 20</annotation></semantics></math>,
-greedy mode for larger
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+Uses exact mode for <span class="math inline">\(p \le 20\)</span>,
+greedy mode for larger <span class="math inline">\(p\)</span>
 </li>
 </ul>
 <p>Choice of enumeration algorithm:</p>
@@ -1832,8 +1745,7 @@ Bron–Kerbosch with pivoting (default)</li>
 </div>
 <div class="section level3">
 <h3 id="association-matrix-a-data-input-and-matrix-based-functions">
-<strong>Association matrix
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>)
+<strong>Association matrix (<span class="math inline">\(A\)</span>)
 → Data input and matrix-based functions</strong><a class="anchor" aria-label="anchor" href="#association-matrix-a-data-input-and-matrix-based-functions"></a>
 </h3>
 <p>How the association structure enters the algorithm:</p>
@@ -1856,26 +1768,24 @@ before selection</li>
 </h3>
 <p>Depends directly on the threshold:</p>
 <ul>
-<li>Sparse graphs (low
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>)<br>
+<li>Sparse graphs (low <span class="math inline">\(\tau\)</span>)<br>
 Few edges → fast exact enumeration</li>
-<li>Dense graphs (high
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>)<br>
+<li>Dense graphs (high <span class="math inline">\(\tau\)</span>)<br>
 Many edges → potentially exponential growth in maximal cliques</li>
 </ul>
 <p>These properties motivate the <code>auto</code> mode: exact for small
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
-greedy for larger
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>.</p>
+<span class="math inline">\(p\)</span>, greedy for larger <span class="math inline">\(p\)</span>.</p>
 </div>
 <div class="section level3">
 <h3 id="example-mapping">
 <strong>Example mapping</strong><a class="anchor" aria-label="anchor" href="#example-mapping"></a>
 </h3>
 <p>Mathematical formulation:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mtext mathvariant="normal">Find all maximal </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> such that </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mn>0.7</mn><mspace width="0.222em"></mspace><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.222em"></mspace><mrow><mtext mathvariant="normal">with </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="prefix">{</mo><mtext mathvariant="normal">age</mtext><mo stretchy="false" form="postfix">}</mo><mo>⊆</mo><mi>S</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
-\text{Find all maximal } S \subseteq \{1,\dots,p\} \text{ such that } |a_{ij}| &lt; 0.7\ \forall i, j \in S,\ \text{with } \{ \text{age} \} \subseteq S.
-</annotation></semantics></math></p>
+<p><span class="math display">\[
+\text{Find all maximal } S \subseteq \{1,\dots,p\} \text{ such that }
+|a_{ij}| &lt; 0.7\ \forall i, j \in S,\ \text{with } \{ \text{age} \}
+\subseteq S.
+\]</span></p>
 <p>Implementation:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrSelect.html">corrSelect</a></span><span class="op">(</span></span>
@@ -1920,42 +1830,32 @@ includes the required variables.</p>
 </h4>
 <p>Uses degeneracy ordering to structure the search:</p>
 <ol style="list-style-type: decimal">
-<li><p>Compute degeneracy ordering
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">v_1, \dots, v_p</annotation></semantics></math></p></li>
-<li><p>For each
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>i</mi></msub><annotation encoding="application/x-tex">v_i</annotation></semantics></math>,
-extend cliques within candidates
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>v</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{v_{i+1}, \dots, v_p\}</annotation></semantics></math></p></li>
+<li><p>Compute degeneracy ordering <span class="math inline">\(v_1,
+\dots, v_p\)</span></p></li>
+<li><p>For each <span class="math inline">\(v_i\)</span>, extend cliques
+within candidates <span class="math inline">\(\{v_{i+1}, \dots,
+v_p\}\)</span></p></li>
 <li><p>Recursively build cliques, pruning when no extension is
 possible</p></li>
 </ol>
 <p>Formally, define:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">extend</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>,</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">{</mo><mi>R</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>P</mi><mo>=</mo><mi>∅</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><munder><mo>⋃</mo><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></munder><mtext mathvariant="normal">extend</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mi>P</mi><mo>∩</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 \text{extend}(R, P) =
 \begin{cases}
 \{R\}, &amp; P = \emptyset \\
-\bigcup_{v \in P} \text{extend}(R \cup \{v\}, P \cap N(v)), &amp; \text{otherwise}
+\bigcup_{v \in P} \text{extend}(R \cup \{v\}, P \cap N(v)), &amp;
+\text{otherwise}
 \end{cases}
-</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(v)</annotation></semantics></math>
-denotes neighbors of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
-in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>.</p>
+\]</span></p>
+<p>where <span class="math inline">\(N(v)\)</span> denotes neighbors of
+<span class="math inline">\(v\)</span> in <span class="math inline">\(G\)</span>.</p>
 </div>
 <div class="section level4">
 <h4 id="bronkerbosch-1">Bron–Kerbosch<a class="anchor" aria-label="anchor" href="#bronkerbosch-1"></a>
 </h4>
 <p>Classical recursive backtracking with optional pivoting.</p>
-<p>Let
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
-= current clique,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
-= candidates,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
-= excluded nodes:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">BK</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>,</mo><mi>P</mi><mo>,</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">report</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>P</mi><mo>=</mo><mi>X</mi><mo>=</mo><mi>∅</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for each </mtext><mspace width="0.333em"></mspace></mrow><mi>v</mi><mo>∈</mo><mi>P</mi><mo>\</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="1.0em"></mspace><mtext mathvariant="normal">BK</mtext><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mi>P</mi><mo>∩</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>X</mi><mo>∩</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="1.0em"></mspace><mi>P</mi><mo>←</mo><mi>P</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="1.0em"></mspace><mi>X</mi><mo>←</mo><mi>X</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>v</mi><mo stretchy="false" form="postfix">}</mo></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p>Let <span class="math inline">\(R\)</span> = current clique, <span class="math inline">\(P\)</span> = candidates, <span class="math inline">\(X\)</span> = excluded nodes:</p>
+<p><span class="math display">\[
 \text{BK}(R, P, X) =
 \begin{cases}
 \text{report}(R), &amp; P = X = \emptyset \\
@@ -1963,10 +1863,9 @@ in
 \quad \text{BK}(R \cup \{v\}, P \cap N(v), X \cap N(v)) \\
 \quad P \leftarrow P \setminus \{v\}, \quad X \leftarrow X \cup \{v\}
 \end{cases}
-</annotation></semantics></math></p>
-<p>Pivot
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>∈</mo><mi>P</mi><mo>∪</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">u \in P \cup X</annotation></semantics></math>
-reduces recursive calls.</p>
+\]</span></p>
+<p>Pivot <span class="math inline">\(u \in P \cup X\)</span> reduces
+recursive calls.</p>
 </div>
 <div class="section level4">
 <h4 id="pseudocode-for-practitioners">Pseudocode for Practitioners<a class="anchor" aria-label="anchor" href="#pseudocode-for-practitioners"></a>
@@ -2032,17 +1931,13 @@ Subroutine: BK(R, P, X, results)
     X = X ∪ {v}      # Add v to excluded</code></pre>
 <p><strong>Complexity</strong>:</p>
 <ul>
-<li><p><strong>ELS</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>⋅</mo><msup><mn>3</mn><mrow><mi>d</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(d \cdot 3^{d/3})</annotation></semantics></math>
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-is degeneracy (much faster on sparse graphs)</p></li>
-<li><p><strong>Bron-Kerbosch</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-worst case, improved with pivoting</p></li>
-<li><p><strong>Greedy</strong> (below):
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>
-deterministic polynomial time</p></li>
+<li><p><strong>ELS</strong>: <span class="math inline">\(O(d \cdot
+3^{d/3})\)</span> where <span class="math inline">\(d\)</span> is
+degeneracy (much faster on sparse graphs)</p></li>
+<li><p><strong>Bron-Kerbosch</strong>: <span class="math inline">\(O(3^{p/3})\)</span> worst case, improved with
+pivoting</p></li>
+<li><p><strong>Greedy</strong> (below): <span class="math inline">\(O(p^2)\)</span> deterministic polynomial
+time</p></li>
 </ul>
 </div>
 </div>
@@ -2050,15 +1945,11 @@ deterministic polynomial time</p></li>
 <h3 id="greedy-heuristic">Greedy Heuristic<a class="anchor" aria-label="anchor" href="#greedy-heuristic"></a>
 </h3>
 <p>Iteratively removes variables with highest average absolute
-association until all pairs satisfy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>.</p>
+association until all pairs satisfy <span class="math inline">\(|a_{ij}|
+&lt; \tau\)</span>.</p>
 <p>Returns a single valid subset (not necessarily maximal or
 optimal).</p>
-<p>Complexity:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>
-vs
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>2</mn><mi>p</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(2^p)</annotation></semantics></math>
-for exact enumeration.</p>
+<p>Complexity: <span class="math inline">\(O(p^2)\)</span> vs <span class="math inline">\(O(2^p)\)</span> for exact enumeration.</p>
 <blockquote>
 <p><strong>Key Points: Search Algorithms</strong></p>
 <ul>
@@ -2087,12 +1978,9 @@ non-optimal) subset</li>
 <div class="section level3">
 <h3 id="eppsteinlöfflerstrash-els-1">Eppstein–Löffler–Strash (ELS)<a class="anchor" aria-label="anchor" href="#eppsteinl%C3%B6fflerstrash-els-1"></a>
 </h3>
-<p><strong>Input</strong>: Graph
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G = (V, E)</annotation></semantics></math>,
-forced-in set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math></p>
-<p><strong>Output</strong>: All maximal cliques containing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math></p>
+<p><strong>Input</strong>: Graph <span class="math inline">\(G = (V,
+E)\)</span>, forced-in set <span class="math inline">\(F\)</span></p>
+<p><strong>Output</strong>: All maximal cliques containing <span class="math inline">\(F\)</span></p>
 <pre><code>Algorithm ELS(G, F):
   # Step 1: Compute degeneracy ordering
   deg_order ← ComputeDegeneracyOrdering(G)
@@ -2150,32 +2038,25 @@ Subroutine ComputeDegeneracyOrdering(G):
     remaining ← remaining \ {v}
 
   return ordering</code></pre>
-<p><strong>Complexity</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>⋅</mo><msup><mn>3</mn><mrow><mi>d</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(d \cdot 3^{d/3})</annotation></semantics></math>
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-is the degeneracy of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>.</p>
+<p><strong>Complexity</strong>: <span class="math inline">\(O(d \cdot
+3^{d/3})\)</span> where <span class="math inline">\(d\)</span> is the
+degeneracy of <span class="math inline">\(G\)</span>.</p>
 <p><strong>Properties:</strong></p>
 <ul>
 <li><p><strong>Exact:</strong> enumerates all maximal cliques</p></li>
 <li><p><strong>Efficient on sparse graphs:</strong> performs best when
 the threshold graph has low density</p></li>
 <li><p><strong>Forced-in support:</strong> implemented by initializing
-the search with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">R = F</annotation></semantics></math></p></li>
+the search with <span class="math inline">\(R = F\)</span></p></li>
 </ul>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="bronkerbosch-with-pivoting">Bron–Kerbosch with Pivoting<a class="anchor" aria-label="anchor" href="#bronkerbosch-with-pivoting"></a>
 </h3>
-<p><strong>Input</strong>: Graph
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G = (V, E)</annotation></semantics></math>,
-forced-in set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math></p>
-<p><strong>Output</strong>: All maximal cliques containing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math></p>
+<p><strong>Input</strong>: Graph <span class="math inline">\(G = (V,
+E)\)</span>, forced-in set <span class="math inline">\(F\)</span></p>
+<p><strong>Output</strong>: All maximal cliques containing <span class="math inline">\(F\)</span></p>
 <pre><code>Algorithm BronKerbosch(G, F):
   # Step 1: Initialize
   R ← F  (current clique)
@@ -2220,9 +2101,8 @@ Subroutine BK(R, P, X):
     # Move v from candidates to exclusions
     P ← P \ {v}
     X ← X ∪ {v}</code></pre>
-<p><strong>Complexity</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-maximal cliques (worst-case).</p>
+<p><strong>Complexity</strong>: <span class="math inline">\(O(3^{p/3})\)</span> maximal cliques
+(worst-case).</p>
 <p><strong>Properties:</strong></p>
 <ul>
 <li><p><strong>Exact:</strong> enumerates all maximal cliques</p></li>
@@ -2232,16 +2112,12 @@ calls and tighter branching</p></li>
 </ul>
 <p><strong>Pivot selection:</strong></p>
 <ul>
-<li><p>Choosing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
-with maximum degree in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
-minimizes branching</p></li>
-<li><p>Without pivoting:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>2</mn><mi>p</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(2^p)</annotation></semantics></math>
+<li><p>Choosing <span class="math inline">\(u\)</span> with maximum
+degree in <span class="math inline">\(P\)</span> minimizes
+branching</p></li>
+<li><p>Without pivoting: <span class="math inline">\(O(2^p)\)</span>
 recursive calls (exponential)</p></li>
-<li><p>With pivoting:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
+<li><p>With pivoting: <span class="math inline">\(O(3^{p/3})\)</span>
 recursive calls (still exponential but significantly tighter)</p></li>
 </ul>
 <hr>
@@ -2249,12 +2125,7 @@ recursive calls (still exponential but significantly tighter)</p></li>
 <div class="section level3">
 <h3 id="greedy-heuristic-1">Greedy Heuristic<a class="anchor" aria-label="anchor" href="#greedy-heuristic-1"></a>
 </h3>
-<p><strong>Input</strong>: Association matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>,
-threshold
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>,
-forced-in set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math></p>
+<p><strong>Input</strong>: Association matrix <span class="math inline">\(A\)</span>, threshold <span class="math inline">\(\tau\)</span>, forced-in set <span class="math inline">\(F\)</span></p>
 <p><strong>Output</strong>: Single valid subset (not necessarily
 maximal)</p>
 <pre><code>Algorithm GreedyPrune(A, τ, F):
@@ -2279,10 +2150,7 @@ maximal)</p>
 
   # Step 4: Return pruned subset
   return S</code></pre>
-<p><strong>Complexity:</strong><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2 k)</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-is the number of variables removed.</p>
+<p><strong>Complexity:</strong><br><span class="math inline">\(O(p^2 k)\)</span>, where <span class="math inline">\(k\)</span> is the number of variables removed.</p>
 <p><strong>Properties:</strong></p>
 <ul>
 <li><p><strong>Fast:</strong> polynomial-time procedure</p></li>
@@ -2290,9 +2158,7 @@ is the number of variables removed.</p>
 identical output</p></li>
 <li><p><strong>Non-optimal:</strong> does not guarantee a maximal or
 largest subset</p></li>
-<li><p><strong>Forced-in support:</strong> variables in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-are never removed</p></li>
+<li><p><strong>Forced-in support:</strong> variables in <span class="math inline">\(F\)</span> are never removed</p></li>
 </ul>
 <p><strong>Tie-breaking:</strong> When several variables share the same
 average absolute correlation:</p>
@@ -2308,46 +2174,32 @@ name</p></li>
 <div class="section level2">
 <h2 id="forced-variables">Forced Variables<a class="anchor" aria-label="anchor" href="#forced-variables"></a>
 </h2>
-<p>Constraint: variables
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">F \subseteq \{1, \dots, p\}</annotation></semantics></math>
-must appear in all returned subsets.</p>
+<p>Constraint: variables <span class="math inline">\(F \subseteq \{1,
+\dots, p\}\)</span> must appear in all returned subsets.</p>
 <div class="section level3">
 <h3 id="graph-modification">Graph Modification<a class="anchor" aria-label="anchor" href="#graph-modification"></a>
 </h3>
 <p>Modify the search:</p>
 <ul>
-<li><p>Require
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">F \subseteq S</annotation></semantics></math>
-for all valid
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math></p></li>
-<li><p>Verify
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-for all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">i, j \in F</annotation></semantics></math>
-(else problem is infeasible)</p></li>
-<li><p>Search for maximal extensions of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-within remaining variables</p></li>
+<li><p>Require <span class="math inline">\(F \subseteq S\)</span> for
+all valid <span class="math inline">\(S\)</span></p></li>
+<li><p>Verify <span class="math inline">\(|a_{ij}| &lt; \tau\)</span>
+for all <span class="math inline">\(i, j \in F\)</span> (else problem is
+infeasible)</p></li>
+<li><p>Search for maximal extensions of <span class="math inline">\(F\)</span> within remaining variables</p></li>
 </ul>
-<p>Formally, find maximal cliques in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
-containing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>.</p>
+<p>Formally, find maximal cliques in <span class="math inline">\(G\)</span> containing <span class="math inline">\(F\)</span>.</p>
 <hr>
 </div>
 </div>
 <div class="section level2">
 <h2 id="correlation-vs-association">Correlation vs Association<a class="anchor" aria-label="anchor" href="#correlation-vs-association"></a>
 </h2>
-<p><strong>Correlation</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">a_{ij} \in [-1, 1]</annotation></semantics></math>,
-use
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-in threshold constraint</p>
-<p><strong>Association</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">a_{ij} \in [0, 1]</annotation></semantics></math>,
-use
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">a_{ij}</annotation></semantics></math>
+<p><strong>Correlation</strong>: <span class="math inline">\(a_{ij} \in
+[-1, 1]\)</span>, use <span class="math inline">\(|a_{ij}|\)</span> in
+threshold constraint</p>
+<p><strong>Association</strong>: <span class="math inline">\(a_{ij} \in
+[0, 1]\)</span>, use <span class="math inline">\(a_{ij}\)</span>
 directly</p>
 <p>Mixed-type data uses association matrix with measures chosen per
 variable-pair type.</p>
@@ -2359,30 +2211,22 @@ variable-pair type.</p>
 <div class="section level3">
 <h3 id="exact-enumeration-1">Exact Enumeration<a class="anchor" aria-label="anchor" href="#exact-enumeration-1"></a>
 </h3>
-<p>Worst-case:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
-maximal cliques possible</p>
+<p>Worst-case: <span class="math inline">\(O(3^{p/3})\)</span> maximal
+cliques possible</p>
 <p>Performance depends on graph density:</p>
 <ul>
-<li><p>Sparse (low
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>):
-fewer edges, faster enumeration</p></li>
-<li><p>Dense (high
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>):
-many edges, exponential growth</p></li>
+<li><p>Sparse (low <span class="math inline">\(\tau\)</span>): fewer
+edges, faster enumeration</p></li>
+<li><p>Dense (high <span class="math inline">\(\tau\)</span>): many
+edges, exponential growth</p></li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="greedy-heuristic-2">Greedy Heuristic<a class="anchor" aria-label="anchor" href="#greedy-heuristic-2"></a>
 </h3>
-<p>Time:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2 k)</annotation></semantics></math>
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-= iterations</p>
-<p>Space:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>
-for storing associations</p>
+<p>Time: <span class="math inline">\(O(p^2 k)\)</span> where <span class="math inline">\(k\)</span> = iterations</p>
+<p>Space: <span class="math inline">\(O(p^2)\)</span> for storing
+associations</p>
 <p>Deterministic: same input produces same output</p>
 <hr>
 </div>
@@ -2395,17 +2239,10 @@ containing:</p>
 <ul>
 <li><p><code>subset_list</code>: list of character vectors (variable
 names per subset)</p></li>
-<li><p><code>avg_corr</code>: numeric vector (mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-within each subset)</p></li>
-<li><p><code>min_corr</code>: numeric vector (min
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-within each subset)</p></li>
-<li><p><code>max_corr</code>: numeric vector (max
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|a_{ij}|</annotation></semantics></math>
-within each subset)</p></li>
-<li><p><code>threshold</code>: value of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></p></li>
+<li><p><code>avg_corr</code>: numeric vector (mean <span class="math inline">\(|a_{ij}|\)</span> within each subset)</p></li>
+<li><p><code>min_corr</code>: numeric vector (min <span class="math inline">\(|a_{ij}|\)</span> within each subset)</p></li>
+<li><p><code>max_corr</code>: numeric vector (max <span class="math inline">\(|a_{ij}|\)</span> within each subset)</p></li>
+<li><p><code>threshold</code>: value of <span class="math inline">\(\tau\)</span></p></li>
 <li><p><code>forced_in</code>: forced variable names</p></li>
 <li><p><code>cor_method</code>: correlation/association measure
 used</p></li>
@@ -2453,26 +2290,20 @@ structures.</p></li>
 <div class="section level3">
 <h3 id="why-hard-threshold-not-soft-constraint">Why Hard Threshold Not Soft Constraint?<a class="anchor" aria-label="anchor" href="#why-hard-threshold-not-soft-constraint"></a>
 </h3>
-<p>corrselect enforces a hard threshold:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>&lt;</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">|a_{ij}| &lt; \tau</annotation></semantics></math>
-for all pairs. Alternative approaches use soft constraints (penalty
-functions, regularization). Why hard thresholds?</p>
+<p>corrselect enforces a hard threshold: <span class="math inline">\(|a_{ij}| &lt; \tau\)</span> for all pairs.
+Alternative approaches use soft constraints (penalty functions,
+regularization). Why hard thresholds?</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Interpretability</strong>: “No pair exceeds
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>”
-is a clear, verifiable guarantee. Soft constraints produce solutions
-where some pairs may exceed
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-with unknown magnitude.</p></li>
+<li><p><strong>Interpretability</strong>: “No pair exceeds <span class="math inline">\(\tau\)</span>” is a clear, verifiable guarantee.
+Soft constraints produce solutions where some pairs may exceed <span class="math inline">\(\tau\)</span> with unknown magnitude.</p></li>
 <li><p><strong>Reproducibility</strong>: Hard thresholds produce
 deterministic results. Soft constraints often require tuning parameters
 (penalty weights, convergence criteria) that affect
 reproducibility.</p></li>
 <li><p><strong>Domain-specific requirements</strong>: Fields like
-ecological modeling have established thresholds (e.g.,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>
-for WorldClim variables) based on empirical evidence. Hard thresholds
-directly implement these guidelines.</p></li>
+ecological modeling have established thresholds (e.g., <span class="math inline">\(\tau = 0.7\)</span> for WorldClim variables) based
+on empirical evidence. Hard thresholds directly implement these
+guidelines.</p></li>
 <li><p><strong>Exact enumeration</strong>: Hard constraints enable
 graph-theoretic formulation with exact algorithms. Soft constraints
 typically require heuristic optimization.</p></li>
@@ -2487,9 +2318,8 @@ metaheuristics). Why?</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Asymptotic efficiency</strong>: Graph algorithms exploit
 structural properties (sparsity, degeneracy) unavailable to generic
-solvers. For sparse graphs (low
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>),
-this yields orders-of-magnitude speedups.</p></li>
+solvers. For sparse graphs (low <span class="math inline">\(\tau\)</span>), this yields orders-of-magnitude
+speedups.</p></li>
 <li><p><strong>Exact enumeration</strong>: Graph algorithms guarantee
 finding all maximal cliques. Optimization approaches typically find one
 solution.</p></li>
@@ -2508,26 +2338,14 @@ and implementation strategies.</p></li>
 interactions (partial correlations, conditional independence). Why?</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Computational tractability</strong>: Higher-order
-interactions require exponentially more computation. For
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-variables, pairwise methods scale as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^2)</annotation></semantics></math>,
-while
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-way
-interactions scale as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>p</mi><mi>k</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(p^k)</annotation></semantics></math>.</p></li>
-<li><p><strong>Clear interpretation</strong>: “Variables
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-correlate at
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">r = 0.85</annotation></semantics></math>”
-is directly interpretable. Partial correlations require careful
-conditioning set selection and can be counterintuitive.</p></li>
+interactions require exponentially more computation. For <span class="math inline">\(p\)</span> variables, pairwise methods scale as
+<span class="math inline">\(O(p^2)\)</span>, while <span class="math inline">\(k\)</span>-way interactions scale as <span class="math inline">\(O(p^k)\)</span>.</p></li>
+<li><p><strong>Clear interpretation</strong>: “Variables <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> correlate at <span class="math inline">\(r = 0.85\)</span>” is directly interpretable.
+Partial correlations require careful conditioning set selection and can
+be counterintuitive.</p></li>
 <li><p><strong>Robustness</strong>: Pairwise correlations are stable
-with moderate sample sizes. Partial correlations require
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≫</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n \gg p</annotation></semantics></math>
-and are sensitive to model misspecification.</p></li>
+with moderate sample sizes. Partial correlations require <span class="math inline">\(n \gg p\)</span> and are sensitive to model
+misspecification.</p></li>
 <li><p><strong>Method generality</strong>: Pairwise associations work
 for any variable type (numeric, categorical, mixed). Higher-order
 methods often require strong distributional assumptions.</p></li>
@@ -2555,17 +2373,14 @@ options enables post-hoc selection criteria.</p></li>
 <li><p><strong>Documentation</strong>: For reproducible research
 (especially JOSS/CRAN submissions), documenting all valid solutions
 provides transparency about algorithmic choices.</p></li>
-<li><p><strong>Computational cost</strong>: For typical use cases
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≤</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">p \leq 30</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>≥</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\tau \geq 0.5</annotation></semantics></math>),
-exhaustive enumeration completes in milliseconds. When infeasible,
-greedy mode provides a fast approximation.</p></li>
+<li><p><strong>Computational cost</strong>: For typical use cases (<span class="math inline">\(p \leq 30\)</span>, <span class="math inline">\(\tau \geq 0.5\)</span>), exhaustive enumeration
+completes in milliseconds. When infeasible, greedy mode provides a fast
+approximation.</p></li>
 </ol>
 <p><strong>When to use greedy mode</strong>: High-dimensional data
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>50</mn></mrow><annotation encoding="application/x-tex">p &gt; 50</annotation></semantics></math>),
-dense correlation structure (high
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>),
-or when a single solution suffices (e.g., automated pipelines).</p>
+(<span class="math inline">\(p &gt; 50\)</span>), dense correlation
+structure (high <span class="math inline">\(\tau\)</span>), or when a
+single solution suffices (e.g., automated pipelines).</p>
 <blockquote>
 <p><strong>Key Points: Design Philosophy</strong></p>
 <ul>
@@ -2606,11 +2421,9 @@ Science 6506, 403–414.<br><a href="https://doi.org/10.1007/978-3-642-17517-6_3
 <ul>
 <li><p><strong>Foundation for the ELS algorithm:</strong>
 degeneracy-based maximal clique enumeration</p></li>
-<li><p>Complexity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>⋅</mo><msup><mn>3</mn><mrow><mi>d</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(d \cdot 3^{d/3})</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
-is graph degeneracy</p></li>
+<li><p>Complexity <span class="math inline">\(O(d \cdot
+3^{d/3})\)</span>, where <span class="math inline">\(d\)</span> is graph
+degeneracy</p></li>
 <li><p>Used when <code>force_in</code> is specified</p></li>
 </ul>
 </li>
@@ -2632,8 +2445,7 @@ Theoretical Computer Science, 363(1), 28–42.<br><a href="https://doi.org/10.10
 <ul>
 <li><p><strong>Pivoting strategy:</strong> refined pivot rules for
 Bron–Kerbosch</p></li>
-<li><p>Establishes the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(3^{p/3})</annotation></semantics></math>
+<li><p>Establishes the <span class="math inline">\(O(3^{p/3})\)</span>
 worst-case bound</p></li>
 </ul>
 </li>
@@ -2845,9 +2657,7 @@ complexity</p></li>
 <em>Israel Journal of Mathematics</em>, 3(1), 23-28. <a href="https://doi.org/10.1007/BF02760024" class="external-link">doi:10.1007/BF02760024</a></p>
 <ul>
 <li><p><strong>Theoretical bound</strong>: Proof that graphs can have up
-to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>3</mn><mrow><mi>p</mi><mi>/</mi><mn>3</mn></mrow></msup><annotation encoding="application/x-tex">3^{p/3}</annotation></semantics></math>
-maximal cliques</p></li>
+to <span class="math inline">\(3^{p/3}\)</span> maximal cliques</p></li>
 <li><p>Justifies worst-case complexity for exact enumeration</p></li>
 </ul>
 </li>
@@ -2865,9 +2675,8 @@ to deal with it and a simulation study evaluating their performance.
 <ul>
 <li><p><strong>Species distribution models</strong>: Evaluation of
 multicollinearity approaches in ecology</p></li>
-<li><p>Recommends threshold of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">\tau = 0.7</annotation></semantics></math>
-for bioclimatic variables</p></li>
+<li><p>Recommends threshold of <span class="math inline">\(\tau =
+0.7\)</span> for bioclimatic variables</p></li>
 </ul>
 </li>
 </ul>
@@ -2915,11 +2724,8 @@ alternatives</p></li>
 <span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; locale:</span></span>
-<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
-<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
-<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
-<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
-<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8</span></span>
+<span><span class="co">#&gt; [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; time zone: Europe/Luxembourg</span></span>
 <span><span class="co">#&gt; tzcode source: internal</span></span>
