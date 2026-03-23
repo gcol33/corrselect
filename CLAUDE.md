@@ -62,7 +62,7 @@ All three functions:
 - Preprocess input (handle missing data, validate types)
 - Compute or validate a correlation/association matrix
 - Call the C++ backend `findAllMaxSets()` to enumerate maximal subsets
-- Return a `CorrCombo` S4 object with results
+- Return a `CorrCombo` S7 object with results
 
 ### C++ Backend Architecture
 
@@ -92,10 +92,10 @@ The C++ layer implements two exact graph-theoretic algorithms for enumerating al
 - `corrSelect()`: Filters to numeric columns only, removes NA rows, computes correlation matrix using `cor_method` parameter
 - `assocSelect()`: Handles mixed types by computing appropriate metrics for each pair type (Pearson, Spearman, Kendall, Eta-squared, Cramér's V)
 
-**CorrCombo S4 class** (`R/CorrCombo.R`):
+**CorrCombo S7 class** (`R/CorrCombo.R`):
 - Stores all discovered subsets with metadata
-- Slots: `subset_list`, `avg_corr`, `min_corr`, `max_corr`, `threshold`, `forced_in`, `search_type`, `cor_method`, `n_rows_used`, `names`
-- Custom `show()` method for user-friendly output
+- Properties: `subset_list`, `avg_corr`, `min_corr`, `max_corr`, `threshold`, `forced_in`, `search_type`, `cor_method`, `n_rows_used`, `var_names`
+- Custom `print()` method for user-friendly output
 - `as.data.frame()` method for tidy data extraction
 
 **Helper functions**:
@@ -135,7 +135,7 @@ R/                           # R source files
 ├── corrSelect.R            # Numeric data frame interface
 ├── assocSelect.R           # Mixed-type data frame interface
 ├── MatSelect.R             # Matrix interface
-├── CorrCombo.R             # S4 class definition and methods
+├── CorrCombo.R             # S7 class definition and methods
 ├── corrSubset.R            # Subset extraction helper
 └── findAllMaxSets.R        # R wrapper for C++ entry point
 
@@ -184,7 +184,7 @@ Results are sorted by:
 This happens in C++ before returning to R.
 
 ### Missing Data Handling
-Both `corrSelect()` and `assocSelect()` remove rows with any NA values before computing the correlation matrix. A warning is issued if rows are dropped. The number of rows actually used is stored in the `CorrCombo` object's `n_rows_used` slot.
+Both `corrSelect()` and `assocSelect()` remove rows with any NA values before computing the correlation matrix. A warning is issued if rows are dropped. The number of rows actually used is stored in the `CorrCombo` object's `n_rows_used` property.
 
 ## Testing Guidelines
 

@@ -255,7 +255,7 @@ assocSelect <- function(df,
   res@n_rows_used <- nrow(df)
   res@cor_method  <- "mixed"
 
-  # Save methods used as attributes (not slots)
+  # Save methods used as attributes (not properties)
   attr(res, "assoc_methods_used") <- assoc_methods_used
   attr(res, "assoc_methods_all")  <- full_assoc_methods
 

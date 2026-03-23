@@ -1,6 +1,6 @@
 # tests/testthat/test-CorrCombo.R
 
-test_that("CorrCombo slots are correctly set", {
+test_that("CorrCombo properties are correctly set", {
   combo <- CorrCombo(
                subset_list = list(c("A", "B"), c("C", "D")),
                avg_corr = c(0.1, 0.2),
@@ -138,7 +138,7 @@ test_that("show() truncates long variable strings gracefully", {
   expect_output(print(combo), "...")
 })
 
-test_that("CorrCombo construction fails with mismatched slot lengths", {
+test_that("CorrCombo construction fails with mismatched property lengths", {
   expect_error(
     CorrCombo(
         subset_list = list(c("A", "B"), c("C", "D")),
@@ -155,7 +155,7 @@ test_that("CorrCombo construction fails with mismatched slot lengths", {
   )
 })
 
-test_that("CorrCombo constructs successfully when slot lengths match", {
+test_that("CorrCombo constructs successfully when property lengths match", {
   obj <- CorrCombo(
              subset_list = list(c("A", "B")),
              avg_corr = 0.3,
@@ -478,7 +478,7 @@ test_that("as.data.frame with optional parameter works", {
   expect_s3_class(df, "data.frame")
 })
 
-test_that("CorrCombo cor_method slot is accessible", {
+test_that("CorrCombo cor_method property is accessible", {
   combo <- CorrCombo(
                subset_list = list(c("A", "B")),
                avg_corr = 0.2,
