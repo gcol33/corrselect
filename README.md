@@ -6,6 +6,7 @@
 [![R-CMD-check](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml)
 [![Codecov test coverage](https://codecov.io/gh/gcol33/corrselect/graph/badge.svg)](https://app.codecov.io/gh/gcol33/corrselect)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.09539/status.svg)](https://doi.org/10.21105/joss.09539)
 
 **Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
 
@@ -234,11 +235,12 @@ MIT (see the LICENSE.md file)
 ## Citation
 
 ```bibtex
-@software{corrselect,
+@article{corrselect,
   author = {Colling, Gilles},
-  title = {corrselect: Correlation-Based and Model-Based Predictor Pruning},
+  title = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},
+  journal = {Journal of Open Source Software},
   year = {2025},
-  url = {https://CRAN.R-project.org/package=corrselect},
-  doi = {10.32614/CRAN.package.corrselect}
+  doi = {10.21105/joss.09539},
+  url = {https://joss.theoj.org/papers/10.21105/joss.09539}
 }
 ```

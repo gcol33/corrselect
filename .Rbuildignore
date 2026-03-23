@@ -34,3 +34,4 @@
 ^figure$
 ^build_site\.R$
 ^cookies\.txt$
+^\.unrot$

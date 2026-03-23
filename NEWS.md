@@ -1,3 +1,12 @@
+# corrselect 3.2.2
+
+## Maintenance
+
+- Fixed `.Rbuildignore` to exclude non-standard hidden directories flagged by CRAN incoming checks.
+- Removed temporary files from package source.
+
+---
+
 # corrselect 3.2.0
 
 ## Breaking Changes

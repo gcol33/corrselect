@@ -43,3 +43,10 @@ paper/jats/
 
 # CRAN submission file (regenerated on each submission)
 CRAN-SUBMISSION
+
+# Temp scripts and artifacts
+build_site.R
+check_dois*.py
+cookies.txt
+figure/
+paper/paper.crossref
