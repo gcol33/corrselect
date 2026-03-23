@@ -5,8 +5,8 @@
 #' versions of the original dataset containing only low‐correlation variable combinations.
 #'
 #' @param res A \code{\link{CorrCombo}} object returned by \code{corrSelect} or \code{MatSelect}.
-#' @param df A data frame or matrix. Must contain all variables listed in \code{res@names}.
-#'   Columns not in \code{res@names} are ignored unless \code{keepExtra = TRUE}.
+#' @param df A data frame or matrix. Must contain all variables listed in \code{res@var_names}.
+#'   Columns not in \code{res@var_names} are ignored unless \code{keepExtra = TRUE}.
 #' @param which Subsets to extract. One of:
 #'   \itemize{
 #'     \item \code{"best"} (default) or \code{1}: the top‐ranked subset.
@@ -15,7 +15,7 @@
 #'     \item \code{"all"}: all available subsets.
 #'   }
 #'   Subsets are ranked by decreasing size, then increasing average correlation.
-#' @param keepExtra Logical. If \code{TRUE}, columns in \code{df} not in \code{res@names}
+#' @param keepExtra Logical. If \code{TRUE}, columns in \code{df} not in \code{res@var_names}
 #'   (e.g., factors, characters) are retained. Defaults to \code{FALSE}.
 #'
 #' @return A data frame if a single subset is extracted, or a list of data frames if multiple
@@ -61,7 +61,7 @@ corrSubset <- function(res, df, which = "best", keepExtra = FALSE) {
   if (!is.data.frame(df) && !is.matrix(df)) {
     stop("`df` must be a data frame or matrix.")
   }
-  missing_vars <- setdiff(res@names, colnames(df))
+  missing_vars <- setdiff(res@var_names, colnames(df))
   if (length(missing_vars)) {
     stop("The following variables are missing in `df`: ",
          paste(missing_vars, collapse = ", "))
@@ -83,7 +83,7 @@ corrSubset <- function(res, df, which = "best", keepExtra = FALSE) {
   }
 
   # Determine extra columns
-  extra_cols <- if (keepExtra) setdiff(colnames(df), res@names) else character()
+  extra_cols <- if (keepExtra) setdiff(colnames(df), res@var_names) else character()
 
   # Extract data for each subset
   result_list <- lapply(indices, function(i) {
@@ -93,7 +93,7 @@ corrSubset <- function(res, df, which = "best", keepExtra = FALSE) {
 
   # Warn if missing values in selected variables
   na_counts <- vapply(result_list, function(subdf) {
-    vars <- intersect(colnames(subdf), res@names)
+    vars <- intersect(colnames(subdf), res@var_names)
     sum(!complete.cases(subdf[, vars, drop = FALSE]))
   }, integer(1))
   n_rows <- vapply(result_list, nrow, integer(1))

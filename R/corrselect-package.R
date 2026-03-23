@@ -33,7 +33,7 @@
 #' @section Helpers:
 #' \describe{
 #'   \item{\code{\link{corrSubset}}}{Extract specific subsets from results}
-#'   \item{\code{\link{CorrCombo-class}}}{S4 class holding enumeration results}
+#'   \item{\code{\link{CorrCombo}}}{Class holding enumeration results}
 #' }
 #'
 #' @seealso

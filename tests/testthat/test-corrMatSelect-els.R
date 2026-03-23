@@ -4,7 +4,7 @@ test_that("ELS returns valid CorrCombo object", {
   m <- diag(1, 3)
   m[1,2] <- m[2,1] <- 0.3
   res <- MatSelect(m, threshold = 0.5, method = "els")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_type(res@subset_list, "list")
 })
 
@@ -114,7 +114,7 @@ test_that("ELS handles single variable", {
 
   # Single variable case: no pairs to evaluate, returns empty
   # This is expected behavior for clique enumeration with n=1
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("ELS handles two uncorrelated variables", {
@@ -284,7 +284,7 @@ test_that("ELS handles extremely low threshold (no valid pairs)", {
   # With extremely low threshold, fewer variables per subset
   res <- MatSelect(m, threshold = 0.05, method = "els")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   # Subsets should exist
   expect_true(length(res@subset_list) >= 0)
 })
@@ -299,7 +299,7 @@ test_that("Bron-Kerbosch handles extremely low threshold", {
 
   res <- MatSelect(m, threshold = 0.05, method = "bron-kerbosch")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("ELS with force_in covering all variables", {
@@ -309,7 +309,7 @@ test_that("ELS with force_in covering all variables", {
   # Force all variables - should return valid result
   res <- MatSelect(m, threshold = 0.5, method = "els", force_in = 1:3)
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   # All forced variables should appear in each subset (if subsets exist)
   if (length(res@subset_list) > 0) {
     for (s in res@subset_list) {
@@ -330,7 +330,7 @@ test_that("MatSelect passes NULL force_in correctly to backend", {
   # Without force_in - covers the NULL path in findAllMaxSets
   res <- MatSelect(m, threshold = 0.5, method = "els")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(length(res@forced_in), 0)
 })
 
@@ -341,7 +341,7 @@ test_that("MatSelect passes empty force_in correctly", {
   # Explicitly empty force_in
   res <- MatSelect(m, threshold = 0.5, method = "els", force_in = integer(0))
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("MatSelect with force_in as numeric vector", {
@@ -351,7 +351,7 @@ test_that("MatSelect with force_in as numeric vector", {
   # Numeric indices
   res <- MatSelect(m, threshold = 0.5, method = "els", force_in = c(1, 3))
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   for (s in res@subset_list) {
     expect_true(all(c("V1", "V3") %in% s))
   }

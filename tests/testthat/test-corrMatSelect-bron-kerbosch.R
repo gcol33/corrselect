@@ -4,7 +4,7 @@ test_that("BK returns valid CorrCombo object", {
   m <- diag(1, 3)
   m[1,2] <- m[2,1] <- 0.3
   res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_type(res@subset_list, "list")
 })
 
@@ -89,7 +89,7 @@ test_that("MatSelect allows too-correlated force_in with warning handled in R", 
     res <- MatSelect(mat, threshold = 0.7, force_in = 1:2)
   }, "mutually correlated beyond the threshold")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   all_sets <- unique(unlist(res@subset_list))
   expect_true(all(c("A", "A_dup") %in% all_sets))
 })
@@ -105,7 +105,7 @@ test_that("BK handles matrix without column names", {
 
   res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   # Should use default names V1, V2, V3
   expect_true(all(grepl("^V", unlist(res@subset_list))))
 })
@@ -117,7 +117,7 @@ test_that("BK handles force_in as character names", {
   res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch",
                    force_in = c("apple", "cherry"))
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   for (s in res@subset_list) {
     expect_true(all(c("apple", "cherry") %in% s))
   }
@@ -182,7 +182,7 @@ test_that("BK handles threshold = 1 (all valid)", {
   # With threshold = 1, all pairs are valid
   res <- MatSelect(m, threshold = 1, method = "bron-kerbosch")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(length(res@subset_list), 1)
   expect_setequal(res@subset_list[[1]], c("A", "B", "C"))
 })
@@ -241,5 +241,5 @@ test_that("MatSelect handles NULL force_in with method bron-kerbosch", {
   colnames(mat) <- rownames(mat) <- c("a", "b")
 
   result <- MatSelect(mat, threshold = 0.5, method = "bron-kerbosch", force_in = NULL)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })

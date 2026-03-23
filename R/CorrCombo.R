@@ -1,4 +1,4 @@
-#' @title CorrCombo S4 class
+#' @title CorrCombo Class
 #'
 #' @description
 #' Holds the result of \code{\link{corrSelect}} or \code{\link{MatSelect}}: a list of valid variable combinations
@@ -9,78 +9,91 @@
 #' and summary statistics for each combination.
 #'
 #' @name CorrCombo
-#' @docType class
-#' @aliases CorrCombo-class
 #'
-#' @slot subset_list   A list of character vectors. Each vector is a valid subset (variable names).
-#' @slot avg_corr      A numeric vector. Average absolute correlation within each subset.
-#' @slot min_corr      A numeric vector. Minimum pairwise absolute correlation in each subset.
-#' @slot max_corr      A numeric vector. Maximum pairwise absolute correlation within each subset.
-#' @slot names         Character vector of all variable names used for decoding.
-#' @slot threshold     Numeric scalar. The correlation threshold used during selection.
-#' @slot forced_in     Character vector. Variable names that were forced into each subset.
-#' @slot search_type   Character string. One of \code{"els"} or \code{"bron-kerbosch"}.
-#' @slot cor_method    Character string. Either a single method (e.g. "pearson") or "mixed" if multiple methods used.
-#' @slot n_rows_used   Integer. Number of rows used for computing the correlation matrix (after removing missing values).
+#' @details
+#' Properties:
+#' \describe{
+#'   \item{subset_list}{A list of character vectors. Each vector is a valid subset (variable names).}
+#'   \item{avg_corr}{A numeric vector. Average absolute correlation within each subset.}
+#'   \item{min_corr}{A numeric vector. Minimum pairwise absolute correlation in each subset.}
+#'   \item{max_corr}{A numeric vector. Maximum pairwise absolute correlation within each subset.}
+#'   \item{var_names}{Character vector of all variable names used for decoding.}
+#'   \item{threshold}{Numeric scalar. The correlation threshold used during selection.}
+#'   \item{forced_in}{Character vector. Variable names that were forced into each subset.}
+#'   \item{search_type}{Character string. One of \code{"els"} or \code{"bron-kerbosch"}.}
+#'   \item{cor_method}{Character string. Either a single method (e.g. "pearson") or "mixed" if multiple methods used.}
+#'   \item{n_rows_used}{Integer. Number of rows used for computing the correlation matrix (after removing missing values).}
+#' }
+#'
+#' @param subset_list A list of character vectors. Each vector is a valid subset (variable names).
+#' @param avg_corr A numeric vector. Average absolute correlation within each subset.
+#' @param min_corr A numeric vector. Minimum pairwise absolute correlation in each subset.
+#' @param max_corr A numeric vector. Maximum pairwise absolute correlation within each subset.
+#' @param var_names Character vector of all variable names used for decoding.
+#' @param threshold Numeric scalar. The correlation threshold used during selection.
+#' @param forced_in Character vector. Variable names forced into each subset. Defaults to \code{character()}.
+#' @param search_type Character string. One of \code{"els"} or \code{"bron-kerbosch"}.
+#' @param cor_method Character string. Correlation method or \code{"mixed"}. Defaults to \code{character()}.
+#' @param n_rows_used Integer. Number of rows used for computing the correlation matrix.
 #'
 #' @seealso \code{\link{corrSelect}}, \code{\link{MatSelect}}, \code{\link{corrSubset}}
 #'
 #' @examples
-#' show(new("CorrCombo",
+#' print(CorrCombo(
 #'   subset_list = list(c("A", "B"), c("A", "C")),
 #'   avg_corr = c(0.2, 0.3),
 #'   min_corr = c(0.1, 0.2),
 #'   max_corr = c(0.3, 0.4),
-#'   names = c("A", "B", "C"),
+#'   var_names = c("A", "B", "C"),
 #'   threshold = 0.5,
 #'   forced_in = character(),
 #'   search_type = "els",
 #'   cor_method = "mixed",
-#'   n_rows_used = as.integer(5)
+#'   n_rows_used = 5L
 #' ))
 #'
-#' @importFrom methods new
+#' @importFrom S7 new_class new_property class_list class_double class_character class_integer
 #' @export
-setClass(
-  "CorrCombo",
-  slots = list(
-    subset_list   = "list",
-    avg_corr      = "numeric",
-    min_corr      = "numeric",
-    max_corr      = "numeric",
-    names         = "character",
-    threshold     = "numeric",
-    forced_in     = "character",
-    search_type   = "character",
-    cor_method    = "character",
-    n_rows_used   = "integer"
+CorrCombo <- new_class("CorrCombo",
+  package = NULL,
+  properties = list(
+    subset_list = class_list,
+    avg_corr    = class_double,
+    min_corr    = class_double,
+    max_corr    = class_double,
+    var_names   = class_character,
+    threshold   = class_double,
+    forced_in   = new_property(class_character, default = character()),
+    search_type = class_character,
+    cor_method  = new_property(class_character, default = character()),
+    n_rows_used = class_integer
   ),
-  validity = function(object) {
-    n <- length(object@subset_list)
+  validator = function(self) {
+    n <- length(self@subset_list)
     check_lengths <- function(slot_value) {
       len <- length(slot_value)
       len == 0 || len == n
     }
-    if (!check_lengths(object@avg_corr)) return("avg_corr must match subset_list length or be empty.")
-    if (!check_lengths(object@min_corr)) return("min_corr must match subset_list length or be empty.")
-    if (!check_lengths(object@max_corr)) return("max_corr must match subset_list length or be empty.")
-    TRUE
+    if (!check_lengths(self@avg_corr)) return("avg_corr must match subset_list length or be empty.")
+    if (!check_lengths(self@min_corr)) return("min_corr must match subset_list length or be empty.")
+    if (!check_lengths(self@max_corr)) return("max_corr must match subset_list length or be empty.")
+    NULL
   }
 )
 
+
 #' @rdname CorrCombo
-#' @aliases show,CorrCombo-method
-#' @importMethodsFrom methods show
-#' @exportMethod show
-#' @param object A \code{CorrCombo} object to be printed.
-setMethod("show", "CorrCombo", function(object) {
-  n <- length(object@subset_list)
+#' @param x A \code{CorrCombo} object to be printed.
+#' @param ... Additional arguments (ignored).
+#' @export
+print.CorrCombo <- function(x, ...) {
+  n <- length(x@subset_list)
   cat("CorrCombo object\n")
   cat("-----------------\n")
-  cat(sprintf("  Method:      %s\n", object@search_type))
-  cat(sprintf("  Correlation: %s\n", object@cor_method))
+  cat(sprintf("  Method:      %s\n", x@search_type))
+  cat(sprintf("  Correlation: %s\n", x@cor_method))
 
-  assoc_methods <- attr(object, "assoc_methods_used")
+  assoc_methods <- attr(x, "assoc_methods_used")
   if (!is.null(assoc_methods) && length(assoc_methods)) {
     entries <- sprintf("%s = %s", names(assoc_methods), unlist(assoc_methods))
     full_str <- paste(entries, collapse = ", ")
@@ -94,24 +107,24 @@ setMethod("show", "CorrCombo", function(object) {
     }
   }
 
-  cat(sprintf("  Threshold:   %.3f\n", object@threshold))
+  cat(sprintf("  Threshold:   %.3f\n", x@threshold))
   cat(sprintf("  Subsets:     %d maximal subsets\n", n))
-  cat(sprintf("  Data Rows:   %d used in correlation\n", object@n_rows_used))
+  cat(sprintf("  Data Rows:   %d used in correlation\n", x@n_rows_used))
 
-  if (object@search_type == "bron-kerbosch") {
-    use_pivot <- attr(object, "use_pivot")
+  if (x@search_type == "bron-kerbosch") {
+    use_pivot <- attr(x, "use_pivot")
     if (!is.null(use_pivot)) {
       cat(sprintf("  Pivot:       %s\n", use_pivot))
     }
   }
 
-  if (length(object@forced_in)) {
-    cat(sprintf("  Forced-in:   %s\n", paste(object@forced_in, collapse = ", ")))
+  if (length(x@forced_in)) {
+    cat(sprintf("  Forced-in:   %s\n", paste(x@forced_in, collapse = ", ")))
   }
 
   if (n == 0) {
     cat("\n  No valid subsets found.\n")
-    return(invisible(NULL))
+    return(invisible(x))
   }
 
   cat("\nTop combinations:\n")
@@ -120,9 +133,9 @@ setMethod("show", "CorrCombo", function(object) {
 
   show_n <- min(5, n)
   for (i in seq_len(show_n)) {
-    vars <- object@subset_list[[i]]
-    avg  <- object@avg_corr[i]
-    maxc <- object@max_corr[i]
+    vars <- x@subset_list[[i]]
+    avg  <- x@avg_corr[i]
+    maxc <- x@max_corr[i]
     size <- length(vars)
 
     max_vars_display <- 6
@@ -143,8 +156,8 @@ setMethod("show", "CorrCombo", function(object) {
     cat(sprintf("  ... (%d more combinations)\n", n - show_n))
   }
 
-  invisible(NULL)
-})
+  invisible(x)
+}
 
 
 #' @title Coerce CorrCombo to a Data Frame

@@ -48,7 +48,7 @@ One of \code{"spearman"} (default) or \code{"kendall"}.}
 (e.g., \code{use_pivot = TRUE} for Bron–Kerbosch).}
 }
 \value{
-A \code{\link{CorrCombo}} S4 object containing:
+A \code{\link{CorrCombo}} object containing:
 \itemize{
 \item all valid subsets,
 \item their summary association statistics,

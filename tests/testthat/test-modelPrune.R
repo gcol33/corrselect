@@ -1859,7 +1859,7 @@ test_that("assocSelect handles Cramers V edge cases", {
   )
 
   result <- assocSelect(df, threshold = 0.95)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect handles zero row/column sums in contingency table", {
@@ -1874,7 +1874,7 @@ test_that("assocSelect handles zero row/column sums in contingency table", {
   )
 
   result <- assocSelect(df, threshold = 0.5)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================

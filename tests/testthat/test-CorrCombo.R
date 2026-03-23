@@ -1,72 +1,72 @@
 # tests/testthat/test-CorrCombo.R
 
 test_that("CorrCombo slots are correctly set", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A", "B"), c("C", "D")),
                avg_corr = c(0.1, 0.2),
                min_corr = c(0.05, 0.1),
                max_corr = c(0.2, 0.3),
-               names = c("A", "B", "C", "D"),
+               var_names = c("A", "B", "C", "D"),
                threshold = 0.5,
                forced_in = "A",
                search_type = "els",
                n_rows_used = 100L)
-  expect_s4_class(combo, "CorrCombo")
+  expect_true(inherits(combo, "CorrCombo"))
   expect_equal(length(combo@subset_list), 2)
   expect_equal(combo@search_type, "els")
 })
 
 test_that("show() method prints a summary for non-empty CorrCombo", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2", "X3")),
                avg_corr = 0.1,
                min_corr = 0.05,
                max_corr = 0.2,
-               names = paste0("X", 1:5),
+               var_names = paste0("X", 1:5),
                threshold = 0.4,
                forced_in = "X1",
                search_type = "els",
                n_rows_used = 100L)
-  expect_output(show(combo), "CorrCombo object")
-  expect_output(show(combo), "X1, X2, X3")
+  expect_output(print(combo), "CorrCombo object")
+  expect_output(print(combo), "X1, X2, X3")
 })
 
 test_that("show() method handles empty CorrCombo", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(),
                avg_corr = numeric(),
                min_corr = numeric(),
                max_corr = numeric(),
-               names = letters[1:5],
+               var_names = letters[1:5],
                threshold = 0.4,
                forced_in = character(),
                search_type = "els",
                n_rows_used = 5L)
-  expect_output(show(combo), "No valid subsets found")
+  expect_output(print(combo), "No valid subsets found")
 })
 
 test_that("show() prints use_pivot when set for bron-kerbosch", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2")),
                avg_corr = 0.2,
                min_corr = 0.2,
                max_corr = 0.2,
-               names = c("X1", "X2", "X3", "X4"),
+               var_names = c("X1", "X2", "X3", "X4"),
                threshold = 0.5,
                forced_in = "X1",
                search_type = "bron-kerbosch",
                n_rows_used = 4L)
   attr(combo, "use_pivot") <- TRUE
-  expect_output(show(combo), "bron-kerbosch")
+  expect_output(print(combo), "bron-kerbosch")
 })
 
 test_that("as.data.frame() returns a padded data frame", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A", "B"), c("C", "D", "E")),
                avg_corr = c(0.1, 0.2),
                min_corr = c(0.1, 0.2),
                max_corr = c(0.1, 0.2),
-               names = LETTERS[1:5],
+               var_names = LETTERS[1:5],
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -78,12 +78,12 @@ test_that("as.data.frame() returns a padded data frame", {
 })
 
 test_that("as.data.frame() returns empty data frame for empty CorrCombo", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(),
                avg_corr = numeric(),
                min_corr = numeric(),
                max_corr = numeric(),
-               names = character(),
+               var_names = character(),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -94,12 +94,12 @@ test_that("as.data.frame() returns empty data frame for empty CorrCombo", {
 })
 
 test_that("CorrCombo allows empty forced_in", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2")),
                avg_corr = 0.3,
                min_corr = 0.3,
                max_corr = 0.3,
-               names = c("X1", "X2"),
+               var_names = c("X1", "X2"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -108,12 +108,12 @@ test_that("CorrCombo allows empty forced_in", {
 })
 
 test_that("as.data.frame handles variable names with special characters", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("x_1", "x-2")),
                avg_corr = 0.2,
                min_corr = 0.2,
                max_corr = 0.2,
-               names = c("x_1", "x-2", "x.3"),
+               var_names = c("x_1", "x-2", "x.3"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "bron-kerbosch",
@@ -125,27 +125,27 @@ test_that("as.data.frame handles variable names with special characters", {
 
 test_that("show() truncates long variable strings gracefully", {
   vars <- paste0("V", 1:20)
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(vars),
                avg_corr = 0.5,
                min_corr = 0.1,
                max_corr = 0.9,
-               names = vars,
+               var_names = vars,
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
                n_rows_used = 20L)
-  expect_output(show(combo), "...")
+  expect_output(print(combo), "...")
 })
 
 test_that("CorrCombo construction fails with mismatched slot lengths", {
   expect_error(
-    new("CorrCombo",
+    CorrCombo(
         subset_list = list(c("A", "B"), c("C", "D")),
         avg_corr = c(0.3),  # too short
         min_corr = c(0.1, 0.2),
         max_corr = c(0.5, 0.6),
-        names = LETTERS[1:4],
+        var_names = LETTERS[1:4],
         threshold = 0.5,
         forced_in = character(),
         search_type = "els",
@@ -156,26 +156,26 @@ test_that("CorrCombo construction fails with mismatched slot lengths", {
 })
 
 test_that("CorrCombo constructs successfully when slot lengths match", {
-  obj <- new("CorrCombo",
+  obj <- CorrCombo(
              subset_list = list(c("A", "B")),
              avg_corr = 0.3,
              min_corr = 0.1,
              max_corr = 0.5,
-             names = c("A", "B"),
+             var_names = c("A", "B"),
              threshold = 0.5,
              forced_in = character(),
              search_type = "bron-kerbosch",
              n_rows_used = 2L)
-  expect_s4_class(obj, "CorrCombo")
+  expect_true(inherits(obj, "CorrCombo"))
 })
 
 test_that("conversion to data.frame retains row names", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2"), c("X3")),
                avg_corr = c(0.2, 0.3),
                min_corr = c(0.1, 0.2),
                max_corr = c(0.5, 0.6),
-               names = c("X1", "X2", "X3"),
+               var_names = c("X1", "X2", "X3"),
                threshold = 0.4,
                forced_in = character(),
                search_type = "els",
@@ -189,12 +189,12 @@ test_that("conversion to data.frame retains row names", {
 # ===========================================================================
 
 test_that("show() method displays assoc_methods_used when set", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2")),
                avg_corr = 0.15,
                min_corr = 0.10,
                max_corr = 0.20,
-               names = c("X1", "X2", "X3"),
+               var_names = c("X1", "X2", "X3"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -209,17 +209,17 @@ test_that("show() method displays assoc_methods_used when set", {
   )
 
   # Should display AssocMethod line
-  expect_output(show(combo), "AssocMethod")
-  expect_output(show(combo), "pearson")
+  expect_output(print(combo), "AssocMethod")
+  expect_output(print(combo), "pearson")
 })
 
 test_that("show() method wraps long assoc_methods lines", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2")),
                avg_corr = 0.15,
                min_corr = 0.10,
                max_corr = 0.20,
-               names = c("X1", "X2", "X3"),
+               var_names = c("X1", "X2", "X3"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -240,7 +240,7 @@ test_that("show() method wraps long assoc_methods lines", {
   )
 
   # Should still display without error
-  expect_output(show(combo), "AssocMethod")
+  expect_output(print(combo), "AssocMethod")
 })
 
 test_that("show() displays more than 5 combinations message", {
@@ -248,44 +248,44 @@ test_that("show() displays more than 5 combinations message", {
   subsets <- lapply(1:10, function(i) paste0("V", c(i, i + 10)))
   avg_corrs <- runif(10, 0.1, 0.3)
 
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = subsets,
                avg_corr = avg_corrs,
                min_corr = avg_corrs - 0.05,
                max_corr = avg_corrs + 0.05,
-               names = paste0("V", 1:20),
+               var_names = paste0("V", 1:20),
                threshold = 0.5,
                forced_in = character(),
                search_type = "bron-kerbosch",
                n_rows_used = 20L)
 
   # Should show "... (X more combinations)"
-  expect_output(show(combo), "more combinations")
+  expect_output(print(combo), "more combinations")
 })
 
 test_that("show() displays forced_in variables", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2", "X3")),
                avg_corr = 0.2,
                min_corr = 0.1,
                max_corr = 0.3,
-               names = c("X1", "X2", "X3"),
+               var_names = c("X1", "X2", "X3"),
                threshold = 0.5,
                forced_in = c("X1", "X2"),
                search_type = "els",
                n_rows_used = 10L)
 
-  expect_output(show(combo), "Forced-in")
-  expect_output(show(combo), "X1")
+  expect_output(print(combo), "Forced-in")
+  expect_output(print(combo), "X1")
 })
 
 test_that("show() displays use_pivot attribute for bron-kerbosch", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2")),
                avg_corr = 0.2,
                min_corr = 0.2,
                max_corr = 0.2,
-               names = c("X1", "X2"),
+               var_names = c("X1", "X2"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "bron-kerbosch",
@@ -293,18 +293,18 @@ test_that("show() displays use_pivot attribute for bron-kerbosch", {
 
   attr(combo, "use_pivot") <- FALSE
 
-  expect_output(show(combo), "Pivot")
-  expect_output(show(combo), "FALSE")
+  expect_output(print(combo), "Pivot")
+  expect_output(print(combo), "FALSE")
 })
 
 test_that("CorrCombo validity check for min_corr length mismatch", {
   expect_error(
-    new("CorrCombo",
+    CorrCombo(
         subset_list = list(c("A", "B"), c("C", "D")),
         avg_corr = c(0.3, 0.4),
         min_corr = c(0.1),  # Length mismatch
         max_corr = c(0.5, 0.6),
-        names = LETTERS[1:4],
+        var_names = LETTERS[1:4],
         threshold = 0.5,
         forced_in = character(),
         search_type = "els",
@@ -315,12 +315,12 @@ test_that("CorrCombo validity check for min_corr length mismatch", {
 
 test_that("CorrCombo validity check for max_corr length mismatch", {
   expect_error(
-    new("CorrCombo",
+    CorrCombo(
         subset_list = list(c("A", "B"), c("C", "D")),
         avg_corr = c(0.3, 0.4),
         min_corr = c(0.1, 0.2),
         max_corr = c(0.5),  # Length mismatch
-        names = LETTERS[1:4],
+        var_names = LETTERS[1:4],
         threshold = 0.5,
         forced_in = character(),
         search_type = "els",
@@ -331,29 +331,29 @@ test_that("CorrCombo validity check for max_corr length mismatch", {
 
 test_that("CorrCombo allows empty numeric vectors for stats when subset_list empty", {
   # Valid case: empty subset_list with empty stats vectors
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(),
                avg_corr = numeric(0),
                min_corr = numeric(0),
                max_corr = numeric(0),
-               names = c("A", "B"),
+               var_names = c("A", "B"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
                n_rows_used = 2L)
 
-  expect_s4_class(combo, "CorrCombo")
+  expect_true(inherits(combo, "CorrCombo"))
   expect_equal(length(combo@subset_list), 0)
 })
 
 test_that("as.data.frame handles two-element subsets", {
   # Test with subsets that have 2 elements each (avoids edge case with single-element)
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("X1", "X2"), c("X3", "X4")),
                avg_corr = c(0.1, 0.2),
                min_corr = c(0.1, 0.2),
                max_corr = c(0.1, 0.2),
-               names = c("X1", "X2", "X3", "X4"),
+               var_names = c("X1", "X2", "X3", "X4"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -365,12 +365,12 @@ test_that("as.data.frame handles two-element subsets", {
 })
 
 test_that("as.data.frame handles subsets with varying lengths", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A"), c("B", "C"), c("D", "E", "F")),
                avg_corr = c(0, 0.1, 0.2),
                min_corr = c(0, 0.05, 0.1),
                max_corr = c(0, 0.15, 0.3),
-               names = LETTERS[1:6],
+               var_names = LETTERS[1:6],
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -391,35 +391,35 @@ test_that("as.data.frame handles subsets with varying lengths", {
 test_that("show() displays variable names with truncation correctly", {
   # Create subset with exactly at the truncation boundary
   vars <- paste0("V", 1:7)  # More than max_vars_display (6)
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(vars),
                avg_corr = 0.3,
                min_corr = 0.1,
                max_corr = 0.5,
-               names = vars,
+               var_names = vars,
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
                n_rows_used = 10L)
 
-  expect_output(show(combo), "\\.\\.\\.")
+  expect_output(print(combo), "\\.\\.\\.")
 })
 
 test_that("show() handles cor_method display", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A", "B")),
                avg_corr = 0.2,
                min_corr = 0.1,
                max_corr = 0.3,
-               names = c("A", "B"),
+               var_names = c("A", "B"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
                cor_method = "spearman",
                n_rows_used = 10L)
 
-  expect_output(show(combo), "Correlation")
-  expect_output(show(combo), "spearman")
+  expect_output(print(combo), "Correlation")
+  expect_output(print(combo), "spearman")
 })
 
 # ===========================================================================
@@ -428,47 +428,47 @@ test_that("show() handles cor_method display", {
 
 test_that("show() displays only one variable per subset correctly", {
   # Test when subset contains exactly 2 variables (the boundary case)
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A", "B")),
                avg_corr = 0.2,
                min_corr = 0.2,
                max_corr = 0.2,
-               names = c("A", "B"),
+               var_names = c("A", "B"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
                n_rows_used = 2L)
 
-  expect_output(show(combo), "A, B")
+  expect_output(print(combo), "A, B")
 })
 
 test_that("show() handles exactly 5 subsets without more message", {
   subsets <- lapply(1:5, function(i) c(paste0("V", i), paste0("V", i + 5)))
   avg_corrs <- runif(5, 0.1, 0.3)
 
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = subsets,
                avg_corr = avg_corrs,
                min_corr = avg_corrs - 0.05,
                max_corr = avg_corrs + 0.05,
-               names = paste0("V", 1:10),
+               var_names = paste0("V", 1:10),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
                n_rows_used = 10L)
 
   # Should NOT show "more combinations" with exactly 5
-  output <- capture.output(show(combo))
+  output <- capture.output(print(combo))
   expect_false(any(grepl("more combinations", output)))
 })
 
 test_that("as.data.frame with optional parameter works", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A", "B"), c("C", "D")),
                avg_corr = c(0.1, 0.2),
                min_corr = c(0.1, 0.2),
                max_corr = c(0.1, 0.2),
-               names = LETTERS[1:4],
+               var_names = LETTERS[1:4],
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",
@@ -479,12 +479,12 @@ test_that("as.data.frame with optional parameter works", {
 })
 
 test_that("CorrCombo cor_method slot is accessible", {
-  combo <- new("CorrCombo",
+  combo <- CorrCombo(
                subset_list = list(c("A", "B")),
                avg_corr = 0.2,
                min_corr = 0.1,
                max_corr = 0.3,
-               names = c("A", "B"),
+               var_names = c("A", "B"),
                threshold = 0.5,
                forced_in = character(),
                search_type = "els",

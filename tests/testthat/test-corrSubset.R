@@ -10,12 +10,12 @@ test_that("errors if res is not a CorrCombo", {
 })
 
 test_that("errors if df is not a data.frame or matrix", {
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A")),
              avg_corr    = 0.0,
              min_corr    = 0.0,
              max_corr    = 0.0,
-             names       = "A",
+             var_names       = "A",
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -28,12 +28,12 @@ test_that("errors if df is not a data.frame or matrix", {
 
 test_that("errors if required columns are missing in df", {
   df <- data.frame(A = 1:5)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B")),
              avg_corr    = 0.1,
              min_corr    = 0.05,
              max_corr    = 0.2,
-             names       = c("A", "B"),
+             var_names       = c("A", "B"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -46,12 +46,12 @@ test_that("errors if required columns are missing in df", {
 
 test_that("default (which = 'best') returns first subset as data.frame", {
   df <- data.frame(A = 1:5, B = 6:10, C = 11:15)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "C"), c("B", "C")),
              avg_corr    = c(0.1, 0.2),
              min_corr    = c(0.05, 0.1),
              max_corr    = c(0.2, 0.3),
-             names       = c("A", "B", "C"),
+             var_names       = c("A", "B", "C"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -63,12 +63,12 @@ test_that("default (which = 'best') returns first subset as data.frame", {
 
 test_that("which = integer returns that subset as data.frame", {
   df <- data.frame(A = 1:5, B = 6:10, C = 11:15)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B"), c("B", "C"), c("A", "C")),
              avg_corr    = c(0.1, 0.2, 0.15),
              min_corr    = c(0.05, 0.1, 0.07),
              max_corr    = c(0.2, 0.3, 0.25),
-             names       = c("A", "B", "C"),
+             var_names       = c("A", "B", "C"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -80,12 +80,12 @@ test_that("which = integer returns that subset as data.frame", {
 
 test_that("which = vector returns named list of data.frames", {
   df <- data.frame(A = 1:5, B = 6:10, C = 11:15)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B"), c("B", "C"), c("A", "C")),
              avg_corr    = c(0.1, 0.2, 0.15),
              min_corr    = c(0.05, 0.1, 0.07),
              max_corr    = c(0.2, 0.3, 0.25),
-             names       = c("A", "B", "C"),
+             var_names       = c("A", "B", "C"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -99,12 +99,12 @@ test_that("which = vector returns named list of data.frames", {
 
 test_that("which = 'all' returns all subsets named", {
   df <- data.frame(A = 1:5, B = 6:10, C = 11:15)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B"), c("B", "C")),
              avg_corr    = c(0.1, 0.2),
              min_corr    = c(0.05, 0.1),
              max_corr    = c(0.2, 0.3),
-             names       = c("A", "B", "C"),
+             var_names       = c("A", "B", "C"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -119,16 +119,16 @@ test_that("keepExtra = TRUE preserves non-selected columns", {
   df <- data.frame(
     A      = 1:5,
     B      = 6:10,
-    C      = 11:15,         # included because res@names has C
+    C      = 11:15,         # included because res@var_names has C
     extra1 = letters[1:5],
     extra2 = LETTERS[1:5]
   )
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B")),
              avg_corr    = 0.1,
              min_corr    = 0.05,
              max_corr    = 0.2,
-             names       = c("A", "B", "C"),
+             var_names       = c("A", "B", "C"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -141,12 +141,12 @@ test_that("keepExtra = TRUE preserves non-selected columns", {
 
 test_that("warns on rows with missing values in selected vars", {
   df <- data.frame(A = c(1, NA, 3, 4), B = 5:8)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B")),
              avg_corr    = 0.1,
              min_corr    = 0.05,
              max_corr    = 0.2,
-             names       = c("A", "B"),
+             var_names       = c("A", "B"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",
@@ -159,12 +159,12 @@ test_that("warns on rows with missing values in selected vars", {
 
 test_that("errors on invalid which argument", {
   df <- data.frame(A = 1:5, B = 6:10)
-  res <- new("CorrCombo",
+  res <- CorrCombo(
              subset_list = list(c("A", "B")),
              avg_corr    = 0.1,
              min_corr    = 0.05,
              max_corr    = 0.2,
-             names       = c("A", "B"),
+             var_names       = c("A", "B"),
              threshold   = 0.5,
              forced_in   = character(),
              search_type = "els",

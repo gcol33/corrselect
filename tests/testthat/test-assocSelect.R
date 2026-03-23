@@ -7,19 +7,19 @@ test_that("assocSelect returns CorrCombo with mixed data", {
     c = ordered(sample(1:3, 10, TRUE))
   )
   res <- assocSelect(df, threshold = 0.8, method = "els")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect works with numeric-only input", {
   df <- data.frame(a = rnorm(10), b = rnorm(10))
   res <- assocSelect(df, threshold = 0.5, method = "els")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect drops rows with NA", {
   df <- data.frame(a = c(1, NA, 2), b = factor(c("x", "y", "x")))
   expect_warning(res <- assocSelect(df, threshold = 0.7), "Removed")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect fails with unsupported types", {
@@ -64,7 +64,7 @@ test_that("assocSelect works with tibble input", {
     c = ordered(sample(1:3, 10, TRUE))
   )
   res <- assocSelect(df, threshold = 0.7)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles constant columns", {
@@ -74,13 +74,13 @@ test_that("assocSelect handles constant columns", {
     c = factor(rep("x", 10))
   )
   res <- assocSelect(df, threshold = 0.8)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect can use kendall for num-num", {
   df <- data.frame(a = rnorm(10), b = rnorm(10))
   res <- assocSelect(df, method_num_num = "kendall", threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect can use cramersv for factor-factor", {
@@ -90,7 +90,7 @@ test_that("assocSelect can use cramersv for factor-factor", {
   )
   # cramersv is the default for factor-factor, no parameter needed
   res <- assocSelect(df, threshold = 1.0)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect can use eta for numeric-factor", {
@@ -100,7 +100,7 @@ test_that("assocSelect can use eta for numeric-factor", {
   )
   # eta is the default for numeric-factor, no parameter needed
   res <- assocSelect(df, threshold = 1.0)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -154,7 +154,7 @@ test_that("assocSelect handles character columns (converted to factors)", {
   )
 
   res <- assocSelect(df, threshold = 0.8)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles logical columns (converted to factors)", {
@@ -165,7 +165,7 @@ test_that("assocSelect handles logical columns (converted to factors)", {
   )
 
   res <- assocSelect(df, threshold = 0.8)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles integer columns (converted to numeric)", {
@@ -176,7 +176,7 @@ test_that("assocSelect handles integer columns (converted to numeric)", {
   )
 
   res <- assocSelect(df, threshold = 0.8)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles ordered-ordered pairs", {
@@ -187,7 +187,7 @@ test_that("assocSelect handles ordered-ordered pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles ordered-factor pairs", {
@@ -198,7 +198,7 @@ test_that("assocSelect handles ordered-factor pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles numeric-ordered pairs", {
@@ -209,7 +209,7 @@ test_that("assocSelect handles numeric-ordered pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with kendall for ord_ord", {
@@ -220,7 +220,7 @@ test_that("assocSelect with kendall for ord_ord", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_ord_ord = "kendall")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with spearman for num_num", {
@@ -232,7 +232,7 @@ test_that("assocSelect with spearman for num_num", {
   )
 
   res <- assocSelect(df, threshold = 0.8, method_num_num = "spearman")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect errors on force_in names not in data", {
@@ -256,7 +256,7 @@ test_that("assocSelect with force_in by index", {
   )
 
   res <- assocSelect(df, threshold = 0.9, force_in = c(1, 3))
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_true(all(c("a", "c") %in% unlist(res@subset_list)))
 })
 
@@ -270,7 +270,7 @@ test_that("assocSelect handles factor with sparse table", {
 
   # Should handle sparse table gracefully
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect stores methods used in attributes", {
@@ -300,7 +300,7 @@ test_that("assocSelect handles all type combinations in one df", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "mixed")
 })
 
@@ -333,7 +333,7 @@ test_that("assocSelect handles constant numeric column", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect uses method = NULL to auto-select", {
@@ -364,7 +364,7 @@ test_that("assocSelect with bicor method", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_num_num = "bicor")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with distance method", {
@@ -378,7 +378,7 @@ test_that("assocSelect with distance method", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_num_num = "distance")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with maximal method", {
@@ -392,7 +392,7 @@ test_that("assocSelect with maximal method", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_num_num = "maximal")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect errors for bicor when WGCNA not installed", {
@@ -437,7 +437,7 @@ test_that("assocSelect handles factor with only one unique value", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles numeric with zero variance (ss_tot = 0)", {
@@ -449,7 +449,7 @@ test_that("assocSelect handles numeric with zero variance (ss_tot = 0)", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -465,7 +465,7 @@ test_that("assocSelect handles cramersv with sparse table (row/col all zeros)", 
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles cramersv with minimal table", {
@@ -477,7 +477,7 @@ test_that("assocSelect handles cramersv with minimal table", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with numeric-factor pairs", {
@@ -489,7 +489,7 @@ test_that("assocSelect handles eta with numeric-factor pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 
   # Check that eta was used
   methods_used <- attr(res, "assoc_methods_used")
@@ -506,7 +506,7 @@ test_that("assocSelect handles eta with factor-numeric order", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with single-level factor", {
@@ -518,7 +518,7 @@ test_that("assocSelect handles eta with single-level factor", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with spearman for numeric-ordered pairs", {
@@ -530,7 +530,7 @@ test_that("assocSelect with spearman for numeric-ordered pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_num_ord = "spearman")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with kendall for numeric-ordered pairs", {
@@ -542,7 +542,7 @@ test_that("assocSelect with kendall for numeric-ordered pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_num_ord = "kendall")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect stores all method types in attributes", {
@@ -576,7 +576,7 @@ test_that("assocSelect handles all unique values in factor (no repeated levels)"
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles cramersv returning NA (fallback to 0)", {
@@ -588,7 +588,7 @@ test_that("assocSelect handles cramersv returning NA (fallback to 0)", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with all numeric uses pearson by default", {
@@ -601,7 +601,7 @@ test_that("assocSelect with all numeric uses pearson by default", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 
   # Check methods used
   methods_used <- attr(res, "assoc_methods_used")
@@ -618,7 +618,7 @@ test_that("assocSelect handles ordered-factor pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles factor-ordered pairs (reverse)", {
@@ -630,7 +630,7 @@ test_that("assocSelect handles factor-ordered pairs (reverse)", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles ordered-numeric pairs", {
@@ -642,7 +642,7 @@ test_that("assocSelect handles ordered-numeric pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -658,7 +658,7 @@ test_that("assocSelect cramersv with sparse 1-dim table", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect eta with constant numeric (ss_tot = 0)", {
@@ -670,7 +670,7 @@ test_that("assocSelect eta with constant numeric (ss_tot = 0)", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect eta with single-level factor", {
@@ -682,7 +682,7 @@ test_that("assocSelect eta with single-level factor", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles cramersv with NA chi-squared", {
@@ -695,7 +695,7 @@ test_that("assocSelect handles cramersv with NA chi-squared", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles NA association fallback", {
@@ -707,7 +707,7 @@ test_that("assocSelect handles NA association fallback", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -723,7 +723,7 @@ test_that("assocSelect handles cramersv with 1-row contingency table", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles cramersv with row sums of zero after droplevels", {
@@ -734,7 +734,7 @@ test_that("assocSelect handles cramersv with row sums of zero after droplevels",
   df <- data.frame(f1 = f1, f2 = f2)
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles constant numeric in eta calculation", {
@@ -747,7 +747,7 @@ test_that("assocSelect handles constant numeric in eta calculation", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with single-level factor (unique < 2)", {
@@ -759,7 +759,7 @@ test_that("assocSelect handles eta with single-level factor (unique < 2)", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles numeric with zero variance paired with factor", {
@@ -771,7 +771,7 @@ test_that("assocSelect handles numeric with zero variance paired with factor", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect NA in association matrix triggers error", {
@@ -786,7 +786,7 @@ test_that("assocSelect NA in association matrix triggers error", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles force_in as numeric indices", {
@@ -801,7 +801,7 @@ test_that("assocSelect handles force_in as numeric indices", {
   # Force in by numeric index
   res <- assocSelect(df, threshold = 0.9, force_in = c(1, 3))
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_true(all(c("num1", "ord1") %in% unlist(res@subset_list)))
 })
 
@@ -814,7 +814,7 @@ test_that("assocSelect spearman for numeric-numeric pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.8, method_num_num = "spearman")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect kendall for ordered-ordered pairs", {
@@ -826,7 +826,7 @@ test_that("assocSelect kendall for ordered-ordered pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_ord_ord = "kendall")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles all methods in single mixed dataset", {
@@ -857,7 +857,7 @@ test_that("assocSelect cramersv handles very sparse table", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect ordered-numeric pairs work correctly", {
@@ -869,7 +869,7 @@ test_that("assocSelect ordered-numeric pairs work correctly", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect with kendall for numeric-ordered pairs", {
@@ -881,7 +881,7 @@ test_that("assocSelect with kendall for numeric-ordered pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.9, method_num_ord = "kendall")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -898,7 +898,7 @@ test_that("assocSelect handles cramersv with degenerate table", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with constant numeric in one category", {
@@ -910,7 +910,7 @@ test_that("assocSelect handles eta with constant numeric in one category", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles all-zero variance after split by factor", {
@@ -923,7 +923,7 @@ test_that("assocSelect handles all-zero variance after split by factor", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect falls back gracefully with problematic pairs", {
@@ -937,7 +937,7 @@ test_that("assocSelect falls back gracefully with problematic pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect bicor method skipped if WGCNA not installed", {
@@ -946,7 +946,7 @@ test_that("assocSelect bicor method skipped if WGCNA not installed", {
   df <- data.frame(num1 = rnorm(20), num2 = rnorm(20))
 
   res <- assocSelect(df, threshold = 0.9, method_num_num = "bicor")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect distance method skipped if energy not installed", {
@@ -955,7 +955,7 @@ test_that("assocSelect distance method skipped if energy not installed", {
   df <- data.frame(num1 = rnorm(20), num2 = rnorm(20))
 
   res <- assocSelect(df, threshold = 0.9, method_num_num = "distance")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect maximal method skipped if minerva not installed", {
@@ -964,7 +964,7 @@ test_that("assocSelect maximal method skipped if minerva not installed", {
   df <- data.frame(num1 = rnorm(20), num2 = rnorm(20))
 
   res <- assocSelect(df, threshold = 0.9, method_num_num = "maximal")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect errors on unsupported method", {
@@ -994,7 +994,7 @@ test_that("assocSelect with bicor for numeric pairs works", {
   )
 
   result <- assocSelect(df, threshold = 0.5, method_num_num = "bicor")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect with distance correlation works", {
@@ -1009,7 +1009,7 @@ test_that("assocSelect with distance correlation works", {
   )
 
   result <- assocSelect(df, threshold = 0.5, method_num_num = "distance")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect with maximal information coefficient works", {
@@ -1024,7 +1024,7 @@ test_that("assocSelect with maximal information coefficient works", {
   )
 
   result <- assocSelect(df, threshold = 0.5, method_num_num = "maximal")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 
@@ -1042,7 +1042,7 @@ test_that("assocSelect handles ordered-numeric pairs", {
   )
 
   result <- assocSelect(df, threshold = 0.8)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect handles ordered-ordered pairs", {
@@ -1055,7 +1055,7 @@ test_that("assocSelect handles ordered-ordered pairs", {
   )
 
   result <- assocSelect(df, threshold = 0.8)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect handles factor-ordered pairs", {
@@ -1068,7 +1068,7 @@ test_that("assocSelect handles factor-ordered pairs", {
   )
 
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 
@@ -1083,7 +1083,7 @@ test_that("assocSelect handles single-level factor gracefully", {
 
   # Should handle single-level factor
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect handles constant numeric variable", {
@@ -1097,7 +1097,7 @@ test_that("assocSelect handles constant numeric variable", {
 
   # Should handle constant variable (ss_tot = 0)
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 
@@ -1117,7 +1117,7 @@ test_that("assocSelect computes eta with single-level factor", {
 
   # This should trigger the eta calculation where length(unique(cat)) < 2
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1136,7 +1136,7 @@ test_that("assocSelect computes eta with constant numeric variable", {
 
   # This should trigger ss_tot == 0 in eta calculation
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1155,7 +1155,7 @@ test_that("assocSelect handles cramersv with sparse contingency table", {
 
   # This might trigger the sparse table check
   result <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1173,7 +1173,7 @@ test_that("assocSelect computes spearman for numeric-ordered pairs", {
   )
 
   result <- assocSelect(df, threshold = 0.8, method_num_ord = "spearman")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1191,7 +1191,7 @@ test_that("assocSelect computes association for ordered-ordered pairs", {
   )
 
   result <- assocSelect(df, threshold = 0.8, method_ord_ord = "spearman")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1209,7 +1209,7 @@ test_that("assocSelect handles cramersv with degenerate 1xN table", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles cramersv with table having zero row", {
@@ -1221,7 +1221,7 @@ test_that("assocSelect handles cramersv with table having zero row", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with constant numeric within groups", {
@@ -1233,7 +1233,7 @@ test_that("assocSelect handles eta with constant numeric within groups", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta when factor has single level", {
@@ -1245,7 +1245,7 @@ test_that("assocSelect handles eta when factor has single level", {
   )
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1263,7 +1263,7 @@ test_that("assocSelect handles cramersv with 1xN contingency table", {
   )
 
   res <- assocSelect(df, threshold = 0.95)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with single-level factor explicitly", {
@@ -1277,7 +1277,7 @@ test_that("assocSelect handles eta with single-level factor explicitly", {
   )
 
   res <- assocSelect(df, threshold = 0.95)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with constant numeric (ss_tot = 0)", {
@@ -1291,7 +1291,7 @@ test_that("assocSelect handles eta with constant numeric (ss_tot = 0)", {
   )
 
   res <- assocSelect(df, threshold = 0.95)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles cramersv where chi2 might be NA", {
@@ -1304,7 +1304,7 @@ test_that("assocSelect handles cramersv where chi2 might be NA", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("assocSelect handles NA fallback to 0 in association", {
@@ -1318,5 +1318,5 @@ test_that("assocSelect handles NA fallback to 0 in association", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })

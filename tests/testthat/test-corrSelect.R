@@ -3,7 +3,7 @@ library(testthat)
 test_that("corrSelect returns CorrCombo with numeric data", {
   df <- data.frame(A = rnorm(10), B = rnorm(10), C = rnorm(10))
   res <- corrSelect(df, threshold = 0.5, method = "els")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("fails when only one numeric column remains after skipping", {
@@ -13,7 +13,7 @@ test_that("fails when only one numeric column remains after skipping", {
 
 test_that("matrix input is converted to data.frame", {
   mat <- matrix(rnorm(100), ncol = 10)
-  expect_s4_class(corrSelect(mat, threshold = 0.5, method = "els"), "CorrCombo")
+  expect_true(inherits(corrSelect(mat, threshold = 0.5, method = "els"), "CorrCombo"))
 })
 
 test_that("fails with fewer than two columns", {
@@ -40,23 +40,23 @@ test_that("invalid force_in names trigger error", {
 test_that("works with NAs (rows are dropped)", {
   df <- data.frame(a = c(1, 2, NA, 4), b = c(NA, 2, 3, 4), c = c(4, 3, 2, 1))
   expect_warning(res <- corrSelect(df, threshold = 0.9, method = "els"), "Removed")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("bron-kerbosch with use_pivot = FALSE runs", {
   df <- data.frame(A = rnorm(10), B = rnorm(10), C = rnorm(10))
   res <- corrSelect(df, threshold = 0.7, method = "bron-kerbosch", use_pivot = FALSE)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@search_type, "bron-kerbosch")
 })
 
-test_that("correct slots are filled", {
+test_that("correct properties are filled", {
   df <- data.frame(x = rnorm(10), y = rnorm(10))
   res <- corrSelect(df, threshold = 0.5, method = "els")
   expect_equal(
-    slotNames(res),
+    names(S7::props(res)),
     c("subset_list", "avg_corr", "min_corr", "max_corr",
-      "names", "threshold", "forced_in", "search_type", "cor_method", "n_rows_used")
+      "var_names", "threshold", "forced_in", "search_type", "cor_method", "n_rows_used")
   )
 })
 
@@ -71,7 +71,7 @@ test_that("works with tibble-like input", {
   skip_if_not_installed("tibble")
   df <- as.data.frame(tibble::tibble(x = rnorm(5), y = rnorm(5)))
   res <- corrSelect(df, threshold = 0.9, method = "els")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("force_in accepts numeric indices", {
@@ -88,7 +88,7 @@ test_that("returns subsets when correlation is below threshold", {
   res <- corrSelect(df, threshold = 0.5, method = "els")
 
   # When correlation is low (below threshold), both variables CAN be in the same subset
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   # Should have at least one subset containing both variables
   expect_gte(length(res@subset_list), 1)
 })
@@ -102,7 +102,7 @@ test_that("returns empty when all pairs exceed threshold", {
 
   # With r = 1.0 and threshold = 0.5, no pair meets threshold
   # So we should get no subsets of size >= 2
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_length(res@subset_list, 0)
 })
 
@@ -110,27 +110,27 @@ test_that("returns empty when all pairs exceed threshold", {
 test_that("additional args via ... are accepted", {
   df <- data.frame(x = rnorm(10), y = rnorm(10), z = rnorm(10))
   res <- corrSelect(df, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect works with cor_method = 'pearson'", {
   df <- data.frame(a = rnorm(10), b = rnorm(10), c = rnorm(10))
   res <- corrSelect(df, threshold = 0.8, cor_method = "pearson")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "pearson")
 })
 
 test_that("corrSelect works with cor_method = 'spearman'", {
   df <- data.frame(a = rnorm(10), b = runif(10), c = rnorm(10))
   res <- corrSelect(df, threshold = 0.8, cor_method = "spearman")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "spearman")
 })
 
 test_that("corrSelect works with cor_method = 'kendall'", {
   df <- data.frame(a = rnorm(10), b = rnorm(10), c = rnorm(10))
   res <- corrSelect(df, threshold = 0.8, cor_method = "kendall")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "kendall")
 })
 
@@ -138,7 +138,7 @@ test_that("corrSelect works with cor_method = 'bicor' if WGCNA is available", {
   skip_if_not_installed("WGCNA")
   df <- data.frame(a = rnorm(20), b = rnorm(20), c = rnorm(20))
   res <- corrSelect(df, threshold = 0.8, cor_method = "bicor")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "bicor")
 })
 
@@ -146,7 +146,7 @@ test_that("corrSelect works with cor_method = 'distance' if energy is available"
   skip_if_not_installed("energy")
   df <- data.frame(a = rnorm(15), b = rnorm(15), c = rnorm(15))
   res <- corrSelect(df, threshold = 0.8, cor_method = "distance")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "distance")
 })
 
@@ -154,7 +154,7 @@ test_that("corrSelect works with cor_method = 'maximal' if minerva is available"
   skip_if_not_installed("minerva")
   df <- data.frame(a = rnorm(12), b = rnorm(12), c = rnorm(12))
   res <- corrSelect(df, threshold = 0.8, cor_method = "maximal")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "maximal")
 })
 test_that("can get more than one combination (named columns)", {
@@ -338,11 +338,11 @@ test_that("corrSelect handles use_pivot argument with bron-kerbosch", {
 
   # With pivot
   res_pivot <- corrSelect(df, threshold = 0.8, method = "bron-kerbosch", use_pivot = TRUE)
-  expect_s4_class(res_pivot, "CorrCombo")
+  expect_true(inherits(res_pivot, "CorrCombo"))
 
   # Without pivot
   res_no_pivot <- corrSelect(df, threshold = 0.8, method = "bron-kerbosch", use_pivot = FALSE)
-  expect_s4_class(res_no_pivot, "CorrCombo")
+  expect_true(inherits(res_no_pivot, "CorrCombo"))
 
   # Results should be equivalent
   expect_equal(length(res_pivot@subset_list), length(res_no_pivot@subset_list))
@@ -489,7 +489,7 @@ test_that("MatSelect generates default variable names", {
   res <- MatSelect(mat, threshold = 0.5)
 
   # Should have default names like V1, V2, V3
-  expect_equal(res@names, c("V1", "V2", "V3"))
+  expect_equal(res@var_names, c("V1", "V2", "V3"))
 })
 
 test_that("MatSelect handles threshold = 1 (keep all pairs)", {
@@ -522,8 +522,8 @@ test_that("corrSelect warns about constant columns", {
   )
 
   # Result should exclude the constant column
-  expect_s4_class(res, "CorrCombo")
-  expect_false("const" %in% res@names)
+  expect_true(inherits(res, "CorrCombo"))
+  expect_false("const" %in% res@var_names)
 })
 
 test_that("corrSelect handles multiple constant columns", {
@@ -540,7 +540,7 @@ test_that("corrSelect handles multiple constant columns", {
     "constant.*excluded"
   )
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect errors when all remaining columns are constant", {
@@ -574,7 +574,7 @@ test_that("corrSelect prints message about skipped non-numeric columns", {
     "excluded"
   )
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect force_in errors when variable excluded from correlation", {
@@ -687,7 +687,7 @@ test_that("corrSelect handles data.table input", {
   dt <- data.table::data.table(a = rnorm(10), b = rnorm(10), c = rnorm(10))
 
   res <- corrSelect(dt, threshold = 0.8)
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -707,7 +707,7 @@ test_that("corrSelect handles logical column type message", {
     "excluded"
   )
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect handles Date column exclusion", {
@@ -723,7 +723,7 @@ test_that("corrSelect handles Date column exclusion", {
     "excluded"
   )
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect handles complex column type exclusion", {
@@ -739,7 +739,7 @@ test_that("corrSelect handles complex column type exclusion", {
     "excluded"
   )
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect force_in with non-existent name after constant removal", {
@@ -793,7 +793,7 @@ test_that("corrSelect handles multiple excluded column types", {
     "excluded"
   )
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect with spearman handles tied ranks", {
@@ -807,7 +807,7 @@ test_that("corrSelect with spearman handles tied ranks", {
 
   res <- corrSelect(df, threshold = 0.8, cor_method = "spearman")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect with kendall correlation", {
@@ -820,7 +820,7 @@ test_that("corrSelect with kendall correlation", {
 
   res <- corrSelect(df, threshold = 0.8, cor_method = "kendall")
 
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
   expect_equal(res@cor_method, "kendall")
 })
 
@@ -880,7 +880,7 @@ test_that("corrSelect bicor method skipped if WGCNA not installed", {
   df <- data.frame(num1 = rnorm(20), num2 = rnorm(20), num3 = rnorm(20))
 
   res <- corrSelect(df, threshold = 0.9, cor_method = "bicor")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect distance method skipped if energy not installed", {
@@ -889,7 +889,7 @@ test_that("corrSelect distance method skipped if energy not installed", {
   df <- data.frame(num1 = rnorm(20), num2 = rnorm(20), num3 = rnorm(20))
 
   res <- corrSelect(df, threshold = 0.9, cor_method = "distance")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 test_that("corrSelect maximal method skipped if minerva not installed", {
@@ -898,7 +898,7 @@ test_that("corrSelect maximal method skipped if minerva not installed", {
   df <- data.frame(num1 = rnorm(20), num2 = rnorm(20), num3 = rnorm(20))
 
   res <- corrSelect(df, threshold = 0.9, cor_method = "maximal")
-  expect_s4_class(res, "CorrCombo")
+  expect_true(inherits(res, "CorrCombo"))
 })
 
 
@@ -918,7 +918,7 @@ test_that("corrSelect with bicor works", {
   )
 
   result <- corrSelect(df, threshold = 0.5, cor_method = "bicor")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("corrSelect with distance correlation works", {
@@ -933,7 +933,7 @@ test_that("corrSelect with distance correlation works", {
   )
 
   result <- corrSelect(df, threshold = 0.5, cor_method = "distance")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("corrSelect with maximal works", {
@@ -948,6 +948,6 @@ test_that("corrSelect with maximal works", {
   )
 
   result <- corrSelect(df, threshold = 0.5, cor_method = "maximal")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 

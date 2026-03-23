@@ -277,7 +277,7 @@ corrSelect(df, threshold = 0.7, method = NULL, force_in = NULL,
 | `cor_method` | `"pearson"`, `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, `"maximal"` | `"pearson"` |
 | `force_in` | Variables required in all subsets | `NULL` |
 
-**Returns**: `CorrCombo` S4 object with slots: `subset_list`, `avg_corr`, `min_corr`, `max_corr`.
+**Returns**: `CorrCombo` object with slots: `subset_list`, `avg_corr`, `min_corr`, `max_corr`.
 
 ### assocSelect()
 
@@ -297,7 +297,7 @@ assocSelect(df, threshold = 0.7, method = NULL, force_in = NULL,
 | `method_num_ord` | Numeric-ordered: `"spearman"`, `"kendall"` | `"spearman"` |
 | `method_ord_ord` | Ordered-ordered: `"spearman"`, `"kendall"` | `"spearman"` |
 
-**Returns**: `CorrCombo` S4 object.
+**Returns**: `CorrCombo` object.
 
 ### MatSelect()
 
@@ -314,7 +314,7 @@ MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
 | `method` | Algorithm: `"bron-kerbosch"`, `"els"` | auto |
 | `force_in` | Variables required in all subsets | `NULL` |
 
-**Returns**: `CorrCombo` S4 object.
+**Returns**: `CorrCombo` object.
 
 ### corrSubset()
 

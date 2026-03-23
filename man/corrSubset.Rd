@@ -9,8 +9,8 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 \arguments{
 \item{res}{A \code{\link{CorrCombo}} object returned by \code{corrSelect} or \code{MatSelect}.}
 
-\item{df}{A data frame or matrix. Must contain all variables listed in \code{res@names}.
-Columns not in \code{res@names} are ignored unless \code{keepExtra = TRUE}.}
+\item{df}{A data frame or matrix. Must contain all variables listed in \code{res@var_names}.
+Columns not in \code{res@var_names} are ignored unless \code{keepExtra = TRUE}.}
 
 \item{which}{Subsets to extract. One of:
 \itemize{
@@ -21,7 +21,7 @@ Columns not in \code{res@names} are ignored unless \code{keepExtra = TRUE}.}
 }
 Subsets are ranked by decreasing size, then increasing average correlation.}
 
-\item{keepExtra}{Logical. If \code{TRUE}, columns in \code{df} not in \code{res@names}
+\item{keepExtra}{Logical. If \code{TRUE}, columns in \code{df} not in \code{res@var_names}
 (e.g., factors, characters) are retained. Defaults to \code{FALSE}.}
 }
 \value{

@@ -1330,7 +1330,7 @@ Deterministic: same input produces same output
 
 ## Output Structure
 
-All selection functions return a `CorrCombo` S4 object containing:
+All selection functions return a `CorrCombo` object containing:
 
 - `subset_list`: list of character vectors (variable names per subset)
 

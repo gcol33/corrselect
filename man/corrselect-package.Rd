@@ -46,7 +46,7 @@ The exact enumeration functions (\code{corrSelect}, \code{assocSelect},
 
 \describe{
 \item{\code{\link{corrSubset}}}{Extract specific subsets from results}
-\item{\code{\link{CorrCombo-class}}}{S4 class holding enumeration results}
+\item{\code{\link{CorrCombo}}}{Class holding enumeration results}
 }
 }
 
@@ -55,6 +55,6 @@ Vignettes: \code{vignette("quickstart", package = "corrselect")},
 \code{vignette("advanced", package = "corrselect")}
 }
 \author{
-\strong{Maintainer}: Gilles Colling \email{gilles.colling051@gmail.com}
+\strong{Maintainer}: Gilles Colling \email{gilles.colling051@gmail.com} (\href{https://orcid.org/0000-0003-3070-6066}{ORCID}) [copyright holder]
 
 }

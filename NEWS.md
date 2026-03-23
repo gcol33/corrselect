@@ -1,3 +1,13 @@
+# corrselect 3.2.0
+
+## Breaking Changes
+
+- **CorrCombo class migrated from S4 to S7**: The `CorrCombo` result class now uses the modern S7 object system instead of S4. This brings cleaner construction (`CorrCombo(...)` instead of `new("CorrCombo", ...)`), built-in validation, and forward-looking OOP design.
+- **`names` property renamed to `var_names`**: S7 reserves `names` as a property name. Code accessing `result@names` must be updated to `result@var_names`. All other `@` property access (`@subset_list`, `@avg_corr`, etc.) is unchanged.
+- The `methods` package is no longer imported; `S7` is now a dependency.
+
+---
+
 # corrselect 3.1.0
 
 ## Bug Fixes

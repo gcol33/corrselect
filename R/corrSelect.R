@@ -67,7 +67,6 @@
 #' corrSelect(df, threshold = 0.6, force_in = "V10", cor_method = "spearman")
 #'
 #' @importFrom stats complete.cases cor sd
-#' @importFrom methods is
 #' @export
 corrSelect <- function(df,
                        threshold = 0.7,
@@ -203,7 +202,7 @@ corrSelect <- function(df,
     ...
   )
 
-  if (!is(result, "CorrCombo")) {
+  if (!inherits(result, "CorrCombo")) {
     stop("MatSelect() must return an object of class 'CorrCombo'.")
   }
 

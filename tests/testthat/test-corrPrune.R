@@ -1454,7 +1454,7 @@ test_that("assocSelect handles eta with single-level factor", {
 
   # eta computation should return 0 for single-level factor
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("assocSelect handles eta with constant numeric", {
@@ -1469,7 +1469,7 @@ test_that("assocSelect handles eta with constant numeric", {
 
   # eta computation should handle ss_tot = 0
   result <- assocSelect(df, threshold = 0.9)
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================
@@ -1489,7 +1489,7 @@ test_that("corrSelect with bicor computes correctly", {
   )
 
   result <- corrSelect(df, threshold = 0.7, cor_method = "bicor")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
   expect_true(length(result@subset_list) >= 1)
 })
 
@@ -1501,7 +1501,7 @@ test_that("corrSelect with distance computes correctly", {
   df <- data.frame(a = rnorm(n), b = rnorm(n), c = rnorm(n))
 
   result <- corrSelect(df, threshold = 0.5, cor_method = "distance")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 test_that("corrSelect with maximal computes correctly", {
@@ -1512,7 +1512,7 @@ test_that("corrSelect with maximal computes correctly", {
   df <- data.frame(a = rnorm(n), b = rnorm(n), c = rnorm(n))
 
   result <- corrSelect(df, threshold = 0.5, cor_method = "maximal")
-  expect_s4_class(result, "CorrCombo")
+  expect_true(inherits(result, "CorrCombo"))
 })
 
 # ===========================================================================

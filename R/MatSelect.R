@@ -39,7 +39,6 @@ NULL
 #' # Force variable 1 into every subset (with warning if too correlated)
 #' res4 <- MatSelect(cmat, threshold = 0.5, force_in = 1)
 #'
-#' @importFrom methods new
 #' @export
 MatSelect <- function(mat,
                       threshold = 0.7,
@@ -167,12 +166,12 @@ MatSelect <- function(mat,
 
   ## ---- empty-result early return ----
   if (length(combos) == 0L) {
-    return(new("CorrCombo",
+    return(CorrCombo(
                subset_list = list(),
                avg_corr    = numeric(),
                min_corr    = numeric(),
                max_corr    = numeric(),
-               names       = varnames,
+               var_names   = varnames,
                threshold   = threshold,
                forced_in   = force_names,
                search_type = method,
@@ -191,12 +190,12 @@ MatSelect <- function(mat,
   mm <- t(vapply(combos, get_minmax, numeric(2)))
 
   ## ---- build CorrCombo object ----
-  result <- new("CorrCombo",
+  result <- CorrCombo(
                 subset_list = named_sets,
                 avg_corr    = avg,
                 min_corr    = mm[,1],
                 max_corr    = mm[,2],
-                names       = varnames,
+                var_names   = varnames,
                 threshold   = threshold,
                 forced_in   = force_names,
                 search_type = method,
