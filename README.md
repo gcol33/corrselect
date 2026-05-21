@@ -79,7 +79,7 @@ These features make the package useful in domains like:
 install.packages("corrselect")
 
 # Or install development version from GitHub
-# install.packages("pak")
+install.packages("pak")
 pak::pak("gcol33/corrselect")
 ```
 
