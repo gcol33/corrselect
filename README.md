@@ -1,5 +1,7 @@
 # corrselect
 
+*the subset machine is hungry*
+
 [![CRAN status](https://www.r-pkg.org/badges/version/corrselect)](https://CRAN.R-project.org/package=corrselect)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/corrselect)](https://cran.r-project.org/package=corrselect)
 [![Monthly downloads](https://cranlogs.r-pkg.org/badges/corrselect)](https://cran.r-project.org/package=corrselect)
@@ -8,206 +10,111 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.09539/status.svg)](https://doi.org/10.21105/joss.09539)
 
-**Fast and Flexible Predictor Pruning for Data Analysis and Modeling**
+**Exact enumeration of maximal predictor sets under a correlation threshold.**
 
-The `corrselect` package provides simple, high-level functions for **predictor pruning** using association-based and model-based approaches. Whether you need to reduce multicollinearity before modeling or clean correlated predictors in your dataset, `corrselect` offers fast, deterministic solutions with minimal code.
-
-## Quick Start
-
-```r
-library(corrselect)
-data(mtcars)
-
-# Association-based pruning (model-free)
-pruned <- corrPrune(mtcars, threshold = 0.7)
-names(pruned)
-
-# Model-based pruning (VIF)
-pruned <- modelPrune(mpg ~ ., data = mtcars, limit = 5)
-attr(pruned, "selected_vars")
-```
-
-## Statement of Need
-
-Variable selection is a central task in statistics and machine learning, particularly when working with high-dimensional or collinear data. In many applications, users aim to retain sets of variables that are weakly associated with one another to avoid redundancy and reduce overfitting. Common approaches such as greedy filtering or regularized regression either discard useful features or do not guarantee bounded pairwise associations.
-
-This package addresses the **admissible set problem**: selecting all maximal subsets of variables such that no pair exceeds a user-defined threshold. It generalizes to mixed-type data, supports multiple association metrics, and allows constrained subset selection via `force_in` (e.g. always include key predictors).
-
-These features make the package useful in domains like:
-
-- ecological and bioclimatic modeling,
-- trait-based species selection,
-- interpretable machine learning pipelines.
-
-## Features
-
-### High-Level Pruning Functions
-
-- **`corrPrune()`**: Association-based predictor pruning
-  - Model-free, works on raw data
-  - Automatic correlation/association measure selection
-  - Exact mode for guaranteed optimal solutions (recommended for p ≤ 100)
-  - Fast greedy mode for large datasets (p > 100)
-  - Protect important variables with `force_in`
-
-- **`modelPrune()`**: Model-based predictor pruning
-  - VIF-based iterative removal
-  - Supports `lm`, `glm`, `lme4`, `glmmTMB` engines
-  - Custom engine support for any modeling package (INLA, mgcv, brms, etc.)
-  - Prunes fixed effects in mixed models
-  - Returns fitted model with pruned predictors
-
-### Advanced Subset Enumeration
-
-- Exhaustive **exact** subset search using graph algorithms:
-  - Eppstein–Löffler–Strash (ELS)
-  - Bron–Kerbosch (with optional pivoting)
-  - Used internally by `corrPrune(mode = "exact")`
-
-- Multiple association metrics:
-  - `"pearson"`, `"spearman"`, `"kendall"`
-  - `"bicor"` (WGCNA), `"distance"` (energy), `"maximal"` (minerva)
-  - `"eta"`, `"cramersv"` for mixed-type data
-
-- `force_in`: protect variables from removal
-- Deterministic tie-breaking for reproducibility
-
-## Installation
-
-```r
-# Install from CRAN
-install.packages("corrselect")
-
-# Or install development version from GitHub
-install.packages("pak")
-pak::pak("gcol33/corrselect")
-```
-
-## Usage Examples
-
-### Association-Based Pruning (`corrPrune`)
+Feed it your predictors. `corrselect` returns the maximal sets whose pairwise
+correlations all stay under your threshold, found exactly by graph enumeration
+(Bron–Kerbosch / Eppstein–Löffler–Strash) in C++. A greedy filter hands you one
+set and hides the rest. This keeps every variable it can, and shows you all the
+valid choices.
 
 ```r
 library(corrselect)
-data(mtcars)
 
-# Basic: Remove correlated predictors
-pruned <- corrPrune(mtcars, threshold = 0.7)
-names(pruned)
+# prune to one low-correlation set, in a single call
+corrPrune(mtcars, threshold = 0.7)
 
-# Protect important variables
-pruned <- corrPrune(mtcars, threshold = 0.7, force_in = "mpg")
-
-# Use exact mode (slower, guaranteed optimal)
-pruned <- corrPrune(mtcars, threshold = 0.7, mode = "exact")
-
-# Use greedy mode (faster for large datasets)
-pruned <- corrPrune(mtcars, threshold = 0.7, mode = "greedy")
-
-# Check what was retained
-attr(pruned, "selected_vars")
+# or enumerate *every* maximal low-correlation set
+corrSelect(mtcars, threshold = 0.7)
 ```
 
-### Model-Based Pruning (`modelPrune`)
+## Exact, not greedy
+
+The usual tool, `caret::findCorrelation()`, removes variables greedily: it is
+order-dependent, non-deterministic, and typically drops more than it needs to.
+`corrselect` solves the same threshold constraint by maximal-clique enumeration,
+so it retains at least as many variables and returns the same answer every run.
 
 ```r
-# Linear model with VIF threshold
-pruned <- modelPrune(mpg ~ cyl + disp + hp + wt, data = mtcars, limit = 5)
-attr(pruned, "removed_vars")
+m <- cor(mtcars)
 
-# GLM with binomial family
-mtcars_glm <- mtcars
-mtcars_glm$am_binary <- as.factor(mtcars_glm$am)
-pruned <- modelPrune(am_binary ~ cyl + disp + hp,
-                     data = mtcars_glm, engine = "glm",
-                     family = binomial(), limit = 5)
-
-# Mixed model (requires lme4)
-if (requireNamespace("lme4", quietly = TRUE)) {
-  # Use built-in sleepstudy data with polynomial terms
-  sleep <- lme4::sleepstudy
-  sleep$Days2 <- sleep$Days^2
-  suppressWarnings(
-    pruned <- modelPrune(Reaction ~ Days + Days2 + (1|Subject),
-                         data = sleep, engine = "lme4", limit = 5)
-  )
-  attr(pruned, "selected_vars")
-}
-
-# Custom engine (advanced: works with any modeling package)
-# Example: INLA-based pruning
-if (requireNamespace("INLA", quietly = TRUE)) {
-  inla_engine <- list(
-    name = "inla",
-    fit = function(formula, data, ...) {
-      INLA::inla(formula = formula, data = data,
-                 family = "gaussian", ...)
-    },
-    diagnostics = function(model, fixed_effects) {
-      # Use posterior SD as badness metric
-      scores <- model$summary.fixed[, "sd"]
-      names(scores) <- rownames(model$summary.fixed)
-      scores[fixed_effects]
-    }
-  )
-
-  pruned <- modelPrune(y ~ x1 + x2, data = df,
-                       engine = inla_engine, limit = 0.5)
-}
+caret::findCorrelation(m, cutoff = 0.7)              # greedy, ordering-dependent
+corrPrune(mtcars, threshold = 0.7, mode = "exact")   # exact, deterministic
 ```
 
-### Exact Subset Enumeration (Advanced)
+## What's in the box
+
+- **`corrPrune()`**: association-based pruning, model-free. Exact mode for `p <= 100`,
+  greedy mode for larger `p`, protect variables with `force_in`.
+- **`modelPrune()`**: VIF-based pruning for `lm`, `glm`, `lme4`, `glmmTMB`, or any
+  custom engine (INLA, mgcv, brms, ...).
+- **`corrSelect()` / `MatSelect()`**: exhaustive enumeration of all maximal sets,
+  on a data frame or directly on a correlation matrix.
+- **`assocSelect()`**: mixed-type data (numeric, factor, ordered), with the right
+  association metric chosen per pair.
+
+Multiple association metrics are supported: `"pearson"`, `"spearman"`, `"kendall"`,
+`"bicor"` (WGCNA), `"distance"` (energy), `"maximal"` (minerva), and `"eta"` /
+`"cramersv"` for mixed-type data.
+
+## `corrPrune` or `modelPrune`?
+
+|  | `corrPrune()` | `modelPrune()` |
+|---|---|---|
+| Needs a model? | No | Yes |
+| Based on | Pairwise correlation / association | Model diagnostics (VIF) |
+| Works without a response? | Yes | No |
+| Mixed models? | No | Yes (`lme4`, `glmmTMB`) |
+| Best for | Exploratory analysis, large `p` | Regression workflows, VIF reduction |
+
+Use `corrPrune()` first to cut dimensionality, then `modelPrune()` for final cleanup
+inside a modeling framework.
+
+## Model-based pruning with any engine
+
+`modelPrune()` works with `lm`, `glm`, `lme4`, `glmmTMB`, or any package you wire in:
 
 ```r
-# Find ALL maximal subsets
-res <- corrSelect(mtcars, threshold = 0.7)
-show(res)
+# linear model, VIF threshold
+modelPrune(mpg ~ cyl + disp + hp + wt, data = mtcars, limit = 5)
 
-# Extract a specific subset
-subset1 <- corrSubset(res, mtcars, which = 1)
-
-# Convert to data frame
-as.data.frame(res)
+# any modeling package, via a custom engine (here: INLA)
+inla_engine <- list(
+  name = "inla",
+  fit  = function(formula, data, ...) {
+    INLA::inla(formula, data = data, family = "gaussian", ...)
+  },
+  diagnostics = function(model, fixed_effects) {
+    scores <- model$summary.fixed[, "sd"]          # posterior SD as the badness score
+    setNames(scores, rownames(model$summary.fixed))[fixed_effects]
+  }
+)
+modelPrune(y ~ x1 + x2, data = df, engine = inla_engine, limit = 0.5)
 ```
 
-## Choosing Between `corrPrune` and `modelPrune`
+## Mixed-type data
 
-| Feature | `corrPrune()` | `modelPrune()` |
-|---------|---------------|----------------|
-| **Requires model specification?** | No | Yes |
-| **Based on** | Pairwise correlations/associations | Model diagnostics (VIF) |
-| **Speed** | Fast (greedy mode) | Moderate (refits models) |
-| **Works without response?** | Yes | No |
-| **Supports mixed models?** | No | Yes (lme4, glmmTMB) |
-| **Best for** | Exploratory analysis, large p | Regression workflows, VIF reduction |
-
-**Tip**: Use `corrPrune()` first to reduce dimensionality, then `modelPrune()` for final cleanup within a modeling framework.
-
-## Advanced Features
-
-### Mixed-Type Data
-
-Use `assocSelect()` for exact enumeration with mixed data types:
+`assocSelect()` chooses the right association metric per pair (Pearson, Spearman,
+eta-squared, Cramér's V):
 
 ```r
 df <- data.frame(
   height = rnorm(30, 170, 10),
   weight = rnorm(30, 70, 12),
-  group  = factor(sample(c("A","B"), 30, TRUE)),
-  rating = ordered(sample(c("low","med","high"), 30, TRUE))
+  group  = factor(sample(c("A", "B"), 30, TRUE)),
+  rating = ordered(sample(c("low", "med", "high"), 30, TRUE))
 )
 
-res <- assocSelect(df, threshold = 0.6)
-show(res)
+assocSelect(df, threshold = 0.6)
 ```
 
-### Precomputed Correlation Matrices
-
-Work directly with correlation matrices:
+## Installation
 
 ```r
-mat <- cor(mtcars[, sapply(mtcars, is.numeric)])
-res <- MatSelect(mat, threshold = 0.7, method = "els")
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
 ```
 
 ## Documentation
@@ -222,9 +129,12 @@ res <- MatSelect(mat, threshold = 0.7, method = "els")
 
 > "Software is like sex: it's better when it's free." — Linus Torvalds
 
-I'm a PhD student who builds R packages in my free time because I believe good tools should be free and open. I started these projects for my own work and figured others might find them useful too.
+I'm a PhD student who builds R packages in my free time because I believe good tools
+should be free and open. I started these projects for my own work and figured others
+might find them useful too.
 
-If this package saved you some time, buying me a coffee is a nice way to say thanks. It helps with my coffee addiction.
+If this package saved you some time, buying me a coffee is a nice way to say thanks.
+It helps with my coffee addiction.
 
 [![Buy Me A Coffee](https://img.shields.io/badge/-Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/gcol33)
 
@@ -236,11 +146,11 @@ MIT (see the LICENSE.md file)
 
 ```bibtex
 @article{corrselect,
-  author = {Colling, Gilles},
-  title = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},
+  author  = {Colling, Gilles},
+  title   = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},
   journal = {Journal of Open Source Software},
-  year = {2025},
-  doi = {10.21105/joss.09539},
-  url = {https://joss.theoj.org/papers/10.21105/joss.09539}
+  year    = {2025},
+  doi     = {10.21105/joss.09539},
+  url     = {https://joss.theoj.org/papers/10.21105/joss.09539}
 }
 ```
