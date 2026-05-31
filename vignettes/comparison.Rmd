@@ -214,14 +214,19 @@ Boruta tests variable importance via random forest permutation:
 
 ### Execution
 
-```{r, eval=requireNamespace("Boruta", quietly=TRUE)}
-if (requireNamespace("Boruta", quietly = TRUE)) {
+```{r, eval=requireNamespace("Boruta", quietly=TRUE) && requireNamespace("ranger", quietly=TRUE)}
+if (requireNamespace("Boruta", quietly = TRUE) &&
+    requireNamespace("ranger", quietly = TRUE)) {
   # Boruta: "Which variables predict species_richness?"
+  # getImp = getImpRfZ pins the ranger importance backend so the seeded run
+  # is reproducible across Boruta versions (Boruta 10 defaults to the fru
+  # backend, which is stochastic even at a fixed seed).
   set.seed(123)
   boruta_result <- Boruta::Boruta(
     species_richness ~ .,
     data    = bioclim_example,
-    maxRuns = 100
+    maxRuns = 100,
+    getImp  = Boruta::getImpRfZ
   )
 
   cat("Boruta variable importance screening:\n")
