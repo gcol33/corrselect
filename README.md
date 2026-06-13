@@ -1,7 +1,5 @@
 # corrselect
 
-> Small exact engines for scientific computing in R.
-
 *every uncorrelated subset of predictors*
 
 [![CRAN status](https://www.r-pkg.org/badges/version/corrselect)](https://CRAN.R-project.org/package=corrselect)
