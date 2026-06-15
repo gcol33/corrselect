@@ -43,7 +43,7 @@ svg.inline-svg {
   /* Target p wrapping standalone SVGs/imgs, and svg-container directly */
   p:has(> svg.inline-svg),
   p:has(> img.r-plt),
-  .svg-container {
+  .svg-container:not(.figure *) {
     margin-left: calc(var(--bs-gutter-x, 1.5rem) * -.5) !important;
     margin-right: calc(var(--bs-gutter-x, 1.5rem) * -.5) !important;
     width: calc(100% + var(--bs-gutter-x, 1.5rem)) !important;
