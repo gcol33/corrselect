@@ -1285,12 +1285,20 @@ test_that("modelPrune lme4 glmer with binomial family", {
 
   set.seed(9110)
   n <- 100
+  # Give the grouping factor genuine (non-zero) random-effect variance and x1
+  # a real fixed effect. A y that is fully unrelated to both group and the
+  # predictors puts the fit exactly at the tau = 0 boundary, where glmer's
+  # Cholesky-based optimizer is numerically unstable and platform-sensitive
+  # (observed as a hard "Downdated VtV is not positive definite" error on
+  # some BLAS/LAPACK builds instead of the usual singular-fit warning).
+  group_effect <- rnorm(10, sd = 0.8)
   df <- data.frame(
-    y = rbinom(n, 1, 0.5),
     x1 = rnorm(n),
     x2 = rnorm(n),
     group = factor(rep(1:10, each = 10))
   )
+  lin_pred <- 0.5 * df$x1 + group_effect[as.integer(df$group)]
+  df$y <- rbinom(n, 1, stats::plogis(lin_pred))
 
   result <- suppressWarnings(
     modelPrune(y ~ x1 + x2 + (1|group), data = df,
