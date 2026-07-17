@@ -538,7 +538,7 @@ test_that("corrPrune errors on unsupported measure for numeric data", {
 
   expect_error(
     corrPrune(df, threshold = 0.7, measure = "eta"),
-    "not supported"
+    "must be one of"
   )
 })
 
@@ -731,7 +731,7 @@ test_that("corrPrune grouped pruning works with by parameter", {
   expect_equal(length(attr(result, "selected_vars")), 3)
 })
 
-test_that("corrPrune handles no valid subset (all vars correlated)", {
+test_that("corrPrune falls back to a single variable when all vars are correlated", {
   set.seed(1113)
   n <- 50
   x1 <- rnorm(n)
@@ -742,11 +742,12 @@ test_that("corrPrune handles no valid subset (all vars correlated)", {
     x3 = x1
   )
 
-  # With very low threshold, no valid subset with >1 variable
-  expect_error(
-    corrPrune(df, threshold = 0.1, mode = "exact"),
-    "No valid subsets found"
-  )
+  # With very low threshold, no pair can coexist -- the pairwise constraint
+  # still holds vacuously for a single variable, so corrPrune() keeps exactly
+  # one (lexicographically first among the tied singleton candidates).
+  result <- corrPrune(df, threshold = 0.1, mode = "exact")
+  expect_equal(attr(result, "selected_vars"), "x1")
+  expect_equal(sort(attr(result, "removed_vars")), c("x2", "x3"))
 })
 
 test_that("corrPrune with balanced factors", {
@@ -1617,4 +1618,142 @@ test_that("corrPrune all-numeric with all rows NA errors correctly", {
     corrPrune(df, threshold = 0.7, measure = "pearson"),
     "no complete element pairs|All rows"
   )
+})
+
+# ===========================================================================
+# Recovery-style and reference-verified tests (closes coverage gaps flagged
+# in issue #27: prior tests mostly checked "does not error", not that the
+# documented guarantees -- grouped aggregation math, exact tie-break order,
+# greedy/exact agreement -- actually hold against an independently computed
+# expectation).
+# ===========================================================================
+
+test_that("corrPrune grouped group_q aggregation matches hand-computed quantiles", {
+  # Group A: x,y perfectly correlated. Group B: x,y correlated at exactly 0.3
+  # (verified below via cor() directly, independent of corrPrune's internals).
+  dfA <- data.frame(x = c(1, 2, 3, 4, 5), y = c(1, 2, 3, 4, 5), group = "A")
+  dfB <- data.frame(x = c(1, 2, 3, 4, 5), y = c(3, 1, 5, 2, 4), group = "B")
+  cor_a <- abs(cor(dfA$x, dfA$y))
+  cor_b <- abs(cor(dfB$x, dfB$y))
+  expect_equal(cor_a, 1)
+  expect_equal(round(cor_b, 4), 0.3)
+
+  df <- rbind(dfA, dfB)
+  threshold <- (cor_a + cor_b) / 2  # strictly between the two group correlations
+
+  # group_q = 1 aggregates by the max across groups (cor_a = 1), which
+  # exceeds `threshold` -- x and y cannot coexist.
+  res_max <- corrPrune(df, threshold = threshold, by = "group", group_q = 1)
+  expect_equal(attr(res_max, "selected_vars"), "x")
+
+  # group_q near 0 aggregates toward the min across groups (cor_b = 0.3),
+  # which is below `threshold` -- x and y can coexist.
+  res_min <- corrPrune(df, threshold = threshold, by = "group", group_q = 0.01)
+  expect_setequal(attr(res_min, "selected_vars"), c("x", "y"))
+})
+
+test_that("corrPrune exact mode resolves an exact avg-correlation tie lexicographically", {
+  # Construct a,b,c,d so that a-b and c-d are perfectly anti-correlated
+  # (excluded by the threshold) while all four cross pairs (a-c, a-d, b-c,
+  # b-d) share the exact same absolute correlation, by making a=-b and c=-d
+  # from two exactly orthogonal base vectors. This forces a genuine tie in
+  # both size and avg correlation across all four candidate pairs, isolating
+  # the documented lexicographic tie-break (not just "gives a reproducible
+  # answer", but specifically the alphabetically-first one).
+  set.seed(42)
+  n <- 20
+  Q <- qr.Q(qr(matrix(rnorm(n * 2), n, 2)))
+  z1 <- Q[, 1]; z2 <- Q[, 2]
+  df <- data.frame(a = z1, b = -z1, c = z2, d = -z2)
+
+  m <- abs(cor(df))
+  expect_equal(m["a", "c"], m["a", "d"], tolerance = 1e-10)
+  expect_equal(m["a", "c"], m["b", "c"], tolerance = 1e-10)
+  expect_equal(m["a", "c"], m["b", "d"], tolerance = 1e-10)
+
+  result <- corrPrune(df, threshold = 0.5, mode = "exact")
+  expect_equal(sort(attr(result, "selected_vars")), c("a", "c"))
+})
+
+test_that("corrPrune greedy mode removes the variable with the most violations first", {
+  # a is built to correlate with both b (via base1) and c (via base2), while
+  # b and c share nothing and are uncorrelated with each other. So a has 2
+  # threshold violations (with b and with c) while b and c each have only 1
+  # (with a) -- isolating the primary greedy tie-break criterion cleanly.
+  set.seed(11)
+  n <- 40
+  base1 <- rnorm(n)
+  base2 <- rnorm(n)
+  df <- data.frame(
+    a = base1 + base2,
+    b = base1 + rnorm(n, sd = 0.05),
+    c = base2 + rnorm(n, sd = 0.05),
+    d = rnorm(n)
+  )
+  m <- abs(cor(df))
+  expect_true(m["a", "b"] > 0.5 && m["a", "c"] > 0.5 && m["b", "c"] < 0.5)
+
+  result <- corrPrune(df, threshold = 0.5, mode = "greedy")
+  expect_equal(sort(attr(result, "selected_vars")), c("b", "c", "d"))
+  expect_equal(attr(result, "removed_vars"), "a")
+})
+
+test_that("corrPrune greedy and exact modes agree on an unambiguous case", {
+  # a, b, c are mutually near-independent; d is a near-exact blend of all
+  # three, so it conflicts with each of them individually. {a,b,c} is the
+  # unique largest valid subset -- both modes must return the same subset,
+  # not merely a same-sized one.
+  set.seed(21)
+  n <- 60
+  a <- rnorm(n); b <- rnorm(n); c <- rnorm(n)
+  d <- (a + b + c) + rnorm(n, sd = 0.01)
+  df <- data.frame(a = a, b = b, c = c, d = d)
+
+  res_exact  <- corrPrune(df, threshold = 0.5, mode = "exact")
+  res_greedy <- corrPrune(df, threshold = 0.5, mode = "greedy")
+  expect_equal(sort(attr(res_exact, "selected_vars")), c("a", "b", "c"))
+  expect_equal(
+    sort(attr(res_exact, "selected_vars")),
+    sort(attr(res_greedy, "selected_vars"))
+  )
+})
+
+test_that("corrPrune force_in infeasibility is detected under grouped aggregation", {
+  dfA <- data.frame(x = c(1, 2, 3, 4, 5), y = c(1, 2, 3, 4, 5), group = "A")
+  dfB <- data.frame(x = c(1, 2, 3, 4, 5), y = c(1, 2, 3, 4, 5), group = "B")
+  df <- rbind(dfA, dfB)
+
+  expect_error(
+    corrPrune(df, threshold = 0.5, force_in = c("x", "y"), by = "group"),
+    "violate the threshold constraint"
+  )
+})
+
+test_that("corrPrune recovers at-most-one-per-block structure across seeds", {
+  # Two independent correlated blocks of two variables each, plus one
+  # independent noise variable. A correct pruning should never retain both
+  # members of the same block (they violate the threshold with each other)
+  # and should always retain the independent noise variable.
+  n_trials <- 20
+  recovered <- 0
+  for (seed in seq_len(n_trials)) {
+    set.seed(1000 + seed)
+    n <- 50
+    block1_base <- rnorm(n)
+    block2_base <- rnorm(n)
+    df <- data.frame(
+      b1_a = block1_base + rnorm(n, sd = 0.05),
+      b1_b = block1_base + rnorm(n, sd = 0.05),
+      b2_a = block2_base + rnorm(n, sd = 0.05),
+      b2_b = block2_base + rnorm(n, sd = 0.05),
+      noise = rnorm(n)
+    )
+    result <- corrPrune(df, threshold = 0.5, mode = "exact")
+    sel <- attr(result, "selected_vars")
+    ok <- sum(c("b1_a", "b1_b") %in% sel) <= 1 &&
+      sum(c("b2_a", "b2_b") %in% sel) <= 1 &&
+      "noise" %in% sel
+    if (ok) recovered <- recovered + 1
+  }
+  expect_equal(recovered, n_trials)
 })

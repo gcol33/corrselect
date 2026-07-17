@@ -230,10 +230,11 @@ assocSelect <- function(df,
       }
 
       a <- get_assoc(df[[i]], df[[j]], meth, tx, ty)
-      if (is.na(a)) {
-        a <- 0  # fallback to 0 if association could not be computed
-      }
-      a <- max(0, min(1, a))
+      # An NA here means the association is genuinely undefined (e.g. a sparse
+      # contingency table for Cramer's V), not that the variables are known to
+      # be independent -- it is left as NA so the anyNA(mat) check below can
+      # surface it explicitly instead of silently treating it as 0 (compatible).
+      if (!is.na(a)) a <- max(0, min(1, a))
       mat[i, j] <- mat[j, i] <- a
     }
   }

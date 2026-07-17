@@ -22,7 +22,7 @@
 #'   \item{forced_in}{Character vector. Variable names that were forced into each subset.}
 #'   \item{search_type}{Character string. One of \code{"els"} or \code{"bron-kerbosch"}.}
 #'   \item{cor_method}{Character string. Either a single method (e.g. "pearson") or "mixed" if multiple methods used.}
-#'   \item{n_rows_used}{Integer. Number of rows used for computing the correlation matrix (after removing missing values).}
+#'   \item{n_rows_used}{Integer. Number of rows used for computing the correlation matrix (after removing missing values). \code{NA} when constructed from a matrix directly (e.g. via \code{\link{MatSelect}}), since a matrix input has no associated row count.}
 #' }
 #'
 #' @param subset_list A list of character vectors. Each vector is a valid subset (variable names).
@@ -34,7 +34,7 @@
 #' @param forced_in Character vector. Variable names forced into each subset. Defaults to \code{character()}.
 #' @param search_type Character string. One of \code{"els"} or \code{"bron-kerbosch"}.
 #' @param cor_method Character string. Correlation method or \code{"mixed"}. Defaults to \code{character()}.
-#' @param n_rows_used Integer. Number of rows used for computing the correlation matrix.
+#' @param n_rows_used Integer. Number of rows used for computing the correlation matrix. \code{NA} for matrix input.
 #'
 #' @seealso \code{\link{corrSelect}}, \code{\link{MatSelect}}, \code{\link{corrSubset}}
 #'
@@ -109,7 +109,11 @@ print.CorrCombo <- function(x, ...) {
 
   cat(sprintf("  Threshold:   %.3f\n", x@threshold))
   cat(sprintf("  Subsets:     %d maximal subsets\n", n))
-  cat(sprintf("  Data Rows:   %d used in correlation\n", x@n_rows_used))
+  if (is.na(x@n_rows_used)) {
+    cat("  Data Rows:   not applicable (matrix input)\n")
+  } else {
+    cat(sprintf("  Data Rows:   %d used in correlation\n", x@n_rows_used))
+  }
 
   if (x@search_type == "bron-kerbosch") {
     use_pivot <- attr(x, "use_pivot")

@@ -36,8 +36,9 @@ NULL
 #' # Bron–Kerbosch with pivoting
 #' res3 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
 #'
-#' # Force variable 1 into every subset (with warning if too correlated)
-#' res4 <- MatSelect(cmat, threshold = 0.5, force_in = 1)
+#' # Force variables 1 and 2 into every subset (warns if they are mutually
+#' # correlated beyond the threshold; both are still forced in regardless)
+#' res4 <- MatSelect(cmat, threshold = 0.5, force_in = c(1, 2))
 #'
 #' @export
 MatSelect <- function(mat,
@@ -84,6 +85,13 @@ MatSelect <- function(mat,
   if (nrow(mat) != ncol(mat)) {
     stop("`mat` must be square.")
   }
+  if (ncol(mat) < 2) {
+    stop("`mat` must have at least two columns.")
+  }
+  if (anyDuplicated(colnames(mat))) {
+    stop("`mat` has duplicate column names: ",
+         paste(unique(colnames(mat)[duplicated(colnames(mat))]), collapse = ", "))
+  }
   if (anyNA(mat)) {
     stop("`mat` must not contain NA.")
   }
@@ -100,15 +108,6 @@ MatSelect <- function(mat,
     stop("`threshold` must be in the range (0, 1].")
   }
   n <- ncol(mat)
-
-  ## ---- force_in validation ----
-  if (!is.null(force_in)) {
-    if (!is.numeric(force_in) ||
-        any(force_in < 1) ||
-        any(force_in > n)) {
-      stop("`force_in` must be valid 1-based column indices.")
-    }
-  }
 
   ## ---- prepare names ----
   varnames   <- colnames(mat)
@@ -175,7 +174,7 @@ MatSelect <- function(mat,
                threshold   = threshold,
                forced_in   = force_names,
                search_type = method,
-               n_rows_used = as.integer(n)))
+               n_rows_used = NA_integer_))
   }
 
   ## ---- map indices to names ----
@@ -199,7 +198,7 @@ MatSelect <- function(mat,
                 threshold   = threshold,
                 forced_in   = force_names,
                 search_type = method,
-                n_rows_used = as.integer(n))
+                n_rows_used = NA_integer_)
 
   if (method == "bron-kerbosch") {
     attr(result, "use_pivot") <- use_pivot

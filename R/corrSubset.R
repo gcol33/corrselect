@@ -72,6 +72,9 @@ corrSubset <- function(res, df, which = "best", keepExtra = FALSE) {
   if (identical(which, "all")) {
     indices <- seq_along(subset_list)
   } else if (is.character(which) && identical(which, "best")) {
+    if (length(subset_list) == 0) {
+      stop("`res` contains no subsets to extract (subset_list is empty).")
+    }
     indices <- 1L
   } else if (is.numeric(which)) {
     indices <- as.integer(which)

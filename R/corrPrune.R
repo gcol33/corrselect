@@ -8,11 +8,14 @@
 #' @param data A data.frame containing candidate predictors.
 #' @param threshold Numeric scalar. Maximum allowed pairwise association
 #'   (default: 0.7). Must be non-negative.
-#' @param measure Character string specifying the association measure to use.
-#'   Options: `"auto"` (default), `"pearson"`, `"spearman"`, `"kendall"`,
-#'   `"cramersv"`, `"eta"`, etc. When `"auto"`, Pearson correlation is used
-#'   for all-numeric data, and appropriate measures are selected for mixed-type
-#'   data.
+#' @param measure Character string specifying the numeric-numeric association
+#'   measure to use. One of `"auto"` (default, Pearson), `"pearson"`,
+#'   `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, or `"maximal"`. This
+#'   only customizes numeric-numeric pairs; other pair-type combinations
+#'   always use eta-squared (numeric-categorical) or Cramer's V
+#'   (categorical-categorical), matching \code{\link{assocSelect}()}'s fixed
+#'   dispatch table. The measure actually used for each pair-type combination
+#'   is reported in the `assoc_methods_used` attribute of the result.
 #' @param mode Character string specifying the search algorithm. Options:
 #'   - `"auto"` (default): uses exact search if number of predictors <= `max_exact_p`,
 #'     otherwise uses greedy search
@@ -36,7 +39,8 @@
 #'     \item{selected_vars}{Character vector of retained variable names}
 #'     \item{removed_vars}{Character vector of removed variable names}
 #'     \item{mode}{Character string indicating which mode was used ("exact" or "greedy")}
-#'     \item{measure}{Character string indicating which association measure was used}
+#'     \item{measure}{Character string indicating which measure was used for numeric-numeric pairs}
+#'     \item{assoc_methods_used}{Named list mapping each pair-type combination (e.g. "numeric_numeric", "numeric_factor") to the association method actually used}
 #'     \item{threshold}{The threshold value used}
 #'   }
 #'
@@ -142,11 +146,19 @@ corrPrune <- function(
     stop("'mode' must be one of: 'auto', 'exact', 'greedy'")
   }
 
+  # Check for duplicate column names up front: downstream name-based matching
+  # (force_in, by) would otherwise silently resolve to only the first match.
+  if (anyDuplicated(names(data))) {
+    stop("'data' has duplicate column names: ",
+         paste(unique(names(data)[duplicated(names(data))]), collapse = ", "))
+  }
+
   # Check force_in
   if (!is.null(force_in)) {
     if (!is.character(force_in)) {
       stop("'force_in' must be a character vector of variable names")
     }
+    force_in <- unique(force_in)
     missing_vars <- setdiff(force_in, names(data))
     if (length(missing_vars) > 0L) {
       stop(sprintf(
@@ -167,6 +179,15 @@ corrPrune <- function(
         "'by' variable(s) not found in data: %s",
         paste(missing_by, collapse = ", ")
       ))
+    }
+    if (!is.null(force_in)) {
+      overlap <- intersect(force_in, by)
+      if (length(overlap) > 0L) {
+        stop(sprintf(
+          "'force_in' cannot include grouping variable(s) named in 'by': %s",
+          paste(overlap, collapse = ", ")
+        ))
+      }
     }
   }
 
@@ -230,11 +251,46 @@ corrPrune <- function(
   # Step 3 — Resolve association measure
   # ===========================================================================
 
-  # Auto-resolve measure
+  # `measure` customizes the numeric-numeric sub-measure only; other pair-type
+  # combinations always use eta-squared (numeric-categorical) or Cramer's V
+  # (categorical-categorical), mirroring assocSelect()'s fixed dispatch table.
+  # This applies whether or not the data is all-numeric, so a mixed-type call
+  # can still request e.g. measure = "kendall" for its numeric-numeric pairs.
+  numeric_measure_choices <- c("pearson", "spearman", "kendall", "bicor", "distance", "maximal")
   if (measure == "auto") {
-    measure_used <- if (all_numeric) "pearson" else "cramersv"
-  } else {
+    measure_used <- "pearson"
+  } else if (measure %in% numeric_measure_choices) {
     measure_used <- measure
+  } else {
+    stop(sprintf(
+      "'measure' must be one of: %s. It customizes numeric-numeric associations only; other pair types always use eta-squared or Cramer's V.",
+      paste(c("auto", numeric_measure_choices), collapse = ", ")
+    ))
+  }
+
+  # Real per-pair-type association-method metadata (mirrors assocSelect()'s
+  # `assoc_methods_used` attribute). Determined purely by the static variable
+  # types and the resolved numeric-numeric measure, so it is valid whether or
+  # not `by`-grouping is used.
+  assoc_methods_used <- list()
+  if (length(types) >= 2) {
+    for (.i in seq_len(length(types) - 1)) {
+      for (.j in (.i + 1):length(types)) {
+        .ti <- types[.i]; .tj <- types[.j]
+        .key <- paste(.ti, .tj, sep = "_")
+        .meth <- if (.ti == "numeric" && .tj == "numeric") {
+          measure_used
+        } else if ((.ti == "numeric" && .tj == "factor") || (.ti == "factor" && .tj == "numeric")) {
+          "eta"
+        } else if ((.ti == "numeric" && .tj == "ordered") || (.ti == "ordered" && .tj == "numeric") ||
+                   (.ti == "ordered" && .tj == "ordered")) {
+          "spearman"
+        } else {
+          "cramersv"
+        }
+        if (is.null(assoc_methods_used[[.key]])) assoc_methods_used[[.key]] <- .meth
+      }
+    }
   }
 
   # ===========================================================================
@@ -312,8 +368,30 @@ corrPrune <- function(
 
           # Determine association measure based on types
           if (ti == "numeric" && tj == "numeric") {
-            # Use the specified numeric measure
-            assoc_val <- abs(cor(xi, xj, method = "pearson", use = "complete.obs"))
+            assoc_val <- switch(meas,
+              pearson  = abs(cor(xi, xj, method = "pearson", use = "complete.obs")),
+              spearman = abs(cor(xi, xj, method = "spearman", use = "complete.obs")),
+              kendall  = abs(cor(xi, xj, method = "kendall", use = "complete.obs")),
+              bicor = {
+                if (!requireNamespace("WGCNA", quietly = TRUE)) {
+                  stop("Install the 'WGCNA' package for bicor.")
+                }
+                abs(WGCNA::bicor(cbind(xi, xj))[1, 2])
+              },
+              distance = {
+                if (!requireNamespace("energy", quietly = TRUE)) {
+                  stop("Install the 'energy' package for distance correlation.")
+                }
+                abs(energy::dcor(xi, xj))
+              },
+              maximal = {
+                if (!requireNamespace("minerva", quietly = TRUE)) {
+                  stop("Install the 'minerva' package for maximal information coefficient.")
+                }
+                minerva::mine(xi, xj)$MIC
+              },
+              stop(sprintf("Measure '%s' is not supported.", meas))
+            )
           } else if ((ti == "numeric" && tj == "ordered") || (ti == "ordered" && tj == "numeric")) {
             # Numeric-Ordered: use Spearman
             assoc_val <- abs(cor(as.numeric(xi), as.numeric(xj), method = "spearman", use = "complete.obs"))
@@ -414,7 +492,35 @@ corrPrune <- function(
       diag(A_eff) <- 1
 
       n_rows_used <- sum(rows_per_group)
+
+      n_contributing <- sum(rows_per_group >= 2)
+      if (n_contributing < n_groups) {
+        warning(sprintf(
+          "Only %d of %d groups had enough complete rows to contribute to the group_q aggregate; the rest were skipped.",
+          n_contributing, n_groups
+        ))
+      }
     }
+  }
+
+  # ===========================================================================
+  # Step 4b — Reject genuinely undefined associations
+  # ===========================================================================
+  # An NA in A_eff means the true association for that pair is unknown (e.g.
+  # Cramer's V undefined for a degenerate contingency table), not that the
+  # pair is known to be compatible. Surfacing this explicitly here keeps exact
+  # and greedy modes consistent: without this check, exact mode would hit a
+  # generic "mat must not contain NA" error deep inside MatSelect(), and
+  # greedy mode would silently pass NaN through the C++ backend as if it were
+  # a non-violation.
+  if (anyNA(A_eff)) {
+    na_idx <- which(is.na(A_eff) & upper.tri(A_eff), arr.ind = TRUE)
+    bad_pairs <- sprintf("'%s' and '%s'",
+                         colnames(A_eff)[na_idx[, 1]], colnames(A_eff)[na_idx[, 2]])
+    stop(sprintf(
+      "Association matrix contains undefined (NA) values for: %s. This may be caused by sparse combinations or unused factor levels.",
+      paste(bad_pairs, collapse = ", ")
+    ))
   }
 
   # ===========================================================================
@@ -429,8 +535,10 @@ corrPrune <- function(
       # Extract submatrix for force_in variables
       M <- A_eff[force_in_idx, force_in_idx]
 
-      # Check upper triangle (excluding diagonal)
-      violations <- which(M[upper.tri(M)] > threshold, arr.ind = FALSE)
+      # Check upper triangle (excluding diagonal). NA counts as a violation:
+      # an undefined association must never be silently treated as safe.
+      Mtri <- M[upper.tri(M)]
+      violations <- which(is.na(Mtri) | Mtri > threshold, arr.ind = FALSE)
 
       if (length(violations) > 0) {
         # Find which pairs violate
@@ -472,44 +580,58 @@ corrPrune <- function(
       force_in = force_in
     )
 
-    # Extract all subsets that satisfy the constraint
     if (length(combo_result@subset_list) == 0) {
-      stop("No valid subsets found that satisfy the threshold constraint")
-    }
-
-    # Choose one subset using deterministic tie-breaking:
-    # 1. Largest subset size
-    # 2. If tied: smallest average correlation
-    # 3. If tied: lexicographically first
-
-    subset_sizes <- vapply(combo_result@subset_list, length, integer(1))
-    max_size <- max(subset_sizes)
-    largest_subsets_idx <- which(subset_sizes == max_size)
-
-    if (length(largest_subsets_idx) == 1) {
-      selected_idx <- largest_subsets_idx[1]
-    } else {
-      # Multiple subsets of same max size: break tie by avg correlation
-      avg_corrs <- combo_result@avg_corr[largest_subsets_idx]
-      min_avg <- min(avg_corrs)
-      best_avg_idx <- which(avg_corrs == min_avg)
-      candidates_idx <- largest_subsets_idx[best_avg_idx]
-
-      if (length(candidates_idx) == 1) {
-        selected_idx <- candidates_idx[1]
+      # MatSelect() only ever reports maximal subsets of size >= 2 (a lone
+      # variable is a trivially valid, if uninteresting, maximal subset). An
+      # empty subset_list here means the only maximal subset containing
+      # force_in has size <= 1, which is still a valid answer: the pairwise
+      # constraint holds vacuously when there are no pairs.
+      if (!is.null(force_in)) {
+        # force_in's own internal feasibility was already verified in Step 5;
+        # since no compatible extension exists, force_in itself is the answer.
+        selected_vars <- force_in
       } else {
-        # Still tied: use lexicographic order
-        candidates_subsets <- combo_result@subset_list[candidates_idx]
-        # Sort each subset and concatenate for comparison
-        sorted_strings <- vapply(candidates_subsets, function(s) {
-          paste(sort(s), collapse = ",")
-        }, character(1))
-        lex_order <- order(sorted_strings)
-        selected_idx <- candidates_idx[lex_order[1]]
+        # No pair of variables is compatible under the threshold: every
+        # maximal subset is a single variable. Break the tie the same way as
+        # for multi-variable subsets once we run out of a meaningful
+        # size/avg-correlation comparison: lexicographically first name.
+        selected_vars <- sort(colnames(A_eff))[1]
       }
-    }
+    } else {
+      # Choose one subset using deterministic tie-breaking:
+      # 1. Largest subset size
+      # 2. If tied: smallest average correlation
+      # 3. If tied: lexicographically first
 
-    selected_vars <- combo_result@subset_list[[selected_idx]]
+      subset_sizes <- vapply(combo_result@subset_list, length, integer(1))
+      max_size <- max(subset_sizes)
+      largest_subsets_idx <- which(subset_sizes == max_size)
+
+      if (length(largest_subsets_idx) == 1) {
+        selected_idx <- largest_subsets_idx[1]
+      } else {
+        # Multiple subsets of same max size: break tie by avg correlation
+        avg_corrs <- combo_result@avg_corr[largest_subsets_idx]
+        min_avg <- min(avg_corrs)
+        best_avg_idx <- which(avg_corrs == min_avg)
+        candidates_idx <- largest_subsets_idx[best_avg_idx]
+
+        if (length(candidates_idx) == 1) {
+          selected_idx <- candidates_idx[1]
+        } else {
+          # Still tied: use lexicographic order
+          candidates_subsets <- combo_result@subset_list[candidates_idx]
+          # Sort each subset and concatenate for comparison
+          sorted_strings <- vapply(candidates_subsets, function(s) {
+            paste(sort(s), collapse = ",")
+          }, character(1))
+          lex_order <- order(sorted_strings)
+          selected_idx <- candidates_idx[lex_order[1]]
+        }
+      }
+
+      selected_vars <- combo_result@subset_list[[selected_idx]]
+    }
 
   } else {
     # Step 7B — Greedy mode: use fast C++ greedy backend
@@ -548,6 +670,7 @@ corrPrune <- function(
   attr(data_pruned, "removed_vars") <- removed_vars
   attr(data_pruned, "mode") <- mode_used
   attr(data_pruned, "measure") <- measure_used
+  attr(data_pruned, "assoc_methods_used") <- assoc_methods_used
   attr(data_pruned, "threshold") <- threshold
   attr(data_pruned, "n_vars_original") <- ncol(data)
   attr(data_pruned, "n_vars_selected") <- length(selected_vars)

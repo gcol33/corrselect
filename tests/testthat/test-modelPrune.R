@@ -1889,7 +1889,7 @@ test_that("modelPrune handles single predictor (no VIF needed)", {
     x = rnorm(n)
   )
 
-  result <- modelPrune(y ~ x, data = df, threshold = 5)
+  result <- modelPrune(y ~ x, data = df, limit = 5)
   expect_s3_class(result, "data.frame")
   expect_true("x" %in% names(result))
 })
@@ -1906,11 +1906,15 @@ test_that("modelPrune with all diagnostics NA/Inf warns and stops", {
     x3 = x1   # Another perfect duplicate
   )
 
-  # Should handle gracefully (warn and stop pruning early)
+  # Perfectly duplicated predictors give each other an (effectively infinite)
+  # VIF, which R's own summary.lm() flags while fitting the intermediate
+  # regressions VIF needs; modelPrune() should still converge to a single
+  # non-collinear predictor rather than erroring out.
   expect_warning(
-    result <- modelPrune(y ~ x1 + x2 + x3, data = df, threshold = 5),
-    "singular|collinear|VIF|Inf"
+    result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5),
+    "perfect fit"
   )
+  expect_equal(attr(result, "selected_vars"), "x1")
 })
 
 test_that("modelPrune handles predictor name mismatch in design matrix", {
@@ -1923,7 +1927,7 @@ test_that("modelPrune handles predictor name mismatch in design matrix", {
   )
 
   # Model should handle predictor names with dots
-  result <- modelPrune(y ~ x.1 + x.2, data = df, threshold = 10)
+  result <- modelPrune(y ~ x.1 + x.2, data = df, limit = 10)
   expect_s3_class(result, "data.frame")
 })
 
@@ -1936,7 +1940,7 @@ test_that("modelPrune handles factor predictors in VIF", {
     x_cat = factor(sample(c("A", "B", "C"), n, replace = TRUE))
   )
 
-  result <- modelPrune(y ~ x_num + x_cat, data = df, threshold = 10)
+  result <- modelPrune(y ~ x_num + x_cat, data = df, limit = 10)
   expect_s3_class(result, "data.frame")
 })
 
@@ -1950,6 +1954,123 @@ test_that("modelPrune with condition_number handles degenerate design", {
     x2 = x1 + rnorm(n, sd = 0.001)  # Nearly collinear
   )
 
-  result <- modelPrune(y ~ x1 + x2, data = df, criterion = "condition_number", threshold = 100)
+  result <- modelPrune(y ~ x1 + x2, data = df, criterion = "condition_number", limit = 100)
   expect_s3_class(result, "data.frame")
+})
+
+# ===========================================================================
+# Recovery-style and reference-verified tests (closes coverage gaps flagged
+# in issue #27: prior VIF/condition_number tests mostly checked "does not
+# error", never that the numbers themselves are correct against an
+# independent reference).
+# ===========================================================================
+
+test_that("modelPrune VIF matches car::vif() for numeric-only predictors", {
+  skip_if_not_installed("car")
+  set.seed(99)
+  n <- 200
+  df <- data.frame(y = rnorm(n), x1 = rnorm(n), x2 = rnorm(n), x3 = rnorm(n))
+  df$x2 <- 0.6 * df$x1 + rnorm(n, sd = 0.5)  # correlated with x1
+
+  fit <- lm(y ~ x1 + x2 + x3, data = df)
+  reference <- car::vif(fit)
+  ours <- corrselect:::.compute_vif(fit, "lm", c("x1", "x2", "x3"))
+
+  expect_equal(unname(ours[c("x1", "x2", "x3")]), unname(reference[c("x1", "x2", "x3")]),
+               tolerance = 1e-6)
+})
+
+test_that("modelPrune VIF matches car::vif()'s GVIF for a numeric predictor alongside a factor", {
+  skip_if_not_installed("car")
+  set.seed(99)
+  n <- 200
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    cat = factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  )
+  fit <- lm(y ~ x1 + cat, data = df)
+  reference <- car::vif(fit)  # matrix: GVIF, Df, GVIF^(1/(2*Df))
+  ours <- corrselect:::.compute_vif(fit, "lm", c("x1", "cat"))
+
+  # x1 has Df = 1, where our formula (regress on all others) is mathematically
+  # identical to car's GVIF -- this should match exactly.
+  expect_equal(unname(ours["x1"]), unname(reference["x1", "GVIF"]), tolerance = 1e-6)
+
+  # `cat` has Df = 2: our implementation averages the factor's dummy columns
+  # rather than computing the proper generalized-variance-ratio GVIF, so it is
+  # a documented approximation, not an exact match. It should still be in the
+  # same ballpark as the reference for this low-collinearity design.
+  expect_equal(unname(ours["cat"]), unname(reference["cat", "GVIF"]), tolerance = 0.01)
+})
+
+test_that("modelPrune condition_number matches a manually computed SVD reference", {
+  set.seed(7)
+  n <- 60
+  df <- data.frame(y = rnorm(n), x1 = rnorm(n), x2 = rnorm(n), x3 = rnorm(n))
+  df$x2 <- 0.7 * df$x1 + rnorm(n, sd = 0.3)
+
+  fit <- lm(y ~ x1 + x2 + x3, data = df)
+  ours <- corrselect:::.compute_condition_indices(fit, "lm", c("x1", "x2", "x3"))
+
+  # Independent reference: build and scale the design matrix, run svd()
+  # directly (not via any corrselect helper), and derive condition indices
+  # with the same max(d)/d_i formula the function itself documents.
+  X <- model.matrix(fit)
+  X <- X[, colnames(X) != "(Intercept)", drop = FALSE]
+  sv <- svd(scale(X, center = TRUE, scale = TRUE))$d
+  reference <- setNames(max(sv) / sv, colnames(X))
+
+  expect_equal(unname(ours[c("x1", "x2", "x3")]), unname(reference[c("x1", "x2", "x3")]),
+               tolerance = 1e-6)
+})
+
+test_that("modelPrune tie-breaking removes the last-in-formula-order variable (exact value)", {
+  # a and b are built to be (near-)identical predictors of y, so their VIFs
+  # tie; the documented tie-break removes the one that appears last in the
+  # formula.
+  set.seed(6)
+  n <- 40
+  common <- rnorm(n)
+  df <- data.frame(y = rnorm(n), a = common + rnorm(n, sd = 0.01), b = common + rnorm(n, sd = 0.01))
+
+  result <- modelPrune(y ~ a + b, data = df, limit = 5)
+  expect_equal(attr(result, "selected_vars"), "a")
+  expect_equal(attr(result, "removed_vars"), "b")
+})
+
+test_that("modelPrune force_in infeasibility is detected under condition_number", {
+  set.seed(8)
+  n <- 40
+  x1 <- rnorm(n)
+  df <- data.frame(y = rnorm(n), x1 = x1, x2 = x1 + rnorm(n, sd = 0.001))  # near-collinear
+
+  expect_error(
+    modelPrune(y ~ x1 + x2, data = df, criterion = "condition_number", limit = 5,
+               force_in = c("x1", "x2")),
+    "violate the criterion threshold"
+  )
+})
+
+test_that("modelPrune recovers the single non-collinear predictor across seeds", {
+  # x1 and x2 are near-duplicates (should not both survive); x3 is
+  # independent and should always be retained.
+  n_trials <- 20
+  recovered <- 0
+  for (seed in seq_len(n_trials)) {
+    set.seed(2000 + seed)
+    n <- 50
+    x1 <- rnorm(n)
+    df <- data.frame(
+      y = rnorm(n),
+      x1 = x1,
+      x2 = x1 + rnorm(n, sd = 0.02),
+      x3 = rnorm(n)
+    )
+    result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
+    sel <- attr(result, "selected_vars")
+    ok <- sum(c("x1", "x2") %in% sel) == 1 && "x3" %in% sel
+    if (ok) recovered <- recovered + 1
+  }
+  expect_equal(recovered, n_trials)
 })

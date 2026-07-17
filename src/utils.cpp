@@ -17,7 +17,10 @@ double meanAbsCorrelation(const NumericMatrix& corMatrix, const Combo& comb) {
   return count > 0 ? sum / count : 0.0;
 }
 
-// Check if matrix is symmetric or upper triangular
+// Matches the 1e-8 tolerance used by the R-level symmetry check in MatSelect().
+static const double kSymmetryTolerance = 1e-8;
+
+// Check if matrix is symmetric (within tolerance) or upper triangular
 bool validateMatrixStructure(const NumericMatrix& corMatrix) {
   int n = corMatrix.nrow();
   bool isSymmetric = true, isUpper = true;
@@ -26,7 +29,7 @@ bool validateMatrixStructure(const NumericMatrix& corMatrix) {
     if (corMatrix(i, i) != 1) isUpper = false;
     for (int j = 0; j < i; ++j) {
       if (!NumericMatrix::is_na(corMatrix(i, j))) isUpper = false;
-      if (corMatrix(i, j) != corMatrix(j, i)) isSymmetric = false;
+      if (std::abs(corMatrix(i, j) - corMatrix(j, i)) > kSymmetryTolerance) isSymmetric = false;
     }
   }
 

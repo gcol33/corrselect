@@ -90,6 +90,20 @@ corrSelect <- function(df,
     stop("`threshold` must be in the range (0, 1].")
   }
 
+  # Resolve numeric `force_in` against the *original* data frame's column
+  # positions, then treat it identically to character `force_in` from here on.
+  # Columns are filtered (non-numeric, then constant) before the correlation
+  # matrix is built, so a numeric index checked only against the final matrix
+  # would silently point at a different variable than the caller intended.
+  if (!is.null(force_in) && is.numeric(force_in)) {
+    if (any(is.na(force_in)) || any(force_in != as.integer(force_in)) ||
+        any(force_in < 1) || any(force_in > ncol(df))) {
+      stop("`force_in` numeric indices must be whole numbers between 1 and ncol(df) = ",
+           ncol(df), ".")
+    }
+    force_in <- names(df)[as.integer(force_in)]
+  }
+
   # Identify numeric columns
   numeric_cols <- vapply(df, is.numeric, logical(1))
   df_num       <- df[, numeric_cols, drop = FALSE]
@@ -168,20 +182,15 @@ corrSelect <- function(df,
     stop("Correlation matrix contains NA or infinite values. Check your data.")
   }
 
-  # Handle force_in as names or indices
+  # Resolve force_in (always character or NULL by this point; see above) against
+  # the final filtered matrix.
   if (!is.null(force_in)) {
-    if (is.character(force_in)) {
-      if (!all(force_in %in% colnames(mat))) {
-        missing <- setdiff(force_in, colnames(mat))
-        stop("The following `force_in` columns were excluded from correlation: ",
-             paste(missing, collapse = ", "))
-      }
-      force_in <- match(force_in, colnames(mat))
+    if (!all(force_in %in% colnames(mat))) {
+      missing <- setdiff(force_in, colnames(mat))
+      stop("The following `force_in` columns were excluded from correlation: ",
+           paste(missing, collapse = ", "))
     }
-
-    if (!is.numeric(force_in) || any(force_in < 1) || any(force_in > ncol(mat))) {
-      stop("`force_in` must be valid 1-based column indices or names.")
-    }
+    force_in <- match(force_in, colnames(mat))
   } else {
     force_in <- integer(0)
   }

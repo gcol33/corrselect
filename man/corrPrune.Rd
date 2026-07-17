@@ -22,11 +22,14 @@ corrPrune(
 \item{threshold}{Numeric scalar. Maximum allowed pairwise association
 (default: 0.7). Must be non-negative.}
 
-\item{measure}{Character string specifying the association measure to use.
-Options: \code{"auto"} (default), \code{"pearson"}, \code{"spearman"}, \code{"kendall"},
-\code{"cramersv"}, \code{"eta"}, etc. When \code{"auto"}, Pearson correlation is used
-for all-numeric data, and appropriate measures are selected for mixed-type
-data.}
+\item{measure}{Character string specifying the numeric-numeric association
+measure to use. One of \code{"auto"} (default, Pearson), \code{"pearson"},
+\code{"spearman"}, \code{"kendall"}, \code{"bicor"}, \code{"distance"}, or \code{"maximal"}. This
+only customizes numeric-numeric pairs; other pair-type combinations
+always use eta-squared (numeric-categorical) or Cramer's V
+(categorical-categorical), matching \code{\link{assocSelect}()}'s fixed
+dispatch table. The measure actually used for each pair-type combination
+is reported in the \code{assoc_methods_used} attribute of the result.}
 
 \item{mode}{Character string specifying the search algorithm. Options:
 \itemize{
@@ -59,7 +62,8 @@ has the following attributes:
 \item{selected_vars}{Character vector of retained variable names}
 \item{removed_vars}{Character vector of removed variable names}
 \item{mode}{Character string indicating which mode was used ("exact" or "greedy")}
-\item{measure}{Character string indicating which association measure was used}
+\item{measure}{Character string indicating which measure was used for numeric-numeric pairs}
+\item{assoc_methods_used}{Named list mapping each pair-type combination (e.g. "numeric_numeric", "numeric_factor") to the association method actually used}
 \item{threshold}{The threshold value used}
 }
 }

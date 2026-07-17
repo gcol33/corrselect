@@ -600,12 +600,12 @@ test_that("corrSelect force_in with invalid index errors", {
 
   expect_error(
     corrSelect(df, threshold = 0.8, force_in = c(0, 1)),
-    "valid 1-based column indices"
+    "whole numbers between 1 and ncol"
   )
 
   expect_error(
     corrSelect(df, threshold = 0.8, force_in = c(1, 10)),
-    "valid 1-based column indices"
+    "whole numbers between 1 and ncol"
   )
 })
 

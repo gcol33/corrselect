@@ -106,15 +106,14 @@ test_that("ELS handles mixed positive and negative correlations", {
   }
 })
 
-test_that("ELS handles single variable", {
+test_that("ELS rejects a 1x1 matrix (need at least two columns)", {
   m <- matrix(1, nrow = 1, ncol = 1)
   colnames(m) <- "V1"
 
-  res <- MatSelect(m, threshold = 0.5, method = "els")
-
-  # Single variable case: no pairs to evaluate, returns empty
-  # This is expected behavior for clique enumeration with n=1
-  expect_true(inherits(res, "CorrCombo"))
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "els"),
+    "at least two columns"
+  )
 })
 
 test_that("ELS handles two uncorrelated variables", {

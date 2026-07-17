@@ -260,6 +260,7 @@ modelPrune <- function(
 
   parsed <- .parse_formula(formula, data)
   response_var <- parsed$response
+  response_vars <- parsed$response_vars
   fixed_effects <- parsed$fixed_effects
   has_random <- parsed$has_random
 
@@ -296,6 +297,19 @@ modelPrune <- function(
 
   if (!is.null(force_in)) {
     force_in_diags <- diagnostics[force_in]
+
+    # An undefined diagnostic (e.g. a predictor whose design-matrix columns
+    # couldn't be identified) is not a "no violation" -- surface it explicitly
+    # rather than letting it fall through to which.max()/sprintf() on an
+    # all-NA vector, which previously raised a blank, contentless error.
+    na_vars <- force_in[is.na(force_in_diags)]
+    if (length(na_vars) > 0) {
+      stop(sprintf(
+        "The '%s' diagnostic is undefined for 'force_in' variable(s): %s.",
+        criterion, paste(na_vars, collapse = ", ")
+      ))
+    }
+
     violations <- force_in_diags[force_in_diags > limit]
 
     if (length(violations) > 0) {
@@ -389,8 +403,10 @@ modelPrune <- function(
   # Final output
   # ===========================================================================
 
-  # Extract relevant columns from data
-  all_vars <- c(response_var, current_fixed)
+  # Extract relevant columns from data. Use the bare variable name(s)
+  # referenced by the response (not `response_var`, which may be a full
+  # expression like "log(mpg)" and is not itself a column of `data`).
+  all_vars <- c(response_vars, current_fixed)
   data_pruned <- data[, all_vars, drop = FALSE]
 
   # Add attributes
@@ -416,8 +432,14 @@ modelPrune <- function(
   # Extract terms
   terms_obj <- terms(formula, data = data)
 
-  # Get response variable
-  response <- as.character(formula[[2]])
+  # Get response variable. Keep the full expression (e.g. "log(mpg)") as a
+  # string for rebuilding the formula -- as.character() on a call node (any
+  # transformed response) returns a multi-element vector of its parts (e.g.
+  # c("log", "mpg")), silently corrupting downstream formula construction.
+  # Separately record the bare variable name(s) actually referenced (e.g.
+  # "mpg", or both sides of "y1/y2 ~ .") for extracting columns from `data`.
+  response <- paste(deparse(formula[[2]]), collapse = " ")
+  response_vars <- all.vars(formula[[2]])
 
   # Get all term labels
   all_terms <- attr(terms_obj, "term.labels")
@@ -430,6 +452,7 @@ modelPrune <- function(
 
   list(
     response = response,
+    response_vars = response_vars,
     fixed_effects = fixed_effects,
     random_effects = random_effects,
     has_random = length(random_effects) > 0
@@ -576,13 +599,9 @@ modelPrune <- function(
   # Determine engine string (handle both string and list inputs)
   engine_str <- if (is.list(engine)) "custom" else engine
 
-  # Extract fixed-effects design matrix
+  # Extract fixed-effects design matrix (intercept already removed, with
+  # `assign` kept aligned to the remaining columns)
   X <- .extract_design_matrix(model, engine_str)
-
-  # Remove intercept column if present
-  if ("(Intercept)" %in% colnames(X)) {
-    X <- X[, colnames(X) != "(Intercept)", drop = FALSE]
-  }
 
   # Debug: Check if X became empty
   if (ncol(X) == 0) {
@@ -608,19 +627,17 @@ modelPrune <- function(
   vif_values <- numeric(length(fixed_effects))
   names(vif_values) <- fixed_effects
 
-  # Map fixed effects to design matrix columns
-  # (handle categorical variables that expand to multiple columns)
+  # Map fixed effects to design matrix columns using the model's own
+  # term/assign bookkeeping (handles categorical variables that expand to
+  # multiple columns) rather than name matching, which can silently collide
+  # when one predictor's name is a prefix of another's (e.g. "x1" vs "x10").
+  term_labels <- attr(.terms_for_engine(model, engine_str), "term.labels")
+  assign_vec <- attr(X, "assign")
+
   for (i in seq_along(fixed_effects)) {
     pred <- fixed_effects[i]
 
-    # Find columns in X that correspond to this predictor
-    # Simple match for now (assumes predictor names match exactly or are prefixes)
-    matching_cols <- grep(paste0("^", pred), colnames(X), value = TRUE)
-
-    if (length(matching_cols) == 0) {
-      # Exact match fallback
-      matching_cols <- colnames(X)[colnames(X) == pred]
-    }
+    matching_cols <- .design_columns_for_predictor(X, term_labels, assign_vec, pred)
 
     if (length(matching_cols) == 0) {
       # Debug: show what columns are available
@@ -683,6 +700,29 @@ modelPrune <- function(
   vif_values
 }
 
+#' Terms object used to build a fitted model's design matrix, per engine, so
+#' design-matrix columns can be mapped back to fixed-effect terms via
+#' `attr(X, "assign")` instead of matching on column name strings.
+#' @noRd
+.terms_for_engine <- function(model, engine) {
+  switch(engine,
+    glmmTMB = stats::terms(model$modelInfo$terms$cond$fixed),
+    stats::terms(model)
+  )
+}
+
+#' Design-matrix columns belonging to a fixed-effect term, resolved via
+#' `attr(X, "assign")` (which `stats::model.matrix()` sets to the 1-based
+#' position of each column's originating term in `term_labels`). This is
+#' exact regardless of term name collisions -- unlike a name-prefix match
+#' (e.g. `grep("^x1", ...)`), which also matches an unrelated "x10" column.
+#' @noRd
+.design_columns_for_predictor <- function(X, term_labels, assign_vec, pred) {
+  term_idx <- match(pred, term_labels)
+  if (is.na(term_idx)) return(character(0))
+  colnames(X)[assign_vec == term_idx]
+}
+
 #' Extract fixed-effects design matrix from model
 #' @noRd
 .extract_design_matrix <- function(model, engine) {
@@ -715,6 +755,18 @@ modelPrune <- function(
     colnames(X) <- paste0("V", seq_len(ncol(X)))
   }
 
+  # Drop the intercept column (if present) while keeping `assign` aligned with
+  # the remaining columns. Plain `[` subsetting on a matrix silently drops
+  # custom attributes like "assign", so it must be subset in parallel here --
+  # not left to callers, who would otherwise each need to remember to do this.
+  assign_vec <- attr(X, "assign")
+  if ("(Intercept)" %in% colnames(X)) {
+    keep <- colnames(X) != "(Intercept)"
+    if (!is.null(assign_vec)) assign_vec <- assign_vec[keep]
+    X <- X[, keep, drop = FALSE]
+  }
+  attr(X, "assign") <- assign_vec
+
   X
 }
 
@@ -724,13 +776,9 @@ modelPrune <- function(
   # Determine engine string (handle both string and list inputs)
   engine_str <- if (is.list(engine)) "custom" else engine
 
-  # Extract fixed-effects design matrix
+  # Extract fixed-effects design matrix (intercept already removed, with
+  # `assign` kept aligned to the remaining columns)
   X <- .extract_design_matrix(model, engine_str)
-
-  # Remove intercept column if present
-  if ("(Intercept)" %in% colnames(X)) {
-    X <- X[, colnames(X) != "(Intercept)", drop = FALSE]
-  }
 
   # Check if X became empty
   if (ncol(X) == 0) {
@@ -770,15 +818,15 @@ modelPrune <- function(
   result <- numeric(length(fixed_effects))
   names(result) <- fixed_effects
 
+  term_labels <- attr(.terms_for_engine(model, engine_str), "term.labels")
+  assign_vec <- attr(X, "assign")
+
   for (i in seq_along(fixed_effects)) {
     pred <- fixed_effects[i]
 
-    # Find columns in X that correspond to this predictor
-    matching_cols <- grep(paste0("^", pred), colnames(X), value = TRUE)
-
-    if (length(matching_cols) == 0) {
-      matching_cols <- colnames(X)[colnames(X) == pred]
-    }
+    # Find columns in X that correspond to this predictor via the model's own
+    # term/assign bookkeeping, not name matching (see .compute_vif() for why).
+    matching_cols <- .design_columns_for_predictor(X, term_labels, assign_vec, pred)
 
     if (length(matching_cols) == 0) {
       result[i] <- NA

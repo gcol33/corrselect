@@ -1,6 +1,6 @@
 Package: corrselect
 Title: Correlation-Based and Model-Based Predictor Pruning
-Version: 3.2.2
+Version: 3.2.3
 Authors@R:
     person("Gilles", "Colling", email = "gilles.colling051@gmail.com",
            role = c("aut", "cre", "cph"),
@@ -9,7 +9,6 @@ Description: Provides functions for predictor pruning using association-based an
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 LinkingTo: Rcpp
 Imports:
     Rcpp,
@@ -45,3 +44,4 @@ BugReports: https://github.com/gcol33/corrselect/issues
 Depends:
     R (>= 3.5)
 LazyData: true
+RoxygenNote: 7.3.3

@@ -46,7 +46,8 @@ res2 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = F
 # Bron–Kerbosch with pivoting
 res3 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
 
-# Force variable 1 into every subset (with warning if too correlated)
-res4 <- MatSelect(cmat, threshold = 0.5, force_in = 1)
+# Force variables 1 and 2 into every subset (warns if they are mutually
+# correlated beyond the threshold; both are still forced in regardless)
+res4 <- MatSelect(cmat, threshold = 0.5, force_in = c(1, 2))
 
 }

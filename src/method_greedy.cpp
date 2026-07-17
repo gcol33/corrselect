@@ -4,10 +4,14 @@
 #include <map>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 using namespace Rcpp;
 
-// Helper: compute maximum association between var and any other active variable
+// Helper: compute maximum association between var and any other active variable.
+// An undefined (NaN) association is treated as worse than any defined value, so a
+// variable involved in an undefined association is never silently preferred for
+// retention during tie-breaking.
 double computeMaxAssoc(
     const NumericMatrix& A,
     int var,
@@ -17,7 +21,9 @@ double computeMaxAssoc(
     int n = A.nrow();
     for (int j = 0; j < n; j++) {
         if (j == var || !active[j]) continue;
-        double val = std::fabs(A(var, j));
+        double val = A(var, j);
+        if (std::isnan(val)) return std::numeric_limits<double>::infinity();
+        val = std::fabs(val);
         if (val > max_val) {
             max_val = val;
         }
@@ -25,7 +31,10 @@ double computeMaxAssoc(
     return max_val;
 }
 
-// Helper: compute average association between var and all other active variables
+// Helper: compute average association between var and all other active variables.
+// Undefined (NaN) associations are excluded from the average (the badness-count
+// and max-association criteria already ensure a NaN pair is never silently
+// treated as compatible; see the violation scan in greedyPrune()).
 double computeAvgAssoc(
     const NumericMatrix& A,
     int var,
@@ -36,7 +45,9 @@ double computeAvgAssoc(
     int n = A.nrow();
     for (int j = 0; j < n; j++) {
         if (j == var || !active[j]) continue;
-        sum += std::fabs(A(var, j));
+        double val = A(var, j);
+        if (std::isnan(val)) continue;
+        sum += std::fabs(val);
         count++;
     }
     return (count > 0) ? (sum / count) : 0.0;
@@ -73,7 +84,8 @@ Combo greedyPrune(
             if (!active[i]) continue;
             for (int j = i + 1; j < n; j++) {
                 if (!active[j]) continue;
-                if (std::fabs(A(i, j)) > threshold) {
+                double val = A(i, j);
+                if (std::isnan(val) || std::fabs(val) > threshold) {
                     violations.push_back({i, j});
                 }
             }
