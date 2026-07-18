@@ -15,10 +15,7 @@ Imports:
     S7,
     stats
 Suggests:
-    GO.db,
     WGCNA,
-    preprocessCore,
-    impute,
     energy,
     minerva,
     lme4,
@@ -27,7 +24,6 @@ Suggests:
     caret,
     car,
     carData,
-    microbenchmark,
     igraph,
     Boruta,
     glmnet,

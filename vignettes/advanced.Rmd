@@ -109,7 +109,6 @@ Let's measure runtime scaling:
 
 ```{r}
 # Generate datasets with increasing p
-library(microbenchmark)
 
 benchmark_corrPrune <- function(p_values) {
   results <- data.frame(
@@ -124,23 +123,21 @@ benchmark_corrPrune <- function(p_values) {
     cor_mat <- 0.5^abs(outer(1:p, 1:p, "-"))
     data <- as.data.frame(MASS::mvrnorm(n = 100, mu = rep(0, p), Sigma = cor_mat))
 
-    # Exact mode (skip if p too large)
+    # Exact mode (skip if p too large), median of 3 runs
     exact_time_ms <- if (p <= 500) {
-      median(microbenchmark(
-        corrPrune(data, threshold = 0.7, mode = "exact"),
-        times = 3,  # Few iterations for speed
-        unit = "ms"
-      )$time) / 1e6  # Convert nanoseconds to milliseconds
+      times <- sapply(1:3, function(i) {
+        system.time(corrPrune(data, threshold = 0.7, mode = "exact"))["elapsed"]
+      })
+      median(times) * 1000  # seconds -> milliseconds
     } else {
       NA
     }
 
-    # Greedy mode
-    greedy_time_ms <- median(microbenchmark(
-      corrPrune(data, threshold = 0.7, mode = "greedy"),
-      times = 3,  # Few iterations for speed
-      unit = "ms"
-    )$time) / 1e6  # Convert nanoseconds to milliseconds
+    # Greedy mode, median of 3 runs
+    greedy_times_ms <- sapply(1:3, function(i) {
+      system.time(corrPrune(data, threshold = 0.7, mode = "greedy"))["elapsed"]
+    })
+    greedy_time_ms <- median(greedy_times_ms) * 1000  # seconds -> milliseconds
 
     results <- rbind(results, data.frame(
       p = p,
@@ -678,28 +675,26 @@ For repeated pruning with different thresholds, precompute the correlation matri
 set.seed(123)
 large_data <- as.data.frame(matrix(rnorm(100 * 50), ncol = 50))
 
-# Benchmark: Recompute correlation every time
-time1 <- median(microbenchmark(
-  {
+# Benchmark: Recompute correlation every time (median of 3 runs)
+time1_runs <- sapply(1:3, function(i) {
+  system.time({
     result1 <- corrPrune(large_data, threshold = 0.7)
     result2 <- corrPrune(large_data, threshold = 0.8)
     result3 <- corrPrune(large_data, threshold = 0.9)
-  },
-  times = 3,
-  unit = "ms"
-)$time) / 1e6  # Convert nanoseconds to milliseconds
+  })["elapsed"]
+})
+time1 <- median(time1_runs) * 1000  # seconds -> milliseconds
 
-# Benchmark: Compute correlation once, reuse
+# Benchmark: Compute correlation once, reuse (median of 3 runs)
 cor_matrix <- cor(large_data)
-time2 <- median(microbenchmark(
-  {
+time2_runs <- sapply(1:3, function(i) {
+  system.time({
     result1 <- MatSelect(cor_matrix, threshold = 0.7)
     result2 <- MatSelect(cor_matrix, threshold = 0.8)
     result3 <- MatSelect(cor_matrix, threshold = 0.9)
-  },
-  times = 3,
-  unit = "ms"
-)$time) / 1e6  # Convert nanoseconds to milliseconds
+  })["elapsed"]
+})
+time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
