@@ -35,7 +35,7 @@ Suggests:
     svglite,
     data.table
 VignetteBuilder: knitr
-URL: https://gillescolling.com/corrselect
+URL: https://gillescolling.com/corrselect/
 BugReports: https://github.com/gcol33/corrselect/issues
 Depends:
     R (>= 3.5)

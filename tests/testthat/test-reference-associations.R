@@ -246,9 +246,13 @@ test_that("bicor matches a hand-computed biweight midcorrelation reference, chec
   # with default maxPOutliers = 1, i.e. no outlier-proportion capping):
   # weight each observation by a Tukey biweight based on its distance (in
   # MAD units) from the median, then correlate the weighted deviations.
+  # WGCNA's C implementation (prepareColBicor in corFunctions-utils.c) uses
+  # the raw median absolute deviation (median(abs(x - median(x)))), not the
+  # constant = 1.4826 consistency-corrected version R's mad() returns by
+  # default -- so constant = 1 is required to match it.
   bicor_weighted <- function(v) {
     med <- median(v)
-    mad_v <- mad(v)  # median absolute deviation, consistency-corrected
+    mad_v <- mad(v, constant = 1)  # raw median absolute deviation
     u <- (v - med) / (9 * mad_v)
     w <- (1 - u^2)^2
     w[abs(u) >= 1] <- 0
