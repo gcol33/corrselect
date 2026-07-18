@@ -49,4 +49,5 @@ build_site.R
 check_dois*.py
 cookies.txt
 figure/
+Rplots.pdf
 paper/paper.crossref

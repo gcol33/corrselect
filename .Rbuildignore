@@ -35,3 +35,5 @@
 ^build_site\.R$
 ^cookies\.txt$
 ^\.unrot$
+^dev_notes$
+^Rplots\.pdf$
