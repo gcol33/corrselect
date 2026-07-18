@@ -804,11 +804,32 @@ test_that("assocSelect errors when only one complete-case row remains (#32)", {
 })
 
 test_that("assocSelect NA in association matrix triggers error", {
+  # Regression test for issue #37: this test used to run assocSelect() on
+  # two clean numeric columns and only assert the call didn't error --
+  # never constructing NA-producing input, despite its name and its own
+  # comment claiming the NA-triggers-an-error path was "difficult to
+  # trigger directly". It would have kept passing even if the
+  # anyNA(mat) -> stop() branch it's named after were deleted entirely.
+  #
+  # Real repro: assocSelect() calls droplevels() on factor columns before
+  # removing rows with missing values, so a factor level that only occurs
+  # in a row later dropped for missing data survives as a declared-but-
+  # unobserved level. Cramer's V's contingency table then has an all-zero
+  # row/column for that level, which is undefined, not 0.
   set.seed(3006)
-  # This is difficult to trigger directly, but we test the error path exists
-  # by creating data that produces all-NA associations if matrix building fails
+  df <- data.frame(
+    cat1 = factor(c("A", "A", "B", "B", "B", "C", rep("A", 14)), levels = c("A", "B", "C")),
+    cat2 = factor(c("X", "Y", "X", "Y", "X", NA, sample(c("X", "Y"), 14, TRUE)))
+  )
 
-  # Create minimal valid data to ensure function works
+  expect_warning(
+    expect_error(assocSelect(df, threshold = 0.9), "NA values"),
+    "Removed"
+  )
+})
+
+test_that("assocSelect succeeds on clean numeric data (smoke test)", {
+  set.seed(3006)
   df <- data.frame(
     num1 = rnorm(20),
     num2 = rnorm(20)
