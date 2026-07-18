@@ -4,13 +4,18 @@
 
 using namespace Rcpp;
 
-// Compute mean absolute correlation for a subset
+// Compute mean absolute correlation for a subset. corMatrix may be stored
+// upper-triangular-only (lower triangle = NA, see validateMatrixStructure()),
+// so each pair is read as (min, max) rather than trusting comb[i] < comb[j]
+// -- correct regardless of whether the caller's Combo happens to be sorted.
 double meanAbsCorrelation(const NumericMatrix& corMatrix, const Combo& comb) {
   double sum = 0.0;
   int count = 0;
   for (size_t i = 0; i < comb.size(); ++i) {
     for (size_t j = i + 1; j < comb.size(); ++j) {
-      sum += std::abs(corMatrix(comb[i], comb[j]));
+      int a = std::min(comb[i], comb[j]);
+      int b = std::max(comb[i], comb[j]);
+      sum += std::abs(corMatrix(a, b));
       ++count;
     }
   }

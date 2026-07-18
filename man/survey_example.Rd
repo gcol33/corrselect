@@ -50,7 +50,7 @@ str(survey_example[, 1:10])
 pruned <- assocSelect(survey_example[, -1],  # Exclude respondent_id
                       threshold = 0.8,
                       method_ord_ord = "spearman")
-length(attr(pruned, "selected_vars"))
+length(pruned@subset_list[[1]])  # Size of the best (top-ranked) subset
 }
 }
 \seealso{

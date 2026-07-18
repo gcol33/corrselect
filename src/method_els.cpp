@@ -6,6 +6,12 @@
 
 using namespace Rcpp;
 
+// Mirrors buildCompatibilityMatrix()'s convention (clique_core.cpp): corMatrix
+// may be stored upper-triangular-only, so a pair is always read as (min, max).
+static inline bool isCompatible(const NumericMatrix& corMatrix, double threshold, int a, int b) {
+  return std::abs(corMatrix(std::min(a, b), std::max(a, b))) <= threshold;
+}
+
 // Eppstein-Loffler-Strash (2010): for each vertex v of a graph, ordered by a
 // degeneracy ordering, expand a single Bron-Kerbosch-with-pivot call seeded
 // with R={v}, P=neighbors of v later in the order, X=neighbors earlier in
@@ -91,7 +97,6 @@ ComboList runELS(const NumericMatrix& corMatrix,
   validateCorMatrix(corMatrix);
   validateForcedIndices(forcedVec, n);
 
-  AdjMatrix adj = buildCompatibilityMatrix(corMatrix, threshold);
   std::unordered_set<int> forcedSet(forcedVec.begin(), forcedVec.end());
 
   // H = vertices compatible with every forced vertex, excluding forcedVec
@@ -102,12 +107,19 @@ ComboList runELS(const NumericMatrix& corMatrix,
   // compatible with every forced vertex). So enumerating maximal cliques
   // containing forcedVec reduces to running ELS on H and prepending
   // forcedVec to each result.
+  //
+  // Compatibility is checked directly against corMatrix (O(n * |forcedVec|)
+  // here, O(m^2) for the induced submatrix below) rather than materializing
+  // the full n x n compatibility matrix first -- when force_in restricts H
+  // to a small subgraph, that full O(n^2) build would otherwise dominate the
+  // cost of the rest of this function, which is exactly the case ELS is
+  // recommended for (CLAUDE.md: "Recommended when using force_in").
   std::vector<int> universe;
   for (int v = 0; v < n; ++v) {
     if (forcedSet.count(v)) continue;
     bool ok = true;
     for (int f : forcedVec) {
-      if (!adj[v][f]) { ok = false; break; }
+      if (!isCompatible(corMatrix, threshold, v, f)) { ok = false; break; }
     }
     if (ok) universe.push_back(v);
   }
@@ -123,7 +135,7 @@ ComboList runELS(const NumericMatrix& corMatrix,
     AdjMatrix sub(m, std::vector<bool>(m, false));
     for (int i = 0; i < m; ++i)
       for (int j = 0; j < m; ++j)
-        if (i != j) sub[i][j] = adj[universe[i]][universe[j]];
+        if (i != j) sub[i][j] = isCompatible(corMatrix, threshold, universe[i], universe[j]);
 
     runELSOnSubgraph(sub, cliquesInH);
   }

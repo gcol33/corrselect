@@ -358,6 +358,66 @@ test_that("modelPrune lme4 preserves random effects", {
   expect_true(inherits(final_model, "merMod"))
 })
 
+test_that(".rebuild_formula() re-parenthesizes random-effect terms so bar syntax survives refitting (#102)", {
+  # .parse_formula() extracts random-effect terms via terms()$term.labels,
+  # which strips the parens around "(1 | group)" down to "1 | group" --
+  # .rebuild_formula() must restore them, or "|" (lower precedence than "+")
+  # silently changes what the reassembled formula means to lme4/glmmTMB.
+  rebuilt_single <- corrselect:::.rebuild_formula("y", c("x1", "x2"), "1 | group")
+  expect_equal(rebuilt_single, y ~ x1 + x2 + (1 | group))
+
+  rebuilt_multi <- corrselect:::.rebuild_formula("y", c("x1", "x2"), c("1 | subject", "1 | site"))
+  expect_equal(rebuilt_multi, y ~ x1 + x2 + (1 | subject) + (1 | site))
+})
+
+test_that("modelPrune lme4 preserves a random-intercept structure across refits, not a random-slopes reinterpretation (#102)", {
+  skip_if_not_installed("lme4")
+
+  set.seed(123)
+  df <- data.frame(
+    y = rnorm(100),
+    x1 = rnorm(100),
+    x2 = rnorm(100),
+    group = rep(1:10, each = 10)
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1|group),
+               data = df, engine = "lme4", limit = 10)
+  )
+  final_model <- attr(result, "final_model")
+
+  # Without the parens fix, "x1 + x2 + 1 | group" is reinterpreted by lme4 as
+  # a random-slopes model varying x1 and x2 by group (3 random-effect
+  # columns: intercept, x1, x2), not the user's intended random-intercept-only
+  # model (1 column). ranef()$group has one column per random-effect term.
+  re_cols <- ncol(lme4::ranef(final_model)$group)
+  expect_equal(re_cols, 1)
+})
+
+test_that("modelPrune lme4 handles multiple random-effect terms without erroring (#102)", {
+  skip_if_not_installed("lme4")
+
+  set.seed(456)
+  n <- 200
+  df <- data.frame(
+    y       = rnorm(n),
+    x1      = rnorm(n),
+    x2      = rnorm(n),
+    subject = factor(rep(1:20, each = 10)),
+    site    = factor(rep(1:4, each = 50))
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1|subject) + (1|site),
+               data = df, engine = "lme4", limit = 10)
+  )
+  final_model <- attr(result, "final_model")
+
+  expect_true(inherits(final_model, "merMod"))
+  expect_setequal(names(lme4::ranef(final_model)), c("subject", "site"))
+})
+
 # ===========================================================================
 # Functional tests - glmmTMB engine (conditional on package availability)
 # ===========================================================================
@@ -2137,6 +2197,30 @@ test_that("modelPrune VIF detects severe collinearity in a multi-level factor (#
   # severely collinear under the package's default limit = 5, not the ~1.0
   # ("no collinearity") the old row-average implementation produced for grp.
   expect_gt(unname(ours["grp"]), 5)
+})
+
+test_that("modelPrune VIF matches car::vif() for an lme4 merMod fit (#104)", {
+  # Prior to this test, .compute_vif()'s lme4/glmmTMB engines were smoke-
+  # tested only (does the call run, right shape/class) -- never checked
+  # against an independent reference the way the lm path is above, despite
+  # routing the fixed-effects-only design matrix through the same GVIF code
+  # (a code path with its own bug history for the lm engine, see #86).
+  skip_if_not_installed("car")
+  skip_if_not_installed("lme4")
+  set.seed(104)
+  n <- 200
+  df <- data.frame(
+    y = rnorm(n), x1 = rnorm(n), x2 = rnorm(n),
+    group = factor(rep(1:20, each = 10))
+  )
+  df$x2 <- 0.6 * df$x1 + rnorm(n, sd = 0.5)  # correlated with x1
+
+  fit <- lme4::lmer(y ~ x1 + x2 + (1 | group), data = df)
+  reference <- car::vif(fit)
+  ours <- corrselect:::.compute_vif(fit, "lme4", c("x1", "x2"))
+
+  expect_equal(unname(ours[c("x1", "x2")]), unname(reference[c("x1", "x2")]),
+               tolerance = 1e-6)
 })
 
 test_that("modelPrune .compute_vif() returns NA (not 0) when VIF computation errors (#29)", {

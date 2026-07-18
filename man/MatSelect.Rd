@@ -17,7 +17,11 @@ Defaults to \code{0.7}.}
 \code{"bron-kerbosch"}. If not specified, the function chooses automatically:
 \code{"els"} when \code{force_in} is provided, otherwise \code{"bron-kerbosch"}.}
 
-\item{force_in}{Optional integer vector of 1-based column indices to force into every subset.}
+\item{force_in}{Optional integer vector of 1-based column indices to force into every subset.
+If the forced variables are themselves mutually correlated beyond \code{threshold},
+\code{MatSelect()} warns (naming the offending pair) but still forces them into every
+returned subset -- unlike \code{\link{corrPrune}()}, which treats this condition as
+infeasible and errors instead.}
 
 \item{...}{Additional arguments passed to the backend, e.g., \code{use_pivot} (logical)
 for enabling pivoting in Bron–Kerbosch (ignored by ELS).}

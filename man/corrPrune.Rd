@@ -28,11 +28,12 @@ only in \code{mode = "greedy"}; see Mode Selection below).}
 \item{measure}{Character string specifying the numeric-numeric association
 measure to use. One of \code{"auto"} (default, Pearson), \code{"pearson"},
 \code{"spearman"}, \code{"kendall"}, \code{"bicor"}, \code{"distance"}, or \code{"maximal"}. This
-only customizes numeric-numeric pairs; other pair-type combinations
-always use eta-squared (numeric-categorical) or Cramer's V
-(categorical-categorical), matching \code{\link{assocSelect}()}'s fixed
-dispatch table. The measure actually used for each pair-type combination
-is reported in the \code{assoc_methods_used} attribute of the result.}
+only customizes numeric-numeric pairs; every other pair-type combination
+is fixed and not affected by \code{measure}: eta-squared for
+numeric-categorical pairs, Cramer's V for categorical-categorical pairs,
+and Spearman for numeric-ordered and ordered-ordered pairs. The measure
+actually used for each pair-type combination is reported in the
+\code{assoc_methods_used} attribute of the result.}
 
 \item{mode}{Character string specifying the search algorithm. Options:
 \itemize{

@@ -125,7 +125,12 @@
 # (NA-free). Constant columns get association 0 with every other variable
 # rather than the NA/NaN that the underlying correlation functions would
 # otherwise produce, matching the constant-column contract in
-# .pairwise_assoc_value() above.
+# .pairwise_assoc_value() above. Returned values are abs()-clamped, matching
+# .pairwise_assoc_value()/.mixed_type_assoc_matrix()'s contract -- callers
+# that aggregate across multiple matrices (corrPrune()'s grouped `by` path)
+# rely on every association being a non-negative magnitude, since a signed
+# value would let a strong negative association in one group be averaged
+# away by a weak positive one in another (see #97).
 .numeric_assoc_matrix <- function(df_num, method) {
   p <- ncol(df_num)
   is_const <- vapply(df_num, function(x) stats::sd(x) == 0, logical(1))
@@ -135,12 +140,12 @@
     # A constant column makes the underlying correlation NA/NaN for that
     # column, which is expected and handled below (is_const zero-out) rather
     # than a condition the caller needs to see a warning about.
-    pearson  = suppressWarnings(stats::cor(df_num, use = "everything", method = "pearson")),
-    spearman = suppressWarnings(stats::cor(df_num, use = "everything", method = "spearman")),
-    kendall  = suppressWarnings(stats::cor(df_num, use = "everything", method = "kendall")),
+    pearson  = abs(suppressWarnings(stats::cor(df_num, use = "everything", method = "pearson"))),
+    spearman = abs(suppressWarnings(stats::cor(df_num, use = "everything", method = "spearman"))),
+    kendall  = abs(suppressWarnings(stats::cor(df_num, use = "everything", method = "kendall"))),
     bicor = {
       if (!requireNamespace("WGCNA", quietly = TRUE)) stop("Install the 'WGCNA' package for bicor.")
-      suppressWarnings(WGCNA::bicor(df_num))
+      abs(suppressWarnings(WGCNA::bicor(df_num)))
     },
     distance = {
       if (!requireNamespace("energy", quietly = TRUE)) stop("Install the 'energy' package for distance correlation.")

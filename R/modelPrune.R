@@ -503,7 +503,18 @@ modelPrune <- function(
   rhs <- paste(fixed_effects, collapse = " + ")
 
   if (!is.null(random_effects) && length(random_effects) > 0) {
-    rhs <- paste(c(rhs, random_effects), collapse = " + ")
+    # `random_effects` comes from .parse_formula()'s term.labels extraction,
+    # which strips the parens `terms()` treats as pure grouping (e.g.
+    # "(1 | group)" becomes "1 | group"). Re-wrapping each term in parens is
+    # required, not cosmetic: `|` has lower precedence than `+`, so pasting
+    # unparenthesized bar terms back onto the fixed-effect side changes what
+    # they mean to lme4/glmmTMB's formula parser (a single "1 | group" term
+    # happens to still parse close enough to fit without erroring, silently
+    # turning a random intercept into an unintended random-slopes model; two
+    # or more terms, e.g. "1 | subject" and "1 | site", collide outright and
+    # lme4 raises "model frame and formula mismatch in model.matrix()"). See
+    # #102.
+    rhs <- paste(c(rhs, paste0("(", random_effects, ")")), collapse = " + ")
   }
 
   # Build formula

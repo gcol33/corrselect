@@ -15,6 +15,10 @@ NULL
 #'        \code{"bron-kerbosch"}. If not specified, the function chooses automatically:
 #'        \code{"els"} when \code{force_in} is provided, otherwise \code{"bron-kerbosch"}.
 #' @param force_in Optional integer vector of 1-based column indices to force into every subset.
+#'        If the forced variables are themselves mutually correlated beyond \code{threshold},
+#'        \code{MatSelect()} warns (naming the offending pair) but still forces them into every
+#'        returned subset -- unlike \code{\link{corrPrune}()}, which treats this condition as
+#'        infeasible and errors instead.
 #' @param ... Additional arguments passed to the backend, e.g., \code{use_pivot} (logical)
 #'        for enabling pivoting in Bron–Kerbosch (ignored by ELS).
 #'
@@ -123,14 +127,25 @@ MatSelect <- function(mat,
   force_names <- if (!is.null(force_in)) varnames[force_in] else character()
 
   ## ---- warn if forced_in vars are too correlated internally ----
+  # MatSelect() honors an explicit force_in request even when it is
+  # internally incompatible with `threshold` -- unlike corrPrune(), which
+  # treats the same condition as infeasible and stop()s (see #98). This
+  # divergence is intentional: MatSelect() is the low-level enumeration
+  # primitive and force_in is a direct instruction, while corrPrune()
+  # promises a single subset that satisfies threshold. Naming the specific
+  # offending pair (rather than a generic message) still lets a caller who
+  # didn't intend this find out which variables and by how much.
   if (length(force_names) > 1) {
     submat <- abs(mat[force_in, force_in, drop = FALSE])
-    cors   <- submat[upper.tri(submat)]
-    if (any(cors > threshold, na.rm = TRUE)) {
-      warning(
-        "Variables in `force_in` are mutually correlated beyond the threshold. ",
-        "They will still be forced into all subsets."
-      )
+    bad <- which(upper.tri(submat) & submat > threshold, arr.ind = TRUE)
+    if (nrow(bad) > 0) {
+      var1 <- force_names[bad[1, 1]]
+      var2 <- force_names[bad[1, 2]]
+      bad_val <- submat[bad[1, 1], bad[1, 2]]
+      warning(sprintf(
+        "Variables in `force_in` are mutually correlated beyond the threshold. Example: '%s' and '%s' have association %.3f > %.3f. They will still be forced into all subsets.",
+        var1, var2, bad_val, threshold
+      ))
     }
   }
 
@@ -154,8 +169,14 @@ MatSelect <- function(mat,
   dots      <- list(...)
   use_pivot <- TRUE
   if ("use_pivot" %in% names(dots)) {
-    tmp <- as.logical(dots$use_pivot)
-    if (length(tmp) > 0 && !is.na(tmp[1])) use_pivot <- tmp[1]
+    tmp <- suppressWarnings(as.logical(dots$use_pivot))
+    if (length(tmp) != 1 || is.na(tmp)) {
+      stop("`use_pivot` must be a single TRUE/FALSE value.")
+    }
+    use_pivot <- tmp
+    if (method == "els") {
+      warning("`use_pivot` has no effect when method = \"els\" (ELS always uses pivoting internally); the supplied value is ignored.")
+    }
   }
 
   ## ---- dispatch to C/C++ backend ----

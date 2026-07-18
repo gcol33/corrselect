@@ -1459,6 +1459,27 @@ test_that("corrPrune reports assoc_methods_used for mixed-type data (#82)", {
   expect_equal(methods_used[["numeric_factor"]], "eta")
 })
 
+test_that("corrPrune's non-default measure only scopes numeric-numeric pairs on mixed-type data (#103)", {
+  set.seed(4021)
+  n <- 50
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    ord1 = factor(sample(1:3, n, replace = TRUE), ordered = TRUE),
+    fac1 = factor(sample(c("A", "B"), n, replace = TRUE))
+  )
+
+  result <- corrPrune(df, threshold = 0.8, measure = "kendall")
+  methods_used <- attr(result, "assoc_methods_used")
+
+  # measure applies only to numeric-numeric ...
+  expect_equal(methods_used[["numeric_numeric"]], "kendall")
+  # ... every other pair type is unaffected by the override, per docs
+  expect_equal(methods_used[["numeric_ordered"]], "spearman")
+  expect_equal(methods_used[["numeric_factor"]], "eta")
+  expect_equal(methods_used[["ordered_factor"]], "cramersv")
+})
+
 # ===========================================================================
 # Test for chi-squared edge case
 # ===========================================================================

@@ -149,6 +149,44 @@ test_that("MatSelect allows too-correlated force_in with warning handled in R", 
   expect_true(all(c("A", "A_dup") %in% all_sets))
 })
 
+test_that("MatSelect's force_in mutual-violation warning names the offending pair and value (#98)", {
+  mat <- diag(1, 3)
+  mat[1, 2] <- mat[2, 1] <- 0.99
+  colnames(mat) <- c("A", "A_dup", "B")
+
+  expect_warning(
+    MatSelect(mat, threshold = 0.7, force_in = 1:2),
+    "'A' and 'A_dup' have association 0.990 > 0.700"
+  )
+})
+
+test_that("MatSelect(): use_pivot errors on non-coercible input instead of silently falling back (#99)", {
+  m <- diag(1, 3)
+  m[1, 2] <- m[2, 1] <- 0.3
+
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = "typo_value"),
+    "use_pivot.*must be a single TRUE/FALSE"
+  )
+  expect_error(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = c(TRUE, FALSE)),
+    "use_pivot.*must be a single TRUE/FALSE"
+  )
+})
+
+test_that("MatSelect(): use_pivot warns that it has no effect when method = \"els\" (#100)", {
+  m <- diag(1, 3)
+  m[1, 2] <- m[2, 1] <- 0.3
+
+  expect_warning(
+    MatSelect(m, threshold = 0.5, method = "els", use_pivot = FALSE),
+    "use_pivot.*no effect when method"
+  )
+  expect_no_warning(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch", use_pivot = FALSE)
+  )
+})
+
 
 # ===========================================================================
 # Additional coverage tests for Bron-Kerbosch algorithm

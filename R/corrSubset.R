@@ -104,10 +104,11 @@ corrSubset <- function(res, df, which = "best", keepExtra = FALSE) {
   }, integer(1))
   n_rows <- vapply(result_list, nrow, integer(1))
   if (any(na_counts > 0)) {
+    bad <- which(na_counts > 0)
     warning(
       "Some subsets contain rows with missing values:\n",
       paste(sprintf("Subset %d: %d of %d rows",
-                    indices, na_counts, n_rows),
+                    indices[bad], na_counts[bad], n_rows[bad]),
             collapse = "\n")
     )
   }

@@ -104,7 +104,7 @@
 #' pruned <- assocSelect(survey_example[, -1],  # Exclude respondent_id
 #'                       threshold = 0.8,
 #'                       method_ord_ord = "spearman")
-#' length(attr(pruned, "selected_vars"))
+#' length(pruned@subset_list[[1]])  # Size of the best (top-ranked) subset
 #' }
 "survey_example"
 
@@ -186,7 +186,7 @@
 #' @examples
 #' data(longitudinal_example)
 #'
-#' \dontrun{
+#' \donttest{
 #' # Prune fixed effects in mixed model (requires lme4)
 #' if (requireNamespace("lme4", quietly = TRUE)) {
 #'   pruned <- modelPrune(

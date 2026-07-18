@@ -14,11 +14,12 @@
 #' @param measure Character string specifying the numeric-numeric association
 #'   measure to use. One of `"auto"` (default, Pearson), `"pearson"`,
 #'   `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, or `"maximal"`. This
-#'   only customizes numeric-numeric pairs; other pair-type combinations
-#'   always use eta-squared (numeric-categorical) or Cramer's V
-#'   (categorical-categorical), matching \code{\link{assocSelect}()}'s fixed
-#'   dispatch table. The measure actually used for each pair-type combination
-#'   is reported in the `assoc_methods_used` attribute of the result.
+#'   only customizes numeric-numeric pairs; every other pair-type combination
+#'   is fixed and not affected by `measure`: eta-squared for
+#'   numeric-categorical pairs, Cramer's V for categorical-categorical pairs,
+#'   and Spearman for numeric-ordered and ordered-ordered pairs. The measure
+#'   actually used for each pair-type combination is reported in the
+#'   `assoc_methods_used` attribute of the result.
 #' @param mode Character string specifying the search algorithm. Options:
 #'   - `"auto"` (default): uses exact search if number of predictors <= `max_exact_p`
 #'     and there are at least 2 predictors with `threshold > 0`, otherwise uses
@@ -500,10 +501,11 @@ corrPrune <- function(
       # Extract submatrix for force_in variables
       M <- A_eff[force_in_idx, force_in_idx]
 
-      # Check upper triangle (excluding diagonal). NA counts as a violation:
-      # an undefined association must never be silently treated as safe.
+      # Check upper triangle (excluding diagonal). Step 4b above already
+      # stop()s on any NA anywhere in A_eff, so M can never contain NA here --
+      # only the magnitude check applies.
       Mtri <- M[upper.tri(M)]
-      violations <- which(is.na(Mtri) | abs(Mtri) > threshold, arr.ind = FALSE)
+      violations <- which(abs(Mtri) > threshold, arr.ind = FALSE)
 
       if (length(violations) > 0) {
         # Find which pairs violate

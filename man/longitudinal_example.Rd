@@ -42,7 +42,7 @@ to prune fixed effects while preserving random effects structure.
 \examples{
 data(longitudinal_example)
 
-\dontrun{
+\donttest{
 # Prune fixed effects in mixed model (requires lme4)
 if (requireNamespace("lme4", quietly = TRUE)) {
   pruned <- modelPrune(

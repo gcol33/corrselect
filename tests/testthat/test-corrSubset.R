@@ -197,6 +197,28 @@ test_that("warns on rows with missing values in selected vars", {
   )
 })
 
+test_that("missing-value warning lists only the subsets that actually contain NAs (#106)", {
+  df <- data.frame(A = c(1, NA, 3, 4), B = 5:8, C = 9:12)
+  res <- CorrCombo(
+             subset_list = list(c("A", "B"), c("B", "C")),
+             avg_corr    = c(0.1, 0.1),
+             min_corr    = c(0.05, 0.05),
+             max_corr    = c(0.2, 0.2),
+             var_names       = c("A", "B", "C"),
+             threshold   = 0.5,
+             forced_in   = character(),
+             search_type = "els",
+             n_rows_used = 4L)
+
+  msg <- tryCatch({
+    corrSubset(res, df, which = c(1, 2))
+    NULL
+  }, warning = function(w) conditionMessage(w))
+
+  expect_match(msg, "Subset 1: 1 of 4 rows")
+  expect_no_match(msg, "Subset 2")
+})
+
 test_that("errors on invalid which argument", {
   df <- data.frame(A = 1:5, B = 6:10)
   res <- CorrCombo(
