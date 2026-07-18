@@ -63,8 +63,12 @@ MatSelect <- function(mat,
       force_in <- match(force_in, colnames(mat))
     }
     
-    # Now: must be valid 1-based indices
+    # Now: must be valid 1-based indices. Whole-number-ness is checked
+    # explicitly -- as.integer() truncates rather than rounds, so a
+    # non-integer index (e.g. from floating-point drift) would otherwise
+    # silently resolve to a different, valid column instead of erroring.
     if (!is.numeric(force_in) || anyNA(force_in) ||
+        any(force_in != as.integer(force_in)) ||
         any(force_in < 1) || any(force_in > ncol(mat))) {
       stop("`force_in` must be valid 1-based column indices or names.")
     }
@@ -164,18 +168,21 @@ MatSelect <- function(mat,
   )
 
   ## ---- extract combos & avg_corr ----
-  if (is.list(raw_out) &&
-      length(raw_out) > 0 &&
-      is.list(raw_out[[1]]) &&
-      all(c("combo", "avg_corr") %in% names(raw_out[[1]]))) {
-    combos <- lapply(raw_out, `[[`, "combo")
-    avg    <- vapply(raw_out, `[[`, numeric(1), "avg_corr")
-  } else if (is.list(raw_out) && all(vapply(raw_out, is.integer, logical(1)))) {
-    combos <- raw_out
-    avg    <- rep(NA_real_, length(combos))
-  } else {
+  # findAllMaxSets() (src/corrselect_main.cpp) always returns either an empty
+  # list or a list of list(combo=, avg_corr=) elements -- there is no other
+  # shape to guard against. An unexpected shape here means the C++ contract
+  # changed without this extraction being updated to match.
+  if (length(raw_out) == 0L) {
     combos <- list()
     avg    <- numeric()
+  } else if (is.list(raw_out) &&
+             is.list(raw_out[[1]]) &&
+             all(c("combo", "avg_corr") %in% names(raw_out[[1]]))) {
+    combos <- lapply(raw_out, `[[`, "combo")
+    avg    <- vapply(raw_out, `[[`, numeric(1), "avg_corr")
+  } else {
+    stop("Internal error: unexpected return shape from findAllMaxSets(). ",
+         "Expected a list of list(combo=, avg_corr=) elements.")
   }
 
   ## ---- empty-result early return ----

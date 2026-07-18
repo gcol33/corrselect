@@ -221,6 +221,9 @@ corrPrune <- function(
 
   # Remove grouping variables from predictor set if present
   predictor_cols <- setdiff(names(data), by)
+  if (length(predictor_cols) == 0L) {
+    stop("'by' names every column in 'data'; no predictor columns remain to prune.")
+  }
   data <- data[, predictor_cols, drop = FALSE]
 
   # Auto-convert and classify variable types (following assocSelect pattern)
@@ -494,7 +497,7 @@ corrPrune <- function(
       # Check upper triangle (excluding diagonal). NA counts as a violation:
       # an undefined association must never be silently treated as safe.
       Mtri <- M[upper.tri(M)]
-      violations <- which(is.na(Mtri) | Mtri > threshold, arr.ind = FALSE)
+      violations <- which(is.na(Mtri) | abs(Mtri) > threshold, arr.ind = FALSE)
 
       if (length(violations) > 0) {
         # Find which pairs violate
@@ -502,7 +505,7 @@ corrPrune <- function(
         bad_pairs <- upper_tri_idx[violations, , drop = FALSE]
         var1 <- force_in[bad_pairs[1, 1]]
         var2 <- force_in[bad_pairs[1, 2]]
-        bad_val <- M[bad_pairs[1, 1], bad_pairs[1, 2]]
+        bad_val <- abs(M[bad_pairs[1, 1], bad_pairs[1, 2]])
 
         stop(sprintf(
           "Variables in 'force_in' violate the threshold constraint. Example: '%s' and '%s' have association %.3f > %.3f",

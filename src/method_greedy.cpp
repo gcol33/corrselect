@@ -9,6 +9,16 @@
 
 using namespace Rcpp;
 
+// Reads the association between variables i and j from the upper triangle
+// only (i<j), mirroring buildCompatibilityMatrix()'s i<j convention
+// (clique_core.cpp). validateMatrixStructure() permits a validly
+// upper-triangular-only matrix (lower triangle = NA); reading raw A(i,j)
+// for both i<j and i>j would misread such a matrix as having NA on roughly
+// half of all pairs.
+inline double assocAt(const NumericMatrix& A, int i, int j) {
+    return (i < j) ? A(i, j) : A(j, i);
+}
+
 // Helper: compute maximum association between var and any other active variable.
 // An undefined (NaN) association is treated as worse than any defined value, so a
 // variable involved in an undefined association is never silently preferred for
@@ -22,7 +32,7 @@ double computeMaxAssoc(
     int n = A.nrow();
     for (int j = 0; j < n; j++) {
         if (j == var || !active[j]) continue;
-        double val = A(var, j);
+        double val = assocAt(A, var, j);
         if (std::isnan(val)) return std::numeric_limits<double>::infinity();
         val = std::fabs(val);
         if (val > max_val) {
@@ -46,7 +56,7 @@ double computeAvgAssoc(
     int n = A.nrow();
     for (int j = 0; j < n; j++) {
         if (j == var || !active[j]) continue;
-        double val = A(var, j);
+        double val = assocAt(A, var, j);
         if (std::isnan(val)) continue;
         sum += std::fabs(val);
         count++;
@@ -90,7 +100,7 @@ Combo greedyPrune(
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (j == i) continue;
-            double val = A(i, j);
+            double val = assocAt(A, i, j);
             if (std::isnan(val)) { nanCount[i]++; continue; }
             sumAbs[i] += std::fabs(val);
             cnt[i]++;
@@ -202,7 +212,7 @@ Combo greedyPrune(
         active[worst_idx] = false;
         for (int i = 0; i < n; i++) {
             if (!active[i] || i == worst_idx) continue;
-            double val = A(i, worst_idx);
+            double val = assocAt(A, i, worst_idx);
             if (std::isnan(val)) {
                 nanCount[i]--;
                 if (nanCount[i] == 0) maxDirty[i] = true;  // may no longer be infinity

@@ -397,13 +397,19 @@ modelPrune <- function(
     # Select worst variable (highest diagnostic value)
     # Tie-breaking: choose last in formula order
     # Handle Inf and NA by treating them as worse than any finite value
-    worst_val <- max(violations[removable], na.rm = TRUE)
-    if (is.infinite(worst_val) || is.na(worst_val)) {
-      # If we have Inf or NA, select any variable with Inf/NA (prefer last)
-      inf_or_na <- removable[is.infinite(violations[removable]) | is.na(violations[removable])]
+    removable_vals <- violations[removable]
+    finite_vals <- removable_vals[is.finite(removable_vals)]
+
+    if (length(finite_vals) == 0) {
+      # All candidates are NA/Inf (e.g. a constant predictor's undefined
+      # VIF) -- select any of them (prefer last in formula order) directly,
+      # rather than calling max(na.rm = TRUE) on a vector that is entirely
+      # NA/Inf, which raises base R's own "no non-missing arguments" warning.
+      inf_or_na <- removable[is.infinite(removable_vals) | is.na(removable_vals)]
       worst_var <- inf_or_na[length(inf_or_na)]
     } else {
-      candidates <- removable[violations[removable] == worst_val]
+      worst_val <- max(finite_vals)
+      candidates <- removable[!is.na(removable_vals) & removable_vals == worst_val]
       worst_var <- candidates[length(candidates)]  # Last in order
     }
 
@@ -428,8 +434,12 @@ modelPrune <- function(
 
   # Extract relevant columns from data. Use the bare variable name(s)
   # referenced by the response (not `response_var`, which may be a full
-  # expression like "log(mpg)" and is not itself a column of `data`).
-  all_vars <- c(response_vars, current_fixed)
+  # expression like "log(mpg)" and is not itself a column of `data`) and,
+  # analogously, the bare variable names referenced by each surviving fixed
+  # term (not `current_fixed` itself, which holds raw term labels like
+  # "poly(disp, 2)" or "cyl:disp" and is not itself a column of `data`).
+  fixed_vars <- unique(unlist(lapply(current_fixed, function(term) all.vars(str2lang(term)))))
+  all_vars <- unique(c(response_vars, fixed_vars))
   data_pruned <- data[, all_vars, drop = FALSE]
 
   # Add attributes
@@ -616,6 +626,20 @@ modelPrune <- function(
   }
 }
 
+#' Flags design-matrix columns that are constant (zero variance). A constant
+#' column makes both VIF's surrogate R^2 (0/0 in exact arithmetic) and
+#' condition_number's `scale()` step (division by a zero SD) produce
+#' floating-point noise instead of the documented undefined (NA) result, so
+#' both diagnostics need to detect and gate on this before scoring.
+#' @noRd
+.zero_variance_cols <- function(X) {
+  tol <- sqrt(.Machine$double.eps)
+  apply(X, 2, function(col) {
+    rng <- range(col)
+    (rng[2] - rng[1]) < tol * max(1, abs(mean(col)))
+  })
+}
+
 #' Compute VIF for fixed effects
 #' @noRd
 .compute_vif <- function(model, engine, fixed_effects) {
@@ -639,11 +663,18 @@ modelPrune <- function(
     return(setNames(1.0, fixed_effects))
   }
 
+  zero_var <- .zero_variance_cols(X)
+
   # VIF_i = 1 / (1 - R²_i), where R²_i is from regressing predictor i on all
   # other predictors.
   .map_fixed_effects_by_columns(
     X, model, engine_str, fixed_effects,
     score_fn = function(pred, matching_cols) {
+      # A constant predictor has an undefined VIF -- return NA directly
+      # rather than letting the R² computation below land on floating-point
+      # noise close to (but not exactly) 0/0.
+      if (any(zero_var[matching_cols])) return(NA)
+
       y_i <- X[, matching_cols, drop = FALSE]
       X_other <- X[, !colnames(X) %in% matching_cols, drop = FALSE]
 
@@ -807,26 +838,32 @@ modelPrune <- function(
     return(setNames(1.0, fixed_effects))
   }
 
-  # Scale columns to unit length (required for proper condition number)
-  X_scaled <- scale(X, center = TRUE, scale = TRUE)
+  # Constant columns give `scale()` a zero SD to divide by, producing an
+  # all-NaN column that fails `svd()` -- as a fallback that used to return
+  # Inf for *every* predictor, not just the constant one. Exclude them from
+  # the SVD input so the remaining, well-behaved predictors still get a real
+  # condition index; the constant predictor itself is scored NA below,
+  # matching VIF's documented undefined-for-constant-predictor contract.
+  zero_var <- .zero_variance_cols(X)
+  X_use <- X[, !zero_var, drop = FALSE]
 
-  # Compute SVD
-  svd_result <- tryCatch(
-    svd(X_scaled),
-    error = function(e) NULL
-  )
+  condition_indices <- NULL
+  if (ncol(X_use) == 1) {
+    condition_indices <- setNames(1.0, colnames(X_use))
+  } else if (ncol(X_use) >= 2) {
+    # Scale columns to unit length (required for proper condition number)
+    X_scaled <- scale(X_use, center = TRUE, scale = TRUE)
 
-  if (is.null(svd_result)) {
-    warning("SVD failed for design matrix.")
-    return(setNames(rep(Inf, length(fixed_effects)), fixed_effects))
+    svd_result <- tryCatch(svd(X_scaled), error = function(e) NULL)
+
+    if (is.null(svd_result)) {
+      warning("SVD failed for design matrix.")
+    } else {
+      d <- svd_result$d
+      max_sv <- max(d)
+      condition_indices <- setNames(max_sv / d, colnames(X_use))
+    }
   }
-
-  # Singular values
-  d <- svd_result$d
-
-  # Condition indices = max(d) / d_i
-  max_sv <- max(d)
-  condition_indices <- max_sv / d
 
   # Map condition indices back to fixed effects: use the maximum condition
   # index across the columns associated with each effect (an approximation --
@@ -835,8 +872,11 @@ modelPrune <- function(
   .map_fixed_effects_by_columns(
     X, model, engine_str, fixed_effects,
     score_fn = function(pred, matching_cols) {
-      col_indices <- which(colnames(X) %in% matching_cols)
-      if (length(col_indices) > 0 && max(col_indices) <= length(condition_indices)) {
+      if (any(zero_var[matching_cols])) return(NA)
+      if (is.null(condition_indices)) return(Inf)  # SVD failed on the non-constant columns
+
+      col_indices <- which(colnames(X_use) %in% matching_cols)
+      if (length(col_indices) > 0) {
         max(condition_indices[col_indices])
       } else {
         max(condition_indices)  # Fallback: use overall condition number
