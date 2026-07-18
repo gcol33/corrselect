@@ -47,6 +47,41 @@ test_that("ELS rejects NA matrices", {
                "`mat` must not contain NA\\.")
 })
 
+test_that("MatSelect rejects matrices with duplicate column names (#28)", {
+  m <- diag(1, 3)
+  colnames(m) <- c("a", "a", "b")
+  expect_error(MatSelect(m, threshold = 0.5, method = "els"),
+               "duplicate column names")
+})
+
+test_that("MatSelect deduplicates a repeated force_in index/name (#31)", {
+  # Regression test for issue #31: a duplicate force_in entry used to reach
+  # the C++ backend unmodified, so the same variable could be listed twice
+  # in one returned subset, with a spurious self-correlation (r = 1.0)
+  # reported as that subset's max_corr.
+  mat <- matrix(c(1, 0.9, 0.1, 0.9, 1, 0.2, 0.1, 0.2, 1), 3,
+                dimnames = list(c("V1", "V2", "V3"), c("V1", "V2", "V3")))
+
+  res_idx  <- MatSelect(mat, threshold = 0.5, method = "els", force_in = c(1, 1))
+  res_name <- MatSelect(mat, threshold = 0.5, method = "els", force_in = c("V1", "V1"))
+
+  for (res in list(res_idx, res_name)) {
+    expect_equal(length(res@subset_list), 1)
+    expect_equal(sort(res@subset_list[[1]]), c("V1", "V3"))
+    expect_false(anyDuplicated(res@subset_list[[1]]) > 0)
+    expect_lte(res@max_corr[1], 0.5)
+  }
+})
+
+test_that("MatSelect does not warn about mutual correlation for a duplicated force_in entry", {
+  # A repeated index resolves to a single distinct variable, so the
+  # "force_in are mutually correlated" warning (which only makes sense for
+  # >= 2 distinct forced variables) must not fire.
+  mat <- matrix(c(1, 0.9, 0.1, 0.9, 1, 0.2, 0.1, 0.2, 1), 3,
+                dimnames = list(c("V1", "V2", "V3"), c("V1", "V2", "V3")))
+  expect_no_warning(MatSelect(mat, threshold = 0.5, method = "els", force_in = c(1, 1)))
+})
+
 test_that("ELS returns correct variable names", {
   m <- diag(1,3)
   colnames(m) <- c("a","b","c")

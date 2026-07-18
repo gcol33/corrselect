@@ -15,6 +15,27 @@ test_that("corrPrune validates data argument", {
   )
 })
 
+test_that("corrPrune rejects data with duplicate column names (#28)", {
+  df <- data.frame(x = 1:10, y = 1:10, z = 1:10)
+  names(df) <- c("a", "a", "b")
+
+  expect_error(
+    corrPrune(df),
+    "duplicate column names"
+  )
+})
+
+test_that("corrPrune deduplicates a repeated force_in name (#31)", {
+  set.seed(9310)
+  n <- 30
+  df <- data.frame(a = rnorm(n), b = rnorm(n), c = rnorm(n))
+
+  result <- corrPrune(df, threshold = 0.9, force_in = c("a", "a"))
+
+  expect_true("a" %in% names(result))
+  expect_false(anyDuplicated(names(result)) > 0)
+})
+
 test_that("corrPrune validates threshold argument", {
   df <- data.frame(x = 1:10, y = 1:10)
 

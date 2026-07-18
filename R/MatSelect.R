@@ -68,6 +68,8 @@ MatSelect <- function(mat,
         any(force_in < 1) || any(force_in > ncol(mat))) {
       stop("`force_in` must be valid 1-based column indices or names.")
     }
+
+    force_in <- unique(force_in)
   } else {
     force_in <- integer(0)
   }

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <algorithm>
 #include "corrselect_types.h"
 #include "utils.h"
 #include "method_els.h"
@@ -20,7 +21,8 @@ List findAllMaxSets(
   if (!validateMatrixStructure(corMatrix))
     stop("Matrix must be symmetric or upper triangular.");
 
-  // 2) Build forcedVec (expecting 0-based indices from R)
+  // 2) Build forcedVec (expecting 0-based indices from R), deduplicated so a
+  // repeated index can't land twice in the final combo (see #31).
   Combo forcedVec;
   if (force_in.isNotNull()) {
     IntegerVector f = force_in.get();
@@ -29,6 +31,8 @@ List findAllMaxSets(
         stop("`force_in` must be valid 0-based column indices");
       forcedVec.push_back(f[i]);
     }
+    std::sort(forcedVec.begin(), forcedVec.end());
+    forcedVec.erase(std::unique(forcedVec.begin(), forcedVec.end()), forcedVec.end());
   }
 
   // 3) Dispatch to selected algorithm
