@@ -18,7 +18,7 @@ AdjMatrix buildCompatibilityMatrix(const NumericMatrix& corMatrix, double thresh
 
 void bronKerboschPivot(
     const AdjMatrix& adj,
-    std::vector<int> R,
+    std::vector<int>& R,
     std::vector<int> P,
     std::vector<int> X,
     bool usePivot,
@@ -49,14 +49,13 @@ void bronKerboschPivot(
   }
 
   for (int v : candidates) {
-    std::vector<int> newR = R;
-    newR.push_back(v);
-
     std::vector<int> newP, newX;
     for (int u : P) if (u != v && adj[v][u]) newP.push_back(u);
     for (int u : X) if (adj[v][u]) newX.push_back(u);
 
-    bronKerboschPivot(adj, newR, newP, newX, usePivot, out);
+    R.push_back(v);
+    bronKerboschPivot(adj, R, std::move(newP), std::move(newX), usePivot, out);
+    R.pop_back();
 
     P.erase(std::remove(P.begin(), P.end(), v), P.end());
     X.push_back(v);

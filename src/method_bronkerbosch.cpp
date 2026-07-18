@@ -10,7 +10,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 ComboList runBronKerbosch(const NumericMatrix& corMatrix,
                           double threshold,
-                          const Combo& forcedVec,
+                          Combo forcedVec,
                           bool usePivot) {
   int n = corMatrix.nrow();
   validateCorMatrix(corMatrix);

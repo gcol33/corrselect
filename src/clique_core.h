@@ -19,9 +19,15 @@ AdjMatrix buildCompatibilityMatrix(const Rcpp::NumericMatrix& corMatrix, double 
 // R/P/X once over the whole graph, while Eppstein-Loffler-Strash calls this
 // once per vertex in degeneracy order with P/X split into later/earlier
 // neighbors.
+//
+// R is taken by reference and backtracked in place (push_back before each
+// recursive call, pop_back after) rather than copied per call, since it is
+// purely a growing/shrinking stack; by the time this function returns, R is
+// restored to its original contents. P and X are taken by value because
+// each recursive branch genuinely needs its own filtered subset.
 void bronKerboschPivot(
     const AdjMatrix& adj,
-    std::vector<int> R,
+    std::vector<int>& R,
     std::vector<int> P,
     std::vector<int> X,
     bool usePivot,

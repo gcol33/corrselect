@@ -4,11 +4,12 @@
 #include <Rcpp.h>
 #include "corrselect_types.h"
 
-// Bron–Kerbosch enumeration of all maximal valid subsets,
-// with optional pivoting
+// Bron–Kerbosch enumeration of all maximal valid subsets, with optional
+// pivoting. forcedVec is taken by value (not const&) because
+// validateForcedIndices() deduplicates it in place.
 ComboList runBronKerbosch(const Rcpp::NumericMatrix& corMatrix,
                           double threshold,
-                          const Combo& forcedVec,
+                          Combo forcedVec,
                           bool usePivot);
 
 #endif

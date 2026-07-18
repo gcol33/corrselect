@@ -27,28 +27,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // runBronKerbosch
-ComboList runBronKerbosch(const NumericMatrix& corMatrix, double threshold, const Combo& forcedVec, bool usePivot);
+ComboList runBronKerbosch(const NumericMatrix& corMatrix, double threshold, Combo forcedVec, bool usePivot);
 RcppExport SEXP _corrselect_runBronKerbosch(SEXP corMatrixSEXP, SEXP thresholdSEXP, SEXP forcedVecSEXP, SEXP usePivotSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericMatrix& >::type corMatrix(corMatrixSEXP);
     Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
-    Rcpp::traits::input_parameter< const Combo& >::type forcedVec(forcedVecSEXP);
+    Rcpp::traits::input_parameter< Combo >::type forcedVec(forcedVecSEXP);
     Rcpp::traits::input_parameter< bool >::type usePivot(usePivotSEXP);
     rcpp_result_gen = Rcpp::wrap(runBronKerbosch(corMatrix, threshold, forcedVec, usePivot));
     return rcpp_result_gen;
 END_RCPP
 }
 // runELS
-ComboList runELS(const NumericMatrix& corMatrix, double threshold, const Combo& forcedVec);
+ComboList runELS(const NumericMatrix& corMatrix, double threshold, Combo forcedVec);
 RcppExport SEXP _corrselect_runELS(SEXP corMatrixSEXP, SEXP thresholdSEXP, SEXP forcedVecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericMatrix& >::type corMatrix(corMatrixSEXP);
     Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
-    Rcpp::traits::input_parameter< const Combo& >::type forcedVec(forcedVecSEXP);
+    Rcpp::traits::input_parameter< Combo >::type forcedVec(forcedVecSEXP);
     rcpp_result_gen = Rcpp::wrap(runELS(corMatrix, threshold, forcedVec));
     return rcpp_result_gen;
 END_RCPP

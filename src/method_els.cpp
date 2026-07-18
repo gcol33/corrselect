@@ -17,26 +17,55 @@ static void runELSOnSubgraph(const AdjMatrix& sub, ComboList& out) {
   int m = sub.size();
   if (m == 0) return;
 
+  // Adjacency lists (built once, same O(m^2) cost as the dense matrix
+  // itself) let the degeneracy peel below run in O(m + E) instead of
+  // repeatedly rescanning all m vertices per step.
+  std::vector<std::vector<int>> neighbors(m);
   std::vector<int> degree(m, 0);
-  for (int i = 0; i < m; ++i)
-    for (int j = 0; j < m; ++j)
-      if (sub[i][j]) ++degree[i];
+  for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < m; ++j) {
+      if (i != j && sub[i][j]) neighbors[i].push_back(j);
+    }
+    degree[i] = static_cast<int>(neighbors[i].size());
+  }
 
-  // Degeneracy ordering: repeatedly remove the minimum-degree remaining
-  // vertex. order[k] = local vertex removed k-th.
+  // Bucket-queue degeneracy ordering (Matula-Beck): vertices are bucketed by
+  // current degree; each step pops a minimum-degree vertex and decrements
+  // its remaining neighbors' buckets in place. order[k] = local vertex
+  // removed k-th. Any valid degeneracy ordering preserves ELS's correctness
+  // guarantees regardless of how same-degree ties are broken.
+  int maxDeg = 0;
+  for (int d : degree) maxDeg = std::max(maxDeg, d);
+  std::vector<std::vector<int>> bucket(maxDeg + 1);
+  std::vector<int> bucketPos(m);
+  std::vector<int> curDeg = degree;
+  for (int i = 0; i < m; ++i) {
+    bucket[curDeg[i]].push_back(i);
+    bucketPos[i] = static_cast<int>(bucket[curDeg[i]].size()) - 1;
+  }
+
   std::vector<bool> removed(m, false);
   std::vector<int> order;
   order.reserve(m);
+  int curMinDeg = 0;
   for (int step = 0; step < m; ++step) {
-    int best = -1, bestDeg = -1;
-    for (int i = 0; i < m; ++i) {
-      if (removed[i]) continue;
-      if (best == -1 || degree[i] < bestDeg) { best = i; bestDeg = degree[i]; }
-    }
-    removed[best] = true;
-    order.push_back(best);
-    for (int j = 0; j < m; ++j) {
-      if (!removed[j] && sub[best][j]) degree[j]--;
+    while (curMinDeg <= maxDeg && bucket[curMinDeg].empty()) ++curMinDeg;
+    int v = bucket[curMinDeg].back();
+    bucket[curMinDeg].pop_back();
+    removed[v] = true;
+    order.push_back(v);
+    for (int u : neighbors[v]) {
+      if (removed[u]) continue;
+      int d = curDeg[u];
+      int pos = bucketPos[u];
+      int lastVertex = bucket[d].back();
+      bucket[d][pos] = lastVertex;
+      bucketPos[lastVertex] = pos;
+      bucket[d].pop_back();
+      curDeg[u] = d - 1;
+      bucket[d - 1].push_back(u);
+      bucketPos[u] = static_cast<int>(bucket[d - 1].size()) - 1;
+      if (d - 1 < curMinDeg) curMinDeg = d - 1;
     }
   }
 
@@ -46,18 +75,18 @@ static void runELSOnSubgraph(const AdjMatrix& sub, ComboList& out) {
   for (int k = 0; k < m; ++k) {
     int v = order[k];
     std::vector<int> P, X;
-    for (int u = 0; u < m; ++u) {
-      if (u == v || !sub[v][u]) continue;
+    for (int u : neighbors[v]) {
       if (orderPos[u] > orderPos[v]) P.push_back(u); else X.push_back(u);
     }
-    bronKerboschPivot(sub, {v}, P, X, /*usePivot=*/true, out);
+    std::vector<int> R{v};
+    bronKerboschPivot(sub, R, P, X, /*usePivot=*/true, out);
   }
 }
 
 // [[Rcpp::export]]
 ComboList runELS(const NumericMatrix& corMatrix,
                  double threshold,
-                 const Combo& forcedVec) {
+                 Combo forcedVec) {
   int n = corMatrix.nrow();
   validateCorMatrix(corMatrix);
   validateForcedIndices(forcedVec, n);

@@ -4,9 +4,11 @@
 #include <Rcpp.h>
 #include "corrselect_types.h"
 
-// Eppstein–Löffler–Strash enumeration of all maximal valid subsets
+// Eppstein–Löffler–Strash enumeration of all maximal valid subsets.
+// forcedVec is taken by value (not const&) because validateForcedIndices()
+// deduplicates it in place.
 ComboList runELS(const Rcpp::NumericMatrix& corMatrix,
                  double threshold,
-                 const Combo& forcedVec);
+                 Combo forcedVec);
 
 #endif

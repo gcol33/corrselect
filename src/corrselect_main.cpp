@@ -19,8 +19,8 @@ List findAllMaxSets(
   int n = corMatrix.nrow();
   validateCorMatrix(corMatrix);
 
-  // 2) Build forcedVec (expecting 0-based indices from R), deduplicated so a
-  // repeated index can't land twice in the final combo.
+  // 2) Build forcedVec (expecting 0-based indices from R); validateForcedIndices()
+  // deduplicates it so a repeated index can't land twice in the final combo.
   Combo forcedVec;
   if (force_in.isNotNull()) {
     IntegerVector f = force_in.get();
@@ -28,8 +28,6 @@ List findAllMaxSets(
       forcedVec.push_back(f[i]);
     }
     validateForcedIndices(forcedVec, n);
-    std::sort(forcedVec.begin(), forcedVec.end());
-    forcedVec.erase(std::unique(forcedVec.begin(), forcedVec.end()), forcedVec.end());
   }
 
   // 3) Dispatch to selected algorithm
