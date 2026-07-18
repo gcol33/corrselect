@@ -307,6 +307,22 @@ test_that("assocSelect handles all type combinations in one df", {
   expect_equal(res@cor_method, "mixed")
 })
 
+test_that("assocSelect handles data.table input (#82)", {
+  skip_if_not_installed("data.table")
+
+  set.seed(2012)
+  n <- 20
+  dt <- data.table::data.table(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    cat1 = factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  )
+
+  res <- assocSelect(dt, threshold = 0.9)
+  expect_true(inherits(res, "CorrCombo"))
+  expect_equal(res@cor_method, "mixed")
+})
+
 # ===========================================================================
 # Additional coverage tests for assocSelect.R
 # ===========================================================================
@@ -447,28 +463,38 @@ test_that("assocSelect handles numeric with zero variance (ss_tot = 0)", {
 # Additional edge case tests for association methods
 # ===========================================================================
 
-test_that("assocSelect handles cramersv with sparse table (row/col all zeros)", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference once unused levels are dropped (#84)", {
+  # Despite the original title, this is not actually a degenerate
+  # "row/col all zeros" table for cramersv: droplevels() removes the
+  # unused "C"/"Z" levels first, leaving an ordinary 2x2 table with every
+  # row/column sum > 0, so it's a genuine, checkable finite value.
   set.seed(2021)
-  # Create factors that will produce a sparse contingency table
-  df <- data.frame(
-    factor1 = factor(c(rep("A", 8), rep("B", 2)), levels = c("A", "B", "C")),
-    factor2 = factor(c(rep("X", 9), "Y"), levels = c("X", "Y", "Z"))
-  )
+  factor1 <- factor(c(rep("A", 8), rep("B", 2)), levels = c("A", "B", "C"))
+  factor2 <- factor(c(rep("X", 9), "Y"), levels = c("X", "Y", "Z"))
+  df <- data.frame(factor1 = factor1, factor2 = factor2)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  tbl <- table(droplevels(factor1), droplevels(factor2))
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
-test_that("assocSelect handles cramersv with minimal table", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference on a minimal 2x2 table (#84)", {
   set.seed(2022)
-  # Create 2x2 table with sparse data
-  df <- data.frame(
-    f1 = factor(c("A", "B", "A", "B", "A", "B", "A", "B")),
-    f2 = factor(c("X", "X", "Y", "Y", "X", "Y", "X", "Y"))
-  )
+  f1 <- factor(c("A", "B", "A", "B", "A", "B", "A", "B"))
+  f2 <- factor(c("X", "X", "Y", "Y", "X", "Y", "X", "Y"))
+  df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  tbl <- table(f1, f2)
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
 test_that("assocSelect handles eta with numeric-factor pairs", {
@@ -482,9 +508,9 @@ test_that("assocSelect handles eta with numeric-factor pairs", {
   res <- assocSelect(df, threshold = 0.9)
   expect_true(inherits(res, "CorrCombo"))
 
-  # Check that eta was used
+  # Check that eta was specifically the method used (not merely non-NULL).
   methods_used <- attr(res, "assoc_methods_used")
-  expect_true(!is.null(methods_used))
+  expect_equal(methods_used[["numeric_factor"]], "eta")
 })
 
 test_that("assocSelect handles eta with factor-numeric order", {
@@ -498,6 +524,9 @@ test_that("assocSelect handles eta with factor-numeric order", {
 
   res <- assocSelect(df, threshold = 0.9)
   expect_true(inherits(res, "CorrCombo"))
+
+  methods_used <- attr(res, "assoc_methods_used")
+  expect_equal(methods_used[["factor_numeric"]], "eta")
 })
 
 test_that("assocSelect with spearman for numeric-ordered pairs", {
@@ -558,16 +587,22 @@ test_that("assocSelect handles all unique values in factor (no repeated levels)"
   expect_true(inherits(res, "CorrCombo"))
 })
 
-test_that("assocSelect handles cramersv returning NA (fallback to 0)", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference, not an NA/0 fallback (#84)", {
+  # Despite the original title, no NA or fallback is involved: droplevels()
+  # removes the unused "C"/"Z" levels first, leaving a normal table with
+  # every row/column sum > 0 and a genuine, checkable finite cramersv.
   set.seed(2030)
-  # Create factor combination that produces sparse table
-  df <- data.frame(
-    f1 = factor(c(rep("A", 15), rep("B", 5)), levels = c("A", "B", "C")),
-    f2 = factor(c(rep("X", 18), rep("Y", 2)), levels = c("X", "Y", "Z"))
-  )
+  f1 <- factor(c(rep("A", 15), rep("B", 5)), levels = c("A", "B", "C"))
+  f2 <- factor(c(rep("X", 18), rep("Y", 2)), levels = c("X", "Y", "Z"))
+  df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  tbl <- table(droplevels(f1), droplevels(f2))
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
 test_that("assocSelect with all numeric uses pearson by default", {
@@ -582,10 +617,10 @@ test_that("assocSelect with all numeric uses pearson by default", {
   res <- assocSelect(df, threshold = 0.9)
   expect_true(inherits(res, "CorrCombo"))
 
-  # Check methods used
+  # numeric_numeric is always populated for an all-numeric input with >= 2
+  # columns -- the method actually used is the checkable claim here.
   methods_used <- attr(res, "assoc_methods_used")
-  expect_true("numeric_numeric" %in% names(methods_used) ||
-              length(methods_used) == 0)  # May be empty if no pairs computed
+  expect_equal(methods_used[["numeric_numeric"]], "pearson")
 })
 
 test_that("assocSelect handles ordered-factor pairs", {
@@ -628,80 +663,109 @@ test_that("assocSelect handles ordered-numeric pairs", {
 # Edge case tests for association computation branches
 # ===========================================================================
 
-test_that("assocSelect cramersv with sparse 1-dim table", {
+test_that("assocSelect gives a fully-observed single-level factor exactly zero Cramer's V (#84)", {
+  # f1 has only one level -- this hits .pairwise_assoc_value()'s
+  # constant-column short-circuit (association is well-defined as exactly
+  # 0), not cramersv's own min(dim(tbl)) < 2 NA path, despite the original
+  # title's "sparse 1-dim table" framing.
   set.seed(2035)
-  # Factor with only one level effectively - should hit min(dim(tbl)) < 2
   df <- data.frame(
-    f1 = factor(c(rep("A", 20))),  # Only one level
+    f1 = factor(c(rep("A", 20))),
     f2 = factor(c(rep("X", 10), rep("Y", 10)))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
-test_that("assocSelect handles cramersv with NA chi-squared", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference on an imbalanced table (#84)", {
+  # Despite the original title, this table is imbalanced but not actually
+  # sparse/degenerate (every row and column sum is > 0), so cramersv never
+  # hits the NA path at all -- it's a genuine, checkable finite value.
   set.seed(2038)
-  # Create edge case that might produce NA chi-squared
-  # Factors with very imbalanced data
-  df <- data.frame(
-    f1 = factor(c(rep("A", 18), "B", "B")),
-    f2 = factor(c(rep("X", 17), rep("Y", 3)))
-  )
+  f1 <- factor(c(rep("A", 18), "B", "B"))
+  f2 <- factor(c(rep("X", 17), rep("Y", 3)))
+  df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  tbl <- table(f1, f2)
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
-test_that("assocSelect handles NA association fallback", {
+test_that("assocSelect drops a pair into separate singleton subsets when cramersv reaches 1 exactly (#84)", {
+  # Despite the original title claiming an "NA association fallback", no NA
+  # is involved: f1 and f2 are perfectly aligned (every A row-position is X,
+  # every B row-position is Y) after their unused "C"/"Z" levels are
+  # dropped, giving cramersv = 1 exactly -- which exceeds threshold = 0.9,
+  # so the pair can never coexist and each variable is its own maximal
+  # (singleton) subset.
   set.seed(2039)
-  # Create factor data that might produce NA association
-  df <- data.frame(
-    f1 = factor(c(rep("A", 15), rep("B", 5)), levels = c("A", "B", "C")),
-    f2 = factor(c(rep("X", 15), rep("Y", 5)), levels = c("X", "Y", "Z"))
-  )
+  f1 <- factor(c(rep("A", 15), rep("B", 5)), levels = c("A", "B", "C"))
+  f2 <- factor(c(rep("X", 15), rep("Y", 5)), levels = c("X", "Y", "Z"))
+  df <- data.frame(f1 = f1, f2 = f2)
 
   res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  expect_equal(length(res@subset_list), 2)
+  expect_setequal(vapply(res@subset_list, `[[`, character(1), 1), c("f1", "f2"))
+
+  res_at_one <- assocSelect(df, threshold = 1)
+  expect_equal(length(res_at_one@subset_list), 1)
+  expect_equal(res_at_one@avg_corr[1], 1)
 })
 
 # ===========================================================================
 # Additional edge case tests for full coverage
 # ===========================================================================
 
-test_that("assocSelect handles cramersv with 1-row contingency table", {
+test_that("assocSelect gives a single-level factor (sampled partner) exactly zero Cramer's V (#84)", {
+  # Same constant-column short-circuit as the "single-level factor" test
+  # above, with a randomly-sampled (rather than fixed) partner column.
   set.seed(3001)
-  # Create factor with only one level
   df <- data.frame(
-    f1 = factor(rep("A", 20)),  # Single level factor
+    f1 = factor(rep("A", 20)),
     f2 = factor(sample(c("X", "Y"), 20, replace = TRUE))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
-test_that("assocSelect handles cramersv with row sums of zero after droplevels", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference after unused levels are dropped (#84)", {
+  # f1/f2 each carry an unused level ("C"/"Z") that droplevels() removes
+  # before the contingency table is built -- exercising the same
+  # droplevels() preprocessing as other tests, but here checked against an
+  # independently-computed reference value rather than just class/shape.
   set.seed(3002)
-  # Create factors with unused levels that get dropped
   f1 <- factor(c(rep("A", 10), rep("B", 10)), levels = c("A", "B", "C"))
   f2 <- factor(c(rep("X", 15), rep("Y", 5)), levels = c("X", "Y", "Z"))
   df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  tbl <- table(droplevels(f1), droplevels(f2))
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
-test_that("assocSelect handles numeric with zero variance paired with factor", {
+test_that("assocSelect gives a constant numeric column exactly zero association with a factor (#84)", {
   set.seed(3005)
   n <- 25
   df <- data.frame(
-    zero_var_num = rep(5.5, n),  # Zero variance
+    zero_var_num = rep(5.5, n),
     cat = factor(sample(c("A", "B"), n, replace = TRUE))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
 test_that("assocSelect errors when every row is dropped for missing values (#32, #45)", {
@@ -834,16 +898,19 @@ test_that("assocSelect handles all methods in single mixed dataset", {
   expect_true(!is.null(methods_used))
 })
 
-test_that("assocSelect cramersv handles very sparse table", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference on a heavily imbalanced table (#84)", {
   set.seed(3011)
-  # Very imbalanced factors
-  df <- data.frame(
-    f1 = factor(c(rep("A", 48), rep("B", 2))),
-    f2 = factor(c(rep("X", 49), "Y"))
-  )
+  f1 <- factor(c(rep("A", 48), rep("B", 2)))
+  f2 <- factor(c(rep("X", 49), "Y"))
+  df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(res, "CorrCombo"))
+  tbl <- table(f1, f2)
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
 test_that("assocSelect ordered-numeric pairs work correctly", {
@@ -874,29 +941,36 @@ test_that("assocSelect with kendall for numeric-ordered pairs", {
 # Edge case tests to increase coverage
 # ===========================================================================
 
-test_that("assocSelect handles cramersv with degenerate table", {
+test_that("assocSelect gives a fully-constant factor column exactly zero Cramer's V (#84)", {
+  # f2 has only one observed level -- the constant-column short-circuit in
+  # .pairwise_assoc_value() fires (association well-defined as exactly 0),
+  # not cramersv's own NA path, despite the original "degenerate table"
+  # framing.
   set.seed(3101)
-  # Create factor pairs where table will have issues
-  n <- 10
   df <- data.frame(
     f1 = factor(c("A", "A", "A", "A", "A", "B", "B", "B", "B", "B")),
-    f2 = factor(c("X", "X", "X", "X", "X", "X", "X", "X", "X", "X"))  # All same level
+    f2 = factor(c("X", "X", "X", "X", "X", "X", "X", "X", "X", "X"))
   )
 
-  res <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
-test_that("assocSelect handles eta with constant numeric in one category", {
+test_that("assocSelect's eta matches a hand-computed sum-of-squares reference when one category is constant (#84)", {
   set.seed(3102)
   n <- 20
-  df <- data.frame(
-    num = c(rep(0, 10), rnorm(10)),  # Constant in one category, variable in another
-    cat = factor(c(rep("A", 10), rep("B", 10)))
-  )
+  num <- c(rep(0, 10), rnorm(10))
+  cat <- factor(c(rep("A", 10), rep("B", 10)))
+  df <- data.frame(num = num, cat = cat)
 
-  res <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(res, "CorrCombo"))
+  ss_tot <- sum((num - mean(num))^2)
+  ss_bet <- sum(tapply(num, cat, function(z) length(z) * (mean(z) - mean(num))^2))
+  eta_ref <- sqrt(ss_bet / ss_tot)
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], eta_ref, tolerance = 1e-8)
 })
 
 test_that("assocSelect handles all-zero variance after split by factor", {
@@ -923,33 +997,6 @@ test_that("assocSelect falls back gracefully with problematic pairs", {
   )
 
   res <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect bicor method skipped if WGCNA not installed", {
-  skip_if_not_installed("WGCNA")
-  set.seed(3105)
-  df <- data.frame(num1 = rnorm(20), num2 = rnorm(20))
-
-  res <- assocSelect(df, threshold = 0.9, method_num_num = "bicor")
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect distance method skipped if energy not installed", {
-  skip_if_not_installed("energy")
-  set.seed(3106)
-  df <- data.frame(num1 = rnorm(20), num2 = rnorm(20))
-
-  res <- assocSelect(df, threshold = 0.9, method_num_num = "distance")
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect maximal method skipped if minerva not installed", {
-  skip_if_not_installed("minerva")
-  set.seed(3107)
-  df <- data.frame(num1 = rnorm(20), num2 = rnorm(20))
-
-  res <- assocSelect(df, threshold = 0.9, method_num_num = "maximal")
   expect_true(inherits(res, "CorrCombo"))
 })
 
@@ -1062,19 +1109,20 @@ test_that("assocSelect handles factor-ordered pairs", {
 # assocSelect: cramersv with sparse table (line 187)
 # ===========================================================================
 
-test_that("assocSelect handles cramersv with sparse contingency table", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference on a near-degenerate table (#84)", {
   set.seed(10003)
   n <- 30
+  fac1 <- factor(c(rep("A", n - 1), "B"))
+  fac2 <- factor(c("X", rep("Y", n - 1)))
+  df <- data.frame(fac1 = fac1, fac2 = fac2)
 
-  # Create factors where contingency table has zero rows/cols
-  df <- data.frame(
-    fac1 = factor(c(rep("A", n-1), "B")),  # Almost all A, one B
-    fac2 = factor(c("X", rep("Y", n-1)))   # One X, almost all Y
-  )
+  tbl <- table(fac1, fac2)
+  chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE))$statistic
+  v_ref <- sqrt(as.numeric(chi2) / (sum(tbl) * (min(dim(tbl)) - 1)))
 
-  # This might trigger the sparse table check
-  result <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(result, "CorrCombo"))
+  result <- assocSelect(df, threshold = 1)
+  expect_equal(length(result@subset_list), 1)
+  expect_equal(result@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
 # ===========================================================================
@@ -1117,33 +1165,34 @@ test_that("assocSelect computes association for ordered-ordered pairs", {
 # Deep edge case tests for get_assoc internal function
 # ===========================================================================
 
-test_that("assocSelect handles cramersv with degenerate 1xN table", {
-  # Single-level factor paired with multi-level factor
+test_that("assocSelect gives a single-level factor exactly zero Cramer's V against a multi-level factor (#84)", {
   set.seed(11001)
   n <- 20
-  df <- data.frame(
-    single_level = factor(rep("A", n)),
-    multi_level = factor(sample(c("X", "Y", "Z"), n, replace = TRUE)),
-    num = rnorm(n)
-  )
+  single_level <- factor(rep("A", n))
+  multi_level <- factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
+  df <- data.frame(single_level = single_level, multi_level = multi_level)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
-test_that("assocSelect handles cramersv with table having zero row", {
+test_that("assocSelect's cramersv matches a chisq.test()-derived reference once an unused level is dropped, not NA (#84)", {
+  # Despite the original title claiming a "zero row", droplevels() removes
+  # f1's unused "C" level before the table is built, and the remaining
+  # table is a perfect A<->X / B<->Y bijection -- cramersv is exactly 1,
+  # not NA.
   set.seed(11002)
-  df <- data.frame(
-    f1 = factor(c("A", "A", "A", "A", "B", "B"), levels = c("A", "B", "C")),
-    f2 = factor(c("X", "X", "X", "X", "Y", "Y"), levels = c("X", "Y")),
-    num = c(1, 2, 3, 4, 5, 6)
-  )
+  f1 <- factor(c("A", "A", "A", "A", "B", "B"), levels = c("A", "B", "C"))
+  f2 <- factor(c("X", "X", "X", "X", "Y", "Y"), levels = c("X", "Y"))
+  df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 1)
 })
 
-test_that("assocSelect handles eta with constant numeric within groups", {
+test_that("assocSelect gives a constant numeric column exactly zero eta association with a factor (#84)", {
   set.seed(11003)
   n <- 20
   df <- data.frame(
@@ -1151,11 +1200,12 @@ test_that("assocSelect handles eta with constant numeric within groups", {
     factor_var = factor(sample(c("A", "B"), n, replace = TRUE))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
-test_that("assocSelect handles eta when factor has single level", {
+test_that("assocSelect gives a single-level factor exactly zero eta association with a numeric variable (#84)", {
   set.seed(11004)
   n <- 15
   df <- data.frame(
@@ -1163,51 +1213,27 @@ test_that("assocSelect handles eta when factor has single level", {
     single_cat = factor(rep("only", n))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 0)
 })
 
 # ===========================================================================
 # Deep synthetic edge cases for get_assoc internal function
 # ===========================================================================
 
-test_that("assocSelect handles cramersv with 1xN contingency table", {
-  # Create factors where one has only 1 level after droplevels
-  set.seed(15001)
-  n <- 15
-  df <- data.frame(
-    f1 = factor(rep("A", n)),  # Single level
-    f2 = factor(sample(c("X", "Y", "Z"), n, replace = TRUE)),
-    num = rnorm(n)  # Need 3rd column
-  )
-
-  res <- assocSelect(df, threshold = 0.95)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect handles cramersv where chi2 might be NA", {
-  # Very sparse contingency table
-  set.seed(15004)
-  df <- data.frame(
-    f1 = factor(c("A", "A", "A", "B")),
-    f2 = factor(c("X", "X", "X", "Y")),
-    num = c(1, 2, 3, 4)
-  )
-
-  res <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect handles NA fallback to 0 in association", {
-  # Create scenario where association computation returns NA
+test_that("assocSelect gives a perfectly-aligned imbalanced 2-level pair Cramer's V of exactly 1, not NA (#84)", {
+  # Every A row-position is X and every B row-position is Y -- a perfect
+  # bijection, so cramersv is exactly 1 despite the imbalance, contrary to
+  # the "chi2 might be NA" framing these tests (three near-duplicates,
+  # consolidated here) originally claimed.
   set.seed(15005)
   n <- 10
-  df <- data.frame(
-    f1 = factor(c(rep("A", n-1), "B")),  # Very imbalanced
-    f2 = factor(c(rep("X", n-1), "Y")),  # Very imbalanced
-    num = rnorm(n)
-  )
+  f1 <- factor(c(rep("A", n - 1), "B"))
+  f2 <- factor(c(rep("X", n - 1), "Y"))
+  df <- data.frame(f1 = f1, f2 = f2)
 
-  res <- assocSelect(df, threshold = 0.99)
-  expect_true(inherits(res, "CorrCombo"))
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(length(res@subset_list), 1)
+  expect_equal(res@avg_corr[1], 1)
 })

@@ -618,24 +618,6 @@ test_that("corrPrune errors on unsupported measure for numeric data", {
   )
 })
 
-test_that("corrPrune lexicographic tie-breaking works correctly", {
-  set.seed(1006)
-  n <- 50
-  # Create data where multiple subsets might have same size and avg correlation
-  df <- data.frame(
-    a = rnorm(n),
-    b = rnorm(n),
-    c = rnorm(n),
-    d = rnorm(n)
-  )
-
-  # Run multiple times to verify determinism
-  result1 <- corrPrune(df, threshold = 0.95, mode = "exact")
-  result2 <- corrPrune(df, threshold = 0.95, mode = "exact")
-
-  expect_identical(names(result1), names(result2))
-})
-
 test_that("corrPrune handles all rows with NA (errors)", {
   df <- data.frame(
     x1 = c(NA, NA, NA),
@@ -899,6 +881,23 @@ test_that("corrPrune grouped pruning works with by parameter", {
   expect_equal(length(attr(result, "selected_vars")), 3)
 })
 
+test_that("corrPrune grouped mode genuinely dispatches to exact search, not silently greedy (#82)", {
+  set.seed(1112)
+  n <- 60
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = rep(c("A", "B"), each = n / 2)
+  )
+
+  result <- corrPrune(df, threshold = 0.5, by = "group", group_q = 0.5, mode = "exact")
+  expect_equal(attr(result, "mode"), "exact")
+
+  result_greedy <- corrPrune(df, threshold = 0.5, by = "group", group_q = 0.5, mode = "greedy")
+  expect_equal(attr(result_greedy, "mode"), "greedy")
+})
+
 test_that("corrPrune falls back to a single variable when all vars are correlated", {
   set.seed(1113)
   n <- 50
@@ -971,41 +970,41 @@ test_that("corrPrune attributes are consistent", {
 # Additional tests for lexicographic tiebreaker and edge cases
 # ===========================================================================
 
-test_that("corrPrune lexicographic tiebreaker with tied avg correlation", {
-  # Create exact correlation matrix to trigger lexicographic tiebreaker
-  # Structure: 4 variables forming 2 disjoint pairs
-  # {V1, V2} and {V3, V4} with identical correlations within pairs
-  # Cross-correlations are high (above threshold)
+test_that("corrPrune exact mode selects the lowest-avg-correlation size-2 subset (#84)", {
+  # Despite the two-block correlation structure here, no two candidate
+  # size-2 subsets share the same avg correlation (0.218-0.606, all
+  # distinct) -- this is plain sort-by-avg-correlation selection, not a
+  # tie-break; {V2, V3} is the unique lowest-avg-correlation candidate.
   set.seed(7001)
   n <- 200
 
-  # Create perfectly controlled data
   base1 <- rnorm(n)
   base2 <- rnorm(n)
 
   df <- data.frame(
     V1 = base1,
-    V2 = base1 * 0.3 + rnorm(n, sd = sqrt(1 - 0.3^2)),  # ~0.3 corr with V1
+    V2 = base1 * 0.3 + rnorm(n, sd = sqrt(1 - 0.3^2)),
     V3 = base2,
-    V4 = base2 * 0.3 + rnorm(n, sd = sqrt(1 - 0.3^2))   # ~0.3 corr with V3
+    V4 = base2 * 0.3 + rnorm(n, sd = sqrt(1 - 0.3^2))
   )
 
-  # Make cross-group correlations high by mixing
   df$V3 <- df$V3 + 0.6 * df$V1
   df$V4 <- df$V4 + 0.6 * df$V2
 
   result <- corrPrune(df, threshold = 0.5, mode = "exact")
 
   expect_s3_class(result, "data.frame")
-  expect_true(ncol(result) >= 1)  # At least one variable should be kept
+  expect_equal(sort(names(result)), c("V2", "V3"))
 })
 
-test_that("corrPrune handles multiple tied subsets with lexicographic ordering", {
-  # Design a scenario that triggers the lexicographic tiebreaker
+test_that("corrPrune exact mode keeps every variable when all pairs are mutually compatible (#84)", {
+  # With threshold well above every pairwise correlation, the only maximal
+  # subset is the full variable set -- there is nothing to choose between
+  # (no tie, no lexicographic ordering involved), so the checkable claim is
+  # simply that nothing gets dropped.
   set.seed(7002)
   n <- 50
 
-  # Variables that are all mutually uncorrelated
   df <- data.frame(
     a1 = rnorm(n),
     a2 = rnorm(n),
@@ -1016,8 +1015,7 @@ test_that("corrPrune handles multiple tied subsets with lexicographic ordering",
   result <- corrPrune(df, threshold = 0.99, mode = "exact")
 
   expect_s3_class(result, "data.frame")
-  # With high threshold, all variables should be kept (all uncorrelated)
-  expect_equal(ncol(result), ncol(df))
+  expect_equal(sort(names(result)), sort(names(df)))
 })
 
 test_that("corrPrune character columns only", {
@@ -1059,66 +1057,6 @@ test_that("corrPrune integer column conversion to numeric", {
   )
 
   result <- corrPrune(df, threshold = 0.8, mode = "greedy")
-
-  expect_s3_class(result, "data.frame")
-})
-
-# ===========================================================================
-# Additional edge case tests for full coverage
-# ===========================================================================
-
-test_that("corrPrune lexicographic tie-breaking with identical avg correlations", {
-  set.seed(8001)
-  n <- 100
-
-  # Create data with multiple subsets of same size and same avg correlation
-  # This triggers the lexicographic tie-breaker in exact mode
-  df <- data.frame(
-    a = rnorm(n),
-    b = rnorm(n),
-    c = rnorm(n),
-    d = rnorm(n)
-  )
-
-  # All independent variables - all subsets have avg = 0
-  result1 <- corrPrune(df, threshold = 0.99, mode = "exact")
-  result2 <- corrPrune(df, threshold = 0.99, mode = "exact")
-
-  # Should be deterministic
-  expect_identical(names(result1), names(result2))
-})
-
-test_that("corrPrune handles multiple max-size subsets with same avg correlation", {
-  set.seed(8002)
-  n <- 50
-
-  # All pairs have very similar low correlations -> same avg
-  x1 <- rnorm(n)
-  df <- data.frame(
-    a1 = x1,
-    a2 = rnorm(n),
-    a3 = rnorm(n),
-    a4 = rnorm(n)
-  )
-
-  result <- corrPrune(df, threshold = 0.95, mode = "exact")
-
-  expect_s3_class(result, "data.frame")
-})
-
-test_that("corrPrune lexicographic ordering with alphabetical names", {
-  set.seed(8003)
-  n <- 50
-
-  # Alphabetically ordered names for predictable tie-breaking
-  df <- data.frame(
-    apple = rnorm(n),
-    banana = rnorm(n),
-    cherry = rnorm(n),
-    date = rnorm(n)
-  )
-
-  result <- corrPrune(df, threshold = 0.99, mode = "exact")
 
   expect_s3_class(result, "data.frame")
 })
@@ -1367,6 +1305,40 @@ test_that("corrPrune with maximal information coefficient works", {
   expect_equal(attr(result, "measure"), "maximal")
 })
 
+test_that("corrPrune combines an optional-package measure with by grouping (#82)", {
+  skip_if_not(requireNamespace("WGCNA", quietly = TRUE))
+
+  set.seed(4015)
+  n <- 60
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = rep(c("A", "B"), each = n / 2)
+  )
+
+  result <- corrPrune(df, threshold = 0.5, measure = "bicor", by = "group", group_q = 0.5)
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "measure"), "bicor")
+})
+
+test_that("corrPrune combines the maximal-information-coefficient measure with by grouping (#82)", {
+  skip_if_not(requireNamespace("minerva", quietly = TRUE))
+
+  set.seed(4016)
+  n <- 40  # smaller for speed
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    z = rnorm(n),
+    group = rep(c("A", "B"), each = n / 2)
+  )
+
+  result <- corrPrune(df, threshold = 0.5, measure = "maximal", by = "group", group_q = 0.5)
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "measure"), "maximal")
+})
+
 # ===========================================================================
 # Tests for mixed-type data in corrPrune
 # ===========================================================================
@@ -1436,26 +1408,23 @@ test_that("corrPrune handles ordered-factor pairs", {
   expect_s3_class(result, "data.frame")
 })
 
-# ===========================================================================
-# Tests for edge cases in exact mode tie-breaking
-# ===========================================================================
-
-test_that("corrPrune exact mode handles lexicographic tie-breaking", {
-  set.seed(4009)
-  # Create data where multiple subsets have same size and correlation
+test_that("corrPrune reports assoc_methods_used for mixed-type data (#82)", {
+  set.seed(4020)
   n <- 50
   df <- data.frame(
-    a = rnorm(n),
-    b = rnorm(n),
-    c = rnorm(n),
-    d = rnorm(n)
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    fac1 = factor(sample(c("A", "B"), n, replace = TRUE))
   )
 
-  result <- corrPrune(df, threshold = 0.95, mode = "exact")
-  expect_s3_class(result, "data.frame")
-  # Should be deterministic
-  result2 <- corrPrune(df, threshold = 0.95, mode = "exact")
-  expect_equal(names(result), names(result2))
+  result <- corrPrune(df, threshold = 0.8)
+  methods_used <- attr(result, "assoc_methods_used")
+
+  expect_type(methods_used, "list")
+  expect_true("numeric_numeric" %in% names(methods_used))
+  expect_true("numeric_factor" %in% names(methods_used))
+  expect_equal(methods_used[["numeric_numeric"]], "pearson")
+  expect_equal(methods_used[["numeric_factor"]], "eta")
 })
 
 # ===========================================================================
@@ -1477,35 +1446,6 @@ test_that("corrPrune handles chi-squared NA gracefully", {
   expect_s3_class(result, "data.frame")
 })
 
-
-# ===========================================================================
-# Edge case: Lexicographic tie-breaking in exact mode
-# ===========================================================================
-
-test_that("corrPrune exact mode uses lexicographic tie-breaking when size and avg tied", {
-  set.seed(5001)
-  # Create symmetric data where subsets {a,c} and {b,d} have same size and similar correlations
-  # This is tricky - we need multiple maximal subsets with identical avg correlation
-  n <- 100
-
-  # Create 4 variables where pairs (a,b) and (c,d) are correlated
-  # but (a,c), (a,d), (b,c), (b,d) are uncorrelated
-  a <- rnorm(n)
-  b <- a + rnorm(n, sd = 0.01)  # a and b highly correlated
-  c <- rnorm(n)
-  d <- c + rnorm(n, sd = 0.01)  # c and d highly correlated
-
-  df <- data.frame(a = a, b = b, c = c, d = d)
-
-  # With threshold 0.5, should get subsets like {a,c}, {a,d}, {b,c}, {b,d}
-  # all with size 2 and potentially similar avg correlations
-  result <- corrPrune(df, threshold = 0.5, mode = "exact")
-  expect_s3_class(result, "data.frame")
-
-  # Result should be deterministic
-  result2 <- corrPrune(df, threshold = 0.5, mode = "exact")
-  expect_identical(names(result), names(result2))
-})
 
 # ===========================================================================
 # Edge case: All rows have NA in grouped aggregation
@@ -1537,46 +1477,43 @@ test_that("corrPrune grouped pruning handles groups with all NA", {
 # Need: multiple subsets with SAME size AND SAME avg correlation
 # ===========================================================================
 
-test_that("corrPrune exact mode triggers lexicographic tie-breaking", {
-  # Create correlation matrix where:
-  # - a,b are highly correlated (0.9)
-  # - c,d are highly correlated (0.9)
-  # - All other pairs are uncorrelated (0)
-  # This gives 4 maximal subsets: {a,c}, {a,d}, {b,c}, {b,d}
-  # All size 2, all avg_corr = 0 -> triggers lexicographic tie-breaking
+test_that("corrPrune exact mode selects the lowest-avg-correlation candidate among four same-size subsets (#84)", {
+  # a,b are highly correlated (0.9), c,d are highly correlated (0.9), and
+  # all cross pairs (a-c, a-d, b-c, b-d) are only approximately uncorrelated
+  # (finite-sample noise, not exactly 0) -- giving four size-2 maximal
+  # subsets {a,c}, {a,d}, {b,c}, {b,d} whose avg correlations are close but
+  # NOT exactly tied. This originally claimed to test the lexicographic
+  # tie-break with an inline comment asserting "a,c" wins -- neither claim
+  # holds: the actual winner (verified below) is determined by sort-by-
+  # avg-correlation, and it is "b,d", not "a,c". See
+  # "corrPrune exact mode resolves an exact avg-correlation tie
+  # lexicographically" elsewhere in this file for a genuine tie,
+  # constructed so the four candidates are exactly equal.
 
   n <- 200
   set.seed(9001)
 
-  # Generate base variables
   base1 <- rnorm(n)
   base2 <- rnorm(n)
 
-  # a and b highly correlated
   a <- base1
   b <- base1 + rnorm(n, sd = 0.1)
-
-  # c and d highly correlated (independent of a,b)
   c <- base2
   d <- base2 + rnorm(n, sd = 0.1)
 
   df <- data.frame(a = a, b = b, c = c, d = d)
 
-  # Verify the correlation structure
   cor_mat <- cor(df)
-  expect_true(abs(cor_mat["a", "b"]) > 0.9)  # a-b correlated
-  expect_true(abs(cor_mat["c", "d"]) > 0.9)  # c-d correlated
-  expect_true(abs(cor_mat["a", "c"]) < 0.3)  # cross pairs uncorrelated
+  expect_true(abs(cor_mat["a", "b"]) > 0.9)
+  expect_true(abs(cor_mat["c", "d"]) > 0.9)
+  expect_true(abs(cor_mat["a", "c"]) < 0.3)
 
-  # With threshold 0.5, should get multiple subsets of size 2
-  # All with same avg_corr -> lexicographic tie-breaking
   result <- corrPrune(df, threshold = 0.5, mode = "exact")
   expect_s3_class(result, "data.frame")
-  expect_equal(ncol(result), 2)
+  expect_equal(sort(names(result)), c("b", "d"))
 
-  # Should be deterministic (lexicographic: "a,c" comes first)
   result2 <- corrPrune(df, threshold = 0.5, mode = "exact")
-  expect_identical(sort(names(result)), sort(names(result2)))
+  expect_identical(names(result), names(result2))
 })
 
 # ===========================================================================
@@ -2032,6 +1969,15 @@ test_that("corrPrune force_in infeasibility is detected under grouped aggregatio
   expect_error(
     corrPrune(df, threshold = 0.5, force_in = c("x", "y"), by = "group"),
     "violate the threshold constraint"
+  )
+})
+
+test_that("corrPrune errors when force_in overlaps with by (#82)", {
+  df <- data.frame(x = c(1, 2, 3, 4), y = c(4, 3, 2, 1), group = c("A", "A", "B", "B"))
+
+  expect_error(
+    corrPrune(df, threshold = 0.5, force_in = c("x", "group"), by = "group"),
+    "'force_in' cannot include grouping variable\\(s\\) named in 'by'"
   )
 })
 

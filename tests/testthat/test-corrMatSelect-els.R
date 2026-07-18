@@ -320,12 +320,17 @@ test_that("ELS handles extremely low threshold (no valid pairs)", {
   m[3, 4] <- m[4, 3] <- 0.08
   colnames(m) <- paste0("V", 1:4)
 
-  # With extremely low threshold, fewer variables per subset
+  # With extremely low threshold, only the two pairs never explicitly
+  # assigned a correlation above (V1-V4, V2-V3; both default to 0 from
+  # diag(1, 4)) are compatible -- every other pair (0.08-0.15) exceeds 0.05.
   res <- MatSelect(m, threshold = 0.05, method = "els")
 
   expect_true(inherits(res, "CorrCombo"))
-  # Subsets should exist
-  expect_true(length(res@subset_list) >= 0)
+  expect_equal(length(res@subset_list), 2)
+  expect_setequal(
+    vapply(res@subset_list, function(s) paste(sort(s), collapse = ","), character(1)),
+    c("V1,V4", "V2,V3")
+  )
 })
 
 test_that("Bron-Kerbosch handles extremely low threshold", {

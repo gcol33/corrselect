@@ -582,6 +582,25 @@ test_that("corrSelect errors when all remaining columns are constant", {
   )
 })
 
+test_that("corrSelect errors on a correlation matrix with NA/infinite values (#82)", {
+  # Two non-constant columns of extreme magnitude overflow stats::cor()'s
+  # internal variance/covariance computation to NaN -- distinct from the
+  # constant-column path above (sd != 0 here, so that guard never fires),
+  # exercising corrSelect()'s own "contains NA or infinite values" guard.
+  set.seed(2001)
+  n <- 20
+  df <- data.frame(
+    x1 = rnorm(n) * 1e200,
+    x2 = rnorm(n) * 1e200,
+    x3 = rnorm(n)
+  )
+
+  expect_error(
+    corrSelect(df, threshold = 0.7),
+    "Correlation matrix contains NA or infinite values"
+  )
+})
+
 test_that("corrSelect prints message about skipped non-numeric columns", {
   set.seed(1003)
   df <- data.frame(
@@ -895,33 +914,6 @@ test_that("corrSelect errors on empty numeric data", {
     corrSelect(df, threshold = 0.8),
     "Less than two numeric"
   )
-})
-
-test_that("corrSelect bicor method skipped if WGCNA not installed", {
-  skip_if_not_installed("WGCNA")
-  set.seed(4102)
-  df <- data.frame(num1 = rnorm(20), num2 = rnorm(20), num3 = rnorm(20))
-
-  res <- corrSelect(df, threshold = 0.9, cor_method = "bicor")
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("corrSelect distance method skipped if energy not installed", {
-  skip_if_not_installed("energy")
-  set.seed(4103)
-  df <- data.frame(num1 = rnorm(20), num2 = rnorm(20), num3 = rnorm(20))
-
-  res <- corrSelect(df, threshold = 0.9, cor_method = "distance")
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("corrSelect maximal method skipped if minerva not installed", {
-  skip_if_not_installed("minerva")
-  set.seed(4104)
-  df <- data.frame(num1 = rnorm(20), num2 = rnorm(20), num3 = rnorm(20))
-
-  res <- corrSelect(df, threshold = 0.9, cor_method = "maximal")
-  expect_true(inherits(res, "CorrCombo"))
 })
 
 

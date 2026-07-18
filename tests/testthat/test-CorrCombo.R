@@ -180,6 +180,35 @@ test_that("show() truncates long variable strings gracefully", {
   expect_output(print(combo), "...")
 })
 
+test_that("show() truncates the post-abbreviation string past 32 characters (#82)", {
+  # With short names ("V1, V2, ..."), the >6-variables abbreviation alone
+  # already fits under 32 characters, so this exercises a different branch:
+  # long names push the abbreviated 6-variable string itself past 32
+  # characters, requiring the second substr()-based truncation.
+  vars <- paste0("LongVariableName", sprintf("%02d", 1:10))
+  abbreviated <- paste(c(vars[1:6], "..."), collapse = ", ")
+  expect_true(nchar(abbreviated) > 32)
+
+  combo <- CorrCombo(
+               subset_list = list(vars),
+               avg_corr = 0.5,
+               min_corr = 0.1,
+               max_corr = 0.9,
+               var_names = vars,
+               threshold = 0.5,
+               forced_in = character(),
+               search_type = "els",
+               n_rows_used = 20L)
+
+  output <- capture.output(print(combo))
+  combo_line <- output[grepl("^\\s*\\[ ?1\\]", output)]
+  expect_length(combo_line, 1)
+  # 6-variable abbreviation (123 chars) truncated a second time to
+  # substr(., 1, 29) + "..." (32 chars), not the full abbreviated string.
+  expect_match(combo_line, "LongVariableName01, LongVaria\\.\\.\\.", fixed = FALSE)
+  expect_false(grepl("LongVariableName06", combo_line, fixed = TRUE))
+})
+
 test_that("CorrCombo construction fails with mismatched property lengths", {
   expect_error(
     CorrCombo(

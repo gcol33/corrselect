@@ -114,3 +114,64 @@ test_that("ELS and Bron-Kerbosch exactly match brute-force ground truth under fo
                       info = sprintf("seed=%d n=%d force_in=%s: ELS vs brute force", seed, n, paste(forced, collapse = ",")))
   }
 })
+
+test_that("ELS and Bron-Kerbosch match brute-force ground truth near the threshold boundaries (#83)", {
+  # The main sweep above only samples threshold in [0.2, 0.8]. Values near
+  # the extremes exercise very different graph densities -- near 0, almost
+  # every pair violates (a near-empty threshold graph, mostly singleton
+  # maximal subsets); near 1, almost every pair is compatible (a near-complete
+  # graph, few large maximal cliques) -- either of which could expose an
+  # off-by-one or boundary-comparison bug that mid-range thresholds wouldn't.
+  n_seeds <- 20
+  for (seed in seq_len(n_seeds)) {
+    set.seed(30000 + seed)
+    n <- sample(5:9, 1)
+    mat <- .random_symmetric_matrix(n)
+    # Alternate between near-0 and near-1 thresholds across seeds.
+    threshold <- if (seed %% 2 == 0) stats::runif(1, 0.01, 0.05) else stats::runif(1, 0.95, 0.999)
+
+    truth <- .combo_keys(.brute_force_maximal_subsets(mat, threshold))
+
+    res_bk_pivot   <- MatSelect(mat, threshold, method = "bron-kerbosch", use_pivot = TRUE)
+    res_bk_nopivot <- MatSelect(mat, threshold, method = "bron-kerbosch", use_pivot = FALSE)
+    res_els        <- MatSelect(mat, threshold, method = "els")
+
+    expect_identical(.result_keys(res_bk_pivot, colnames(mat)), truth,
+                      info = sprintf("seed=%d n=%d threshold=%.4f: Bron-Kerbosch (pivot) vs brute force", seed, n, threshold))
+    expect_identical(.result_keys(res_bk_nopivot, colnames(mat)), truth,
+                      info = sprintf("seed=%d n=%d threshold=%.4f: Bron-Kerbosch (no pivot) vs brute force", seed, n, threshold))
+    expect_identical(.result_keys(res_els, colnames(mat)), truth,
+                      info = sprintf("seed=%d n=%d threshold=%.4f: ELS vs brute force", seed, n, threshold))
+  }
+})
+
+test_that("ELS and Bron-Kerbosch match brute-force ground truth at larger n and larger force_in (#83)", {
+  # The main force_in sweep above only samples n in [5,8] and 1-2 forced
+  # variables. Larger n and 3+ forced variables exercise more of the
+  # degeneracy-ordering/induced-subgraph machinery ELS relies on.
+  n_seeds <- 15
+  run <- 0L
+  seed <- 0L
+  while (run < n_seeds) {
+    seed <- seed + 1L
+    set.seed(40000 + seed)
+    n <- sample(9:11, 1)
+    mat <- .random_symmetric_matrix(n)
+    threshold <- stats::runif(1, 0.3, 0.8)
+    forced <- sort(sample(seq_len(n), sample(3:4, 1)))
+
+    sub <- abs(mat[forced, forced, drop = FALSE])
+    if (any(sub[upper.tri(sub)] > threshold)) next
+    run <- run + 1L
+
+    truth <- .combo_keys(.brute_force_maximal_subsets(mat, threshold, force_in = forced))
+
+    res_bk  <- MatSelect(mat, threshold, method = "bron-kerbosch", force_in = forced)
+    res_els <- MatSelect(mat, threshold, method = "els", force_in = forced)
+
+    expect_identical(.result_keys(res_bk, colnames(mat)), truth,
+                      info = sprintf("seed=%d n=%d force_in=%s: Bron-Kerbosch vs brute force", seed, n, paste(forced, collapse = ",")))
+    expect_identical(.result_keys(res_els, colnames(mat)), truth,
+                      info = sprintf("seed=%d n=%d force_in=%s: ELS vs brute force", seed, n, paste(forced, collapse = ",")))
+  }
+})

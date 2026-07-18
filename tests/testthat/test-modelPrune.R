@@ -173,6 +173,52 @@ test_that("modelPrune errors when force_in violates threshold", {
   )
 })
 
+test_that("modelPrune errors when a force_in variable's diagnostic is undefined (#82)", {
+  set.seed(9020)
+  n <- 50
+  df <- data.frame(
+    y = rnorm(n),
+    x1 = rnorm(n),
+    x2 = rep(5, n),  # Constant: undefined (NA) VIF, per #29/#73
+    x3 = rnorm(n)
+  )
+
+  expect_error(
+    modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 10, force_in = "x2"),
+    "diagnostic is undefined for 'force_in'"
+  )
+})
+
+test_that("modelPrune reports mid-loop force_in infeasibility, distinct from the upfront check (#82)", {
+  # A crafted custom engine whose diagnostic for "a"/"b" only exceeds the
+  # limit once "c" has already been removed -- so the upfront feasibility
+  # check (which only sees the full variable set) passes, and the
+  # "only force_in variables remain" branch inside the pruning loop is the
+  # one that has to catch the later violation instead.
+  crafted_engine <- list(
+    name = "crafted",
+    fit = function(formula, data, ...) stats::lm(formula, data = data),
+    diagnostics = function(model, fixed_effects) {
+      base <- c(a = 1, b = 1, c = 100)
+      if (!"c" %in% fixed_effects) {
+        base["a"] <- 100
+        base["b"] <- 100
+      }
+      base[fixed_effects]
+    }
+  )
+
+  set.seed(9021)
+  n <- 20
+  df <- data.frame(y = rnorm(n), a = rnorm(n), b = rnorm(n), c = rnorm(n))
+
+  expect_error(
+    modelPrune(y ~ a + b + c, data = df,
+               engine = crafted_engine, force_in = c("a", "b"), limit = 10),
+    "Cannot satisfy criterion: only force_in variables remain"
+  )
+})
+
 test_that("modelPrune returns correct attributes", {
   df <- mtcars
 
@@ -922,11 +968,14 @@ test_that("modelPrune VIF handles constant predictor", {
   )
 
   # A constant predictor has an undefined (NA) VIF (#29: NA, never silently
-  # 0), so it never exceeds `limit` and modelPrune() succeeds, keeping it.
+  # a plausible-looking finite value, per #73). An undefined diagnostic is
+  # treated as a violation once no finite violation remains, so the constant
+  # predictor is the one removed and the well-behaved ones survive.
   result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 10)
 
   expect_s3_class(result, "data.frame")
-  expect_setequal(names(result), c("y", "x1", "x2", "x3"))
+  expect_setequal(names(result), c("y", "x1", "x3"))
+  expect_equal(attr(result, "removed_vars"), "x2")
 })
 
 test_that("modelPrune with single predictor", {
@@ -1506,7 +1555,7 @@ test_that("modelPrune with condition_number criterion works", {
   expect_s3_class(result, "data.frame")
   expect_equal(attr(result, "criterion"), "condition_number")
   # Should prune at least one collinear variable
-  expect_true(length(attr(result, "removed_vars")) >= 0)
+  expect_true(length(attr(result, "removed_vars")) >= 1)
 })
 
 test_that("modelPrune condition_number prunes collinear predictors", {
