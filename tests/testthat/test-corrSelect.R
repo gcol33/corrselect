@@ -282,10 +282,10 @@ test_that("perfect duplicate (r=1.0) variables are separated into different subs
   expect_gte(length(res_els@subset_list), 2L)
 })
 
-test_that("threshold boundary: r exactly equal to threshold is excluded", {
-  # Test that correlation exactly equal to threshold is treated as > threshold
-
-  # (i.e., the pair is excluded, not included)
+test_that("threshold boundary: r exactly equal to threshold is included (threshold is inclusive)", {
+  # The backend compares |r| <= threshold (src/clique_core.cpp), and the
+  # documented contract is "maximum allowed absolute correlation" -- i.e. a
+  # pair at exactly the threshold is compatible, not excluded.
   cor_mat <- diag(3)
   cor_mat[1, 2] <- cor_mat[2, 1] <- 0.7  # Exactly at threshold
   cor_mat[1, 3] <- cor_mat[3, 1] <- 0.3  # Below threshold
@@ -293,17 +293,19 @@ test_that("threshold boundary: r exactly equal to threshold is excluded", {
   colnames(cor_mat) <- c("A", "B", "C")
   rownames(cor_mat) <- colnames(cor_mat)
 
-  # With threshold = 0.7, A and B (r = 0.7) should NOT be in the same subset
-  # because we require |r| <= threshold (strictly)
   res <- MatSelect(cor_mat, threshold = 0.7, method = "bron-kerbosch")
 
-  # A and B should be separable
-  for (subset in res@subset_list) {
-    if (all(c("A", "B") %in% subset)) {
-      # If A and B appear together, the max correlation should be at threshold
-      # This is actually allowed since threshold is inclusive (<=)
-      expect_true(TRUE)  # This is fine
-    }
+  # All three pairs are at or below the threshold, so {A,B,C} is a single
+  # maximal clique: A and B (r = 0.7) DO co-occur.
+  expect_equal(length(res@subset_list), 1L)
+  expect_true(all(c("A", "B", "C") %in% res@subset_list[[1]]))
+
+  # Tightening the threshold just below 0.7 makes A-B incompatible: they
+  # must now be separated into different maximal subsets.
+  res_strict <- MatSelect(cor_mat, threshold = 0.69, method = "bron-kerbosch")
+  for (subset in res_strict@subset_list) {
+    expect_false(all(c("A", "B") %in% subset),
+      info = "A and B (r=0.7) should not co-occur once threshold < 0.7")
   }
 })
 

@@ -908,18 +908,16 @@ test_that("modelPrune VIF handles constant predictor", {
   df <- data.frame(
     y = rnorm(n),
     x1 = rnorm(n),
-    x2 = rep(5, n),  # Constant - will cause issues
+    x2 = rep(5, n),  # Constant: undefined (NA) VIF, per #29
     x3 = rnorm(n)
   )
 
-  # Should handle gracefully (constant predictor may be auto-removed or cause inf VIF)
-  result <- tryCatch(
-    modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 10),
-    error = function(e) "error"
-  )
+  # A constant predictor has an undefined (NA) VIF (#29: NA, never silently
+  # 0), so it never exceeds `limit` and modelPrune() succeeds, keeping it.
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 10)
 
-  # Either succeeds or throws an expected error
-  expect_true(is.data.frame(result) || result == "error")
+  expect_s3_class(result, "data.frame")
+  expect_setequal(names(result), c("y", "x1", "x2", "x3"))
 })
 
 test_that("modelPrune with single predictor", {
@@ -995,14 +993,13 @@ test_that("modelPrune handles NA in data", {
     x3 = rnorm(n)
   )
 
-  # Should handle NAs (complete cases used)
-  result <- tryCatch(
-    modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 5),
-    error = function(e) "error"
-  )
+  # VIF is computed on complete cases internally, but (like corrPrune()) the
+  # returned data frame is column-subsetted only -- rows are not dropped.
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "vif", limit = 5)
 
-  # May succeed with na.action or fail
-  expect_true(is.data.frame(result) || result == "error")
+  expect_s3_class(result, "data.frame")
+  expect_equal(nrow(result), n)
+  expect_true(all(c("x1", "x2", "x3") %in% names(result)))
 })
 
 test_that("modelPrune custom engine diagnostics without names but wrong length", {
