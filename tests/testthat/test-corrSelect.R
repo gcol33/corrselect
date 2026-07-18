@@ -93,17 +93,18 @@ test_that("returns subsets when correlation is below threshold", {
   expect_gte(length(res@subset_list), 1)
 })
 
-test_that("returns empty when all pairs exceed threshold", {
+test_that("returns size-1 subsets when all pairs exceed threshold", {
   # Create perfectly correlated variables
   x <- 1:10
   y <- x  # Perfect correlation
   df <- data.frame(x = x, y = y)
   res <- corrSelect(df, threshold = 0.5, method = "els")
 
-  # With r = 1.0 and threshold = 0.5, no pair meets threshold
-  # So we should get no subsets of size >= 2
+  # With r = 1.0 and threshold = 0.5, no pair meets threshold, so the only
+  # maximal subsets are "x" and "y" on their own (see #30).
   expect_true(inherits(res, "CorrCombo"))
-  expect_length(res@subset_list, 0)
+  expect_length(res@subset_list, 2)
+  expect_true(all(vapply(res@subset_list, length, integer(1)) == 1))
 })
 
 
@@ -949,5 +950,21 @@ test_that("corrSelect with maximal works", {
 
   result <- corrSelect(df, threshold = 0.5, cor_method = "maximal")
   expect_true(inherits(result, "CorrCombo"))
+})
+
+test_that("corrSelect returns size-1 subsets when all variables are mutually correlated (#30)", {
+  set.seed(7100)
+  n <- 30
+  x <- rnorm(n)
+  df <- data.frame(
+    A = x,
+    B = x + rnorm(n, sd = 0.001),
+    C = x + rnorm(n, sd = 0.001)
+  )
+
+  result <- corrSelect(df, threshold = 0.5)
+
+  expect_equal(length(result@subset_list), 3)
+  expect_setequal(vapply(result@subset_list, identity, character(1)), c("A", "B", "C"))
 })
 

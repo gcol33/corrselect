@@ -24,7 +24,9 @@ for enabling pivoting in Bron–Kerbosch (ignored by ELS).}
 }
 \value{
 An object of class \code{\link{CorrCombo}}, containing all valid subsets and their
-correlation statistics.
+correlation statistics. If every variable is pairwise correlated above \code{threshold},
+the only valid maximal subsets are single variables; these are returned with
+\code{min_corr}/\code{max_corr} set to \code{NA} (there is no pair to summarize).
 }
 \description{
 Identifies all maximal subsets of variables from a symmetric matrix (typically a correlation matrix)

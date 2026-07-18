@@ -26,10 +26,13 @@ test_that("BK includes forced variables", {
   expect_true(all(ok))
 })
 
-test_that("BK returns empty when no subset is valid", {
+test_that("BK returns size-1 subsets when no multi-variable subset is valid", {
   m <- matrix(0.95, 3,3); diag(m) <- 1
   res <- MatSelect(m, threshold = 0.1, method = "bron-kerbosch")
-  expect_length(res@subset_list, 0)
+  # No pair is compatible under so strict a threshold, so the only maximal
+  # subsets are the three variables on their own (see #30).
+  expect_length(res@subset_list, 3)
+  expect_true(all(vapply(res@subset_list, length, integer(1)) == 1))
 })
 
 test_that("BK rejects NA matrices", {
@@ -242,4 +245,32 @@ test_that("MatSelect handles NULL force_in with method bron-kerbosch", {
 
   result <- MatSelect(mat, threshold = 0.5, method = "bron-kerbosch", force_in = NULL)
   expect_true(inherits(result, "CorrCombo"))
+})
+
+test_that("MatSelect returns size-1 maximal subsets when all variables are mutually correlated (#30)", {
+  # Regression test for issue #30: MatSelect() used to unconditionally drop
+  # every size-1 maximal subset, so when no pair of variables is compatible
+  # under the threshold, it returned zero subsets instead of reporting each
+  # variable as its own (trivially valid) maximal subset.
+  mat <- matrix(0.999, 3, 3)
+  diag(mat) <- 1
+  colnames(mat) <- rownames(mat) <- c("A", "B", "C")
+
+  result <- MatSelect(mat, threshold = 0.5)
+
+  expect_equal(length(result@subset_list), 3)
+  expect_setequal(vapply(result@subset_list, identity, character(1)), c("A", "B", "C"))
+  expect_true(all(is.na(result@min_corr)))
+  expect_true(all(is.na(result@max_corr)))
+})
+
+test_that("MatSelect keeps a size-1 force_in subset when all variables are mutually correlated (#30)", {
+  mat <- matrix(0.999, 3, 3)
+  diag(mat) <- 1
+  colnames(mat) <- rownames(mat) <- c("A", "B", "C")
+
+  result <- MatSelect(mat, threshold = 0.5, force_in = "A")
+
+  expect_equal(length(result@subset_list), 1)
+  expect_equal(result@subset_list[[1]], "A")
 })

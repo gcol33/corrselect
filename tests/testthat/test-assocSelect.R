@@ -35,7 +35,10 @@ test_that("assocSelect respects threshold and excludes high associations", {
     c = factor(rep(c("x", "y"), 5))
   )
   res <- assocSelect(df, threshold = 0.01, method = "els")
-  expect_length(res@subset_list, 0)
+  # No pair of variables is compatible under such a strict threshold, so the
+  # only maximal subsets are the three variables on their own (see #30).
+  expect_length(res@subset_list, 3)
+  expect_true(all(vapply(res@subset_list, length, integer(1)) == 1))
 })
 
 

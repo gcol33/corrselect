@@ -580,58 +580,44 @@ corrPrune <- function(
       force_in = force_in
     )
 
-    if (length(combo_result@subset_list) == 0) {
-      # MatSelect() only ever reports maximal subsets of size >= 2 (a lone
-      # variable is a trivially valid, if uninteresting, maximal subset). An
-      # empty subset_list here means the only maximal subset containing
-      # force_in has size <= 1, which is still a valid answer: the pairwise
-      # constraint holds vacuously when there are no pairs.
-      if (!is.null(force_in)) {
-        # force_in's own internal feasibility was already verified in Step 5;
-        # since no compatible extension exists, force_in itself is the answer.
-        selected_vars <- force_in
-      } else {
-        # No pair of variables is compatible under the threshold: every
-        # maximal subset is a single variable. Break the tie the same way as
-        # for multi-variable subsets once we run out of a meaningful
-        # size/avg-correlation comparison: lexicographically first name.
-        selected_vars <- sort(colnames(A_eff))[1]
-      }
+    # Choose one subset using deterministic tie-breaking:
+    # 1. Largest subset size
+    # 2. If tied: smallest average correlation
+    # 3. If tied: lexicographically first
+    #
+    # MatSelect() always returns at least one maximal subset for a matrix
+    # with >= 2 columns -- including size-1 subsets when no pair of
+    # variables is mutually compatible under the threshold -- so
+    # combo_result@subset_list is never empty here.
+
+    subset_sizes <- vapply(combo_result@subset_list, length, integer(1))
+    max_size <- max(subset_sizes)
+    largest_subsets_idx <- which(subset_sizes == max_size)
+
+    if (length(largest_subsets_idx) == 1) {
+      selected_idx <- largest_subsets_idx[1]
     } else {
-      # Choose one subset using deterministic tie-breaking:
-      # 1. Largest subset size
-      # 2. If tied: smallest average correlation
-      # 3. If tied: lexicographically first
+      # Multiple subsets of same max size: break tie by avg correlation
+      avg_corrs <- combo_result@avg_corr[largest_subsets_idx]
+      min_avg <- min(avg_corrs)
+      best_avg_idx <- which(avg_corrs == min_avg)
+      candidates_idx <- largest_subsets_idx[best_avg_idx]
 
-      subset_sizes <- vapply(combo_result@subset_list, length, integer(1))
-      max_size <- max(subset_sizes)
-      largest_subsets_idx <- which(subset_sizes == max_size)
-
-      if (length(largest_subsets_idx) == 1) {
-        selected_idx <- largest_subsets_idx[1]
+      if (length(candidates_idx) == 1) {
+        selected_idx <- candidates_idx[1]
       } else {
-        # Multiple subsets of same max size: break tie by avg correlation
-        avg_corrs <- combo_result@avg_corr[largest_subsets_idx]
-        min_avg <- min(avg_corrs)
-        best_avg_idx <- which(avg_corrs == min_avg)
-        candidates_idx <- largest_subsets_idx[best_avg_idx]
-
-        if (length(candidates_idx) == 1) {
-          selected_idx <- candidates_idx[1]
-        } else {
-          # Still tied: use lexicographic order
-          candidates_subsets <- combo_result@subset_list[candidates_idx]
-          # Sort each subset and concatenate for comparison
-          sorted_strings <- vapply(candidates_subsets, function(s) {
-            paste(sort(s), collapse = ",")
-          }, character(1))
-          lex_order <- order(sorted_strings)
-          selected_idx <- candidates_idx[lex_order[1]]
-        }
+        # Still tied: use lexicographic order
+        candidates_subsets <- combo_result@subset_list[candidates_idx]
+        # Sort each subset and concatenate for comparison
+        sorted_strings <- vapply(candidates_subsets, function(s) {
+          paste(sort(s), collapse = ",")
+        }, character(1))
+        lex_order <- order(sorted_strings)
+        selected_idx <- candidates_idx[lex_order[1]]
       }
-
-      selected_vars <- combo_result@subset_list[[selected_idx]]
     }
+
+    selected_vars <- combo_result@subset_list[[selected_idx]]
 
   } else {
     # Step 7B — Greedy mode: use fast C++ greedy backend

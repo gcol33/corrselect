@@ -19,7 +19,9 @@ NULL
 #'        for enabling pivoting in Bron–Kerbosch (ignored by ELS).
 #'
 #' @return An object of class \code{\link{CorrCombo}}, containing all valid subsets and their
-#' correlation statistics.
+#' correlation statistics. If every variable is pairwise correlated above \code{threshold},
+#' the only valid maximal subsets are single variables; these are returned with
+#' \code{min_corr}/\code{max_corr} set to \code{NA} (there is no pair to summarize).
 #'
 #' @examples
 #' set.seed(42)
@@ -158,11 +160,6 @@ MatSelect <- function(mat,
     avg    <- numeric()
   }
 
-  ## ---- drop singletons ----
-  keep <- vapply(combos, length, integer(1)) > 1L
-  combos <- combos[keep]
-  avg    <- avg[keep]
-
   ## ---- empty-result early return ----
   if (length(combos) == 0L) {
     return(CorrCombo(
@@ -182,6 +179,10 @@ MatSelect <- function(mat,
 
   ## ---- compute min/max correlations ----
   get_minmax <- function(idx) {
+    # A size-1 subset has no pairwise correlation to report.
+    if (length(idx) < 2L) {
+      return(c(NA_real_, NA_real_))
+    }
     sub <- abs(mat[idx, idx])
     cors <- sub[lower.tri(sub)]
     c(min(cors, na.rm = TRUE), max(cors, na.rm = TRUE))

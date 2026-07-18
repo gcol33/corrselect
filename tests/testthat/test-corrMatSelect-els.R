@@ -28,13 +28,16 @@ test_that("ELS includes forced variables", {
   expect_true(all(ok))
 })
 
-test_that("ELS returns empty when no subset is valid", {
+test_that("ELS returns size-1 subsets when no multi-variable subset is valid", {
   m <- matrix(0.95, 3,3); diag(m) <- 1
   res <- MatSelect(m, threshold = 0.1, method = "els")
-  expect_length(res@subset_list, 0)
-  expect_equal(res@avg_corr, numeric(0))
-  expect_equal(res@min_corr, numeric(0))
-  expect_equal(res@max_corr, numeric(0))
+  # No pair is compatible under so strict a threshold, so the only maximal
+  # subsets are the three variables on their own (see #30).
+  expect_length(res@subset_list, 3)
+  expect_true(all(vapply(res@subset_list, length, integer(1)) == 1))
+  expect_equal(res@avg_corr, rep(0, 3))
+  expect_true(all(is.na(res@min_corr)))
+  expect_true(all(is.na(res@max_corr)))
 })
 
 test_that("ELS rejects NA matrices", {
@@ -133,8 +136,10 @@ test_that("ELS handles two perfectly correlated variables", {
 
   res <- MatSelect(m, threshold = 0.5, method = "els")
 
-  # Each should be in separate subset
-  expect_equal(length(res@subset_list), 0)
+  # Each should be in its own separate (size-1) subset (see #30).
+  expect_equal(length(res@subset_list), 2)
+  expect_true(all(vapply(res@subset_list, length, integer(1)) == 1))
+  expect_setequal(vapply(res@subset_list, identity, character(1)), c("A", "B"))
 })
 
 test_that("ELS with force_in and multiple subsets", {
