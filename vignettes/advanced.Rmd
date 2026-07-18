@@ -50,7 +50,7 @@ corrselect offers two algorithmic approaches for `corrPrune()`:
 ### Exact Mode (Graph-Theoretic)
 
 **Algorithm**: Eppstein–Löffler–Strash (ELS) or Bron–Kerbosch
-**Complexity**: O(2^p) - exponential in number of predictors
+**Complexity**: O(3^(p/3)) for Bron-Kerbosch, O(d * 3^(d/3)) for ELS (d = degeneracy) - exponential in number of predictors, tighter than the naive O(2^p) enumeration bound
 **Guarantee**: Finds the **largest** maximal independent set
 
 ```{r}
@@ -781,10 +781,8 @@ stopCluster(cl)
 Decision tree for mode selection:
 
 ```
-p ≤ 15:  Use "exact" (fast enough, guaranteed optimal)
-15 < p ≤ 25:  Use "exact" if time permits, "greedy" if speed critical
-p > 25:  Use "greedy" or "auto"
-p > 100: Always use "greedy"
+p <= max_exact_p (default 100):  Use "exact" (guaranteed optimal; practical up to p ~ 500)
+p > max_exact_p:  Use "greedy" (exact becomes slow; raise max_exact_p to push this boundary higher)
 ```
 
 ---
@@ -1133,7 +1131,7 @@ pipeline <- function(data, response) {
 
 - `vignette("comparison")` - vs caret, Boruta, glmnet
 
-- `vignette("corrselect_vignette")` - Original exact methods vignette
+- `vignette("theory")` - Formal problem statement and exact methods
 
 - `?corrPrune` - Association-based pruning
 

@@ -83,7 +83,7 @@ For correlation-based analysis, \(A\) typically comes from `cor()`.
 ### **Threshold** (\(\tau\))
 
 A user-defined cutoff in \((0,1)\).  
-Pairs with \(|a_{ij}| \ge \tau\) are considered too strongly associated and cannot both appear in a valid subset.
+Pairs with \(|a_{ij}| > \tau\) are considered too strongly associated and cannot both appear in a valid subset.
 
 Common choices:
 
@@ -98,15 +98,15 @@ Common choices:
 ### **Valid subset**
 
 A subset \(S \subseteq \{1,\dots,p\}\) satisfying  
-\(|a_{ij}| < \tau\) for all distinct \(i, j \in S\).  
-All pairwise associations within \(S\) remain below the threshold.
+\(|a_{ij}| \le \tau\) for all distinct \(i, j \in S\).
+All pairwise associations within \(S\) remain at or below the threshold.
 
 ---
 
 ### **Maximal valid subset**
 
 A valid subset that cannot be enlarged.  
-Formally, no variable \(v \notin S\) satisfies \(|a_{vi}| < \tau\) for all \(i \in S\).
+Formally, no variable \(v \notin S\) satisfies \(|a_{vi}| \le \tau\) for all \(i \in S\).
 
 (“Maximal” is not the same as “maximum”, which refers to the largest possible subset.)
 
@@ -118,7 +118,7 @@ An undirected graph \(G = (V, E)\) where:
 
 - each vertex in \(V\) represents a variable  
 
-- an edge \((i,j)\) exists exactly when \(|a_{ij}| < \tau\)
+- an edge \((i,j)\) exists exactly when \(|a_{ij}| \le \tau\)
 
 Edges therefore connect *compatible* (low-association) variables.
 
@@ -229,11 +229,11 @@ corrselect transforms this statistical problem into a **graph problem**:
 
 1. **Represent variables as nodes** in a graph
 
-2. **Draw edges between compatible variables** (correlation below threshold τ)
+2. **Draw edges between compatible variables** (correlation at or below threshold τ)
 
 3. **Find maximal groups** where all nodes are connected (maximal cliques)
 
-Each maximal clique represents a valid subset: a group of variables where every pair has correlation below τ.
+Each maximal clique represents a valid subset: a group of variables where every pair has correlation at or below τ.
 
 ### Why "Maximal" Not "Maximum"?
 
@@ -280,27 +280,27 @@ Observations:
 
 Set threshold τ = 0.7. Which pairs violate the threshold?
 
-- V1-V2: |0.85| ≥ 0.7 ✗ (too high)
+- V1-V2: |0.85| > 0.7 ✗ (too high)
 
-- V3-V4: |0.75| ≥ 0.7 ✗ (too high)
+- V3-V4: |0.75| > 0.7 ✗ (too high)
 
-- All other pairs: < 0.7 ✓ (acceptable)
+- All other pairs: <= 0.7 ✓ (acceptable)
 
 ### Graph Representation
 
-Now we build the **threshold graph** where edges connect *compatible* variables (correlation < 0.7).
+Now we build the **threshold graph** where edges connect *compatible* variables (correlation at or below 0.7).
 
 **Text representation**:
 ```
 Variables: V1, V2, V3, V4
 
-Edges (|correlation| < 0.7):
+Edges (|correlation| <= 0.7):
   V1 —— V3  (cor = 0.10)
   V1 —— V4  (cor = 0.15)
   V2 —— V3  (cor = 0.12)
   V2 —— V4  (cor = 0.18)
 
-Missing edges (|correlation| ≥ 0.7):
+Missing edges (|correlation| > 0.7):
   V1 ⨯ V2  (cor = 0.85, too high)
   V3 ⨯ V4  (cor = 0.75, too high)
 
@@ -313,9 +313,9 @@ Maximal cliques (maximal variable subsets):
 
 Let's verify this with code:
 
-```{r, fig.width=6, fig.height=4, fig.alt="Text output showing adjacency matrix for threshold graph with 4 variables. Matrix displays 1 where edges exist (variables with absolute correlation below 0.7 can coexist) and 0 where edges don't exist (variables with absolute correlation above 0.7 cannot coexist). The pattern reveals which variable pairs are compatible for inclusion in the same maximal subset."}
-# Adjacency matrix for threshold graph (edges where |cor| < 0.7)
-adj_matrix <- abs(cor_4var) < 0.7
+```{r, fig.width=6, fig.height=4, fig.alt="Text output showing adjacency matrix for threshold graph with 4 variables. Matrix displays 1 where edges exist (variables with absolute correlation at or below 0.7 can coexist) and 0 where edges don't exist (variables with absolute correlation above 0.7 cannot coexist). The pattern reveals which variable pairs are compatible for inclusion in the same maximal subset."}
+# Adjacency matrix for threshold graph (edges where |cor| <= 0.7)
+adj_matrix <- abs(cor_4var) <= 0.7
 diag(adj_matrix) <- FALSE  # No self-loops
 
 # Visualize as adjacency matrix
@@ -337,7 +337,7 @@ print(adj_matrix * 1)
 
 Let's visualize this threshold graph with nodes and edges:
 
-```{r, fig.width=8, fig.height=6, fig.alt="Graph visualization with 4 nodes (V1, V2, V3, V4) arranged in a square pattern. Blue edges connect variable pairs with absolute correlation below 0.7 threshold. Red labels on edges show actual correlation values. Large red circles highlight nodes, with white labels. The graph structure reveals two maximal cliques: {V1,V3} and {V2,V4}, corresponding to maximal subsets where all pairwise correlations remain below threshold."}
+```{r, fig.width=8, fig.height=6, fig.alt="Graph visualization with 4 nodes (V1, V2, V3, V4) arranged in a square pattern. Blue edges connect variable pairs with absolute correlation at or below 0.7 threshold. Red labels on edges show actual correlation values. Large red circles highlight nodes, with white labels. The graph structure reveals two maximal cliques: {V1,V3} and {V2,V4}, corresponding to maximal subsets where all pairwise correlations remain at or below threshold."}
 # Node positions (arranged in a square for clarity)
 node_pos <- matrix(c(
   0, 1,    # V1 (top-left)
@@ -422,12 +422,12 @@ This visual representation makes the graph-theoretic formulation concrete: findi
 
 For larger matrices, we can use igraph to visualize the threshold graph structure. Let's demonstrate with `cor_example`, which has 20 variables with known block structure:
 
-```{r, fig.width=8, fig.height=8, fig.alt="Network graph visualization of 20 variables organized into 4 correlation blocks. Nodes are colored by block: red (Block 1, V1-V5, high correlation), orange (Block 2, V6-V10, moderate), light blue (Block 3, V11-V15, low), and dark blue (Block 4, V16-V20, minimal). Gray edges connect variables with absolute correlation below 0.7 threshold. The force-directed layout clusters highly correlated variables together, revealing the block structure. Variables within blocks have few connections (high correlation), while variables across blocks have many connections (low correlation), illustrating which combinations can form maximal cliques."}
+```{r, fig.width=8, fig.height=8, fig.alt="Network graph visualization of 20 variables organized into 4 correlation blocks. Nodes are colored by block: red (Block 1, V1-V5, high correlation), orange (Block 2, V6-V10, moderate), light blue (Block 3, V11-V15, low), and dark blue (Block 4, V16-V20, minimal). Gray edges connect variables with absolute correlation at or below 0.7 threshold. The force-directed layout clusters highly correlated variables together, revealing the block structure. Variables within blocks have few connections (high correlation), while variables across blocks have many connections (low correlation), illustrating which combinations can form maximal cliques."}
 data(cor_example)
 
-# Build threshold graph (edges where |correlation| < 0.7)
+# Build threshold graph (edges where |correlation| <= 0.7)
 threshold <- 0.7
-adj_mat <- abs(cor_example) < threshold
+adj_mat <- abs(cor_example) <= threshold
 diag(adj_mat) <- FALSE
 
 if (requireNamespace("igraph", quietly = TRUE)) {
@@ -456,7 +456,7 @@ if (requireNamespace("igraph", quietly = TRUE)) {
        edge.color = rgb(0.5, 0.5, 0.5, 0.3),
        edge.width = 1,
        layout = layout_with_fr(g),
-       main = sprintf("Threshold Graph (τ = %.1f): Variables with |cor| < %.1f are connected",
+       main = sprintf("Threshold Graph (τ = %.1f): Variables with |cor| <= %.1f are connected",
                      threshold, threshold))
 
   # Add legend
@@ -539,7 +539,7 @@ show(results)
 
 - All have size 2 (cannot be extended further)
 
-- Each satisfies |correlation| < 0.7 for all pairs
+- Each satisfies |correlation| <= 0.7 for all pairs
 
 - Mean/max correlations are low (well below threshold)
 
@@ -569,7 +569,7 @@ Real datasets have similar structure but with more variables and more complex cl
 
 ### Intuitive Problem Statement
 
-The core problem is straightforward: given a set of $p$ variables with known pairwise associations (correlations), identify all largest possible subsets where every pair of variables has an association below a user-defined threshold $\tau$.
+The core problem is straightforward: given a set of $p$ variables with known pairwise associations (correlations), identify all largest possible subsets where every pair of variables has an association at or below a user-defined threshold $\tau$.
 
 Think of this as a social network where variables are people and edges represent "get along well" (low correlation). We want to find all maximal groups of people where everyone gets along with everyone else in the group. A group is "maximal" if we cannot add any more people without introducing a conflict.
 
@@ -591,13 +591,13 @@ A subset $S \subseteq \{1, \dots, p\}$ is valid if:
 
 1. $F \subseteq S$ (if $F$ specified)
 
-2. $|a_{ij}| < \tau$ for all $i, j \in S$ with $i \neq j$
+2. $|a_{ij}| \le \tau$ for all $i, j \in S$ with $i \neq j$
 
 **Objective:**
 
 Find all maximal valid subsets $\mathcal{S} = \{S_1, \dots, S_m\}$ where
 $S_k$ is maximal if no variable $v \notin S_k$ satisfies
-$|a_{vi}| < \tau$ for all $i \in S_k$.
+$|a_{vi}| \le \tau$ for all $i \in S_k$.
 
 **Output:**
 
@@ -631,7 +631,7 @@ All measures are bounded: $a_{ij} \in [0, 1]$ or $a_{ij} \in [-1, 1]$.
 Fix a threshold $\tau \in (0, 1)$. A subset $S \subseteq \{1, \dots, p\}$ is **valid** if:
 
 \[
-\forall i, j \in S,\ i \neq j: \quad |a_{ij}| < \tau
+\forall i, j \in S,\ i \neq j: \quad |a_{ij}| \le \tau
 \]
 
 
@@ -640,13 +640,13 @@ Fix a threshold $\tau \in (0, 1)$. A subset $S \subseteq \{1, \dots, p\}$ is **v
 A valid subset $S$ is **maximal** if no variable $k \notin S$ satisfies:
 
 \[
-|a_{ki}| < \tau \quad \text{for all } i \in S
+|a_{ki}| \le \tau \quad \text{for all } i \in S
 \]
 
 > **Key Points: Problem Formulation**
 >
 > - Input: p × p association matrix A, threshold τ ∈ (0,1)
-> - Valid subset: S where |a_ij| < τ for all pairs i,j ∈ S
+> - Valid subset: S where |a_ij| <= τ for all pairs i,j ∈ S
 > - Maximal: cannot add any variable without violating threshold
 > - Goal: enumerate all maximal valid subsets
 
@@ -674,7 +674,7 @@ Define the **threshold graph** $G = (V, E)$ where:
 
 - $V = \{1, \dots, p\}$ (nodes represent variables)
 
-- $(i, j) \in E$ if and only if $|a_{ij}| < \tau$ (edges connect compatible variables)
+- $(i, j) \in E$ if and only if $|a_{ij}| \le \tau$ (edges connect compatible variables)
 
 **Note the reversal**: An edge $(i, j)$ means variables $i$ and $j$ have *low* correlation (can coexist). This is the complement of the typical "correlation graph" where edges represent high correlation.
 
@@ -710,10 +710,10 @@ print(round(cor_6var, 2))
 
 Threshold graph construction with $\tau = 0.7$:
 
-```{r, fig.width=8, fig.height=4, fig.alt="Two side-by-side visualizations for 6-variable example. Left panel: correlation matrix heatmap with blue (negative), white (zero), and red (positive) colors, numerical values overlaid, and black dashed lines separating two correlation blocks. Right panel: threshold graph showing 6 nodes positioned in two groups based on correlation structure, with blue edges connecting variables where absolute correlation is below 0.7. The dual visualization demonstrates how correlation matrix structure translates to threshold graph topology, revealing maximal cliques within and across correlation blocks."}
+```{r, fig.width=8, fig.height=4, fig.alt="Two side-by-side visualizations for 6-variable example. Left panel: correlation matrix heatmap with blue (negative), white (zero), and red (positive) colors, numerical values overlaid, and black dashed lines separating two correlation blocks. Right panel: threshold graph showing 6 nodes positioned in two groups based on correlation structure, with blue edges connecting variables where absolute correlation is at or below 0.7. The dual visualization demonstrates how correlation matrix structure translates to threshold graph topology, revealing maximal cliques within and across correlation blocks."}
 # Build adjacency matrix for threshold graph
 tau <- 0.7
-adj_matrix <- abs(cor_6var) < tau
+adj_matrix <- abs(cor_6var) <= tau
 diag(adj_matrix) <- FALSE
 
 # Visualize correlation structure and threshold graph
@@ -741,7 +741,7 @@ for (i in 1:6) {
 abline(h = 3.5, lwd = 2, lty = 2, col = "black")
 abline(v = 3.5, lwd = 2, lty = 2, col = "black")
 
-# Panel 2: Threshold graph (edges where |cor| < tau)
+# Panel 2: Threshold graph (edges where |cor| <= tau)
 plot.new()
 plot.window(xlim = c(0, 1), ylim = c(0, 1))
 title(main = sprintf("Threshold Graph (τ = %.1f)", tau))
@@ -778,7 +778,7 @@ text(pos[, 1], pos[, 2], labels = colnames(cor_6var),
 
 # Add legend
 legend("bottomleft",
-       legend = c("Clique 1 (V1-V3)", "Clique 2 (V4-V6)", "Edge: |cor| < 0.7"),
+       legend = c("Clique 1 (V1-V3)", "Clique 2 (V4-V6)", "Edge: |cor| <= 0.7"),
        pch = c(21, 21, NA),
        pt.bg = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7), NA),
        pt.cex = 2,
@@ -796,7 +796,7 @@ par(mfrow = c(1, 1))
 
 The left panel shows the correlation matrix with clear block structure. Variables V1-V3 are highly correlated with each other (correlations 0.75-0.85, shown in red), as are V4-V6 (correlations 0.55-0.65). Between-block correlations are low (0.10-0.30, shown in blue/white).
 
-The right panel shows the corresponding threshold graph with $\tau = 0.7$. An edge connects two variables if their absolute correlation is *below* 0.7 (compatible variables). Note that:
+The right panel shows the corresponding threshold graph with $\tau = 0.7$. An edge connects two variables if their absolute correlation is *at or below* 0.7 (compatible variables). Note that:
 
 - **Within high-correlation groups**: V1-V3 have no edges connecting them (correlations exceed 0.7). Similarly, V4-V6 are not fully connected.
 
@@ -814,7 +814,7 @@ show(results)
 
 **Interpreting the results**:
 
-MatSelect identified two maximal subsets of size 3, exactly matching the visual graph analysis. Both subsets satisfy $|a_{ij}| < 0.7$ for all pairs within the subset.
+MatSelect identified two maximal subsets of size 3, exactly matching the visual graph analysis. Both subsets satisfy $|a_{ij}| \le 0.7$ for all pairs within the subset.
 
 - **Subset 1** (V1, V2, V3): Mean correlation 0.80, max 0.85 - highly redundant within-group
 
@@ -824,7 +824,7 @@ Neither subset can be extended: adding any variable from the other group would i
 
 > **Key Points: Graph-Theoretic Interpretation**
 >
-> - Build threshold graph: nodes = variables, edges connect pairs with |a_ij| < τ
+> - Build threshold graph: nodes = variables, edges connect pairs with |a_ij| <= τ
 > - Maximal valid subsets ↔ maximal cliques in threshold graph
 > - Proven algorithms (ELS, Bron-Kerbosch) enumerate all maximal cliques efficiently
 > - Graph structure reveals variable clustering (densely connected = similar variables)
@@ -839,7 +839,7 @@ The mathematical concepts defined earlier map directly onto the function argumen
 
 Controls which edges appear in the threshold graph.
 
-- `corrPrune(data, threshold = 0.7)` keeps an edge only if \(|a_{ij}| < 0.7\)
+- `corrPrune(data, threshold = 0.7)` keeps an edge only if \(|a_{ij}| \le 0.7\)
 
 - Lower thresholds → stricter pruning → sparser graphs → smaller valid subsets
 
@@ -857,7 +857,7 @@ Ensures that certain variables appear in every returned subset.
 
 - `corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))`
 
-- Internally, the algorithm verifies that \(F\) itself is a valid subset (all pairs in \(F\) satisfy \(|a_{ij}| < \tau\))
+- Internally, the algorithm verifies that \(F\) itself is a valid subset (all pairs in \(F\) satisfy \(|a_{ij}| \le \tau\))
 
 ### **Search type → `mode` and `method` arguments**
 
@@ -865,8 +865,8 @@ Ensures that certain variables appear in every returned subset.
   Enumerates all maximal cliques using ELS or Bron–Kerbosch
 - `mode = "greedy"`  
   Constructs a single maximal clique via a greedy heuristic
-- `mode = "auto"`  
-  Uses exact mode for \(p \le 20\), greedy mode for larger \(p\)
+- `mode = "auto"`
+  Uses exact mode for \(p \le\) `max_exact_p` (default 100), greedy mode for larger \(p\)
 
 Choice of enumeration algorithm:
 
@@ -902,7 +902,7 @@ These properties motivate the `auto` mode: exact for small \(p\), greedy for lar
 Mathematical formulation:
 
 \[
-\text{Find all maximal } S \subseteq \{1,\dots,p\} \text{ such that } |a_{ij}| < 0.7\ \forall i, j \in S,\ \text{with } \{ \text{age} \} \subseteq S.
+\text{Find all maximal } S \subseteq \{1,\dots,p\} \text{ such that } |a_{ij}| \le 0.7\ \forall i, j \in S,\ \text{with } \{ \text{age} \} \subseteq S.
 \]
 
 Implementation:
@@ -1054,11 +1054,11 @@ Subroutine: BK(R, P, X, results)
 
 ### Greedy Heuristic
 
-Iteratively removes variables with highest average absolute association until all pairs satisfy $|a_{ij}| < \tau$.
+Iteratively removes variables with highest average absolute association until all pairs satisfy $|a_{ij}| \le \tau$.
 
 Returns a single valid subset (not necessarily maximal or optimal).
 
-Complexity: $O(p^2)$ vs $O(2^p)$ for exact enumeration.
+Complexity: $O(p^2)$ vs $O(3^{p/3})$ for exact enumeration.
 
 > **Key Points: Search Algorithms**
 >
@@ -1238,11 +1238,11 @@ Algorithm GreedyPrune(A, τ, F):
   # Step 2: Validate forced-in set
   if F ≠ ∅:
     for each i, j ∈ F:
-      if |a_ij| ≥ τ:
+      if |a_ij| > τ:
         return ∅  (infeasible)
 
   # Step 3: Iteratively remove highest-correlated variables
-  while ∃ i, j ∈ S: |a_ij| ≥ τ:
+  while ∃ i, j ∈ S: |a_ij| > τ:
     # Compute average absolute correlation for each variable
     for each v ∈ S \ F:
       avg[v] ← (1 / |S| - 1) × Σ_{u ∈ S, u ≠ v} |a_vu|
@@ -1287,7 +1287,7 @@ Modify the search:
 
 - Require $F \subseteq S$ for all valid $S$
 
-- Verify $|a_{ij}| < \tau$ for all $i, j \in F$ (else problem is infeasible)
+- Verify $|a_{ij}| \le \tau$ for all $i, j \in F$ (else problem is infeasible)
 
 - Search for maximal extensions of $F$ within remaining variables
 
@@ -1377,7 +1377,7 @@ corrselect enumerates **all maximal** subsets rather than just finding the **sin
 
 ### Why Hard Threshold Not Soft Constraint?
 
-corrselect enforces a hard threshold: $|a_{ij}| < \tau$ for all pairs. Alternative approaches use soft constraints (penalty functions, regularization). Why hard thresholds?
+corrselect enforces a hard threshold: $|a_{ij}| \le \tau$ for all pairs. Alternative approaches use soft constraints (penalty functions, regularization). Why hard thresholds?
 
 1. **Interpretability**: "No pair exceeds $\tau$" is a clear, verifiable guarantee. Soft constraints produce solutions where some pairs may exceed $\tau$ with unknown magnitude.
 

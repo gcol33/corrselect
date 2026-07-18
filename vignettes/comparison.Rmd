@@ -257,7 +257,7 @@ Different variable sets selected: Boruta optimizes prediction; corrselect minimi
 | Criterion | Boruta | corrselect |
 |-----------|--------|------------|
 | **Objective** | Predictive power | Redundancy removal |
-| **Criterion** | Permutation importance | $\|r_{ij}\| < \tau$ |
+| **Criterion** | Permutation importance | $\|r_{ij}\| \le \tau$ |
 | **Response** | Required | Not required |
 | **Multicollinearity** | Indirect | Direct |
 | **Stochastic** | Yes | No |
@@ -561,7 +561,7 @@ if (requireNamespace("car", quietly = TRUE)) {
 
 ### corrselect Distinguishing Features
 
-1. **Maximal clique enumeration**: Optimal retention under $|r_{ij}| < \tau$ constraint
+1. **Maximal clique enumeration**: Optimal retention under $|r_{ij}| \le \tau$ constraint
 
 2. **Deterministic**: ELS and Bron-Kerbosch algorithms guarantee reproducibility
 
