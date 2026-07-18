@@ -223,10 +223,15 @@ cat("Run 2 selected:", names(result2), "\n")
 cat("Identical:", identical(names(result1), names(result2)), "\n")
 ```
 
-**Tie-breaking rules**:
-1. Prefer variables with lower **mean absolute correlation** with others
+This example uses the default `mode = "auto"`, which resolves to exact search for this small `p`. Exact mode's tie-breaking rules, applied when multiple maximal subsets exist:
 
-2. If still tied, prefer **lexicographically first** (alphabetical)
+1. Prefer the **largest subset size**
+
+2. If still tied, prefer the **lowest average absolute correlation**
+
+3. If still tied, prefer **lexicographically first** variable names
+
+(Greedy mode, selected via `mode = "greedy"`, breaks ties differently: it removes the variable with the most threshold violations first, then the highest max association, then the highest average association, then the lowest column index -- see the Theory vignette for details.)
 
 This ensures reproducibility across runs, machines, and R versions.
 

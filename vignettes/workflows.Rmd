@@ -552,7 +552,7 @@ The dataset contains gene expression measurements for 200 genes across 100 sampl
 
 ### Greedy pruning
 
-The greedy algorithm iteratively selects variables, prioritizing those with the lowest maximum correlation to already-selected variables. This heuristic runs in O(p²) time compared to the exponential complexity of exact methods.
+The greedy algorithm is a backward-elimination heuristic: it starts with all variables and iteratively removes the "worst" one -- prioritizing the variable with the most threshold violations, then the highest max correlation, then the highest average correlation -- until every remaining pair satisfies the threshold. This heuristic runs in O(p²) time compared to the exponential complexity of exact methods.
 
 ```{r}
 # Extract gene expression data (exclude ID and outcome)

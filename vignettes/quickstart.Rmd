@@ -119,13 +119,15 @@ attr(pruned, "removed_vars")
 
 **How corrPrune() selects among multiple maximal subsets**:
 
-When multiple maximal subsets exist (which is common), `corrPrune()` returns the subset with the **lowest average absolute correlation**. This selection criterion balances three goals:
+When multiple maximal subsets exist (which is common), `corrPrune()` (in exact mode) selects among them by, in order:
 
-1. **Minimize redundancy**: Lower average correlation means more independent variables
+1. **Largest subset size**: Keeping more variables is preferred over keeping fewer
 
-2. **Maximize information**: Prefers diverse variable combinations over tightly clustered ones
+2. **Lowest average absolute correlation**: Among subsets of the same (largest) size, the one with the least redundancy is preferred
 
-3. **Deterministic behavior**: Always returns the same result for the same data
+3. **Alphabetically first variable names**: A final tiebreaker for deterministic behavior when size and average correlation are both tied
+
+Subset size is checked first, so a smaller subset is never preferred over a larger one even if its average correlation is lower.
 
 To explore **all** maximal subsets instead of just the optimal one, use `corrSelect()` (see below).
 
@@ -329,7 +331,7 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 |-----------|-------------|---------|
 | `res` | `CorrCombo` object from `corrSelect`/`assocSelect`/`MatSelect` | *required* |
 | `df` | Original data frame | *required* |
-| `which` | Subset index or `"best"` (lowest avg correlation) | `"best"` |
+| `which` | Subset index or `"best"` (largest size, then lowest avg correlation) | `"best"` |
 | `keepExtra` | Include non-numeric columns in output? | `FALSE` |
 
 **Returns**: Data frame containing only the selected variables.

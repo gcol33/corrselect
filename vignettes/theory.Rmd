@@ -82,7 +82,7 @@ For correlation-based analysis, \(A\) typically comes from `cor()`.
 
 ### **Threshold** (\(\tau\))
 
-A user-defined cutoff in \((0,1)\).  
+A user-defined cutoff in \((0,1]\).
 Pairs with \(|a_{ij}| > \tau\) are considered too strongly associated and cannot both appear in a valid subset.
 
 Common choices:
@@ -581,7 +581,7 @@ Some variables may be designated as "must include" (forced-in). In the social ne
 
 - Association matrix $A \in \mathbb{R}^{p \times p}$ with $a_{ij} = a_{ji}$ and
   $a_{ii} = 1$ for all $i$
-- Threshold $\tau \in (0, 1)$
+- Threshold $\tau \in (0, 1]$
 
 - Optional forced-in set $F \subseteq \{1, \dots, p\}$
 
@@ -628,7 +628,7 @@ All measures are bounded: $a_{ij} \in [0, 1]$ or $a_{ij} \in [-1, 1]$.
 
 ### Threshold Constraint
 
-Fix a threshold $\tau \in (0, 1)$. A subset $S \subseteq \{1, \dots, p\}$ is **valid** if:
+Fix a threshold $\tau \in (0, 1]$. A subset $S \subseteq \{1, \dots, p\}$ is **valid** if:
 
 \[
 \forall i, j \in S,\ i \neq j: \quad |a_{ij}| \le \tau
@@ -645,7 +645,7 @@ A valid subset $S$ is **maximal** if no variable $k \notin S$ satisfies:
 
 > **Key Points: Problem Formulation**
 >
-> - Input: p × p association matrix A, threshold τ ∈ (0,1)
+> - Input: p × p association matrix A, threshold τ ∈ (0,1]
 > - Valid subset: S where |a_ij| <= τ for all pairs i,j ∈ S
 > - Maximal: cannot add any variable without violating threshold
 > - Goal: enumerate all maximal valid subsets
@@ -1054,7 +1054,7 @@ Subroutine: BK(R, P, X, results)
 
 ### Greedy Heuristic
 
-Iteratively removes variables with highest average absolute association until all pairs satisfy $|a_{ij}| \le \tau$.
+Backward elimination: starts with all variables and iteratively removes the "worst" one, in order of (1) most threshold violations, (2) highest max association, (3) highest average association, (4) lowest column index, until all remaining pairs satisfy $|a_{ij}| \le \tau$.
 
 Returns a single valid subset (not necessarily maximal or optimal).
 
@@ -1232,7 +1232,7 @@ Subroutine BK(R, P, X):
 
 ```
 Algorithm GreedyPrune(A, τ, F):
-  # Step 1: Initialize with all variables
+  # Step 1: Initialize with all variables active
   S ← {1, ..., p}
 
   # Step 2: Validate forced-in set
@@ -1241,38 +1241,43 @@ Algorithm GreedyPrune(A, τ, F):
       if |a_ij| > τ:
         return ∅  (infeasible)
 
-  # Step 3: Iteratively remove highest-correlated variables
+  # Step 3: Iteratively remove the worst violating variable
   while ∃ i, j ∈ S: |a_ij| > τ:
-    # Compute average absolute correlation for each variable
-    for each v ∈ S \ F:
-      avg[v] ← (1 / |S| - 1) × Σ_{u ∈ S, u ≠ v} |a_vu|
+    # badness[v] = number of variables v currently violates the
+    # threshold with; only variables with badness[v] > 0 are candidates
+    for each v ∈ S:
+      badness[v] ← |{u ∈ S : u ≠ v, |a_vu| > τ}|
 
-    # Remove variable with highest average correlation
-    v_max ← argmax_{v ∈ S \ F} avg[v]
-    S ← S \ {v_max}
+    # Remove the worst candidate (see Tie-Breaking below), excluding F
+    v_worst ← worst(S \ F, badness, A)
+    S ← S \ {v_worst}
 
   # Step 4: Return pruned subset
   return S
 ```
 
-**Complexity:**  
+**Complexity:**
 \(O(p^2 k)\), where \(k\) is the number of variables removed.
 
 **Properties:**
 
-- **Fast:** polynomial-time procedure  
+- **Fast:** polynomial-time procedure
 
-- **Deterministic:** identical input always yields identical output  
+- **Deterministic:** identical input always yields identical output
 
-- **Non-optimal:** does not guarantee a maximal or largest subset  
+- **Non-optimal:** does not guarantee a maximal or largest subset
 
-- **Forced-in support:** variables in \(F\) are never removed  
+- **Forced-in support:** variables in \(F\) are never removed
 
-**Tie-breaking:** When several variables share the same average absolute correlation:
+**Tie-breaking:** `worst()` selects the removed variable among candidates with `badness[v] > 0`, in order:
 
-1. Prefer the variable with the lower median absolute correlation  
+1. Highest `badness[v]` (most threshold violations)
 
-2. If still tied, prefer the lexicographically first variable name
+2. If still tied, highest max absolute association with any other active variable
+
+3. If still tied, highest average absolute association with all other active variables
+
+4. If still tied, lowest column index
 
 
 ---
