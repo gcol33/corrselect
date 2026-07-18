@@ -663,46 +663,47 @@ modelPrune <- function(
     return(setNames(1.0, fixed_effects))
   }
 
+  # A non-finite entry (Inf/-Inf/NaN) anywhere in the design matrix means the
+  # model/data is corrupted, not merely collinear -- stats::cor()/det() would
+  # silently propagate it into NaN correlations rather than erroring, which
+  # would be indistinguishable from genuine perfect collinearity (also a
+  # NaN-determinant case). Surface it explicitly as a computation failure
+  # instead, matching the tryCatch error path below.
+  if (!all(is.finite(X))) {
+    warning("VIF computation failed: design matrix contains non-finite values (Inf/-Inf/NaN).")
+    return(setNames(rep(NA, length(fixed_effects)), fixed_effects))
+  }
+
   zero_var <- .zero_variance_cols(X)
 
-  # VIF_i = 1 / (1 - R²_i), where R²_i is from regressing predictor i on all
-  # other predictors.
+  # Generalized VIF (Fox & Monette 1992): for a term occupying columns `idx`
+  # among all p non-constant design columns, GVIF = det(R[idx,idx]) *
+  # det(R[-idx,-idx]) / det(R), where R is the correlation matrix of all
+  # non-constant columns. This reduces to the classic 1/(1-R^2) formula when
+  # `idx` is a single column, and -- unlike averaging a multi-column term's
+  # dummy columns into one vector -- correctly captures collinearity for
+  # multi-level factors, matching car::vif()'s GVIF.
+  nonconst_cols <- colnames(X)[!zero_var]
+  R_full <- if (length(nonconst_cols) >= 2) stats::cor(X[, nonconst_cols, drop = FALSE]) else NULL
+
   .map_fixed_effects_by_columns(
     X, model, engine_str, fixed_effects,
     score_fn = function(pred, matching_cols) {
       # A constant predictor has an undefined VIF -- return NA directly
-      # rather than letting the R² computation below land on floating-point
-      # noise close to (but not exactly) 0/0.
+      # rather than letting the determinant ratio below land on
+      # floating-point noise close to (but not exactly) 0/0.
       if (any(zero_var[matching_cols])) return(NA)
 
-      y_i <- X[, matching_cols, drop = FALSE]
-      X_other <- X[, !colnames(X) %in% matching_cols, drop = FALSE]
+      other_cols <- setdiff(nonconst_cols, matching_cols)
+      if (length(other_cols) == 0) return(1.0)  # No other predictors
 
-      if (ncol(X_other) == 0) return(1.0)  # No other predictors
-
-      # Compute R² using correlation matrix approach (more numerically stable)
       tryCatch({
-        # For multiple columns (factor), use first principal component
-        y_vec <- if (ncol(y_i) > 1) y_i %*% rep(1 / ncol(y_i), ncol(y_i)) else y_i[, 1]
+        det_own   <- det(R_full[matching_cols, matching_cols, drop = FALSE])
+        det_other <- det(R_full[other_cols, other_cols, drop = FALSE])
+        det_full  <- det(R_full)
+        gvif <- (det_own * det_other) / det_full
 
-        fit <- lm(y_vec ~ X_other)
-
-        if (is.null(fit) || inherits(fit, "try-error")) {
-          Inf
-        } else {
-          r_squared <- summary(fit)$r.squared
-
-          # Handle edge cases:
-          # - If R² is NA (degenerate case), set VIF to Inf
-          # - If R² > 0.9999, clamp to avoid near-zero denominators
-          if (is.na(r_squared)) {
-            Inf
-          } else if (r_squared > 0.9999) {
-            1 / (1 - 0.9999)  # VIF = 10000
-          } else {
-            1 / (1 - r_squared)  # VIF = 1 / (1 - R²)
-          }
-        }
+        if (is.na(gvif) || !is.finite(gvif) || gvif < 0) Inf else gvif
       }, error = function(e) {
         warning(sprintf("VIF computation failed for '%s': %s", pred, e$message))
         NA

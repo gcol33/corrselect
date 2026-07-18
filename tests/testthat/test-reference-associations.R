@@ -31,7 +31,7 @@ test_that("eta-squared matches a hand-computed sum-of-squares reference", {
 
   ss_tot <- sum((num - mean(num))^2)
   ss_bet <- sum(tapply(num, cat, function(z) length(z) * (mean(z) - mean(num))^2))
-  eta_ref <- sqrt(ss_bet / ss_tot)
+  eta_ref <- ss_bet / ss_tot
 
   res <- assocSelect(df, threshold = 1)
   expect_equal(length(res@subset_list), 1)
@@ -100,7 +100,7 @@ test_that("a near-constant numeric column's eta matches the reference, checked i
 
   ss_tot <- sum((near_const - mean(near_const))^2)
   ss_bet <- sum(tapply(near_const, cat, function(z) length(z) * (mean(z) - mean(near_const))^2))
-  eta_ref <- sqrt(ss_bet / ss_tot)
+  eta_ref <- ss_bet / ss_tot
 
   res <- assocSelect(df, threshold = 1)
   expect_equal(res@avg_corr[1], eta_ref, tolerance = 1e-8)
@@ -128,21 +128,32 @@ test_that("a constant numeric column gets exactly zero bicor association via cor
   expect_equal(sort(colnames(pruned)), c("const", "x"))
 })
 
-test_that("a constant numeric column gets exactly zero distance-correlation association via corrPrune, not NA (#64)", {
+test_that("a constant numeric column gets exactly zero distance-correlation association via corrPrune, not NA (#64), with no upstream warning leaking through (#94)", {
   skip_if_not(requireNamespace("energy", quietly = TRUE))
   set.seed(9382)
   df <- data.frame(const = rep(3, 20), x = rnorm(20))
 
-  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy", measure = "distance")
+  # Regression test for #94: energy::dcor() warns on a near/zero-variance
+  # input; that warning must not reach the caller, matching the other
+  # numeric-numeric methods (pearson/spearman/kendall/bicor), all of which
+  # already suppress it since the is_const zero-out makes it moot.
+  pruned <- expect_no_warning(
+    corrPrune(df, threshold = 0.01, mode = "greedy", measure = "distance")
+  )
   expect_equal(sort(colnames(pruned)), c("const", "x"))
 })
 
-test_that("a constant numeric column gets exactly zero maximal-information-coefficient association via corrPrune, not NA (#64)", {
+test_that("a constant numeric column gets exactly zero maximal-information-coefficient association via corrPrune, not NA (#64), with no upstream warning leaking through (#94)", {
   skip_if_not(requireNamespace("minerva", quietly = TRUE))
   set.seed(9383)
   df <- data.frame(const = rep(3, 20), x = rnorm(20))
 
-  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy", measure = "maximal")
+  # Regression test for #94: minerva::mine() warns
+  # ("Found variables with nearly 0 variance") on a constant input; that
+  # warning must not reach the caller.
+  pruned <- expect_no_warning(
+    corrPrune(df, threshold = 0.01, mode = "greedy", measure = "maximal")
+  )
   expect_equal(sort(colnames(pruned)), c("const", "x"))
 })
 

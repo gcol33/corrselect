@@ -1729,11 +1729,14 @@ test_that("modelPrune handles all NA/Inf diagnostics gracefully", {
     x3 = x1   # Perfectly collinear
   )
 
-  # Should warn about NA/Inf diagnostics
-  expect_warning(
-    result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5),
-    "NA|Inf|singular|collinear|remove all|perfect fit"
-  )
+  # GVIF (#86) computes the collinear predictors' Inf VIF directly via a
+  # singular correlation-matrix determinant, with no intermediate model fit
+  # to raise an incidental warning -- it converges to a single retained
+  # predictor silently, rather than through a warn-and-stop path.
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
+  expect_s3_class(result, "data.frame")
+  expect_equal(ncol(result), 2)  # response column + one surviving predictor
+  expect_equal(attr(result, "selected_vars"), "x1")
 })
 
 # ===========================================================================
@@ -1857,11 +1860,10 @@ test_that("modelPrune VIF handles factor with many levels", {
 })
 
 # ===========================================================================
-# VIF: R-squared is NA (line 669)
-# This happens with perfectly collinear predictors
+# VIF: perfectly collinear predictors (GVIF determinant collapses to 0)
 # ===========================================================================
 
-test_that("modelPrune handles R-squared NA from collinearity", {
+test_that("modelPrune handles perfectly collinear predictors", {
   set.seed(11003)
   n <- 50
 
@@ -1874,11 +1876,19 @@ test_that("modelPrune handles R-squared NA from collinearity", {
     x4 = rnorm(n)
   )
 
-  # This creates a situation where R² might be NA or very close to 1
-  expect_warning(
-    result <- modelPrune(y ~ x1 + x2 + x3 + x4, data = df, limit = 5)
-  )
+  # x1/x2/x3 are pairwise perfectly correlated, which makes the *entire*
+  # design matrix rank-deficient -- confirmed independently: car::vif() on
+  # the equivalent lm() fit errors with "there are aliased coefficients in
+  # the model" rather than returning a value for any predictor, x4 included.
+  # GVIF's shared det(R_full) denominator is exactly 0 for every predictor
+  # in this state (not just x1/x2/x3), so every predictor -- including the
+  # otherwise-independent x4 -- is flagged Inf together; modelPrune()'s
+  # last-in-formula-order tie-break then removes x4, x3, x2 in that order
+  # until the remaining design matrix (x1 alone) is non-singular again.
+  result <- modelPrune(y ~ x1 + x2 + x3 + x4, data = df, limit = 5)
   expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "selected_vars"), "x1")
+  expect_equal(attr(result, "removed_vars"), c("x4", "x3", "x2"))
 })
 
 # ===========================================================================
@@ -2002,7 +2012,7 @@ test_that("modelPrune handles single predictor (no VIF needed)", {
   expect_true("x" %in% names(result))
 })
 
-test_that("modelPrune with all diagnostics NA/Inf warns and stops", {
+test_that("modelPrune with all diagnostics Inf converges to a single predictor", {
   set.seed(14002)
   n <- 30
   # Create perfectly collinear data
@@ -2015,13 +2025,10 @@ test_that("modelPrune with all diagnostics NA/Inf warns and stops", {
   )
 
   # Perfectly duplicated predictors give each other an (effectively infinite)
-  # VIF, which R's own summary.lm() flags while fitting the intermediate
-  # regressions VIF needs; modelPrune() should still converge to a single
-  # non-collinear predictor rather than erroring out.
-  expect_warning(
-    result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5),
-    "perfect fit"
-  )
+  # GVIF, computed directly from the singular correlation-matrix determinant
+  # (#86) with no intermediate model fit; modelPrune() should still converge
+  # to a single non-collinear predictor rather than erroring out.
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df, limit = 5)
   expect_equal(attr(result, "selected_vars"), "x1")
 })
 
@@ -2101,15 +2108,35 @@ test_that("modelPrune VIF matches car::vif()'s GVIF for a numeric predictor alon
   reference <- car::vif(fit)  # matrix: GVIF, Df, GVIF^(1/(2*Df))
   ours <- corrselect:::.compute_vif(fit, "lm", c("x1", "cat"))
 
-  # x1 has Df = 1, where our formula (regress on all others) is mathematically
-  # identical to car's GVIF -- this should match exactly.
+  # Both x1 (Df = 1) and cat (Df = 2) use the same generalized-variance-ratio
+  # GVIF formula as car::vif() (Fox & Monette 1992), so both match exactly.
   expect_equal(unname(ours["x1"]), unname(reference["x1", "GVIF"]), tolerance = 1e-6)
+  expect_equal(unname(ours["cat"]), unname(reference["cat", "GVIF"]), tolerance = 1e-6)
+})
 
-  # `cat` has Df = 2: our implementation averages the factor's dummy columns
-  # rather than computing the proper generalized-variance-ratio GVIF, so it is
-  # a documented approximation, not an exact match. It should still be in the
-  # same ballpark as the reference for this low-collinearity design.
-  expect_equal(unname(ours["cat"]), unname(reference["cat", "GVIF"]), tolerance = 0.01)
+test_that("modelPrune VIF detects severe collinearity in a multi-level factor (#86)", {
+  # Regression test for #86: .compute_vif() used to average a factor's dummy
+  # columns into one numeric vector instead of computing GVIF, which could
+  # cancel out real collinearity for a factor whose non-reference levels
+  # diverge from the reference mean in opposite directions.
+  skip_if_not_installed("car")
+  set.seed(42)
+  n <- 300
+  grp <- factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  x <- ifelse(grp == "A", rnorm(n, 0, 0.5),
+       ifelse(grp == "B", rnorm(n, -5, 0.5), rnorm(n, 5, 0.5)))
+  df <- data.frame(y = rnorm(n), x = x, grp = grp)
+  fit <- lm(y ~ x + grp, data = df)
+
+  reference <- car::vif(fit)
+  ours <- corrselect:::.compute_vif(fit, "lm", c("x", "grp"))
+
+  expect_equal(unname(ours["x"]), unname(reference["x", "GVIF"]), tolerance = 1e-6)
+  expect_equal(unname(ours["grp"]), unname(reference["grp", "GVIF"]), tolerance = 1e-6)
+  # grp is almost perfectly determined by x -- both should be flagged as
+  # severely collinear under the package's default limit = 5, not the ~1.0
+  # ("no collinearity") the old row-average implementation produced for grp.
+  expect_gt(unname(ours["grp"]), 5)
 })
 
 test_that("modelPrune .compute_vif() returns NA (not 0) when VIF computation errors (#29)", {

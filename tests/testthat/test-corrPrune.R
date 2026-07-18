@@ -106,12 +106,35 @@ test_that("corrPrune validates threshold argument", {
 
   expect_error(
     corrPrune(df, threshold = -0.5),
-    "'threshold' must be non-negative and non-missing"
+    "'threshold' must be in the range \\[0, 1\\]"
   )
 
   expect_error(
     corrPrune(df, threshold = NA),
     "'threshold' must be a single numeric value"
+  )
+})
+
+test_that("corrPrune rejects threshold > 1 consistently across modes (#90)", {
+  # Regression test for #90: mode = "auto" resolved to "exact" and routed
+  # through MatSelect()'s own (0, 1] check for threshold > 1, but
+  # mode = "greedy" had no such check and silently accepted it. corrPrune()
+  # now validates the upper bound itself, before mode dispatch, so both
+  # modes fail the same way on the same out-of-range input.
+  set.seed(9342)
+  df <- data.frame(x = rnorm(10), y = rnorm(10))
+
+  expect_error(
+    corrPrune(df, threshold = 1.5, mode = "auto"),
+    "'threshold' must be in the range \\[0, 1\\]"
+  )
+  expect_error(
+    corrPrune(df, threshold = 1.5, mode = "greedy"),
+    "'threshold' must be in the range \\[0, 1\\]"
+  )
+  expect_error(
+    corrPrune(df, threshold = 1.5, mode = "exact"),
+    "'threshold' must be in the range \\[0, 1\\]"
   )
 })
 
@@ -583,7 +606,7 @@ test_that("corrPrune greedy mode works with different correlation measures", {
 # Note: For full mixed-type data support, use assocSelect() which is designed
 # for that purpose. corrPrune works best with numeric-only data.
 
-test_that("corrPrune handles integer columns (converted to numeric)", {
+test_that("corrPrune handles integer columns (converted to numeric internally, kept integer on output) (#88)", {
   set.seed(1004)
   n <- 30
   df <- data.frame(
@@ -594,6 +617,12 @@ test_that("corrPrune handles integer columns (converted to numeric)", {
   result <- corrPrune(df, threshold = 0.7, mode = "exact")
   expect_s3_class(result, "data.frame")
   expect_equal(attr(result, "measure"), "pearson")
+  # Regression test for #88: the internal integer -> numeric conversion used
+  # for association computation must not leak into the returned columns.
+  expect_true(is.integer(result$int1))
+  expect_true(is.integer(result$int2))
+  expect_identical(result$int1, df$int1)
+  expect_identical(result$int2, df$int2)
 })
 
 test_that("corrPrune errors on unsupported column types", {
@@ -1047,7 +1076,7 @@ test_that("corrPrune factor-only data", {
   expect_s3_class(result, "data.frame")
 })
 
-test_that("corrPrune integer column conversion to numeric", {
+test_that("corrPrune integer columns stay integer in greedy mode output (#88)", {
   set.seed(7005)
   n <- 30
   df <- data.frame(
@@ -1059,6 +1088,9 @@ test_that("corrPrune integer column conversion to numeric", {
   result <- corrPrune(df, threshold = 0.8, mode = "greedy")
 
   expect_s3_class(result, "data.frame")
+  for (nm in names(result)) {
+    expect_identical(result[[nm]], df[[nm]])
+  }
 })
 
 test_that("corrPrune exact mode with single variable forced in", {
@@ -1674,7 +1706,7 @@ test_that("corrPrune auto mode switches from exact to greedy exactly at the defa
   expect_equal(attr(res_over, "mode"), "greedy")
 })
 
-test_that("corrPrune handles character columns by converting to factor", {
+test_that("corrPrune converts character columns to factor internally but returns the original character column (#88)", {
   set.seed(12001)
   n <- 20
   df <- data.frame(
@@ -1685,9 +1717,11 @@ test_that("corrPrune handles character columns by converting to factor", {
 
   res <- corrPrune(df, threshold = 0.9)
   expect_s3_class(res, "data.frame")
+  expect_true(is.character(res$char_col))
+  expect_identical(res$char_col, df$char_col)
 })
 
-test_that("corrPrune handles logical columns by converting to factor", {
+test_that("corrPrune converts logical columns to factor internally but returns the original logical column (#88)", {
   set.seed(12002)
   n <- 20
   df <- data.frame(
@@ -1697,9 +1731,11 @@ test_that("corrPrune handles logical columns by converting to factor", {
 
   res <- corrPrune(df, threshold = 0.9)
   expect_s3_class(res, "data.frame")
+  expect_true(is.logical(res$bool_col))
+  expect_identical(res$bool_col, df$bool_col)
 })
 
-test_that("corrPrune handles integer columns by converting to numeric", {
+test_that("corrPrune converts integer columns to numeric internally but returns the original integer column (#88)", {
   set.seed(12003)
   n <- 20
   df <- data.frame(
@@ -1709,6 +1745,8 @@ test_that("corrPrune handles integer columns by converting to numeric", {
 
   res <- corrPrune(df, threshold = 0.9)
   expect_s3_class(res, "data.frame")
+  expect_true(is.integer(res$int_col))
+  expect_identical(res$int_col, df$int_col)
 })
 
 # ===========================================================================
@@ -1939,6 +1977,28 @@ test_that("corrPrune greedy mode's 4th tie-break (lowest column index removed) d
 
   keep <- corrselect:::greedyPruneBackend(m, 0.5, NULL)
   expect_setequal(colnames(m)[keep], c("C", "D", "E"))
+})
+
+test_that("greedyPruneBackend() errors when two force_in variables mutually violate the threshold (#93)", {
+  # Regression test for #93: when every variable in a violating pair is
+  # protected by force_in, greedyPruneBackend() cannot remove either one to
+  # satisfy the threshold and must stop() with a specific message, rather
+  # than looping forever or silently returning both. This C++-level check is
+  # unreachable through the public corrPrune() API (its R layer pre-checks
+  # force_in-vs-force_in violations first), but is directly testable here,
+  # matching the tie-break tests above that already call the backend
+  # directly.
+  m <- matrix(c(
+    1,   0.95,
+    0.95, 1
+  ), 2, 2, byrow = TRUE)
+  colnames(m) <- rownames(m) <- c("A", "B")
+
+  # force_in indices are 0-based at this direct C++ boundary.
+  expect_error(
+    corrselect:::greedyPruneBackend(m, 0.5, c(0L, 1L)),
+    "Cannot satisfy threshold: force_in variables violate the constraint"
+  )
 })
 
 test_that("corrPrune greedy and exact modes agree on an unambiguous case", {

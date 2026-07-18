@@ -20,7 +20,10 @@ corrPrune(
 \item{data}{A data.frame containing candidate predictors.}
 
 \item{threshold}{Numeric scalar. Maximum allowed pairwise association
-(default: 0.7). Must be non-negative.}
+(default: 0.7). Must be in \verb{[0, 1]} -- every supported association
+measure is bounded in \verb{[0, 1]} (in absolute value), so this range is
+enforced the same way regardless of \code{mode} (\code{threshold = 0} is valid
+only in \code{mode = "greedy"}; see Mode Selection below).}
 
 \item{measure}{Character string specifying the numeric-numeric association
 measure to use. One of \code{"auto"} (default, Pearson), \code{"pearson"},
@@ -60,7 +63,10 @@ mode is used when \code{mode = "auto"}. Default: 100.}
 \item{...}{Additional arguments (reserved for future use).}
 }
 \value{
-A data.frame containing the pruned subset of predictors. The result
+A data.frame containing the pruned subset of predictors, with the
+selected columns unchanged from \code{data} (same types and values --
+character/logical/integer columns are converted internally only for
+association computation, never in the returned data). The result
 has the following attributes:
 \describe{
 \item{selected_vars}{Character vector of retained variable names}

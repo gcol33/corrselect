@@ -7,7 +7,10 @@
 #'
 #' @param data A data.frame containing candidate predictors.
 #' @param threshold Numeric scalar. Maximum allowed pairwise association
-#'   (default: 0.7). Must be non-negative.
+#'   (default: 0.7). Must be in `[0, 1]` -- every supported association
+#'   measure is bounded in `[0, 1]` (in absolute value), so this range is
+#'   enforced the same way regardless of `mode` (`threshold = 0` is valid
+#'   only in `mode = "greedy"`; see Mode Selection below).
 #' @param measure Character string specifying the numeric-numeric association
 #'   measure to use. One of `"auto"` (default, Pearson), `"pearson"`,
 #'   `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, or `"maximal"`. This
@@ -37,7 +40,10 @@
 #'   mode is used when `mode = "auto"`. Default: 100.
 #' @param ... Additional arguments (reserved for future use).
 #'
-#' @return A data.frame containing the pruned subset of predictors. The result
+#' @return A data.frame containing the pruned subset of predictors, with the
+#'   selected columns unchanged from `data` (same types and values --
+#'   character/logical/integer columns are converted internally only for
+#'   association computation, never in the returned data). The result
 #'   has the following attributes:
 #'   \describe{
 #'     \item{selected_vars}{Character vector of retained variable names}
@@ -134,8 +140,8 @@ corrPrune <- function(
   if (!is.numeric(threshold) || length(threshold) != 1L) {
     stop("'threshold' must be a single numeric value")
   }
-  if (is.na(threshold) || threshold < 0) {
-    stop("'threshold' must be non-negative and non-missing")
+  if (is.na(threshold) || threshold < 0 || threshold > 1) {
+    stop("'threshold' must be in the range [0, 1] and non-missing")
   }
 
   # Check measure
@@ -522,10 +528,10 @@ corrPrune <- function(
   p <- ncol(data)
   if (mode == "auto") {
     # Exact mode routes through MatSelect(), which requires >= 2 columns
-    # and threshold in (0, 1] -- stricter than corrPrune()'s own contract
-    # (>= 1 column, threshold >= 0). "auto" degrades to greedy for inputs
-    # exact mode cannot service, rather than erroring on documented-valid
-    # corrPrune() input.
+    # and threshold > 0 -- stricter than corrPrune()'s own contract (>= 1
+    # column, threshold >= 0; both cap at 1). "auto" degrades to greedy for
+    # inputs exact mode cannot service, rather than erroring on
+    # documented-valid corrPrune() input.
     mode_used <- if (p <= max_exact_p && p >= 2 && threshold > 0) "exact" else "greedy"
   } else {
     mode_used <- mode
@@ -537,10 +543,11 @@ corrPrune <- function(
 
   if (mode_used == "exact") {
     # Step 7A — Exact mode: use MatSelect to get all maximal subsets.
-    # MatSelect() requires >= 2 columns and threshold in (0, 1], stricter
-    # than corrPrune()'s own contract -- surface a corrPrune-specific error
-    # for an explicit mode = "exact" request on input it cannot service,
-    # rather than letting MatSelect()'s internal message leak through.
+    # MatSelect() requires >= 2 columns and threshold > 0, stricter than
+    # corrPrune()'s own contract on the lower bound (both cap at 1) --
+    # surface a corrPrune-specific error for an explicit mode = "exact"
+    # request on input it cannot service, rather than letting MatSelect()'s
+    # internal message leak through.
     if (p < 2) {
       stop("mode = 'exact' requires at least two variables in 'data'. ",
            "Use mode = 'greedy' (or the default mode = 'auto') for single-variable input.")
@@ -621,8 +628,12 @@ corrPrune <- function(
   # Step 8 — Final output
   # ===========================================================================
 
-  # Return the pruned data with selected variables
-  data_pruned <- data[, selected_vars, drop = FALSE]
+  # Return the pruned data with selected variables, subsetting from the
+  # caller's original untouched columns (data_orig) rather than the
+  # internally-converted `data` (character/logical -> factor, integer ->
+  # numeric), so corrPrune() only ever removes columns -- it never silently
+  # changes the type of a column it keeps.
+  data_pruned <- data_orig[, selected_vars, drop = FALSE]
 
   # Compute removed variables
   all_vars <- colnames(data)

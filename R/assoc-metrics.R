@@ -54,8 +54,8 @@
       cat_var <- if (type_x == "factor") x else y
       num_var <- if (type_x == "numeric") x else y
       ss_tot <- sum((num_var - mean(num_var))^2)
-      sqrt(sum(tapply(num_var, cat_var,
-                       function(z) length(z) * (mean(z) - mean(num_var))^2)) / ss_tot)
+      sum(tapply(num_var, cat_var,
+                 function(z) length(z) * (mean(z) - mean(num_var))^2)) / ss_tot
     },
     stop("Unsupported association method: ", method)
   )
@@ -147,7 +147,7 @@
       m <- diag(1, p)
       for (i in seq_len(p - 1)) {
         for (j in (i + 1):p) {
-          m[i, j] <- m[j, i] <- energy::dcor(df_num[[i]], df_num[[j]])
+          m[i, j] <- m[j, i] <- suppressWarnings(energy::dcor(df_num[[i]], df_num[[j]]))
         }
       }
       colnames(m) <- rownames(m) <- colnames(df_num)
@@ -158,7 +158,7 @@
       m <- diag(1, p)
       for (i in seq_len(p - 1)) {
         for (j in (i + 1):p) {
-          m[i, j] <- m[j, i] <- minerva::mine(df_num[[i]], df_num[[j]])$MIC
+          m[i, j] <- m[j, i] <- suppressWarnings(minerva::mine(df_num[[i]], df_num[[j]])$MIC)
         }
       }
       colnames(m) <- rownames(m) <- colnames(df_num)

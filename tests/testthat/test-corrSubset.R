@@ -62,6 +62,28 @@ test_that("errors if required columns are missing in df", {
   )
 })
 
+test_that("errors on which = 'best' when subset_list is empty (#95)", {
+  # Regression test for #95: this defensive path is unreachable through
+  # MatSelect()/corrSelect()/assocSelect() for ncol(mat) >= 2 (guaranteed
+  # non-empty since #30), but is directly constructible and testable here,
+  # matching the manual-CorrCombo pattern used throughout this file.
+  df <- data.frame(A = 1:5)
+  res <- CorrCombo(
+             subset_list = list(),
+             avg_corr    = numeric(0),
+             min_corr    = numeric(0),
+             max_corr    = numeric(0),
+             var_names       = "A",
+             threshold   = 0.5,
+             forced_in   = character(),
+             search_type = "els",
+             n_rows_used = 5L)
+  expect_error(
+    corrSubset(res, df, which = "best"),
+    "`res` contains no subsets to extract \\(subset_list is empty\\)\\."
+  )
+})
+
 test_that("default (which = 'best') returns first subset as data.frame", {
   df <- data.frame(A = 1:5, B = 6:10, C = 11:15)
   res <- CorrCombo(

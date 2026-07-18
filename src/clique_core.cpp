@@ -25,7 +25,16 @@ void bronKerboschPivot(
     ComboList& out
 ) {
   if (P.empty() && X.empty()) {
-    out.push_back(R);
+    // R is built in whatever order the recursion visits vertices, not
+    // ascending index order (the pivot rule can leave un-visited, still-P
+    // vertices smaller than an already-chosen v, which then surface deeper
+    // in the recursion) -- sort a copy before it's used as a combo, since
+    // callers (e.g. corrPrune()/corrSubset()) index data-frame columns
+    // directly with it and expect ascending order like every other search
+    // path (ELS re-sorts its own results after remapping local indices).
+    Combo combo = R;
+    std::sort(combo.begin(), combo.end());
+    out.push_back(std::move(combo));
     return;
   }
 

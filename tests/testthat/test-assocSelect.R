@@ -966,7 +966,7 @@ test_that("assocSelect's eta matches a hand-computed sum-of-squares reference wh
 
   ss_tot <- sum((num - mean(num))^2)
   ss_bet <- sum(tapply(num, cat, function(z) length(z) * (mean(z) - mean(num))^2))
-  eta_ref <- sqrt(ss_bet / ss_tot)
+  eta_ref <- ss_bet / ss_tot
 
   res <- assocSelect(df, threshold = 1)
   expect_equal(length(res@subset_list), 1)

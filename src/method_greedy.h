@@ -20,11 +20,4 @@ double computeMaxAssoc(
     const std::vector<bool>& active
 );
 
-// Helper: compute average association between var and all other active variables
-double computeAvgAssoc(
-    const Rcpp::NumericMatrix& A,
-    int var,
-    const std::vector<bool>& active
-);
-
 #endif
