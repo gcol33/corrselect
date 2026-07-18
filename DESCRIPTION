@@ -23,9 +23,9 @@ Suggests:
     MASS,
     caret,
     car,
-    carData,
     igraph,
     Boruta,
+    ranger,
     glmnet,
     corrplot,
     knitr,
@@ -35,9 +35,9 @@ Suggests:
     svglite,
     data.table
 VignetteBuilder: knitr
-URL: https://gillescolling.com/corrselect/
+URL: https://gillescolling.com/corrselect
 BugReports: https://github.com/gcol33/corrselect/issues
 Depends:
     R (>= 3.5)
 LazyData: true
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

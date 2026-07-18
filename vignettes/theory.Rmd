@@ -182,9 +182,9 @@ Identifies the maximum (largest) valid subset.
 
 Chooses the method automatically:
 
-- exact mode for \(p \le 20\)  
+- exact mode for \(p \le\) `max_exact_p` (default 100)
 
-- greedy mode for \(p > 20\)
+- greedy mode for \(p >\) `max_exact_p`
 
 This balances optimality with computational cost.
 
@@ -1066,7 +1066,7 @@ Complexity: $O(p^2)$ vs $O(2^p)$ for exact enumeration.
 > - **ELS**: O(d · 3^{d/3}), faster on sparse graphs, better with `force_in`
 > - **Bron-Kerbosch**: O(3^{p/3}), pivoting improves performance
 > - **Greedy**: O(p²), fast but returns single (possibly non-optimal) subset
-> - Rule of thumb: exact for p ≤ 20, greedy for p > 20
+> - Rule of thumb: exact for p <= `max_exact_p` (default 100), greedy for p > `max_exact_p`
 
 ---
 

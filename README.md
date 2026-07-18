@@ -149,7 +149,10 @@ MIT (see the LICENSE.md file)
   author  = {Colling, Gilles},
   title   = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},
   journal = {Journal of Open Source Software},
-  year    = {2025},
+  year    = {2026},
+  volume  = {11},
+  number  = {118},
+  pages   = {9539},
   doi     = {10.21105/joss.09539},
   url     = {https://joss.theoj.org/papers/10.21105/joss.09539}
 }

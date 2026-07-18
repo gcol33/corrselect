@@ -63,7 +63,7 @@ cat("Exact mode kept:", ncol(exact_result), "variables\n")
 
 **Use exact mode when**:
 
-- p ≤ 20 (feasible runtime)
+- p <= 100 (feasible runtime; this is `corrPrune()`'s default `max_exact_p`)
 
 - You need guaranteed optimal solution
 
@@ -85,20 +85,20 @@ cat("Greedy mode kept:", ncol(greedy_result), "variables\n")
 
 **Use greedy mode when**:
 
-- p > 20 (exact becomes slow)
+- p > 100 (exact becomes slow; raise `max_exact_p` to push this boundary higher)
 
 - Speed is priority
 
 - Near-optimal is acceptable
 
-- High-dimensional data (p > 100)
+- High-dimensional data (several hundred variables or more)
 
 ### Auto Mode (Recommended)
 
 Automatically selects based on p:
 
 ```{r}
-# Auto mode: smart switching (exact if p ≤ 20, greedy otherwise)
+# Auto mode: smart switching (exact if p <= max_exact_p [default 100], greedy otherwise)
 auto_result <- corrPrune(mtcars, threshold = 0.7, mode = "auto")
 cat("Auto mode kept:", ncol(auto_result), "variables\n")
 ```
@@ -1074,9 +1074,9 @@ pipeline <- function(data, response) {
 ## Key Takeaways
 
 ### Algorithms
-- Use **exact mode** for p ≤ 20 (optimal, reproducible)
+- Use **exact mode** for p <= 100 (optimal, reproducible; the default `max_exact_p`)
 
-- Use **greedy mode** for p > 20 (fast, near-optimal)
+- Use **greedy mode** for p > 100 (fast, near-optimal)
 
 - Use **auto mode** to let corrselect decide
 

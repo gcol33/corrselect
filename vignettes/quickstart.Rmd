@@ -238,6 +238,7 @@ corrPrune(data, threshold = 0.7, measure = "auto", mode = "auto",
 | `force_in` | Variables that must be retained | `NULL` |
 | `by` | Column name(s) for grouped pruning | `NULL` |
 | `group_q` | Quantile for aggregating group correlations (0-1] | `1` |
+| `max_exact_p` | Max predictors for exact search when `mode = "auto"` | `100` |
 
 **Returns**: Data frame with pruned variables. Attributes: `selected_vars`, `removed_vars`.
 
