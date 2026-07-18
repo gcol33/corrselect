@@ -51,18 +51,28 @@ For example, on the `mtcars` dataset:
 library(corrselect)
 result <- corrSelect(mtcars, threshold = 0.7)
 result
-#> CorrCombo object with 12 maximal subsets
-#>   Threshold: 0.7 | Correlation method: pearson
-#>   Sizes: 6, 5, 5, 5, ... | Avg |r|: 0.30, 0.27, 0.30, 0.31, ...
+#> CorrCombo object
+#> -----------------
+#>   Method:      bron-kerbosch
+#>   Correlation: pearson
+#>   Threshold:   0.700
+#>   Subsets:     15 maximal subsets
+#>   Data Rows:   32 used in correlation
+#>
+#> Top combinations:
+#>   No.  Variables                     Avg    Max    Size
+#>   [ 1] gear, carb, qsec, drat, mpg  0.416  0.700     5
+#>   [ 2] gear, carb, qsec, drat, cyl  0.434  0.700     5
+#>   [ 3] gear, carb, vs, mpg, drat    0.466  0.700     5
 
-as.data.frame(result)[1:3, c("subset", "size", "avg_corr")]
-#>                          subset size avg_corr
-#> 1 mpg, cyl, drat, qsec, vs, am    6     0.30
-#> 2     mpg, drat, qsec, vs, gear    5     0.27
-#> 3      mpg, hp, drat, qsec, am    5     0.30
+as.data.frame(result)[1:3, ]
+#>                      VarName01 VarName02 VarName03 VarName04 VarName05
+#> Subset01 [avg=0.416]      gear      carb      qsec      drat       mpg
+#> Subset02 [avg=0.434]      gear      carb      qsec      drat       cyl
+#> Subset03 [avg=0.466]      gear      carb        vs       mpg      drat
 ```
 
-Unlike `caret::findCorrelation()` which returns a single variable set, `corrSelect()` reveals all 12 equally valid solutions, enabling informed selection based on domain knowledge.
+Unlike `caret::findCorrelation()` which returns a single variable set, `corrSelect()` reveals all 15 equally valid solutions, enabling informed selection based on domain knowledge.
 
 ### Algorithms
 

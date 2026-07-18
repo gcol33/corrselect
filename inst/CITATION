@@ -1,8 +1,16 @@
 citHeader("To cite the corrselect package in publications use:")
 
+bibentry("Article",
+         title   = "corrselect: Fast and flexible predictor pruning for data analysis and modeling",
+         author  = person("Gilles", "Colling"),
+         journal = "Journal of Open Source Software",
+         year    = "2025",
+         doi     = "10.21105/joss.09539",
+         url     = "https://joss.theoj.org/papers/10.21105/joss.09539")
+
 bibentry("Manual",
          title = "corrselect: Correlation-Based Variable Subset Selection",
          author = person("Gilles", "Colling"),
          year = "2025",
-         note = "R package version 1.0.0",
+         note = "R package version 3.2.3",
          url = "https://github.com/gcol33/corrselect")

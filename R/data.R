@@ -51,7 +51,7 @@
 #'
 #' # Remove highly correlated variables
 #' pruned <- corrPrune(bioclim_example[, -1], threshold = 0.7)
-#' ncol(pruned)  # Reduced from 19 to ~8 variables
+#' ncol(pruned)  # Reduced from 19 to 12 variables
 #'
 #' # Model-based pruning with VIF
 #' model_data <- modelPrune(species_richness ~ .,
@@ -143,7 +143,7 @@
 #' # Greedy pruning for high-dimensional data
 #' gene_data <- genes_example[, -(1:2)]  # Exclude ID and outcome
 #' pruned <- corrPrune(gene_data, threshold = 0.8, mode = "greedy")
-#' ncol(pruned)  # Reduced from 200 to ~50 genes
+#' ncol(pruned)  # Reduced from 200 to 177 genes
 #'
 #' # Use pruned genes for classification
 #' pruned_with_outcome <- data.frame(

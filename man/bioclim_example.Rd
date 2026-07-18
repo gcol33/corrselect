@@ -59,7 +59,7 @@ data(bioclim_example)
 
 # Remove highly correlated variables
 pruned <- corrPrune(bioclim_example[, -1], threshold = 0.7)
-ncol(pruned)  # Reduced from 19 to ~8 variables
+ncol(pruned)  # Reduced from 19 to 12 variables
 
 # Model-based pruning with VIF
 model_data <- modelPrune(species_richness ~ .,

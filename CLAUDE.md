@@ -52,38 +52,53 @@ pkgdown::build_site()
 
 ### High-Level Design
 
-The package provides three main user-facing functions that all converge on a common C++ backend:
+The package provides five main user-facing functions. Three converge on a common exact-enumeration C++ backend; two (`corrPrune()`, `modelPrune()`) are higher-level predictor-pruning wrappers:
 
 1. **corrSelect()** - Data frame interface for numeric correlation
 2. **assocSelect()** - Data frame interface for mixed-type data (numeric, factor, ordered)
 3. **MatSelect()** - Direct correlation/association matrix interface
+4. **corrPrune()** - Association-based predictor pruning: returns a single pruned data frame (numeric or mixed-type), choosing between exact and greedy search (see Algorithm Selection Logic below)
+5. **modelPrune()** - Model-based predictor pruning using VIF/condition-number criteria
 
-All three functions:
+`corrSelect()`/`assocSelect()`/`MatSelect()`:
 - Preprocess input (handle missing data, validate types)
 - Compute or validate a correlation/association matrix
 - Call the C++ backend `findAllMaxSets()` to enumerate maximal subsets
 - Return a `CorrCombo` S7 object with results
 
+`corrPrune()` computes the same kind of association matrix (via the shared helpers in `R/assoc-metrics.R`, see below) but returns a single pruned `data.frame` rather than every maximal subset, using either exact search (routed through `MatSelect()`) or the greedy C++ backend (`src/method_greedy.cpp`).
+
 ### C++ Backend Architecture
 
 **Entry point**: `src/corrselect_main.cpp::findAllMaxSets()`
 
-The C++ layer implements two exact graph-theoretic algorithms for enumerating all maximal cliques in a graph where edges represent "sufficiently low correlation":
+The C++ layer implements three graph-theoretic algorithms for a graph where edges represent "sufficiently low correlation" (built by `buildCompatibilityMatrix()` in `src/clique_core.cpp`):
 
 1. **Eppstein-Löffler-Strash (ELS)** (`src/method_els.cpp`)
    - Recommended when using `force_in` (variables that must appear in all subsets)
-   - Exact enumeration of maximal independent sets
+   - Exact enumeration of maximal independent sets: degeneracy ordering, then per-vertex pivoted Bron-Kerbosch over the induced subgraph
+   - Shares its pivoted-search core with plain Bron-Kerbosch (see `clique_core.cpp` below)
 
 2. **Bron-Kerbosch** (`src/method_bronkerbosch.cpp`)
    - Optional pivoting for performance (`use_pivot = TRUE`)
    - Default algorithm when no `force_in` specified
+   - Exact enumeration; `tests/testthat/test-brute-force-ground-truth.R` verifies both this and ELS against an independent brute-force enumerator
+
+3. **Greedy** (`src/method_greedy.cpp`)
+   - Heuristic, not exhaustive: iteratively removes the "worst" variable (highest violation count, then highest max/avg association, then smallest index) until no pairwise violation remains
+   - Returns a single pruned subset, not all maximal subsets
+   - Used by `corrPrune(mode = "greedy")`, and automatically by `corrPrune(mode = "auto")` when the predictor count exceeds `max_exact_p`
+
+**Shared clique-search core** (`src/clique_core.cpp`, `src/clique_core.h`):
+- `buildCompatibilityMatrix()`: builds the boolean adjacency matrix (edge iff `abs(corMatrix(i,j)) <= threshold`)
+- `bronKerboschPivot()`: the pivoted Bron-Kerbosch recursion shared by both `method_bronkerbosch.cpp` and `method_els.cpp` -- which named algorithm results depends on how the caller seeds R/P/X (see the header comment)
 
 **Key types** (`src/corrselect_types.h`):
 - `Combo` = `std::vector<int>` (variable indices)
 - `ComboList` = `std::vector<Combo>` (collection of subsets)
 
 **Utilities** (`src/utils.cpp`, `src/utils.h`):
-- Matrix validation
+- `validateCorMatrix()`/`validateForcedIndices()`: shared entry-point validation (square, unit diagonal, symmetric-or-upper-triangular, in-bounds force_in) used by all four Rcpp-exported backends (`findAllMaxSets`, `runELS`, `runBronKerbosch`, `greedyPruneBackend`)
 - Correlation statistics (mean, min, max for subsets)
 
 ### R Layer Architecture
@@ -91,6 +106,14 @@ The C++ layer implements two exact graph-theoretic algorithms for enumerating al
 **Data frame preprocessing**:
 - `corrSelect()`: Filters to numeric columns only, removes NA rows, computes correlation matrix using `cor_method` parameter
 - `assocSelect()`: Handles mixed types by computing appropriate metrics for each pair type (Pearson, Spearman, Kendall, Eta-squared, Cramér's V)
+- `corrPrune()`: Same association metrics as above (numeric-only or mixed-type), optionally computed per group (`by`) and aggregated by quantile (`group_q`); dispatches to exact or greedy search per `mode`
+
+**Shared association-metric primitives** (`R/assoc-metrics.R`):
+- `.pairwise_assoc_value()`: single-pair association (Pearson/Spearman/Kendall/bicor/distance/maximal/eta/Cramér's V), including NA/constant-column gating -- used by `assocSelect()` and `corrPrune()`'s mixed-type branch
+- `.full_assoc_method_map()`: type-pair -> method lookup table
+- `.mixed_type_assoc_matrix()`: pairwise mixed-type matrix builder, used by `assocSelect()` and `corrPrune()`
+- `.numeric_assoc_matrix()`: vectorized numeric-only matrix builder (constant columns get association 0, not NA), used by `corrSelect()` and `corrPrune()`'s all-numeric branch
+- Extracted specifically so a fix to NA/constant-column handling or a metric's definition applies to every caller at once (see #44)
 
 **CorrCombo S7 class** (`R/CorrCombo.R`):
 - Stores all discovered subsets with metadata
@@ -104,15 +127,20 @@ The C++ layer implements two exact graph-theoretic algorithms for enumerating al
 
 ### Algorithm Selection Logic
 
-Default method selection in both `corrSelect()` and `assocSelect()`:
+Default method selection in `corrSelect()`, `assocSelect()`, and `MatSelect()`:
 - If `force_in` provided → use ELS algorithm
 - Otherwise → use Bron-Kerbosch algorithm
 
 Users can override by explicitly setting `method = "els"` or `method = "bron-kerbosch"`.
 
+`corrPrune()` has a separate, independent `mode` dispatch (exact vs. greedy, not ELS vs. Bron-Kerbosch):
+- `mode = "auto"` (default): exact search if the predictor count is `<= max_exact_p` (default 100) and there are at least 2 predictors with `threshold > 0`; otherwise greedy
+- `mode = "exact"`: always exact (routes through `MatSelect()`)
+- `mode = "greedy"`: always the greedy C++ backend (`src/method_greedy.cpp`), which supports a single predictor and `threshold = 0`
+
 ### Association Metrics for Mixed Data
 
-`assocSelect()` automatically selects metrics based on variable pair types:
+`assocSelect()` automatically selects metrics based on variable pair types (the same table, minus the configurable numeric-ordered/ordered-ordered methods, is used by `corrPrune()`'s mixed-type branch -- see `.full_assoc_method_map()` above):
 
 | Type 1 | Type 2 | Default Metric |
 |--------|--------|----------------|
@@ -135,25 +163,40 @@ R/                           # R source files
 ├── corrSelect.R            # Numeric data frame interface
 ├── assocSelect.R           # Mixed-type data frame interface
 ├── MatSelect.R             # Matrix interface
+├── corrPrune.R             # Association-based predictor pruning (exact/greedy)
+├── modelPrune.R            # Model-based predictor pruning (VIF/condition number)
+├── assoc-metrics.R         # Shared association-metric primitives (see above)
 ├── CorrCombo.R             # S7 class definition and methods
 ├── corrSubset.R            # Subset extraction helper
-└── findAllMaxSets.R        # R wrapper for C++ entry point
+├── findAllMaxSets.R        # R wrapper for C++ entry point
+├── corrselect-package.R    # Package-level documentation
+├── cor_example.R           # Example correlation matrix / data generator
+├── data.R                  # Documentation for bundled example datasets
+└── zzz.R                   # Package load hooks
 
 src/                         # C++ source files (Rcpp)
 ├── corrselect_main.cpp     # Main entry point and algorithm dispatch
 ├── corrselect_types.h      # Type definitions (Combo, ComboList)
+├── clique_core.{cpp,h}     # Shared pivoted Bron-Kerbosch core (used by both method_els and method_bronkerbosch)
 ├── method_els.{cpp,h}      # Eppstein-Löffler-Strash implementation
 ├── method_bronkerbosch.{cpp,h}  # Bron-Kerbosch implementation
-├── utils.{cpp,h}           # Matrix validation and correlation stats
+├── method_greedy.{cpp,h}   # Greedy pruning backend (used by corrPrune())
+├── utils.{cpp,h}           # Shared entry-point validation and correlation stats
 └── RcppExports.cpp         # Generated Rcpp bindings
 
 tests/testthat/             # Unit tests
 ├── test-corrSelect.R
 ├── test-assocSelect.R
+├── test-corrPrune.R
+├── test-modelPrune.R
 ├── test-CorrCombo.R
 ├── test-corrMatSelect-els.R
 ├── test-corrMatSelect-bron-kerbosch.R
-└── test-corrSubset.R
+├── test-corrSubset.R
+├── test-findAllMaxSets.R
+├── test-cpp-validation-consistency.R
+├── test-reference-associations.R  # Reference-verified association-metric checks
+└── test-brute-force-ground-truth.R  # Brute-force maximality/exhaustiveness/cross-algorithm checks
 
 vignettes/                   # Long-form documentation
 man/                         # Generated documentation (roxygen2)

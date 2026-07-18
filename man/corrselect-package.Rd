@@ -16,7 +16,7 @@ for exhaustive subset enumeration.
 These functions identify variable subsets where all pairwise correlations
 or associations remain below a user-defined threshold:
 \describe{
-\item{\code{\link{corrPrune}}}{Fast greedy pruning for numeric data}
+\item{\code{\link{corrPrune}}}{Association-based pruning for numeric or mixed-type data, using exact search by default and falling back to a fast greedy algorithm for large predictor sets}
 \item{\code{\link{corrSelect}}}{Exhaustive enumeration for numeric data frames}
 \item{\code{\link{assocSelect}}}{Exhaustive enumeration for mixed-type data (numeric, factor, ordered)}
 \item{\code{\link{MatSelect}}}{Direct interface using a pre-computed correlation matrix}
@@ -56,5 +56,10 @@ Vignettes: \code{vignette("quickstart", package = "corrselect")},
 }
 \author{
 \strong{Maintainer}: Gilles Colling \email{gilles.colling051@gmail.com} (\href{https://orcid.org/0000-0003-3070-6066}{ORCID}) [copyright holder]
+
+Authors:
+\itemize{
+  \item Gilles Colling \email{gilles.colling051@gmail.com} (\href{https://orcid.org/0000-0003-3070-6066}{ORCID}) [copyright holder]
+}
 
 }
