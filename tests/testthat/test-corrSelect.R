@@ -349,6 +349,13 @@ test_that("corrSelect errors clearly when every row is dropped for missing value
   )
 })
 
+test_that("corrSelect errors clearly on a single-row data frame with no missing values (#64)", {
+  # Distinct from #32 above: no NA-driven row drop at all, just a data frame
+  # that starts with a single row.
+  df <- data.frame(x = 1, y = 2, z = 3)
+  expect_error(corrSelect(df, threshold = 0.7), "Fewer than two complete-case rows")
+})
+
 test_that("corrSelect handles use_pivot argument with bron-kerbosch", {
   df <- data.frame(a = rnorm(10), b = rnorm(10), c = rnorm(10))
 

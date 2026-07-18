@@ -77,6 +77,22 @@ test_that("a constant numeric column has exactly zero association with a factor,
   expect_equal(ncol(pruned), 2)
 })
 
+test_that("a single-level factor has exactly zero eta association with a numeric variable, in both functions (#65)", {
+  # Consolidates ~6 near-duplicate single-level-factor tests that were
+  # scattered across test-assocSelect.R, each only asserting
+  # inherits(res, "CorrCombo") -- never that the eta value itself is
+  # correctly 0 rather than NaN (0/0, since a single-level factor makes the
+  # eta formula's between-group sum of squares identically 0).
+  set.seed(9384)
+  df <- data.frame(num = rnorm(20), cat = factor(rep("only_level", 20)))
+
+  res <- assocSelect(df, threshold = 1)
+  expect_equal(res@avg_corr[1], 0)
+
+  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy")
+  expect_equal(ncol(pruned), 2)
+})
+
 test_that("a near-constant numeric column's eta matches the reference, checked in both functions", {
   near_const <- c(5, 5, 5, 5, 5, 5, 5, 5, 5, 5.5)
   cat <- factor(c(rep("A", 5), rep("B", 5)))
@@ -93,6 +109,41 @@ test_that("a near-constant numeric column's eta matches the reference, checked i
   above <- corrPrune(df, threshold = eta_ref + 0.05, mode = "greedy")
   expect_equal(ncol(below), 1)
   expect_equal(ncol(above), 2)
+})
+
+test_that("a constant numeric column gets exactly zero bicor association via corrPrune, not NA (#64)", {
+  skip_if_not(requireNamespace("WGCNA", quietly = TRUE))
+  # corrSelect() pre-filters constant columns before ever computing a
+  # correlation matrix (see corrSelect.R's own is_const exclusion step), so
+  # it never actually reaches .numeric_assoc_matrix()'s constant-column
+  # zero-out override -- only corrPrune()'s all-numeric branch does (it has
+  # no equivalent pre-filter). If the override didn't fire, WGCNA::bicor()
+  # would return NA/NaN for the constant pair, which corrPrune()'s Step 4b
+  # rejects with an explicit "undefined (NA) values" error -- so the
+  # override firing is exactly what makes this call succeed at all.
+  set.seed(9381)
+  df <- data.frame(const = rep(3, 20), x = rnorm(20))
+
+  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy", measure = "bicor")
+  expect_equal(sort(colnames(pruned)), c("const", "x"))
+})
+
+test_that("a constant numeric column gets exactly zero distance-correlation association via corrPrune, not NA (#64)", {
+  skip_if_not(requireNamespace("energy", quietly = TRUE))
+  set.seed(9382)
+  df <- data.frame(const = rep(3, 20), x = rnorm(20))
+
+  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy", measure = "distance")
+  expect_equal(sort(colnames(pruned)), c("const", "x"))
+})
+
+test_that("a constant numeric column gets exactly zero maximal-information-coefficient association via corrPrune, not NA (#64)", {
+  skip_if_not(requireNamespace("minerva", quietly = TRUE))
+  set.seed(9383)
+  df <- data.frame(const = rep(3, 20), x = rnorm(20))
+
+  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy", measure = "maximal")
+  expect_equal(sort(colnames(pruned)), c("const", "x"))
 })
 
 test_that("a sparse (but valid) contingency table's Cramer's V matches the reference, checked in both functions", {

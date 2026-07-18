@@ -26,6 +26,24 @@ test_that("errors if df is not a data.frame or matrix", {
   )
 })
 
+test_that("errors on non-integer numeric `which` instead of silently truncating (#66)", {
+  df <- data.frame(A = 1:5, B = 5:1)
+  res <- CorrCombo(
+             subset_list = list(c("A", "B"), c("A")),
+             avg_corr    = c(0.1, 0.0),
+             min_corr    = c(0.1, 0.0),
+             max_corr    = c(0.1, 0.0),
+             var_names       = c("A", "B"),
+             threshold   = 0.5,
+             forced_in   = character(),
+             search_type = "els",
+             n_rows_used = 5L)
+  expect_error(
+    corrSubset(res, df, which = 1.9),
+    "whole numbers"
+  )
+})
+
 test_that("errors if required columns are missing in df", {
   df <- data.frame(A = 1:5)
   res <- CorrCombo(

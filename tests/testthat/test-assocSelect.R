@@ -327,18 +327,6 @@ test_that("assocSelect stores assoc_methods_used attribute", {
   expect_true(is.list(methods_used))
 })
 
-test_that("assocSelect handles constant numeric column", {
-  set.seed(2014)
-  n <- 20
-  df <- data.frame(
-    num1 = rep(5, n),  # Constant
-    cat1 = factor(sample(c("A", "B"), n, replace = TRUE))
-  )
-
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
 test_that("assocSelect uses method = NULL to auto-select", {
   set.seed(2015)
   n <- 20
@@ -512,18 +500,6 @@ test_that("assocSelect handles eta with factor-numeric order", {
   expect_true(inherits(res, "CorrCombo"))
 })
 
-test_that("assocSelect handles eta with single-level factor", {
-  set.seed(2025)
-  n <- 20
-  df <- data.frame(
-    numeric_var = rnorm(n),
-    single_factor = factor(rep("only_level", n))
-  )
-
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
 test_that("assocSelect with spearman for numeric-ordered pairs", {
   set.seed(2026)
   n <- 25
@@ -664,30 +640,6 @@ test_that("assocSelect cramersv with sparse 1-dim table", {
   expect_true(inherits(res, "CorrCombo"))
 })
 
-test_that("assocSelect eta with constant numeric (ss_tot = 0)", {
-  set.seed(2036)
-  n <- 20
-  df <- data.frame(
-    const_num = rep(5, n),  # Zero variance
-    factor_var = factor(sample(c("A", "B"), n, replace = TRUE))
-  )
-
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect eta with single-level factor", {
-  set.seed(2037)
-  n <- 20
-  df <- data.frame(
-    num_var = rnorm(n),
-    single_factor = factor(rep("only_level", n))
-  )
-
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
 test_that("assocSelect handles cramersv with NA chi-squared", {
   set.seed(2038)
   # Create edge case that might produce NA chi-squared
@@ -740,31 +692,6 @@ test_that("assocSelect handles cramersv with row sums of zero after droplevels",
   expect_true(inherits(res, "CorrCombo"))
 })
 
-test_that("assocSelect handles constant numeric in eta calculation", {
-  set.seed(3003)
-  n <- 30
-  # Constant numeric - ss_tot will be 0
-  df <- data.frame(
-    const_num = rep(10, n),  # Constant -> ss_tot = 0
-    factor_var = factor(sample(c("A", "B", "C"), n, replace = TRUE))
-  )
-
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect handles eta with single-level factor (unique < 2)", {
-  set.seed(3004)
-  n <- 30
-  df <- data.frame(
-    num_var = rnorm(n),
-    single_factor = factor(rep("only_one", n))  # length(unique) = 1
-  )
-
-  res <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
 test_that("assocSelect handles numeric with zero variance paired with factor", {
   set.seed(3005)
   n <- 25
@@ -803,6 +730,13 @@ test_that("assocSelect errors when only one complete-case row remains (#32, #45)
     expect_error(assocSelect(df, threshold = 0.7), "complete-case rows"),
     "Removed"
   )
+})
+
+test_that("assocSelect errors clearly on a single-row data frame with no missing values (#64)", {
+  # Distinct from the two tests above: no NA-driven row drop at all, just a
+  # data frame that starts with a single row.
+  df <- data.frame(x = 1, y = 2, z = 3)
+  expect_error(assocSelect(df, threshold = 0.7), "complete-case rows")
 })
 
 test_that("assocSelect NA in association matrix triggers error", {
@@ -1124,73 +1058,6 @@ test_that("assocSelect handles factor-ordered pairs", {
 })
 
 
-test_that("assocSelect handles single-level factor gracefully", {
-  set.seed(8001)
-  n <- 30
-  df <- data.frame(
-    fac1 = factor(rep("A", n)),  # Only one level
-    num1 = rnorm(n),
-    fac2 = factor(sample(c("X", "Y"), n, replace = TRUE))
-  )
-
-  # Should handle single-level factor
-  result <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(result, "CorrCombo"))
-})
-
-test_that("assocSelect handles constant numeric variable", {
-  set.seed(8002)
-  n <- 30
-  df <- data.frame(
-    num1 = rep(5, n),  # Constant
-    num2 = rnorm(n),
-    fac1 = factor(sample(c("A", "B"), n, replace = TRUE))
-  )
-
-  # Should handle constant variable (ss_tot = 0)
-  result <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(result, "CorrCombo"))
-})
-
-
-# ===========================================================================
-# assocSelect: eta with single-level factor (line 197)
-# ===========================================================================
-
-test_that("assocSelect computes eta with single-level factor", {
-  set.seed(10001)
-  n <- 30
-
-  # Factor with single level paired with numeric
-  df <- data.frame(
-    single_fac = factor(rep("A", n)),
-    num_var = rnorm(n)
-  )
-
-  # This should trigger the eta calculation where length(unique(cat)) < 2
-  result <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(result, "CorrCombo"))
-})
-
-# ===========================================================================
-# assocSelect: eta with constant numeric (line 199)
-# ===========================================================================
-
-test_that("assocSelect computes eta with constant numeric variable", {
-  set.seed(10002)
-  n <- 30
-
-  # Numeric constant paired with factor
-  df <- data.frame(
-    const_num = rep(5.5, n),  # Constant -> ss_tot = 0
-    multi_fac = factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
-  )
-
-  # This should trigger ss_tot == 0 in eta calculation
-  result <- assocSelect(df, threshold = 0.9)
-  expect_true(inherits(result, "CorrCombo"))
-})
-
 # ===========================================================================
 # assocSelect: cramersv with sparse table (line 187)
 # ===========================================================================
@@ -1312,34 +1179,6 @@ test_that("assocSelect handles cramersv with 1xN contingency table", {
     f1 = factor(rep("A", n)),  # Single level
     f2 = factor(sample(c("X", "Y", "Z"), n, replace = TRUE)),
     num = rnorm(n)  # Need 3rd column
-  )
-
-  res <- assocSelect(df, threshold = 0.95)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect handles eta with single-level factor explicitly", {
-  # Numeric paired with single-level factor
-  set.seed(15002)
-  n <- 20
-  df <- data.frame(
-    numeric_col = rnorm(n),
-    single_factor = factor(rep("only_level", n)),
-    another_num = rnorm(n)
-  )
-
-  res <- assocSelect(df, threshold = 0.95)
-  expect_true(inherits(res, "CorrCombo"))
-})
-
-test_that("assocSelect handles eta with constant numeric (ss_tot = 0)", {
-  # Constant numeric paired with multi-level factor
-  set.seed(15003)
-  n <- 20
-  df <- data.frame(
-    constant = rep(3.14159, n),  # Zero variance
-    cat_var = factor(sample(c("A", "B", "C"), n, replace = TRUE)),
-    other_num = rnorm(n)
   )
 
   res <- assocSelect(df, threshold = 0.95)

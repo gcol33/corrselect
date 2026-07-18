@@ -58,6 +58,58 @@ test_that("BK computes min/max correlations", {
   expect_true(all(res@max_corr >= res@min_corr, na.rm = TRUE))
 })
 
+test_that("MatSelect warns about combinatorial blowup for a large, dense compatibility graph (#63)", {
+  n <- 101
+  m <- matrix(0.1, n, n)
+  diag(m) <- 1
+  colnames(m) <- rownames(m) <- paste0("V", seq_len(n))
+
+  # All pairs are compatible (0.1 <= 0.5), so compat_density = 1 > 0.3 and
+  # n > 100: the blowup guard must fire. The graph is a single clique here,
+  # so this stays fast despite the large n.
+  expect_warning(
+    MatSelect(m, threshold = 0.5, method = "bron-kerbosch"),
+    "exhaustive maximal-subset enumeration can be exponential"
+  )
+})
+
+test_that("MatSelect does not warn about blowup for a large but sparse compatibility graph (#63)", {
+  n <- 101
+  m <- matrix(0.9, n, n)
+  diag(m) <- 1
+  colnames(m) <- rownames(m) <- paste0("V", seq_len(n))
+
+  # No pair is compatible (0.9 > 0.3), so compat_density = 0 <= 0.3: the
+  # blowup guard must not fire even though n > 100. The graph has no edges,
+  # so this also stays fast.
+  expect_no_warning(
+    MatSelect(m, threshold = 0.3, method = "bron-kerbosch")
+  )
+})
+
+test_that("BK's avg_corr/min_corr/max_corr match hand-computed values for a size-4 subset (#62)", {
+  # A 4-variable subset with 6 distinct known pairwise values (C(4,2) = 6),
+  # all below threshold, so a bug in the pairwise-index walk (wrong
+  # triangle, off-by-one, transposed pair) would show up as a wrong
+  # avg/min/max rather than being masked by repeated or symmetric-looking
+  # values.
+  m <- matrix(c(
+    1,    0.10, 0.20, 0.30,
+    0.10, 1,    0.15, 0.25,
+    0.20, 0.15, 1,    0.05,
+    0.30, 0.25, 0.05, 1
+  ), nrow = 4, byrow = TRUE)
+  colnames(m) <- rownames(m) <- c("A", "B", "C", "D")
+
+  res <- MatSelect(m, threshold = 0.5, method = "bron-kerbosch")
+
+  expect_length(res@subset_list, 1)
+  expect_setequal(res@subset_list[[1]], c("A", "B", "C", "D"))
+  expect_equal(res@avg_corr[1], mean(c(0.10, 0.20, 0.30, 0.15, 0.25, 0.05)))
+  expect_equal(res@min_corr[1], 0.05)
+  expect_equal(res@max_corr[1], 0.30)
+})
+
 test_that("BK pivot behavior can be toggled", {
   m <- matrix(c(1,0.2,0.8,
                 0.2,1,0.3,

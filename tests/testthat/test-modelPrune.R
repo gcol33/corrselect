@@ -16,6 +16,15 @@ test_that("modelPrune validates formula argument", {
   )
 })
 
+test_that("modelPrune errors clearly on a formula with zero fixed effects (#66)", {
+  skip_if_not_installed("lme4")
+  df <- data.frame(y = rnorm(20), group = rep(letters[1:4], 5))
+  expect_error(
+    modelPrune(y ~ (1 | group), data = df, engine = "lme4"),
+    "no fixed-effect predictors"
+  )
+})
+
 test_that("modelPrune validates data argument", {
   expect_error(
     modelPrune(mpg ~ cyl, data = as.matrix(mtcars)),
@@ -887,7 +896,7 @@ test_that("modelPrune VIF with highly collinear predictors", {
   expect_true(ncol(result) <= ncol(df))
 })
 
-test_that("modelPrune VIF with factor predictors", {
+test_that("modelPrune (crash-safety, not a value check) VIF with factor predictors", {
   set.seed(9002)
   n <- 60
   df <- data.frame(
@@ -935,7 +944,7 @@ test_that("modelPrune with single predictor", {
   expect_true("x1" %in% names(result))
 })
 
-test_that("modelPrune with two predictors", {
+test_that("modelPrune (crash-safety, not a value check) with two predictors", {
   set.seed(9005)
   n <- 50
   df <- data.frame(
@@ -1000,6 +1009,37 @@ test_that("modelPrune handles NA in data", {
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), n)
   expect_true(all(c("x1", "x2", "x3") %in% names(result)))
+})
+
+test_that("modelPrune errors informatively on a fully-NA predictor column (#64)", {
+  set.seed(9009)
+  df <- mtcars
+  df$wt <- NA_real_
+
+  expect_error(
+    modelPrune(mpg ~ ., data = df, engine = "lm", limit = 5),
+    "failed"
+  )
+})
+
+test_that("modelPrune errors informatively on a fully-NA response (#64)", {
+  set.seed(9010)
+  df <- mtcars
+  df$mpg <- NA_real_
+
+  expect_error(
+    modelPrune(mpg ~ ., data = df, engine = "lm", limit = 5),
+    "failed"
+  )
+})
+
+test_that("modelPrune does not crash on a single-row data frame (#64)", {
+  # A degenerate, saturated fit (0 residual df); documenting current
+  # robustness behavior (no crash) rather than a specific pruning decision,
+  # since VIF is not well-defined with a single observation.
+  df <- data.frame(x = 1, y = 2, z = 3)
+  result <- modelPrune(x ~ y + z, data = df, engine = "lm", limit = 5)
+  expect_s3_class(result, "data.frame")
 })
 
 test_that("modelPrune custom engine diagnostics without names but wrong length", {
@@ -1162,7 +1202,7 @@ test_that("modelPrune errors when no fixed effects remain", {
   )
 })
 
-test_that("modelPrune handles design matrix with factor predictors", {
+test_that("modelPrune (crash-safety, not a value check) handles design matrix with factor predictors", {
   set.seed(9104)
   n <- 60
   df <- data.frame(
@@ -1177,7 +1217,7 @@ test_that("modelPrune handles design matrix with factor predictors", {
   expect_s3_class(result, "data.frame")
 })
 
-test_that("modelPrune VIF computation with missing column match", {
+test_that("modelPrune (crash-safety, not a value check) VIF computation with missing column match", {
   set.seed(9105)
   n <- 50
   df <- data.frame(
@@ -1191,7 +1231,7 @@ test_that("modelPrune VIF computation with missing column match", {
   expect_s3_class(result, "data.frame")
 })
 
-test_that("modelPrune handles multi-level factors in VIF", {
+test_that("modelPrune (crash-safety, not a value check) handles multi-level factors in VIF", {
   set.seed(9106)
   n <- 100
   df <- data.frame(
@@ -1225,7 +1265,7 @@ test_that("modelPrune custom engine criterion parameter shows message", {
   )
 })
 
-test_that("modelPrune handles R-squared edge cases in VIF", {
+test_that("modelPrune (crash-safety, not a value check) handles R-squared edge cases in VIF", {
   set.seed(9107)
   n <- 50
 

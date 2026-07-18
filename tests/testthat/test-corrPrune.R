@@ -1706,6 +1706,37 @@ test_that("corrPrune errors when all rows have missing values", {
   )
 })
 
+test_that("corrPrune errors clearly on a single-row data frame with no missing values (#64)", {
+  # Before this fix, a single complete row fell through to
+  # .numeric_assoc_matrix()'s constant-column check (sd() of one value is
+  # NA, not 0/FALSE) and surfaced as an opaque "missing value where
+  # TRUE/FALSE needed" rather than a corrPrune-specific message.
+  df <- data.frame(x = 1, y = 2, z = 3)
+  expect_error(
+    corrPrune(df, threshold = 0.7),
+    "Fewer than two complete-case rows"
+  )
+})
+
+test_that("corrPrune auto mode switches from exact to greedy exactly at the default max_exact_p boundary (#64)", {
+  # Exercises the actual documented default (100), not an overridden small
+  # value -- distinct from the auto-mode tests elsewhere in this file that
+  # explicitly pass a small max_exact_p to force a fast switch. n = 200 (not
+  # a smaller n) keeps sampling noise low enough that the p = 95 exact-mode
+  # compatibility graph stays dense (few chance correlations above 0.3), so
+  # exact search stays fast rather than risking combinatorial blowup.
+  set.seed(4001)
+  n <- 200
+  df_under <- as.data.frame(matrix(rnorm(n * 95), n, 95))   # p = 95 <= 100
+  df_over  <- as.data.frame(matrix(rnorm(n * 105), n, 105)) # p = 105 > 100
+
+  res_under <- corrPrune(df_under, threshold = 0.3, mode = "auto")
+  res_over  <- corrPrune(df_over, threshold = 0.3, mode = "auto")
+
+  expect_equal(attr(res_under, "mode"), "exact")
+  expect_equal(attr(res_over, "mode"), "greedy")
+})
+
 test_that("corrPrune handles character columns by converting to factor", {
   set.seed(12001)
   n <- 20
@@ -1820,6 +1851,54 @@ test_that("corrPrune grouped group_q aggregation matches hand-computed quantiles
   expect_setequal(attr(res_min, "selected_vars"), c("x", "y"))
 })
 
+test_that("corrPrune grouped mode errors when a factor level is unused within one group (#55)", {
+  # region has an "East" level, but group A only ever has North/South -- the
+  # eta/Cramer's V computation for group A therefore returns NA for any pair
+  # involving region, even though group A had plenty of complete rows. This
+  # must not be silently dropped from the group_q aggregation (which would
+  # let group_q = 1's "holds in all groups" guarantee pass unverified).
+  set.seed(1)
+  n <- 30
+  site <- rep(c("A", "B"), each = 15)
+  region <- factor(rep(NA_character_, n), levels = c("North", "South", "East"))
+  region[site == "A"] <- sample(c("North", "South"), 15, replace = TRUE)
+  region[site == "B"] <- sample(c("North", "South", "East"), 15, replace = TRUE)
+  df <- data.frame(x1 = rnorm(n), x2 = rnorm(n), region = region, site = site)
+
+  expect_error(
+    corrPrune(df, threshold = 0.9, by = "site", group_q = 1),
+    "undefined"
+  )
+})
+
+test_that("corrPrune grouped mode warns about NA rows confined to a single group (#55)", {
+  df <- data.frame(x1 = rnorm(20), x2 = rnorm(20), grp = rep(c("A", "B"), each = 10))
+  df$x1[c(1, 2, 3)] <- NA  # all within group A
+
+  expect_warning(
+    corrPrune(df, threshold = 0.9, by = "grp"),
+    "Removed 3 row"
+  )
+})
+
+test_that("corrPrune grouped mode's n_rows_used excludes skipped groups (#55)", {
+  df <- data.frame(x1 = rnorm(10), x2 = rnorm(10),
+                    grp = c(rep("A", 8), "B", "C"))  # B, C have 1 row each: skipped
+
+  res <- suppressWarnings(corrPrune(df, threshold = 0.9, by = "grp"))
+  expect_equal(attr(res, "n_rows_used"), 8)
+})
+
+test_that("corrPrune grouped mode warns when the by column itself has NA (#55)", {
+  df <- data.frame(x1 = rnorm(20), x2 = rnorm(20), grp = rep(c("A", "B"), each = 10))
+  df$grp[c(1, 2)] <- NA
+
+  expect_warning(
+    corrPrune(df, threshold = 0.9, by = "grp"),
+    "missing values in the grouping variable"
+  )
+})
+
 test_that("corrPrune exact mode resolves an exact avg-correlation tie lexicographically", {
   # Construct a,b,c,d so that a-b and c-d are perfectly anti-correlated
   # (excluded by the threshold) while all four cross pairs (a-c, a-d, b-c,
@@ -1864,6 +1943,65 @@ test_that("corrPrune greedy mode removes the variable with the most violations f
   result <- corrPrune(df, threshold = 0.5, mode = "greedy")
   expect_equal(sort(attr(result, "selected_vars")), c("b", "c", "d"))
   expect_equal(attr(result, "removed_vars"), "a")
+})
+
+test_that("corrPrune greedy mode's 2nd tie-break (highest max association) determines the final subset (#63)", {
+  # A and C tie on violation count (2 each: A via B,C; C via A,D) but A's max
+  # association (0.95, with B) clearly exceeds C's (0.6) -- no near-tie
+  # epsilon involved, a plain "which max is bigger" decision. Removing A
+  # first (correct) vs. C first (what a level-2 comparison bug would do)
+  # leads to two entirely different survivor sets, so this is observable
+  # through the public API, not just internal removal order.
+  m <- matrix(c(
+    1,    0.95, 0.6,  0.1,
+    0.95, 1,    0.05, 0.2,
+    0.6,  0.05, 1,    0.6,
+    0.1,  0.2,  0.6,  1
+  ), 4, 4, byrow = TRUE)
+  colnames(m) <- rownames(m) <- c("A", "B", "C", "D")
+
+  keep <- corrselect:::greedyPruneBackend(m, 0.5, NULL)
+  expect_setequal(colnames(m)[keep], c("B", "C"))
+})
+
+test_that("corrPrune greedy mode's 3rd tie-break (highest average association) determines the final subset (#63)", {
+  # A and B mutually violate (0.9), so their max association always ties at
+  # that shared edge -- isolating the 3rd tie-break (average association)
+  # rather than the 2nd. A's average across all its edges (0.9, 0.4, 0.3) is
+  # higher than B's (0.9, 0.2, 0.1), so A is judged worse and removed;
+  # removing B instead (what a level-3 comparison bug would do) leaves a
+  # different survivor set.
+  m <- matrix(c(
+    1,   0.9, 0.4, 0.3,
+    0.9, 1,   0.2, 0.1,
+    0.4, 0.2, 1,   0.1,
+    0.3, 0.1, 0.1, 1
+  ), 4, 4, byrow = TRUE)
+  colnames(m) <- rownames(m) <- c("A", "B", "C", "D")
+
+  keep <- corrselect:::greedyPruneBackend(m, 0.5, NULL)
+  expect_setequal(colnames(m)[keep], c("B", "C", "D"))
+})
+
+test_that("corrPrune greedy mode's 4th tie-break (lowest column index removed) determines the final subset (#63)", {
+  # A, B, C, E all tie on violation count, max association, and average
+  # association by construction (each violates exactly one other variable
+  # at 0.9 and has three legal 0.1 edges) -- isolating the final tie-break,
+  # column index. The lowest-index variable among the tied set is removed
+  # each round (A, then B), matching the documented "smallest index wins"
+  # rule; removing the largest-index variable instead (a plausible inverted
+  # comparison bug) leaves a different survivor set.
+  m <- matrix(c(
+    1,   0.1, 0.9, 0.1, 0.1,
+    0.1, 1,   0.1, 0.1, 0.9,
+    0.9, 0.1, 1,   0.1, 0.1,
+    0.1, 0.1, 0.1, 1,   0.1,
+    0.1, 0.9, 0.1, 0.1, 1
+  ), 5, 5, byrow = TRUE)
+  colnames(m) <- rownames(m) <- c("A", "B", "C", "D", "E")
+
+  keep <- corrselect:::greedyPruneBackend(m, 0.5, NULL)
+  expect_setequal(colnames(m)[keep], c("C", "D", "E"))
 })
 
 test_that("corrPrune greedy and exact modes agree on an unambiguous case", {

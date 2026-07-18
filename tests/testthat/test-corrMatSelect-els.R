@@ -410,3 +410,26 @@ test_that("ELS returns correct subset stats for multi-variable subsets", {
   expect_true(length(res@min_corr) > 0)
   expect_true(length(res@max_corr) > 0)
 })
+
+test_that("ELS's avg_corr/min_corr/max_corr match hand-computed values for a size-4 subset (#62)", {
+  # A 4-variable subset with 6 distinct known pairwise values (C(4,2) = 6),
+  # all below threshold, so a bug in the pairwise-index walk (wrong
+  # triangle, off-by-one, transposed pair) would show up as a wrong
+  # avg/min/max rather than being masked by repeated or symmetric-looking
+  # values.
+  m <- matrix(c(
+    1,    0.10, 0.20, 0.30,
+    0.10, 1,    0.15, 0.25,
+    0.20, 0.15, 1,    0.05,
+    0.30, 0.25, 0.05, 1
+  ), nrow = 4, byrow = TRUE)
+  colnames(m) <- rownames(m) <- c("A", "B", "C", "D")
+
+  res <- MatSelect(m, threshold = 0.5, method = "els")
+
+  expect_length(res@subset_list, 1)
+  expect_setequal(res@subset_list[[1]], c("A", "B", "C", "D"))
+  expect_equal(res@avg_corr[1], mean(c(0.10, 0.20, 0.30, 0.15, 0.25, 0.05)))
+  expect_equal(res@min_corr[1], 0.05)
+  expect_equal(res@max_corr[1], 0.30)
+})
