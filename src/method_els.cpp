@@ -59,13 +59,8 @@ ComboList runELS(const NumericMatrix& corMatrix,
                  double threshold,
                  const Combo& forcedVec) {
   int n = corMatrix.nrow();
-  if (n != corMatrix.ncol()) stop("Matrix must be square.");
-  if (!validateMatrixStructure(corMatrix))
-    stop("Matrix must be symmetric or upper triangular.");
-  for (size_t i = 0; i < forcedVec.size(); ++i) {
-    if (forcedVec[i] < 0 || forcedVec[i] >= n)
-      stop("`force_in` must be valid 0-based column indices");
-  }
+  validateCorMatrix(corMatrix);
+  validateForcedIndices(forcedVec, n);
 
   AdjMatrix adj = buildCompatibilityMatrix(corMatrix, threshold);
   std::unordered_set<int> forcedSet(forcedVec.begin(), forcedVec.end());

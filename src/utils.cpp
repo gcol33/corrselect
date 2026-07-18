@@ -26,7 +26,7 @@ bool validateMatrixStructure(const NumericMatrix& corMatrix) {
   bool isSymmetric = true, isUpper = true;
 
   for (int i = 0; i < n; ++i) {
-    if (corMatrix(i, i) != 1) isUpper = false;
+    if (std::abs(corMatrix(i, i) - 1.0) > kSymmetryTolerance) isUpper = false;
     for (int j = 0; j < i; ++j) {
       if (!NumericMatrix::is_na(corMatrix(i, j))) isUpper = false;
       if (std::abs(corMatrix(i, j) - corMatrix(j, i)) > kSymmetryTolerance) isSymmetric = false;
@@ -34,4 +34,17 @@ bool validateMatrixStructure(const NumericMatrix& corMatrix) {
   }
 
   return isSymmetric || isUpper;
+}
+
+void validateCorMatrix(const NumericMatrix& corMatrix) {
+  if (corMatrix.nrow() != corMatrix.ncol()) stop("Matrix must be square.");
+  if (!validateMatrixStructure(corMatrix))
+    stop("Matrix must be symmetric or upper triangular.");
+}
+
+void validateForcedIndices(const Combo& forcedVec, int n) {
+  for (size_t i = 0; i < forcedVec.size(); ++i) {
+    if (forcedVec[i] < 0 || forcedVec[i] >= n)
+      stop("`force_in` must be valid 0-based column indices");
+  }
 }

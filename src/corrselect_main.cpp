@@ -17,9 +17,7 @@ List findAllMaxSets(
 ) {
   // 1) Basic checks
   int n = corMatrix.nrow();
-  if (n != corMatrix.ncol()) stop("Matrix must be square.");
-  if (!validateMatrixStructure(corMatrix))
-    stop("Matrix must be symmetric or upper triangular.");
+  validateCorMatrix(corMatrix);
 
   // 2) Build forcedVec (expecting 0-based indices from R), deduplicated so a
   // repeated index can't land twice in the final combo.
@@ -27,10 +25,9 @@ List findAllMaxSets(
   if (force_in.isNotNull()) {
     IntegerVector f = force_in.get();
     for (int i = 0; i < f.size(); ++i) {
-      if (f[i] < 0 || f[i] >= n)
-        stop("`force_in` must be valid 0-based column indices");
       forcedVec.push_back(f[i]);
     }
+    validateForcedIndices(forcedVec, n);
     std::sort(forcedVec.begin(), forcedVec.end());
     forcedVec.erase(std::unique(forcedVec.begin(), forcedVec.end()), forcedVec.end());
   }
