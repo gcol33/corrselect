@@ -66,7 +66,7 @@
 #' # Force in a specific variable and use Spearman correlation
 #' corrSelect(df, threshold = 0.6, force_in = "V10", cor_method = "spearman")
 #'
-#' @importFrom stats complete.cases cor sd
+#' @importFrom stats complete.cases sd
 #' @export
 corrSelect <- function(df,
                        threshold = 0.7,
@@ -149,38 +149,7 @@ corrSelect <- function(df,
   if (ncol(df_num) < 2) stop("Less than two numeric columns remain after excluding constants.")
 
   # Build correlation/association matrix
-  mat <- switch(
-    cor_method,
-    pearson = cor(df_num, use = "everything", method = "pearson"),
-    spearman = cor(df_num, use = "everything", method = "spearman"),
-    kendall = cor(df_num, use = "everything", method = "kendall"),
-    bicor = {
-      if (!requireNamespace("WGCNA", quietly = TRUE)) stop("Install the 'WGCNA' package for bicor.")
-      suppressWarnings(WGCNA::bicor(df_num))
-    },
-    distance = {
-      if (!requireNamespace("energy", quietly = TRUE)) stop("Install the 'energy' package for distance correlation.")
-      n <- ncol(df_num)
-      mat <- matrix(NA_real_, n, n)
-      for (i in seq_len(n)) {
-        for (j in seq(i, n)) {
-          d <- energy::dcor(df_num[[i]], df_num[[j]])
-          mat[i, j] <- d
-          mat[j, i] <- d
-        }
-      }
-      colnames(mat) <- rownames(mat) <- colnames(df_num)
-      mat
-    },
-    maximal = {
-      if (!requireNamespace("minerva", quietly = TRUE)) stop("Install the 'minerva' package for maximal correlation (MIC).")
-      mic <- minerva::mine(df_num)
-      mat <- mic$MIC
-      colnames(mat) <- rownames(mat) <- colnames(df_num)
-      mat
-    },
-    stop("Unsupported correlation method.")
-  )
+  mat <- .numeric_assoc_matrix(df_num, cor_method)
 
   if (anyNA(mat) || any(!is.finite(mat))) {
     stop("Correlation matrix contains NA or infinite values. Check your data.")

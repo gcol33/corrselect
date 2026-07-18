@@ -187,7 +187,7 @@ print.CorrCombo <- function(x, ...) {
 #' set.seed(1)
 #' mat <- matrix(rnorm(100), ncol = 10)
 #' colnames(mat) <- paste0("V", 1:10)
-#' res <- corrSelect(cor(mat), threshold = 0.5)
+#' res <- MatSelect(cor(mat), threshold = 0.5)
 #' as.data.frame(res)
 as.data.frame.CorrCombo <- function(x, row.names = NULL, optional = FALSE, ...) {
   n <- length(x@subset_list)

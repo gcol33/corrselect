@@ -88,7 +88,7 @@
 #'             method_ord_ord  = "kendall",
 #'             force_in        = "height")
 #'
-#' @importFrom stats cor complete.cases chisq.test
+#' @importFrom stats complete.cases
 #' @export
 assocSelect <- function(df,
                         threshold = 0.7,
@@ -140,110 +140,22 @@ assocSelect <- function(df,
                     dropped, if (dropped == 1) "" else "s"))
   }
 
+  if (nrow(df) < 2) {
+    stop("Fewer than two complete-case rows remain after removing missing values: ",
+         "cannot compute associations.")
+  }
+
   ## ---------- finalise methods ----------
   method_num_num <- match.arg(method_num_num)
   method_num_ord <- match.arg(method_num_ord)
   method_ord_ord <- match.arg(method_ord_ord)
 
-  full_assoc_methods <- list(
-    numeric_numeric  = method_num_num,
-    numeric_ordered  = method_num_ord,
-    ordered_numeric  = method_num_ord,
-    numeric_factor   = "eta",
-    factor_numeric   = "eta",
-    ordered_ordered  = method_ord_ord,
-    ordered_factor   = "cramersv",
-    factor_ordered   = "cramersv",
-    factor_factor    = "cramersv"
-  )
-
-  assoc_methods_used <- list()
-
-  ## ---------- primitive dispatcher ----------
-  get_assoc <- function(x, y, meth, tx, ty) {
-    # length(x) <= 1 means there is not enough data to estimate an
-    # association at all (e.g. every row but one was dropped for missing
-    # values) -- undefined, not known to be 0. Only a genuinely constant
-    # column (length(x) > 1 but a single distinct value) is a well-defined
-    # "no association" case.
-    if (length(x) <= 1 || length(y) <= 1) return(NA_real_)
-    if (length(unique(x)) < 2 || length(unique(y)) < 2) return(0)
-
-    switch(meth,
-           pearson  = abs(cor(x, y, method = "pearson")),
-           spearman = abs(cor(rank(x), rank(y), method = "spearman")),
-           kendall  = abs(cor(rank(x), rank(y), method = "kendall")),
-           bicor = {
-             if (!requireNamespace("WGCNA", quietly = TRUE)) stop("Install the 'WGCNA' package for bicor.")
-             abs(WGCNA::bicor(cbind(x, y))[1, 2])
-           },
-           distance = {
-             if (!requireNamespace("energy", quietly = TRUE)) stop("Install the 'energy' package for distance correlation.")
-             abs(energy::dcor(x, y))
-           },
-           maximal = {
-             if (!requireNamespace("minerva", quietly = TRUE)) stop("Install the 'minerva' package for maximal information coefficient.")
-             minerva::mine(x, y)$MIC
-           },
-           cramersv = {
-             tbl <- table(x, y)
-             # Check if table is valid for chi-squared test
-             # Reject if any row or column is all zeros (not just if table has any zeros)
-             if (min(dim(tbl)) < 2 || any(rowSums(tbl) == 0) || any(colSums(tbl) == 0)) return(NA_real_)
-             suppressWarnings({
-               chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE)$statistic)
-             })
-             if (length(chi2) == 0 || is.na(chi2)) return(NA_real_)
-             sqrt(chi2 / (sum(tbl) * (min(dim(tbl)) - 1)))
-           },
-           eta = {
-             cat <- if (tx == "factor") x else y
-             num <- if (tx == "numeric") x else y
-             if (length(unique(cat)) < 2) return(0)
-             ss_tot <- sum((num - mean(num))^2)
-             if (ss_tot == 0) return(0)
-             ss_bet <- sum(tapply(num, cat,
-                                  function(z) length(z) * (mean(z) - mean(num))^2))
-             sqrt(ss_bet / ss_tot)
-           },
-           stop("Unsupported association method: ", meth)
-    )
-  }
+  full_assoc_methods <- .full_assoc_method_map(method_num_num, method_num_ord, method_ord_ord)
 
   ## ---------- build matrix ----------
-  p   <- ncol(df)
-  mat <- diag(1, p)
-  colnames(mat) <- rownames(mat) <- names(df)
-
-  for (i in seq_len(p - 1L)) {
-    for (j in (i + 1L):p) {
-      tx <- types[i]
-      ty <- types[j]
-
-      if (is.na(tx) || is.na(ty)) {
-        stop("Unexpected NA in column types. Possibly unsupported variable types.")
-      }
-
-      key <- paste(tx, ty, sep = "_")
-      meth <- full_assoc_methods[[key]]
-
-      if (is.null(meth)) {
-        stop("No rule for variable-type pair: ", key)
-      }
-
-      if (is.null(assoc_methods_used[[key]])) {
-        assoc_methods_used[[key]] <- meth
-      }
-
-      a <- get_assoc(df[[i]], df[[j]], meth, tx, ty)
-      # An NA here means the association is genuinely undefined (e.g. a sparse
-      # contingency table for Cramer's V), not that the variables are known to
-      # be independent -- it is left as NA so the anyNA(mat) check below can
-      # surface it explicitly instead of silently treating it as 0 (compatible).
-      if (!is.na(a)) a <- max(0, min(1, a))
-      mat[i, j] <- mat[j, i] <- a
-    }
-  }
+  built <- .mixed_type_assoc_matrix(df, types, full_assoc_methods)
+  mat <- built$mat
+  assoc_methods_used <- built$assoc_methods_used
 
   ## ---------- resolve force_in ----------
   if (!is.null(force_in)) {

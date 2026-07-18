@@ -32,8 +32,8 @@
 #' # Compute correlation matrix
 #' cmat <- cor(df)
 #'
-#' # Select subsets using corrSelect
-#' res <- corrSelect(cmat, threshold = 0.5)
+#' # Select subsets using MatSelect (cmat is already a correlation matrix)
+#' res <- MatSelect(cmat, threshold = 0.5)
 #'
 #' # Extract the best subset (default)
 #' corrSubset(res, df)

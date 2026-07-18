@@ -102,7 +102,7 @@
 #' # Use greedy mode for faster computation
 #' pruned <- corrPrune(mtcars, threshold = 0.7, mode = "greedy")
 #'
-#' @importFrom stats cor complete.cases quantile
+#' @importFrom stats complete.cases quantile
 #' @export
 corrPrune <- function(
   data,
@@ -304,178 +304,39 @@ corrPrune <- function(
 
   # Helper function to compute association matrix for a single data frame
   .compute_single_assoc_matrix <- function(df_input, meas, var_types) {
-    p <- ncol(df_input)
-    mat <- diag(1, p)
-    colnames(mat) <- rownames(mat) <- names(df_input)
-
-    # If all numeric, use correlation-based approach
-    if (all(var_types == "numeric")) {
-      # Handle missing values
-      dropped <- sum(!complete.cases(df_input))
-      if (dropped > 0) {
-        df_clean <- df_input[complete.cases(df_input), ]
-        if (dropped == nrow(df_input)) {
-          stop("All rows contain missing values")
-        }
-        warning(sprintf(
-          "Removed %d row%s with missing values when computing associations (rows are not removed from the returned data).",
-          dropped, if (dropped == 1) "" else "s"
-        ))
-      } else {
-        df_clean <- df_input
+    # Handle missing values (shared by both branches below): listwise
+    # deletion up front, so every pair-type computation sees the same
+    # complete-case data rather than each pair applying its own ad hoc NA
+    # policy.
+    dropped <- sum(!complete.cases(df_input))
+    if (dropped > 0) {
+      df_clean <- df_input[complete.cases(df_input), ]
+      if (dropped == nrow(df_input)) {
+        stop("All rows contain missing values")
       }
-
-      # Compute correlation matrix based on measure
-      if (meas %in% c("pearson", "spearman", "kendall")) {
-        mat <- abs(cor(df_clean, method = meas))
-      } else if (meas == "bicor") {
-        if (!requireNamespace("WGCNA", quietly = TRUE)) {
-          stop("Install the 'WGCNA' package for bicor.")
-        }
-        mat <- abs(WGCNA::bicor(df_clean))
-      } else if (meas == "distance") {
-        if (!requireNamespace("energy", quietly = TRUE)) {
-          stop("Install the 'energy' package for distance correlation.")
-        }
-        # Compute pairwise distance correlations
-        mat <- diag(1, p)
-        for (i in seq_len(p - 1)) {
-          for (j in (i + 1):p) {
-            mat[i, j] <- mat[j, i] <- energy::dcor(df_clean[[i]], df_clean[[j]])
-          }
-        }
-        colnames(mat) <- rownames(mat) <- names(df_clean)
-      } else if (meas == "maximal") {
-        if (!requireNamespace("minerva", quietly = TRUE)) {
-          stop("Install the 'minerva' package for maximal information coefficient.")
-        }
-        # Compute pairwise MIC
-        mat <- diag(1, p)
-        for (i in seq_len(p - 1)) {
-          for (j in (i + 1):p) {
-            mat[i, j] <- mat[j, i] <- minerva::mine(df_clean[[i]], df_clean[[j]])$MIC
-          }
-        }
-        colnames(mat) <- rownames(mat) <- names(df_clean)
-      } else {
-        stop(sprintf("Measure '%s' is not supported. Use one of: pearson, spearman, kendall, bicor, distance, maximal", meas))
-      }
+      warning(sprintf(
+        "Removed %d row%s with missing values when computing associations (rows are not removed from the returned data).",
+        dropped, if (dropped == 1) "" else "s"
+      ))
     } else {
-      # Mixed-type: compute pairwise associations using appropriate measures
-
-      # Handle missing values (mirrors the all-numeric branch above): listwise
-      # deletion up front, so every pair-type computation below sees the same
-      # complete-case data rather than each pair applying its own ad hoc NA
-      # policy (use = "complete.obs" per numeric pair, silent NA-dropping
-      # inside table() for factor pairs, na.rm = TRUE inside eta's tapply/sum).
-      dropped <- sum(!complete.cases(df_input))
-      if (dropped > 0) {
-        df_clean <- df_input[complete.cases(df_input), ]
-        if (dropped == nrow(df_input)) {
-          stop("All rows contain missing values")
-        }
-        warning(sprintf(
-          "Removed %d row%s with missing values when computing associations (rows are not removed from the returned data).",
-          dropped, if (dropped == 1) "" else "s"
-        ))
-      } else {
-        df_clean <- df_input
-      }
-
-      # Compute pairwise associations
-      for (i in seq_len(p - 1)) {
-        for (j in (i + 1):p) {
-          xi <- df_clean[[i]]
-          xj <- df_clean[[j]]
-          ti <- var_types[i]
-          tj <- var_types[j]
-
-          # A fully-observed constant column (any type) carries no
-          # information about anything, so its association with any other
-          # variable is well-defined as 0 -- mirrors assocSelect()'s
-          # get_assoc() gate. Without this, a constant factor/numeric
-          # column reaches the Cramer's V or Pearson branch below and
-          # produces an undefined (NA) association that then trips the
-          # "surface NA explicitly" check further down, even though nothing
-          # is actually undefined. Restricted to columns with no NA at all:
-          # a column that is constant only among its non-missing values is
-          # an NA-handling question (missing-data policy), not this
-          # constant-column question, and is left to fall through to the
-          # existing dispatch below unchanged.
-          if ((!anyNA(xi) && length(unique(xi)) == 1) ||
-              (!anyNA(xj) && length(unique(xj)) == 1)) {
-            assoc_val <- 0
-          } else if (ti == "numeric" && tj == "numeric") {
-            assoc_val <- switch(meas,
-              pearson  = abs(cor(xi, xj, method = "pearson", use = "complete.obs")),
-              spearman = abs(cor(xi, xj, method = "spearman", use = "complete.obs")),
-              kendall  = abs(cor(xi, xj, method = "kendall", use = "complete.obs")),
-              bicor = {
-                if (!requireNamespace("WGCNA", quietly = TRUE)) {
-                  stop("Install the 'WGCNA' package for bicor.")
-                }
-                abs(WGCNA::bicor(cbind(xi, xj))[1, 2])
-              },
-              distance = {
-                if (!requireNamespace("energy", quietly = TRUE)) {
-                  stop("Install the 'energy' package for distance correlation.")
-                }
-                abs(energy::dcor(xi, xj))
-              },
-              maximal = {
-                if (!requireNamespace("minerva", quietly = TRUE)) {
-                  stop("Install the 'minerva' package for maximal information coefficient.")
-                }
-                minerva::mine(xi, xj)$MIC
-              },
-              stop(sprintf("Measure '%s' is not supported.", meas))
-            )
-          } else if ((ti == "numeric" && tj == "ordered") || (ti == "ordered" && tj == "numeric")) {
-            # Numeric-Ordered: use Spearman
-            assoc_val <- abs(cor(as.numeric(xi), as.numeric(xj), method = "spearman", use = "complete.obs"))
-          } else if ((ti == "numeric" && tj == "factor") || (ti == "factor" && tj == "numeric")) {
-            # Numeric-Factor: use eta-squared
-            cat_var <- if (ti == "factor") xi else xj
-            num_var <- if (ti == "numeric") xi else xj
-            if (length(unique(cat_var)) < 2) {
-              assoc_val <- 0
-            } else {
-              ss_tot <- sum((num_var - mean(num_var, na.rm = TRUE))^2, na.rm = TRUE)
-              if (ss_tot == 0) {
-                assoc_val <- 0
-              } else {
-                ss_bet <- sum(tapply(num_var, cat_var, function(z) {
-                  length(z) * (mean(z, na.rm = TRUE) - mean(num_var, na.rm = TRUE))^2
-                }), na.rm = TRUE)
-                assoc_val <- sqrt(ss_bet / ss_tot)
-              }
-            }
-          } else if (ti == "ordered" && tj == "ordered") {
-            # Ordered-Ordered: use Spearman
-            assoc_val <- abs(cor(as.numeric(xi), as.numeric(xj), method = "spearman", use = "complete.obs"))
-          } else {
-            # Factor-Factor or Factor-Ordered: use Cramer's V
-            tbl <- table(xi, xj)
-            if (min(dim(tbl)) < 2 || any(rowSums(tbl) == 0) || any(colSums(tbl) == 0)) {
-              assoc_val <- NA_real_
-            } else {
-              suppressWarnings({
-                chi2 <- suppressWarnings(chisq.test(tbl, correct = FALSE)$statistic)
-              })
-              if (length(chi2) == 0 || is.na(chi2)) {
-                assoc_val <- NA_real_
-              } else {
-                assoc_val <- sqrt(chi2 / (sum(tbl) * (min(dim(tbl)) - 1)))
-              }
-            }
-          }
-
-          mat[i, j] <- mat[j, i] <- assoc_val
-        }
-      }
+      df_clean <- df_input
     }
 
-    mat
+    # If all numeric, use the shared vectorized correlation-based builder
+    # (constant columns get association 0, not NA -- see .numeric_assoc_matrix()).
+    if (all(var_types == "numeric")) {
+      if (!meas %in% c("pearson", "spearman", "kendall", "bicor", "distance", "maximal")) {
+        stop(sprintf("Measure '%s' is not supported. Use one of: pearson, spearman, kendall, bicor, distance, maximal", meas))
+      }
+      .numeric_assoc_matrix(df_clean, meas)
+    } else {
+      # Mixed-type: shared pairwise builder (also used by assocSelect()).
+      # corrPrune() only exposes a configurable measure for numeric-numeric
+      # pairs; every other pair-type combination uses the fixed dispatch
+      # documented in ?corrPrune (spearman / eta / cramersv).
+      full_assoc_methods <- .full_assoc_method_map(meas)
+      .mixed_type_assoc_matrix(df_clean, var_types, full_assoc_methods)$mat
+    }
   }
 
   # Compute effective association matrix

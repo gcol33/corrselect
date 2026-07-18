@@ -130,6 +130,22 @@ MatSelect <- function(mat,
     }
   }
 
+  ## ---- warn about possible combinatorial blowup ----
+  # Exhaustive maximal-subset enumeration is worst-case exponential in the
+  # number of variables. Only warn when that's actually plausible: a large
+  # variable count *and* a permissive-enough threshold that a large share of
+  # pairs are compatible (a strict threshold keeps the compatibility graph
+  # sparse, where blowup isn't a practical risk).
+  if (n > 100) {
+    compat_density <- mean(abs(mat[upper.tri(mat)]) <= threshold)
+    if (compat_density > 0.3) {
+      warning(sprintf(
+        "%d variables with %.0f%% of pairs at or below the threshold: exhaustive maximal-subset enumeration can be exponential in the worst case. Consider corrPrune(mode = \"greedy\") for large variable counts.",
+        n, 100 * compat_density
+      ))
+    }
+  }
+
   ## ---- backend options ----
   dots      <- list(...)
   use_pivot <- TRUE
