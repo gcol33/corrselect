@@ -3,6 +3,8 @@
 \name{CorrCombo}
 \alias{CorrCombo}
 \alias{print.CorrCombo}
+\alias{summary.CorrCombo}
+\alias{print.summary.CorrCombo}
 \title{CorrCombo Class}
 \usage{
 CorrCombo(
@@ -19,6 +21,10 @@ CorrCombo(
 )
 
 \method{print}{CorrCombo}(x, ...)
+
+\method{summary}{CorrCombo}(object, ...)
+
+\method{print}{summary.CorrCombo}(x, ...)
 }
 \arguments{
 \item{subset_list}{A list of character vectors. Each vector is a valid subset (variable names).}
@@ -41,9 +47,11 @@ CorrCombo(
 
 \item{n_rows_used}{Integer. Number of rows used for computing the correlation matrix. \code{NA} for matrix input.}
 
-\item{x}{A \code{CorrCombo} object to be printed.}
+\item{x}{A \code{summary.CorrCombo} object to be printed.}
 
 \item{...}{Additional arguments (ignored).}
+
+\item{object}{A \code{CorrCombo} object to summarize.}
 }
 \description{
 Holds the result of \code{\link{corrSelect}} or \code{\link{MatSelect}}: a list of valid variable combinations

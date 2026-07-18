@@ -249,9 +249,6 @@ corrPrune <- function(
     ))
   }
 
-  # Check if all numeric (for measure auto-resolution)
-  all_numeric <- all(types == "numeric")
-
   # ===========================================================================
   # Step 3 — Resolve association measure
   # ===========================================================================
@@ -276,24 +273,23 @@ corrPrune <- function(
   # Real per-pair-type association-method metadata (mirrors assocSelect()'s
   # `assoc_methods_used` attribute). Determined purely by the static variable
   # types and the resolved numeric-numeric measure, so it is valid whether or
-  # not `by`-grouping is used.
+  # not `by`-grouping is used. Reuses .full_assoc_method_map() -- the same
+  # type-pair -> method table .compute_single_assoc_matrix() dispatches
+  # through below -- rather than re-deriving an independent copy that could
+  # drift from it (see #59).
   assoc_methods_used <- list()
   if (length(types) >= 2) {
-    for (.i in seq_len(length(types) - 1)) {
-      for (.j in (.i + 1):length(types)) {
-        .ti <- types[.i]; .tj <- types[.j]
-        .key <- paste(.ti, .tj, sep = "_")
-        .meth <- if (.ti == "numeric" && .tj == "numeric") {
-          measure_used
-        } else if ((.ti == "numeric" && .tj == "factor") || (.ti == "factor" && .tj == "numeric")) {
-          "eta"
-        } else if ((.ti == "numeric" && .tj == "ordered") || (.ti == "ordered" && .tj == "numeric") ||
-                   (.ti == "ordered" && .tj == "ordered")) {
-          "spearman"
-        } else {
-          "cramersv"
+    if (all(types == "numeric")) {
+      assoc_methods_used <- list(numeric_numeric = measure_used)
+    } else {
+      full_assoc_methods <- .full_assoc_method_map(measure_used)
+      for (.i in seq_len(length(types) - 1)) {
+        for (.j in (.i + 1):length(types)) {
+          .key <- paste(types[.i], types[.j], sep = "_")
+          if (is.null(assoc_methods_used[[.key]])) {
+            assoc_methods_used[[.key]] <- full_assoc_methods[[.key]]
+          }
         }
-        if (is.null(assoc_methods_used[[.key]])) assoc_methods_used[[.key]] <- .meth
       }
     }
   }
@@ -322,6 +318,16 @@ corrPrune <- function(
       df_clean <- df_input
     }
 
+    # A single remaining row makes sd()/cor() degenerate (NA, not 0/FALSE),
+    # which would otherwise surface here as an opaque "missing value where
+    # TRUE/FALSE needed" from .numeric_assoc_matrix()'s constant-column check
+    # rather than a clear, corrPrune-specific message (matching
+    # corrSelect()/assocSelect()'s equivalent guard).
+    if (nrow(df_clean) < 2) {
+      stop("Fewer than two complete-case rows remain after removing missing values: ",
+           "cannot compute associations.")
+    }
+
     # If all numeric, use the shared vectorized correlation-based builder
     # (constant columns get association 0, not NA -- see .numeric_assoc_matrix()).
     if (all(var_types == "numeric")) {
@@ -348,6 +354,19 @@ corrPrune <- function(
     # Case B: Grouped association
     # Split data by grouping variable(s)
     group_var <- interaction(data_orig[, by, drop = FALSE], drop = TRUE)
+
+    # Rows with a missing grouping value produce NA here (interaction() has
+    # no "NA" level of its own) and would otherwise be silently excluded from
+    # every group with no warning at all -- unlike every other NA-driven row
+    # drop in this package.
+    n_na_by <- sum(is.na(group_var))
+    if (n_na_by > 0) {
+      warning(sprintf(
+        "%d row%s with missing values in the grouping variable(s) ('%s') were excluded from every group.",
+        n_na_by, if (n_na_by == 1) "" else "s", paste(by, collapse = "', '")
+      ))
+    }
+
     group_levels <- levels(group_var)
     n_groups <- length(group_levels)
 
@@ -375,24 +394,62 @@ corrPrune <- function(
           next
         }
 
-        # Compute association matrix for this group
-        suppressWarnings({
+        # Compute association matrix for this group. Only the informative
+        # "Removed N row(s)..." warning from .compute_single_assoc_matrix()
+        # itself is allowed through; anything else (e.g. a stats::cor()
+        # zero-variance warning on a small group) is muffled, same as before.
+        withCallingHandlers({
           assoc_arrays[, , g] <- .compute_single_assoc_matrix(grp_data, measure_used, types)
+        }, warning = function(w) {
+          if (!grepl("^Removed \\d+ row", conditionMessage(w))) {
+            invokeRestart("muffleWarning")
+          }
         })
       }
 
-      # Aggregate across groups using group_q quantile
+      # A group counts as "computed" only if it had enough complete rows to
+      # actually be run through .compute_single_assoc_matrix() above (as
+      # opposed to a skipped group, already warned about individually).
+      group_computed <- rows_per_group >= 2
+
+      # A cell is genuinely undefined if some *computed* group still
+      # produced NA for that specific pair -- e.g. a factor level that
+      # happens to be unused within that one group, or a degenerate
+      # contingency table -- as distinct from a skipped group's NA, which is
+      # a deliberate, already-warned exclusion. Silently dropping the former
+      # from the group_q quantile (as the aggregation below does for the
+      # latter) would let group_q = 1's "holds in every group" guarantee
+      # pass without that group's association ever actually being checked.
+      undefined_cells <- apply(assoc_arrays, c(1, 2), function(vals) {
+        any(is.na(vals) & group_computed)
+      })
+      diag(undefined_cells) <- FALSE
+      if (any(undefined_cells)) {
+        bad_idx <- which(undefined_cells & upper.tri(undefined_cells), arr.ind = TRUE)
+        bad_pairs <- sprintf("'%s' and '%s'", names(data)[bad_idx[, 1]], names(data)[bad_idx[, 2]])
+        stop(sprintf(
+          "Association is undefined for %s in at least one group that had enough data to be included (e.g. an unused factor level, or a degenerate contingency table within that group). Excluding it from the group_q aggregate would silently skip verifying that group; consider excluding the offending variable, choosing a coarser grouping, or filtering the degenerate group explicitly.",
+          paste(bad_pairs, collapse = ", ")
+        ))
+      }
+
+      # Aggregate across groups using group_q quantile. Only computed groups
+      # contribute; skipped groups (rows_per_group < 2, already warned above)
+      # are excluded here as a deliberate, already-communicated omission.
       A_eff <- apply(assoc_arrays, c(1, 2), function(vals) {
-        vals <- vals[!is.na(vals)]
+        vals <- vals[group_computed & !is.na(vals)]
         if (length(vals) == 0) return(NA_real_)
         quantile(vals, probs = group_q, na.rm = TRUE)
       })
       colnames(A_eff) <- rownames(A_eff) <- names(data)
       diag(A_eff) <- 1
 
-      n_rows_used <- sum(rows_per_group)
+      # Only rows from groups that actually contributed to A_eff count
+      # towards n_rows_used; a skipped group's rows never fed the
+      # association matrix at all.
+      n_rows_used <- sum(rows_per_group[group_computed])
 
-      n_contributing <- sum(rows_per_group >= 2)
+      n_contributing <- sum(group_computed)
       if (n_contributing < n_groups) {
         warning(sprintf(
           "Only %d of %d groups had enough complete rows to contribute to the group_q aggregate; the rest were skipped.",

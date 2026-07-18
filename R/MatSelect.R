@@ -9,7 +9,7 @@ NULL
 #'
 #' @param mat A numeric, symmetric matrix with 1s on the diagonal (e.g. correlation matrix).
 #'        Column names (if present) are used to label output variables.
-#' @param threshold A numeric scalar in (0, 1). Maximum allowed absolute pairwise value.
+#' @param threshold A numeric scalar in (0, 1]. Maximum allowed absolute pairwise value.
 #'        Defaults to \code{0.7}.
 #' @param method Character. Selection algorithm to use. One of \code{"els"} or
 #'        \code{"bron-kerbosch"}. If not specified, the function chooses automatically:

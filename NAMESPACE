@@ -2,6 +2,8 @@
 
 S3method(as.data.frame,CorrCombo)
 S3method(print,CorrCombo)
+S3method(print,summary.CorrCombo)
+S3method(summary,CorrCombo)
 export(CorrCombo)
 export(MatSelect)
 export(assocSelect)

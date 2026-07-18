@@ -77,6 +77,9 @@ corrSubset <- function(res, df, which = "best", keepExtra = FALSE) {
     }
     indices <- 1L
   } else if (is.numeric(which)) {
+    if (any(is.na(which)) || any(which != as.integer(which))) {
+      stop("`which` numeric indices must be whole numbers.")
+    }
     indices <- as.integer(which)
     if (any(indices < 1 | indices > length(subset_list))) {
       stop("`which` indices are out of bounds.")

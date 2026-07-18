@@ -16,7 +16,7 @@ corrSelect(
 \arguments{
 \item{df}{A data frame. Only numeric columns are used.}
 
-\item{threshold}{A numeric value in (0, 1). Maximum allowed absolute correlation. Defaults to 0.7.}
+\item{threshold}{A numeric value in (0, 1]. Maximum allowed absolute correlation. Defaults to 0.7.}
 
 \item{method}{Character. Selection algorithm to use. One of \code{"els"} or
 \code{"bron-kerbosch"}. If not specified, the function chooses automatically:

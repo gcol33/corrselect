@@ -10,7 +10,7 @@ MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
 \item{mat}{A numeric, symmetric matrix with 1s on the diagonal (e.g. correlation matrix).
 Column names (if present) are used to label output variables.}
 
-\item{threshold}{A numeric scalar in (0, 1). Maximum allowed absolute pairwise value.
+\item{threshold}{A numeric scalar in (0, 1]. Maximum allowed absolute pairwise value.
 Defaults to \code{0.7}.}
 
 \item{method}{Character. Selection algorithm to use. One of \code{"els"} or

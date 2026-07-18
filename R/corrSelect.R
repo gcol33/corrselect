@@ -11,7 +11,7 @@
 #' Rows with missing values are removed before computing correlations. A warning is issued if any rows are dropped.
 #'
 #' @param df A data frame. Only numeric columns are used.
-#' @param threshold A numeric value in (0, 1). Maximum allowed absolute correlation. Defaults to 0.7.
+#' @param threshold A numeric value in (0, 1]. Maximum allowed absolute correlation. Defaults to 0.7.
 #' @param method Character. Selection algorithm to use. One of \code{"els"} or
 #'        \code{"bron-kerbosch"}. If not specified, the function chooses automatically:
 #'        \code{"els"} when \code{force_in} is provided, otherwise \code{"bron-kerbosch"}.

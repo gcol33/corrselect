@@ -20,7 +20,7 @@
 #'     \item ordered factors
 #'     \item unordered factors (character vectors are coerced to factors)
 #'   }
-#' @param threshold Numeric in \eqn{(0,1)}. Maximum allowed pair-wise
+#' @param threshold Numeric in \eqn{(0,1]}. Maximum allowed pair-wise
 #'   \emph{absolute} association. Default \code{0.7}.
 #' @param method Character; the subset-search algorithm. One of
 #'   \code{"els"} or \code{"bron-kerbosch"}.  If \code{NULL} (default) the
@@ -46,6 +46,17 @@
 #'   }
 #'   The object’s \code{show()} method prints the association metrics that were
 #'   \emph{actually used} for this data set.
+#'
+#'   Two additional attributes are attached to the returned object:
+#'   \describe{
+#'     \item{assoc_methods_used}{Named list mapping each variable-type-pair
+#'       combination that actually occurs in \code{df} (e.g.
+#'       \code{"numeric_numeric"}, \code{"numeric_factor"}) to the association
+#'       method used for it.}
+#'     \item{assoc_methods_all}{Named list mapping every possible
+#'       variable-type-pair combination to its resolved method, regardless of
+#'       whether that combination occurs in \code{df}.}
+#'   }
 #'
 #' @details
 #' The default association measure for each variable-type combination is:
