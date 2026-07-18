@@ -15,6 +15,61 @@ test_that("corrPrune validates data argument", {
   )
 })
 
+test_that("corrPrune handles single-column input under default mode = 'auto' (#34)", {
+  # Regression test for issue #34: mode = "auto" resolved to "exact" for any
+  # p <= max_exact_p, including p == 1, but exact mode routes through
+  # MatSelect(), which refuses ncol < 2 -- so single-predictor input, which
+  # corrPrune()'s own Step 7A logic treats as a trivially valid answer,
+  # crashed with MatSelect()'s internal "mat must have at least two columns"
+  # message. mode = "auto" now degrades to greedy for p < 2.
+  set.seed(9340)
+  df <- data.frame(x = rnorm(10))
+
+  result <- corrPrune(df, threshold = 0.7)
+  expect_s3_class(result, "data.frame")
+  expect_equal(names(result), "x")
+  expect_equal(attr(result, "mode"), "greedy")
+})
+
+test_that("corrPrune requires mode = 'exact' to have >= 2 columns, with a corrPrune-specific message (#34)", {
+  df <- data.frame(x = rnorm(10))
+
+  expect_error(
+    corrPrune(df, threshold = 0.7, mode = "exact"),
+    "mode = 'exact' requires at least two variables"
+  )
+
+  # mode = "greedy" already handles single-column input.
+  expect_s3_class(corrPrune(df, threshold = 0.7, mode = "greedy"), "data.frame")
+})
+
+test_that("corrPrune handles threshold = 0 under default mode = 'auto' (#34)", {
+  # Regression test for issue #34: threshold = 0 is documented as valid
+  # ("must be non-negative") and mode = "greedy" already handled it, but
+  # mode = "auto" resolved to "exact", which routes through MatSelect()'s
+  # stricter threshold in (0, 1] contract and crashed with MatSelect()'s
+  # internal range-check message. mode = "auto" now degrades to greedy for
+  # threshold == 0.
+  set.seed(9341)
+  df <- data.frame(x = rnorm(10), y = rnorm(10))
+
+  result <- corrPrune(df, threshold = 0)
+  expect_s3_class(result, "data.frame")
+  expect_equal(attr(result, "mode"), "greedy")
+})
+
+test_that("corrPrune requires mode = 'exact' to have threshold > 0, with a corrPrune-specific message (#34)", {
+  df <- data.frame(x = rnorm(10), y = rnorm(10))
+
+  expect_error(
+    corrPrune(df, threshold = 0, mode = "exact"),
+    "mode = 'exact' requires 'threshold' > 0"
+  )
+
+  # mode = "greedy" already handles threshold = 0.
+  expect_s3_class(corrPrune(df, threshold = 0, mode = "greedy"), "data.frame")
+})
+
 test_that("corrPrune rejects data with duplicate column names (#28)", {
   df <- data.frame(x = 1:10, y = 1:10, z = 1:10)
   names(df) <- c("a", "a", "b")

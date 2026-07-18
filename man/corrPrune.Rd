@@ -33,10 +33,14 @@ is reported in the \code{assoc_methods_used} attribute of the result.}
 
 \item{mode}{Character string specifying the search algorithm. Options:
 \itemize{
-\item \code{"auto"} (default): uses exact search if number of predictors <= \code{max_exact_p},
-otherwise uses greedy search
-\item \code{"exact"}: exhaustive search for maximal subsets (may be slow for large p)
-\item \code{"greedy"}: fast approximate search using iterative removal
+\item \code{"auto"} (default): uses exact search if number of predictors <= \code{max_exact_p}
+and there are at least 2 predictors with \code{threshold > 0}, otherwise uses
+greedy search (exact search requires both, since it routes through
+\code{\link{MatSelect}()})
+\item \code{"exact"}: exhaustive search for maximal subsets (may be slow for large p);
+requires at least 2 predictors and \code{threshold > 0}
+\item \code{"greedy"}: fast approximate search using iterative removal; supports a
+single predictor and \code{threshold = 0}
 }}
 
 \item{force_in}{Character vector of variable names that must be retained in

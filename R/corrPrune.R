@@ -17,10 +17,14 @@
 #'   dispatch table. The measure actually used for each pair-type combination
 #'   is reported in the `assoc_methods_used` attribute of the result.
 #' @param mode Character string specifying the search algorithm. Options:
-#'   - `"auto"` (default): uses exact search if number of predictors <= `max_exact_p`,
-#'     otherwise uses greedy search
-#'   - `"exact"`: exhaustive search for maximal subsets (may be slow for large p)
-#'   - `"greedy"`: fast approximate search using iterative removal
+#'   - `"auto"` (default): uses exact search if number of predictors <= `max_exact_p`
+#'     and there are at least 2 predictors with `threshold > 0`, otherwise uses
+#'     greedy search (exact search requires both, since it routes through
+#'     \code{\link{MatSelect}()})
+#'   - `"exact"`: exhaustive search for maximal subsets (may be slow for large p);
+#'     requires at least 2 predictors and `threshold > 0`
+#'   - `"greedy"`: fast approximate search using iterative removal; supports a
+#'     single predictor and `threshold = 0`
 #' @param force_in Character vector of variable names that must be retained in
 #'   the final subset. Default: NULL.
 #' @param by Character vector naming one or more grouping variables. If provided,
@@ -576,7 +580,12 @@ corrPrune <- function(
 
   p <- ncol(data)
   if (mode == "auto") {
-    mode_used <- if (p <= max_exact_p) "exact" else "greedy"
+    # Exact mode routes through MatSelect(), which requires >= 2 columns
+    # and threshold in (0, 1] -- stricter than corrPrune()'s own contract
+    # (>= 1 column, threshold >= 0). "auto" degrades to greedy for inputs
+    # exact mode cannot service, rather than erroring on documented-valid
+    # corrPrune() input (see #34).
+    mode_used <- if (p <= max_exact_p && p >= 2 && threshold > 0) "exact" else "greedy"
   } else {
     mode_used <- mode
   }
@@ -586,7 +595,20 @@ corrPrune <- function(
   # ===========================================================================
 
   if (mode_used == "exact") {
-    # Step 7A — Exact mode: use MatSelect to get all maximal subsets
+    # Step 7A — Exact mode: use MatSelect to get all maximal subsets.
+    # MatSelect() requires >= 2 columns and threshold in (0, 1], stricter
+    # than corrPrune()'s own contract -- surface a corrPrune-specific error
+    # for an explicit mode = "exact" request on input it cannot service,
+    # rather than letting MatSelect()'s internal message leak through (#34).
+    if (p < 2) {
+      stop("mode = 'exact' requires at least two variables in 'data'. ",
+           "Use mode = 'greedy' (or the default mode = 'auto') for single-variable input.")
+    }
+    if (threshold <= 0) {
+      stop("mode = 'exact' requires 'threshold' > 0. ",
+           "Use mode = 'greedy' (or the default mode = 'auto') for threshold = 0.")
+    }
+
     combo_result <- MatSelect(
       mat = A_eff,
       threshold = threshold,
