@@ -2026,6 +2026,31 @@ test_that("modelPrune VIF matches car::vif()'s GVIF for a numeric predictor alon
   expect_equal(unname(ours["cat"]), unname(reference["cat", "GVIF"]), tolerance = 0.01)
 })
 
+test_that("modelPrune .compute_vif() returns NA (not 0) when VIF computation errors (#29)", {
+  # Regression test for issue #29: the tryCatch()'s error handler used to
+  # assign `vif_values[i] <- NA` inside its own local frame, so the write
+  # never reached the enclosing vif_values vector and the predictor silently
+  # kept its numeric(length(fixed_effects)) default of 0 -- read as "no
+  # collinearity at all" -- instead of becoming NA.
+  set.seed(9200)
+  n <- 20
+  df <- data.frame(y = rnorm(n), x1 = rnorm(n), x2 = rnorm(n), x3 = rnorm(n))
+  fit <- lm(y ~ x1 + x2 + x3, data = df)
+
+  # Corrupt the fitted model's stored data (not the original df) so that
+  # regressing any one predictor on the others hits Inf and lm() throws,
+  # without preventing the original fit above from succeeding.
+  fit$model$x2[1] <- Inf
+
+  ours <- suppressWarnings(corrselect:::.compute_vif(fit, "lm", c("x1", "x2", "x3")))
+
+  expect_true(all(is.na(ours)))
+  expect_warning(
+    corrselect:::.compute_vif(fit, "lm", c("x1", "x2", "x3")),
+    "VIF computation failed"
+  )
+})
+
 test_that("modelPrune condition_number matches a manually computed SVD reference", {
   set.seed(7)
   n <- 60

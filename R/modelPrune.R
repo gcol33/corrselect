@@ -661,7 +661,7 @@ modelPrune <- function(
     }
 
     # Compute R² using correlation matrix approach (more numerically stable)
-    tryCatch({
+    vif_values[i] <- tryCatch({
       # For multiple columns (factor), use first principal component
       if (ncol(y_i) > 1) {
         y_vec <- y_i %*% rep(1/ncol(y_i), ncol(y_i))  # Average
@@ -675,7 +675,7 @@ modelPrune <- function(
 
       # Check if model fit properly
       if (is.null(fit) || inherits(fit, "try-error")) {
-        vif_values[i] <- Inf
+        Inf
       } else {
         r_squared <- summary(fit)$r.squared
 
@@ -683,17 +683,17 @@ modelPrune <- function(
         # - If R² is NA (degenerate case), set VIF to Inf
         # - If R² > 0.9999, clamp to avoid near-zero denominators
         if (is.na(r_squared)) {
-          vif_values[i] <- Inf
+          Inf
         } else if (r_squared > 0.9999) {
-          vif_values[i] <- 1 / (1 - 0.9999)  # VIF = 10000
+          1 / (1 - 0.9999)  # VIF = 10000
         } else {
           # VIF = 1 / (1 - R²)
-          vif_values[i] <- 1 / (1 - r_squared)
+          1 / (1 - r_squared)
         }
       }
     }, error = function(e) {
       warning(sprintf("VIF computation failed for '%s': %s", pred, e$message))
-      vif_values[i] <- NA
+      NA
     })
   }
 
