@@ -604,7 +604,7 @@ corrPrune <- function(
     # and threshold in (0, 1] -- stricter than corrPrune()'s own contract
     # (>= 1 column, threshold >= 0). "auto" degrades to greedy for inputs
     # exact mode cannot service, rather than erroring on documented-valid
-    # corrPrune() input (see #34).
+    # corrPrune() input.
     mode_used <- if (p <= max_exact_p && p >= 2 && threshold > 0) "exact" else "greedy"
   } else {
     mode_used <- mode
@@ -619,7 +619,7 @@ corrPrune <- function(
     # MatSelect() requires >= 2 columns and threshold in (0, 1], stricter
     # than corrPrune()'s own contract -- surface a corrPrune-specific error
     # for an explicit mode = "exact" request on input it cannot service,
-    # rather than letting MatSelect()'s internal message leak through (#34).
+    # rather than letting MatSelect()'s internal message leak through.
     if (p < 2) {
       stop("mode = 'exact' requires at least two variables in 'data'. ",
            "Use mode = 'greedy' (or the default mode = 'auto') for single-variable input.")

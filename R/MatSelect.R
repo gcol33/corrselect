@@ -139,7 +139,7 @@ MatSelect <- function(mat,
   }
 
   ## ---- dispatch to C/C++ backend ----
-  raw_out <- findAllMaxSets(
+  raw_out <- .findAllMaxSetsR(
     corMatrix = mat,
     threshold = threshold,
     method    = method,

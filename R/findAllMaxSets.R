@@ -1,6 +1,10 @@
-#' Internal dispatcher to C++ — do not export
+#' Internal dispatcher to the Rcpp-generated findAllMaxSets() export — do not export
+#'
+#' Translates R-facing conventions (hyphenated method name, 1-based force_in)
+#' into what the C++ backend expects, then calls the generated wrapper in
+#' RcppExports.R rather than hardcoding a second `.Call()` to the same symbol.
 #' @noRd
-findAllMaxSets <- function(
+.findAllMaxSetsR <- function(
     corMatrix,
     threshold,
     method = c("els", "bron-kerbosch"),
@@ -23,12 +27,11 @@ findAllMaxSets <- function(
     fi <- integer(0)
   }
 
-  .Call(
-    "_corrselect_findAllMaxSets",
-    corMatrix,   # NumericMatrix
-    threshold,   # double
-    method,      # string ("els" or "bron_kerbosch")
-    fi,          # IntegerVector (0-based)
-    use_pivot    # logical
+  findAllMaxSets(
+    corMatrix = corMatrix,
+    threshold = threshold,
+    method    = method,      # string ("els" or "bron_kerbosch")
+    force_in  = fi,          # IntegerVector (0-based)
+    use_pivot = use_pivot
   )
 }

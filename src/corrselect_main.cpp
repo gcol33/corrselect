@@ -22,7 +22,7 @@ List findAllMaxSets(
     stop("Matrix must be symmetric or upper triangular.");
 
   // 2) Build forcedVec (expecting 0-based indices from R), deduplicated so a
-  // repeated index can't land twice in the final combo (see #31).
+  // repeated index can't land twice in the final combo.
   Combo forcedVec;
   if (force_in.isNotNull()) {
     IntegerVector f = force_in.get();
