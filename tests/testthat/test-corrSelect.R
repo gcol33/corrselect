@@ -320,16 +320,29 @@ test_that("corrSelect errors with invalid cor_method", {
   )
 })
 
-test_that("corrSelect handles single row warning after NA removal", {
+test_that("corrSelect errors clearly when only one complete-case row remains after NA removal (#32)", {
   df <- data.frame(
     a = c(1, NA, NA, NA),
     b = c(2, NA, NA, NA),
     c = c(3, NA, NA, NA)
   )
 
-  # Should warn and possibly error due to insufficient data
+  # Should warn about the dropped rows, then error with a clear message
+  # instead of the opaque `sd()`-on-too-few-rows base-R error it used to
+  # surface (see #32).
   expect_warning(
-    expect_error(corrSelect(df, threshold = 0.7)),
+    expect_error(corrSelect(df, threshold = 0.7),
+                 "Fewer than two complete-case rows"),
+    "Removed"
+  )
+})
+
+test_that("corrSelect errors clearly when every row is dropped for missing values (#32)", {
+  df <- data.frame(x = rnorm(10), y = rep(NA_real_, 10), z = rnorm(10))
+
+  expect_warning(
+    expect_error(corrSelect(df, threshold = 0.7),
+                 "Fewer than two complete-case rows"),
     "Removed"
   )
 })

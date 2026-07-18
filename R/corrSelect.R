@@ -132,6 +132,10 @@ corrSelect <- function(df,
   .reportSkippedVariables(df, used_names)
 
   if (ncol(df_num) < 2) stop("Less than two numeric columns remain after preprocessing.")
+  if (nrow(df_num) < 2) {
+    stop("Fewer than two complete-case rows remain after removing missing values: ",
+         "cannot compute correlations.")
+  }
 
   # Drop constant variables
   is_const <- vapply(df_num, function(x) sd(x) == 0, logical(1))

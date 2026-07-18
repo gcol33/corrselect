@@ -161,6 +161,12 @@ assocSelect <- function(df,
 
   ## ---------- primitive dispatcher ----------
   get_assoc <- function(x, y, meth, tx, ty) {
+    # length(x) <= 1 means there is not enough data to estimate an
+    # association at all (e.g. every row but one was dropped for missing
+    # values) -- undefined, not known to be 0. Only a genuinely constant
+    # column (length(x) > 1 but a single distinct value) is a well-defined
+    # "no association" case.
+    if (length(x) <= 1 || length(y) <= 1) return(NA_real_)
     if (length(unique(x)) < 2 || length(unique(y)) < 2) return(0)
 
     switch(meth,

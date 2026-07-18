@@ -777,6 +777,32 @@ test_that("assocSelect handles numeric with zero variance paired with factor", {
   expect_true(inherits(res, "CorrCombo"))
 })
 
+test_that("assocSelect errors when every row is dropped for missing values (#32)", {
+  # Regression test for issue #32: get_assoc()'s early gate treated
+  # `unique(numeric(0))` (no data at all) the same as a genuinely constant
+  # column, silently returning association = 0 and reporting a valid-looking
+  # result with "Data Rows: 0 used" instead of surfacing an error.
+  df <- data.frame(x = rnorm(10), y = rep(NA_real_, 10), z = rnorm(10))
+
+  expect_warning(
+    expect_error(assocSelect(df, threshold = 0.7), "NA values"),
+    "Removed"
+  )
+})
+
+test_that("assocSelect errors when only one complete-case row remains (#32)", {
+  df <- data.frame(
+    x = c(1, NA, NA, NA),
+    y = c(2, NA, NA, NA),
+    z = c(3, NA, NA, NA)
+  )
+
+  expect_warning(
+    expect_error(assocSelect(df, threshold = 0.7), "NA values"),
+    "Removed"
+  )
+})
+
 test_that("assocSelect NA in association matrix triggers error", {
   set.seed(3006)
   # This is difficult to trigger directly, but we test the error path exists
