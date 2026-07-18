@@ -46,6 +46,7 @@
 #'     \item{measure}{Character string indicating which measure was used for numeric-numeric pairs}
 #'     \item{assoc_methods_used}{Named list mapping each pair-type combination (e.g. "numeric_numeric", "numeric_factor") to the association method actually used}
 #'     \item{threshold}{The threshold value used}
+#'     \item{n_rows_used}{Number of complete-case rows used to compute associations (see Details); the returned data itself is not row-filtered}
 #'   }
 #'
 #' @details
@@ -317,7 +318,7 @@ corrPrune <- function(
           stop("All rows contain missing values")
         }
         warning(sprintf(
-          "Removed %d row%s with missing values.",
+          "Removed %d row%s with missing values when computing associations (rows are not removed from the returned data).",
           dropped, if (dropped == 1) "" else "s"
         ))
       } else {
@@ -362,11 +363,30 @@ corrPrune <- function(
     } else {
       # Mixed-type: compute pairwise associations using appropriate measures
 
+      # Handle missing values (mirrors the all-numeric branch above): listwise
+      # deletion up front, so every pair-type computation below sees the same
+      # complete-case data rather than each pair applying its own ad hoc NA
+      # policy (use = "complete.obs" per numeric pair, silent NA-dropping
+      # inside table() for factor pairs, na.rm = TRUE inside eta's tapply/sum).
+      dropped <- sum(!complete.cases(df_input))
+      if (dropped > 0) {
+        df_clean <- df_input[complete.cases(df_input), ]
+        if (dropped == nrow(df_input)) {
+          stop("All rows contain missing values")
+        }
+        warning(sprintf(
+          "Removed %d row%s with missing values when computing associations (rows are not removed from the returned data).",
+          dropped, if (dropped == 1) "" else "s"
+        ))
+      } else {
+        df_clean <- df_input
+      }
+
       # Compute pairwise associations
       for (i in seq_len(p - 1)) {
         for (j in (i + 1):p) {
-          xi <- df_input[[i]]
-          xj <- df_input[[j]]
+          xi <- df_clean[[i]]
+          xj <- df_clean[[j]]
           ti <- var_types[i]
           tj <- var_types[j]
 
@@ -696,6 +716,7 @@ corrPrune <- function(
   attr(data_pruned, "threshold") <- threshold
   attr(data_pruned, "n_vars_original") <- ncol(data)
   attr(data_pruned, "n_vars_selected") <- length(selected_vars)
+  attr(data_pruned, "n_rows_used") <- n_rows_used
 
   return(data_pruned)
 }

@@ -700,6 +700,46 @@ test_that("corrPrune still errors on genuinely all-missing columns after the #33
   )
 })
 
+test_that("corrPrune mixed-type branch warns and reports n_rows_used on missing data, matching assocSelect (#35)", {
+  # Regression test for issue #35: the mixed-type association path had no
+  # complete-cases step (each pair type applied its own ad hoc NA policy)
+  # and never warned about dropped rows, unlike the all-numeric path and
+  # assocSelect(). n_rows_used was also computed but never attached to the
+  # returned object's attributes.
+  set.seed(9350)
+  n <- 60
+  df <- data.frame(
+    num1 = rnorm(n),
+    num2 = rnorm(n),
+    grp = factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  )
+  df$num1[sample(n, 10)] <- NA
+
+  expect_warning(
+    res <- corrPrune(df, threshold = 0.9),
+    "Removed 10 rows with missing values"
+  )
+  expect_equal(attr(res, "n_rows_used"), 50L)
+
+  # corrPrune() only prunes columns -- the returned data keeps every row,
+  # including the ones with missing values that were excluded only for the
+  # association computation.
+  expect_equal(nrow(res), n)
+
+  # assocSelect() should agree on how many rows were usable.
+  suppressWarnings(res_assoc <- assocSelect(df, threshold = 0.9))
+  expect_equal(res_assoc@n_rows_used, attr(res, "n_rows_used"))
+})
+
+test_that("corrPrune attaches n_rows_used with no missing data too", {
+  set.seed(9351)
+  n <- 30
+  df <- data.frame(num1 = rnorm(n), grp = factor(sample(c("A", "B"), n, replace = TRUE)))
+
+  res <- corrPrune(df, threshold = 0.9)
+  expect_equal(attr(res, "n_rows_used"), n)
+})
+
 test_that("corrPrune handles near-constant numeric columns", {
   set.seed(1013)
   n <- 30

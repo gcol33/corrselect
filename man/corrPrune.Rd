@@ -69,6 +69,7 @@ has the following attributes:
 \item{measure}{Character string indicating which measure was used for numeric-numeric pairs}
 \item{assoc_methods_used}{Named list mapping each pair-type combination (e.g. "numeric_numeric", "numeric_factor") to the association method actually used}
 \item{threshold}{The threshold value used}
+\item{n_rows_used}{Number of complete-case rows used to compute associations (see Details); the returned data itself is not row-filtered}
 }
 }
 \description{
