@@ -1,4 +1,5 @@
 #include "method_greedy.h"
+#include "utils.h"
 #include <Rcpp.h>
 #include <vector>
 #include <map>
@@ -140,12 +141,11 @@ Combo greedyPrune(
                 else if (std::fabs(this_max - tie_max_assoc) < 1e-10 && this_avg > tie_avg_assoc) {
                     should_replace = true;
                 }
-                // Third tie-breaker: lexicographically first (smallest index)
-                else if (std::fabs(this_max - tie_max_assoc) < 1e-10 &&
-                         std::fabs(this_avg - tie_avg_assoc) < 1e-10 &&
-                         var < worst_idx) {
-                    should_replace = true;
-                }
+                // Third tie-breaker (smallest column index wins): `badness`
+                // is a std::map, which the standard guarantees iterates keys
+                // in ascending order, so on a full tie `worst_idx` already
+                // holds the smallest index and `should_replace` correctly
+                // stays false here.
 
                 if (should_replace) {
                     worst_idx = var;
@@ -184,11 +184,10 @@ IntegerVector greedyPruneBackend(
     double threshold,
     Nullable<IntegerVector> force_in = R_NilValue
 ) {
-    // Validate input
+    // Validate input via the same shared checks used by the other three
+    // Rcpp-exported backends (findAllMaxSets, runELS, runBronKerbosch).
+    validateCorMatrix(assoc_matrix);
     int n = assoc_matrix.nrow();
-    if (n != assoc_matrix.ncol()) {
-        stop("Association matrix must be square");
-    }
 
     // Convert force_in to 0-based indices
     Combo forcedVec;
@@ -196,13 +195,10 @@ IntegerVector greedyPruneBackend(
         IntegerVector f = force_in.get();
         for (int i = 0; i < f.size(); ++i) {
             // R passes 0-based indices (already converted in R layer)
-            int idx = f[i];
-            if (idx < 0 || idx >= n) {
-                stop("force_in indices out of bounds");
-            }
-            forcedVec.push_back(idx);
+            forcedVec.push_back(f[i]);
         }
     }
+    validateForcedIndices(forcedVec, n);
 
     // Run greedy algorithm
     Combo result = greedyPrune(assoc_matrix, threshold, forcedVec);

@@ -20,26 +20,28 @@ double meanAbsCorrelation(const NumericMatrix& corMatrix, const Combo& comb) {
 // Matches the 1e-8 tolerance used by the R-level symmetry check in MatSelect().
 static const double kSymmetryTolerance = 1e-8;
 
-// Check if matrix is symmetric (within tolerance) or upper triangular
+// Check if matrix is symmetric (within tolerance) or upper triangular,
+// AND has a unit diagonal (required either way for a correlation/
+// association matrix).
 bool validateMatrixStructure(const NumericMatrix& corMatrix) {
   int n = corMatrix.nrow();
-  bool isSymmetric = true, isUpper = true;
+  bool isSymmetric = true, isUpper = true, hasUnitDiagonal = true;
 
   for (int i = 0; i < n; ++i) {
-    if (std::abs(corMatrix(i, i) - 1.0) > kSymmetryTolerance) isUpper = false;
+    if (std::abs(corMatrix(i, i) - 1.0) > kSymmetryTolerance) hasUnitDiagonal = false;
     for (int j = 0; j < i; ++j) {
       if (!NumericMatrix::is_na(corMatrix(i, j))) isUpper = false;
       if (std::abs(corMatrix(i, j) - corMatrix(j, i)) > kSymmetryTolerance) isSymmetric = false;
     }
   }
 
-  return isSymmetric || isUpper;
+  return hasUnitDiagonal && (isSymmetric || isUpper);
 }
 
 void validateCorMatrix(const NumericMatrix& corMatrix) {
   if (corMatrix.nrow() != corMatrix.ncol()) stop("Matrix must be square.");
   if (!validateMatrixStructure(corMatrix))
-    stop("Matrix must be symmetric or upper triangular.");
+    stop("Matrix must have a unit diagonal and be symmetric or upper triangular.");
 }
 
 void validateForcedIndices(const Combo& forcedVec, int n) {
