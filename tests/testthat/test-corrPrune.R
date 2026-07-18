@@ -593,6 +593,58 @@ test_that("corrPrune handles all rows with NA (errors)", {
   )
 })
 
+test_that("corrPrune handles constant-factor pairs, matching assocSelect (#33)", {
+  # Regression test for issue #33: corrPrune()'s mixed-type dispatch had no
+  # constant-column gate for the Cramer's V (factor-factor) branch, so a
+  # single-level factor produced an undefined (NA) association via
+  # table()/chisq.test() and tripped the "surface NA explicitly" stop, even
+  # though assocSelect() -- which corrPrune()'s own docs claim to mirror --
+  # already treats a constant categorical variable as association = 0.
+  set.seed(9330)
+  df <- data.frame(
+    const_fac = factor(rep("A", 20)),
+    other_fac = factor(sample(c("X", "Y", "Z"), 20, TRUE))
+  )
+
+  expect_no_error(res <- corrPrune(df, threshold = 0.9))
+  expect_s3_class(res, "data.frame")
+  expect_true(all(c("const_fac", "other_fac") %in% names(res)))
+
+  # assocSelect() already handled this case; corrPrune() should now agree.
+  expect_no_error(assocSelect(df, threshold = 0.9))
+})
+
+test_that("corrPrune handles a constant numeric column in a mixed-type data frame (#33)", {
+  set.seed(9331)
+  n <- 20
+  df <- data.frame(
+    const_num = rep(5, n),
+    other_num = rnorm(n),
+    fac = factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
+  )
+
+  expect_no_error(res <- corrPrune(df, threshold = 0.9))
+  expect_s3_class(res, "data.frame")
+})
+
+test_that("corrPrune still errors on genuinely all-missing columns after the #33 fix", {
+  # The constant-column gate added for #33 is restricted to fully-observed
+  # columns (no NA) so it doesn't mask genuinely undefined all-missing data
+  # as a false "association = 0".
+  df <- data.frame(x1 = c(NA, NA, NA), x2 = c(NA, NA, NA))
+  expect_error(corrPrune(df, threshold = 0.7))
+
+  df2 <- data.frame(
+    x = c(NA, NA, NA, NA),
+    y = c(NA, 1, NA, NA),
+    z = c(NA, NA, 2, NA)
+  )
+  expect_error(
+    corrPrune(df2, threshold = 0.7),
+    "no complete element pairs|All rows contain missing values|undefined \\(NA\\) values"
+  )
+})
+
 test_that("corrPrune handles near-constant numeric columns", {
   set.seed(1013)
   n <- 30

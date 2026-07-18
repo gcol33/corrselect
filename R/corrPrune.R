@@ -366,8 +366,22 @@ corrPrune <- function(
           ti <- var_types[i]
           tj <- var_types[j]
 
-          # Determine association measure based on types
-          if (ti == "numeric" && tj == "numeric") {
+          # A fully-observed constant column (any type) carries no
+          # information about anything, so its association with any other
+          # variable is well-defined as 0 -- mirrors assocSelect()'s
+          # get_assoc() gate. Without this, a constant factor/numeric
+          # column reaches the Cramer's V or Pearson branch below and
+          # produces an undefined (NA) association that then trips the
+          # "surface NA explicitly" check further down, even though nothing
+          # is actually undefined. Restricted to columns with no NA at all:
+          # a column that is constant only among its non-missing values is
+          # an NA-handling question (missing-data policy), not this
+          # constant-column question, and is left to fall through to the
+          # existing dispatch below unchanged.
+          if ((!anyNA(xi) && length(unique(xi)) == 1) ||
+              (!anyNA(xj) && length(unique(xj)) == 1)) {
+            assoc_val <- 0
+          } else if (ti == "numeric" && tj == "numeric") {
             assoc_val <- switch(meas,
               pearson  = abs(cor(xi, xj, method = "pearson", use = "complete.obs")),
               spearman = abs(cor(xi, xj, method = "spearman", use = "complete.obs")),
