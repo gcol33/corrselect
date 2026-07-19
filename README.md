@@ -12,11 +12,11 @@
 
 **Exact enumeration of maximal predictor sets under a correlation threshold.**
 
-Feed it your predictors. `corrselect` returns the maximal sets whose pairwise
-correlations all stay under your threshold, found exactly by graph enumeration
-(Bron–Kerbosch / Eppstein–Löffler–Strash) in C++. A greedy filter hands you one
-set and hides the rest. This keeps every variable it can, and shows you all the
-valid choices.
+Hand it a data frame and a threshold. `corrselect` finds every maximal set of
+predictors whose pairwise correlations all stay under that threshold, by
+graph enumeration (Bron–Kerbosch / Eppstein–Löffler–Strash) in C++, and
+returns whichever view you need: a single pruned data frame, or every valid
+subset to choose from.
 
 ```r
 library(corrselect)
@@ -28,24 +28,10 @@ corrPrune(mtcars, threshold = 0.7)
 corrSelect(mtcars, threshold = 0.7)
 ```
 
-## Exact, not greedy
-
-The usual tool, `caret::findCorrelation()`, removes variables greedily: it is
-order-dependent, non-deterministic, and typically drops more than it needs to.
-`corrselect` solves the same threshold constraint by maximal-clique enumeration,
-so it retains at least as many variables and returns the same answer every run.
-
-```r
-m <- cor(mtcars)
-
-caret::findCorrelation(m, cutoff = 0.7)              # greedy, ordering-dependent
-corrPrune(mtcars, threshold = 0.7, mode = "exact")   # exact, deterministic
-```
-
-## Every valid choice, not just one
+## Every valid choice, ranked
 
 `corrSelect()` returns every maximal low-correlation subset, ranked by size then
-average correlation, instead of committing to a single answer:
+average correlation:
 
 ```r
 res <- corrSelect(mtcars, threshold = 0.7)
@@ -73,52 +59,46 @@ corrSubset(res, mtcars, which = "best")   # pull the top-ranked subset back out 
 ## Keeping variables you already trust, across groups
 
 `force_in` protects variables that must survive pruning regardless of what else gets
-dropped; `by` requires the threshold to hold inside every group, not just on average
-across the whole dataset:
+dropped; `by` requires the threshold to hold separately inside every group:
 
 ```r
 # hp and wt are kept no matter what else is removed
 corrPrune(mtcars, threshold = 0.7, force_in = c("hp", "wt"))
 
-# threshold holds within every level of `site`, not just on average across sites
+# threshold holds within every level of `site`, checked group by group
 corrPrune(longitudinal_example[, c("x1", "x2", "x3", "x4", "x5", "site")],
           threshold = 0.6, by = "site")
 ```
 
-## What's in the box
+## Mixed-type data
 
-- **`corrPrune()`**: association-based pruning, model-free. Exact mode for `p <= 100`,
-  greedy mode for larger `p`, protect variables with `force_in`, hold the threshold
-  across groups with `by`.
-- **`modelPrune()`**: VIF-based pruning for `lm`, `glm`, `lme4`, `glmmTMB`, or any
-  custom engine (INLA, mgcv, brms, ...).
-- **`corrSelect()` / `MatSelect()`**: exhaustive enumeration of all maximal sets,
-  on a data frame or directly on a correlation matrix.
-- **`corrSubset()`**: pull one or more maximal subsets back out of a `CorrCombo`
-  as data frames.
-- **`assocSelect()`**: mixed-type data (numeric, factor, ordered), with the right
-  association metric chosen per pair.
+`assocSelect()` picks the right association measure for each pair of columns --
+Pearson for numeric-numeric, eta-squared for numeric-factor, Cramer's V for
+factor-factor -- and enumerates maximal subsets under all of them at once:
 
-Multiple association metrics are supported: `"pearson"`, `"spearman"`, `"kendall"`,
-`"bicor"` (WGCNA), `"distance"` (energy), `"maximal"` (minerva), and `"eta"` /
-`"cramersv"` for mixed-type data.
+```r
+df <- data.frame(
+  height = rnorm(30, 170, 10),
+  weight = rnorm(30, 70, 12),
+  group  = factor(sample(c("A", "B"), 30, TRUE)),
+  rating = ordered(sample(c("low", "med", "high"), 30, TRUE))
+)
 
-## `corrPrune` or `modelPrune`?
+assocSelect(df, threshold = 0.6)
+```
 
-|  | `corrPrune()` | `modelPrune()` |
-|---|---|---|
-| Needs a model? | No | Yes |
-| Based on | Pairwise correlation / association | Model diagnostics (VIF) |
-| Works without a response? | Yes | No |
-| Mixed models? | No | Yes (`lme4`, `glmmTMB`) |
-| Best for | Exploratory analysis, large `p` | Regression workflows, VIF reduction |
-
-Use `corrPrune()` first to cut dimensionality, then `modelPrune()` for final cleanup
-inside a modeling framework.
+`corrPrune()` runs the same mixed-type dispatch under the hood, so a single
+pruning call works whether the input is all-numeric or a mix of numeric,
+factor, and ordered columns. Six numeric-numeric measures are available --
+`"pearson"`, `"spearman"`, `"kendall"`, `"bicor"` (WGCNA), `"distance"`
+(energy), and `"maximal"` (minerva) -- selectable via `measure` /
+`method_num_num`.
 
 ## Model-based pruning with any engine
 
-`modelPrune()` works with `lm`, `glm`, `lme4`, `glmmTMB`, or any package you wire in:
+`modelPrune()` removes predictors by VIF or condition number, refitting after
+each removal. Built-in engines cover `lm`, `glm`, `lme4`, and `glmmTMB`;
+anything else plugs in as a two-function engine:
 
 ```r
 # linear model, VIF threshold
@@ -138,21 +118,54 @@ inla_engine <- list(
 modelPrune(y ~ x1 + x2, data = df, engine = inla_engine, limit = 0.5)
 ```
 
-## Mixed-type data
+## `corrPrune` or `modelPrune`?
 
-`assocSelect()` chooses the right association metric per pair (Pearson, Spearman,
-eta-squared, Cramér's V):
+|  | `corrPrune()` | `modelPrune()` |
+|---|---|---|
+| Needs a model? | No | Yes |
+| Based on | Pairwise correlation / association | Model diagnostics (VIF) |
+| Works without a response? | Yes | No |
+| Mixed models? | No | Yes (`lme4`, `glmmTMB`) |
+| Best for | Exploratory analysis, large `p` | Regression workflows, VIF reduction |
+
+Use `corrPrune()` first to cut dimensionality, then `modelPrune()` for final cleanup
+inside a modeling framework.
+
+## Exact where it matters, greedy where it scales
+
+`corrPrune()` picks a search mode for you: exact enumeration up to `max_exact_p`
+predictors (100 by default), and a greedy C++ backend beyond that. Exact mode
+guarantees the largest subset satisfying the threshold; greedy mode trades that
+guarantee for speed on wide data. Both are available directly, so you can pin
+one explicitly:
 
 ```r
-df <- data.frame(
-  height = rnorm(30, 170, 10),
-  weight = rnorm(30, 70, 12),
-  group  = factor(sample(c("A", "B"), 30, TRUE)),
-  rating = ordered(sample(c("low", "med", "high"), 30, TRUE))
-)
-
-assocSelect(df, threshold = 0.6)
+corrPrune(mtcars, threshold = 0.7, mode = "exact")   # guaranteed-maximal, small/medium p
+corrPrune(mtcars, threshold = 0.7, mode = "greedy")  # fast, approximate, any p
 ```
+
+`caret::findCorrelation()` solves this with greedy iterative removal, which
+is order-dependent and can vary between runs on the same data.
+`corrPrune(mode = "exact")` solves the same threshold constraint by
+maximal-clique enumeration, retaining at least as many variables and
+returning the same answer every run. The
+[Comparison vignette](https://gillescolling.com/corrselect/articles/comparison.html)
+walks through this and three other alternatives (Boruta, glmnet, manual VIF
+removal) side by side on the same dataset.
+
+## What's in the box
+
+- **`corrPrune()`**: association-based pruning, model-free. Exact mode for `p <= 100`,
+  greedy mode for larger `p`, protect variables with `force_in`, hold the threshold
+  across groups with `by`.
+- **`modelPrune()`**: VIF-based pruning for `lm`, `glm`, `lme4`, `glmmTMB`, or any
+  custom engine (INLA, mgcv, brms, ...).
+- **`corrSelect()` / `MatSelect()`**: exhaustive enumeration of all maximal sets,
+  on a data frame or directly on a correlation matrix.
+- **`corrSubset()`**: pull one or more maximal subsets back out of a `CorrCombo`
+  as data frames.
+- **`assocSelect()`**: mixed-type data (numeric, factor, ordered), with the right
+  association metric chosen per pair.
 
 ## Installation
 
