@@ -230,15 +230,8 @@ IntegerVector greedyPruneBackend(
     validateCorMatrix(assoc_matrix);
     int n = assoc_matrix.nrow();
 
-    // Convert force_in to 0-based indices
-    Combo forcedVec;
-    if (force_in.isNotNull()) {
-        IntegerVector f = force_in.get();
-        for (int i = 0; i < f.size(); ++i) {
-            // R passes 0-based indices (already converted in R layer)
-            forcedVec.push_back(f[i]);
-        }
-    }
+    // Convert force_in to 0-based indices (already converted in R layer)
+    Combo forcedVec = forceInToCombo(force_in);
     validateForcedIndices(forcedVec, n);
 
     // Run greedy algorithm

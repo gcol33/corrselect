@@ -18,6 +18,13 @@ bool validateMatrixStructure(const Rcpp::NumericMatrix& corMatrix);
 void validateCorMatrix(const Rcpp::NumericMatrix& corMatrix);
 void validateForcedIndices(Combo& forcedVec, int n);
 
+// Converts a `force_in` argument as received from R (already 0-based, or
+// R_NilValue when absent) into a Combo, expanding to an empty Combo when
+// null. Shared by findAllMaxSets() (corrselect_main.cpp) and
+// greedyPruneBackend() (method_greedy.cpp) so this conversion has exactly
+// one implementation.
+Combo forceInToCombo(Rcpp::Nullable<Rcpp::IntegerVector> force_in);
+
 // Warns, without stopping, when two or more `force_in` indices are
 // themselves mutually incompatible under threshold; `force_in` is still
 // honored and forced into every returned subset regardless. Shared by

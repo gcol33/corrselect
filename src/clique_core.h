@@ -3,7 +3,20 @@
 
 #include <Rcpp.h>
 #include <vector>
+#include <cmath>
+#include <algorithm>
 #include "corrselect_types.h"
+
+// Compatibility predicate: true iff variables a and b may coexist in a
+// subset, i.e. abs(corMatrix(a,b)) <= threshold. corMatrix may be stored
+// upper-triangular-only (lower triangle = NA, see validateMatrixStructure()
+// in utils.cpp), so the pair is always read as (min, max) rather than
+// trusting a < b. Shared by buildCompatibilityMatrix() below and by
+// method_els.cpp's induced-subgraph build, so the compatibility definition
+// has exactly one implementation.
+inline bool isCompatible(const Rcpp::NumericMatrix& corMatrix, double threshold, int a, int b) {
+  return std::abs(corMatrix(std::min(a, b), std::max(a, b))) <= threshold;
+}
 
 // Boolean adjacency/compatibility matrix: edge (i,j) exists iff variables i
 // and j may coexist in a subset, i.e. abs(corMatrix(i,j)) <= threshold.

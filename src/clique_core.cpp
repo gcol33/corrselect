@@ -9,7 +9,7 @@ AdjMatrix buildCompatibilityMatrix(const NumericMatrix& corMatrix, double thresh
   AdjMatrix adj(n, std::vector<bool>(n, false));
   for (int i = 0; i < n - 1; ++i) {
     for (int j = i + 1; j < n; ++j) {
-      bool ok = std::abs(corMatrix(i, j)) <= threshold;
+      bool ok = isCompatible(corMatrix, threshold, i, j);
       adj[i][j] = adj[j][i] = ok;
     }
   }

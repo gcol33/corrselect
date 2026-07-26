@@ -74,6 +74,17 @@ void validateForcedIndices(Combo& forcedVec, int n) {
   forcedVec.erase(std::unique(forcedVec.begin(), forcedVec.end()), forcedVec.end());
 }
 
+Combo forceInToCombo(Nullable<IntegerVector> force_in) {
+  Combo forcedVec;
+  if (force_in.isNotNull()) {
+    IntegerVector f = force_in.get();
+    for (int i = 0; i < f.size(); ++i) {
+      forcedVec.push_back(f[i]);
+    }
+  }
+  return forcedVec;
+}
+
 // Reports the offending pair using corMatrix's column names when present,
 // falling back to "V<1-based index>" (the same synthetic label MatSelect()
 // assigns at the R layer when `mat` carries no column names) when they are

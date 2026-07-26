@@ -21,14 +21,8 @@ List findAllMaxSets(
 
   // 2) Build forcedVec (expecting 0-based indices from R); validateForcedIndices()
   // deduplicates it so a repeated index can't land twice in the final combo.
-  Combo forcedVec;
-  if (force_in.isNotNull()) {
-    IntegerVector f = force_in.get();
-    for (int i = 0; i < f.size(); ++i) {
-      forcedVec.push_back(f[i]);
-    }
-    validateForcedIndices(forcedVec, n);
-  }
+  Combo forcedVec = forceInToCombo(force_in);
+  validateForcedIndices(forcedVec, n);
 
   // 3) Dispatch to selected algorithm
   ComboList results;
