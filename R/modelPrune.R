@@ -219,14 +219,13 @@ modelPrune <- function(
     }
   }
 
-  # Check limit
-  if (!is.numeric(limit) || length(limit) != 1L || is.na(limit)) {
-    if (length(limit) == 1L && is.na(limit)) {
-      stop("'limit' must be positive and non-missing")
-    }
+  # Check limit. A bare `NA` (logical, not numeric) still counts as "a single
+  # missing value" here rather than "wrong type" -- so the second guard, not
+  # the first, is what catches it.
+  if (length(limit) != 1L || (!is.numeric(limit) && !is.na(limit))) {
     stop("'limit' must be a single numeric value")
   }
-  if (limit <= 0) {
+  if (is.na(limit) || limit <= 0) {
     stop("'limit' must be positive and non-missing")
   }
 
@@ -792,14 +791,14 @@ modelPrune <- function(
 #' Extract fixed-effects design matrix from model
 #' @noRd
 .extract_design_matrix <- function(model, engine) {
+  # lm, glm, and lme4 fits share the same extraction path: stats::model.matrix()
+  # (used in preference to lme4::getME(), which can have issues with model
+  # subsetting). Only glmmTMB needs its own path, since its conditional-model
+  # design matrix isn't reachable via model.matrix(model) directly.
   X <- switch(engine,
-    lm = stats::model.matrix(model),
-    glm = stats::model.matrix(model),
-    lme4 = {
-      # Use stats::model.matrix instead of lme4::getME
-      # getME can have issues with model subsetting
-      stats::model.matrix(model)
-    },
+    lm = ,
+    glm = ,
+    lme4 = stats::model.matrix(model),
     glmmTMB = {
       # For glmmTMB, extract conditional component design matrix
       stats::model.matrix(model$modelInfo$terms$cond$fixed, model$frame)

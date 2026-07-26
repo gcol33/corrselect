@@ -1,6 +1,16 @@
 #' @useDynLib corrselect, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 NULL
+
+# Numeric tolerance for the diagonal-is-1 and symmetry checks on `mat` below.
+.MATSELECT_TOL <- 1e-8
+
+# Thresholds for the combinatorial-blowup heuristic warning below: only warn
+# when there are more than this many variables *and* more than this share of
+# pairs are compatibility-graph edges (i.e. at or below `threshold`).
+.MATSELECT_BLOWUP_MIN_VARS <- 100L
+.MATSELECT_BLOWUP_MAX_DENSITY <- 0.3
+
 #' Select Variable Subsets with Low Correlation or Association (Matrix Interface)
 #'
 #' Identifies all maximal subsets of variables from a symmetric matrix (typically a correlation matrix)
@@ -19,8 +29,9 @@ NULL
 #'        \code{MatSelect()} warns (naming the offending pair) but still forces them into every
 #'        returned subset -- unlike \code{\link{corrPrune}()}, which treats this condition as
 #'        infeasible and errors instead.
-#' @param ... Additional arguments passed to the backend, e.g., \code{use_pivot} (logical)
-#'        for enabling pivoting in Bron–Kerbosch (ignored by ELS).
+#' @param ... Additional arguments passed to the backend. The only supported
+#'        argument is \code{use_pivot} (logical), for enabling pivoting in
+#'        Bron–Kerbosch (ignored by ELS); any other named argument is an error.
 #'
 #' @return An object of class \code{\link{CorrCombo}}, containing all valid subsets and their
 #' correlation statistics. If every variable is pairwise correlated above \code{threshold},
@@ -74,10 +85,10 @@ MatSelect <- function(mat,
   if (anyNA(mat)) {
     stop("`mat` must not contain NA.")
   }
-  if (!all(abs(diag(mat) - 1) < 1e-8)) {
+  if (!all(abs(diag(mat) - 1) < .MATSELECT_TOL)) {
     stop("Diagonal entries of `mat` must be 1.")
   }
-  if (!all(abs(mat - t(mat)) < 1e-8)) {
+  if (!all(abs(mat - t(mat)) < .MATSELECT_TOL)) {
     stop("`mat` must be symmetric.")
   }
   .validate_threshold(threshold)
@@ -142,9 +153,9 @@ MatSelect <- function(mat,
   # variable count *and* a permissive-enough threshold that a large share of
   # pairs are compatible (a strict threshold keeps the compatibility graph
   # sparse, where blowup isn't a practical risk).
-  if (n > 100) {
+  if (n > .MATSELECT_BLOWUP_MIN_VARS) {
     compat_density <- mean(abs(mat[upper.tri(mat)]) <= threshold)
-    if (compat_density > 0.3) {
+    if (compat_density > .MATSELECT_BLOWUP_MAX_DENSITY) {
       warning(sprintf(
         "%d variables with %.0f%% of pairs at or below the threshold: exhaustive maximal-subset enumeration can be exponential in the worst case. Consider corrPrune(mode = \"greedy\") for large variable counts.",
         n, 100 * compat_density
@@ -154,6 +165,15 @@ MatSelect <- function(mat,
 
   ## ---- backend options ----
   dots      <- list(...)
+  dot_names <- names(dots)
+  if (is.null(dot_names)) dot_names <- rep.int("", length(dots))
+  unrecognized_dots <- setdiff(dot_names, "use_pivot")
+  if (length(unrecognized_dots) > 0) {
+    stop(sprintf(
+      "Unrecognized argument(s) in `...`: %s. The only supported `...` argument is `use_pivot`.",
+      paste(unrecognized_dots, collapse = ", ")
+    ))
+  }
   use_pivot <- TRUE
   if ("use_pivot" %in% names(dots)) {
     tmp <- suppressWarnings(as.logical(dots$use_pivot))
