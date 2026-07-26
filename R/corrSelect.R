@@ -99,12 +99,7 @@ corrSelect <- function(df,
   if (ncol(df) < 2) stop("`df` must have at least two columns.")
 
   # Validate threshold
-  if (!is.numeric(threshold) || length(threshold) != 1 || is.na(threshold)) {
-    stop("`threshold` must be a single numeric value.")
-  }
-  if (threshold <= 0 || threshold > 1) {
-    stop("`threshold` must be in the range (0, 1].")
-  }
+  .validate_threshold(threshold)
 
   # Resolve numeric `force_in` against the *original* data frame's column
   # positions, then treat it identically to character `force_in` from here on.

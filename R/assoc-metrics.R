@@ -2,6 +2,21 @@
 ## and corrPrune(). Kept in one place so a fix to NA/constant-column handling
 ## or a metric's definition applies to every caller at once.
 
+# Validates a `threshold` argument: must be a single, non-NA numeric value in
+# (0, 1]. Shared by corrSelect(), assocSelect(), and MatSelect() so the
+# contract and its error messages live in one place; corrPrune()/greedy's
+# threshold == 0 special case is handled by those callers themselves, not
+# here.
+.validate_threshold <- function(threshold) {
+  if (!is.numeric(threshold) || length(threshold) != 1 || is.na(threshold)) {
+    stop("`threshold` must be a single numeric value.")
+  }
+  if (threshold <= 0 || threshold > 1) {
+    stop("`threshold` must be in the range (0, 1].")
+  }
+  invisible(threshold)
+}
+
 # Drops columns whose values are all identical (a single distinct value --
 # works for any column type, unlike sd() == 0 which is numeric-only), with a
 # warning naming them. A constant column's association with anything is

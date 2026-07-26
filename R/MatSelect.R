@@ -80,12 +80,7 @@ MatSelect <- function(mat,
   if (!all(abs(mat - t(mat)) < 1e-8)) {
     stop("`mat` must be symmetric.")
   }
-  if (!is.numeric(threshold) || length(threshold) != 1 || is.na(threshold)) {
-    stop("`threshold` must be a single numeric value.")
-  }
-  if (threshold <= 0 || threshold > 1) {
-    stop("`threshold` must be in the range (0, 1].")
-  }
+  .validate_threshold(threshold)
   n <- ncol(mat)
 
   # Force-in conversion (names or indices)
