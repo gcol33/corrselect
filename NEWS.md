@@ -43,6 +43,7 @@
 - **C++ backend**: `greedyPruneBackend()`, the fourth Rcpp-exported backend, was missed by an earlier shared-validation refactor and skipped `validateCorMatrix()`/`validateForcedIndices()` entirely.
 - **corrSubset**: the missing-value warning now lists only the subsets that actually contain `NA`s.
 - Two package examples called `corrSelect(cor(mat))` where `MatSelect(cor(mat))` was intended, silently computing correlations of the correlation matrix rather than using it directly.
+- **C++ backend**: the `force_in` mutual-violation warning (naming the offending pair when forced variables exceed the threshold against each other) lived only in `MatSelect()`'s R layer, so calling the exported `runELS()`/`runBronKerbosch()` directly gave no signal at all. The check now lives in a shared C++ helper (`utils.cpp`) called by both, so every entry point that forces such variables in also warns about it (#111).
 
 ## New Features
 

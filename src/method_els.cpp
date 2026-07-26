@@ -96,6 +96,7 @@ ComboList runELS(const NumericMatrix& corMatrix,
   int n = corMatrix.nrow();
   validateCorMatrix(corMatrix);
   validateForcedIndices(forcedVec, n);
+  warnIfForcedMutuallyIncompatible(corMatrix, threshold, forcedVec);
 
   std::unordered_set<int> forcedSet(forcedVec.begin(), forcedVec.end());
 

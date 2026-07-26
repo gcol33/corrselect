@@ -15,6 +15,7 @@ ComboList runBronKerbosch(const NumericMatrix& corMatrix,
   int n = corMatrix.nrow();
   validateCorMatrix(corMatrix);
   validateForcedIndices(forcedVec, n);
+  warnIfForcedMutuallyIncompatible(corMatrix, threshold, forcedVec);
 
   AdjMatrix adj = buildCompatibilityMatrix(corMatrix, threshold);
 

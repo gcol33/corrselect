@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <cmath>
 #include <algorithm>
+#include <string>
 
 using namespace Rcpp;
 
@@ -71,4 +72,40 @@ void validateForcedIndices(Combo& forcedVec, int n) {
   }
   std::sort(forcedVec.begin(), forcedVec.end());
   forcedVec.erase(std::unique(forcedVec.begin(), forcedVec.end()), forcedVec.end());
+}
+
+// Reports the offending pair using corMatrix's column names when present,
+// falling back to "V<1-based index>" (the same synthetic label MatSelect()
+// assigns at the R layer when `mat` carries no column names) when they are
+// not. Assumes forcedVec is already sorted ascending (true for every caller,
+// which calls this right after validateForcedIndices()) and scans pairs in
+// second-index-then-first order, matching MatSelect()'s original R-layer
+// scan order so the pair reported when more than one violates is unchanged.
+void warnIfForcedMutuallyIncompatible(const NumericMatrix& corMatrix,
+                                      double threshold,
+                                      const Combo& forcedVec) {
+  if (forcedVec.size() < 2) return;
+
+  CharacterVector colNames = colnames(corMatrix);
+  bool haveNames = colNames.size() == corMatrix.ncol();
+
+  auto labelFor = [&](int idx) -> std::string {
+    if (haveNames) return Rcpp::as<std::string>(colNames[idx]);
+    return "V" + std::to_string(idx + 1);
+  };
+
+  size_t m = forcedVec.size();
+  for (size_t j = 1; j < m; ++j) {
+    for (size_t i = 0; i < j; ++i) {
+      int a = std::min(forcedVec[i], forcedVec[j]);
+      int b = std::max(forcedVec[i], forcedVec[j]);
+      double val = corMatrix(a, b);
+      if (!std::isnan(val) && std::abs(val) > threshold) {
+        Rcpp::warning(
+          "Variables in `force_in` are mutually correlated beyond the threshold. Example: '%s' and '%s' have association %.3f > %.3f. They will still be forced into all subsets.",
+          labelFor(a).c_str(), labelFor(b).c_str(), std::abs(val), threshold);
+        return;
+      }
+    }
+  }
 }

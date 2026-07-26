@@ -129,28 +129,17 @@ MatSelect <- function(mat,
   if (is.null(varnames)) varnames <- paste0("V", seq_len(n))
   force_names <- if (!is.null(force_in)) varnames[force_in] else character()
 
-  ## ---- warn if forced_in vars are too correlated internally ----
+  ## ---- forced_in vars that are too correlated internally ----
   # MatSelect() honors an explicit force_in request even when it is
   # internally incompatible with `threshold` -- unlike corrPrune(), which
   # treats the same condition as infeasible and stop()s (see #98). This
   # divergence is intentional: MatSelect() is the low-level enumeration
   # primitive and force_in is a direct instruction, while corrPrune()
-  # promises a single subset that satisfies threshold. Naming the specific
-  # offending pair (rather than a generic message) still lets a caller who
-  # didn't intend this find out which variables and by how much.
-  if (length(force_names) > 1) {
-    submat <- abs(mat[force_in, force_in, drop = FALSE])
-    bad <- which(upper.tri(submat) & submat > threshold, arr.ind = TRUE)
-    if (nrow(bad) > 0) {
-      var1 <- force_names[bad[1, 1]]
-      var2 <- force_names[bad[1, 2]]
-      bad_val <- submat[bad[1, 1], bad[1, 2]]
-      warning(sprintf(
-        "Variables in `force_in` are mutually correlated beyond the threshold. Example: '%s' and '%s' have association %.3f > %.3f. They will still be forced into all subsets.",
-        var1, var2, bad_val, threshold
-      ))
-    }
-  }
+  # promises a single subset that satisfies threshold. The warning naming
+  # the specific offending pair is issued by the shared C++ validation path
+  # (warnIfForcedMutuallyIncompatible() in src/utils.cpp, called from
+  # runELS()/runBronKerbosch() below), so a caller who bypasses MatSelect()
+  # and calls those Rcpp exports directly still gets it (#111).
 
   ## ---- warn about possible combinatorial blowup ----
   # Exhaustive maximal-subset enumeration is worst-case exponential in the
