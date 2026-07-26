@@ -143,11 +143,15 @@
 
 # Vectorized numeric-only association matrix, shared by corrSelect() and
 # corrPrune()'s all-numeric branch. `df_num` must already be complete-case
-# (NA-free). Constant columns get association 0 with every other variable
+# (NA-free). A constant column gets association 0 with every other variable
 # rather than the NA/NaN that the underlying correlation functions would
 # otherwise produce, matching the constant-column contract in
-# .pairwise_assoc_value() above. Returned values are abs()-clamped, matching
-# .pairwise_assoc_value()/.mixed_type_assoc_matrix()'s contract -- callers
+# .pairwise_assoc_value() above -- in practice this only fires for a column
+# constant only *within one call*, since both callers already exclude a
+# globally-constant column via .drop_constant_columns() before reaching here
+# (corrSelect() up front, corrPrune() up front except for its grouped `by`
+# path, which calls this once per group). Returned values are abs()-clamped,
+# matching .pairwise_assoc_value()/.mixed_type_assoc_matrix()'s contract -- callers
 # that aggregate across multiple matrices (corrPrune()'s grouped `by` path)
 # rely on every association being a non-negative magnitude, since a signed
 # value would let a strong negative association in one group be averaged

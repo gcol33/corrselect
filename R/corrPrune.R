@@ -376,8 +376,11 @@ corrPrune <- function(
            "cannot compute associations.")
     }
 
-    # If all numeric, use the shared vectorized correlation-based builder
-    # (constant columns get association 0, not NA -- see .numeric_assoc_matrix()).
+    # If all numeric, use the shared vectorized correlation-based builder.
+    # Globally-constant columns were already excluded in Step 2b above; a
+    # column constant only within this call's rows (the grouped `by` path,
+    # called once per group) still gets association 0 here, not NA -- see
+    # .numeric_assoc_matrix().
     if (all(var_types == "numeric")) {
       if (!meas %in% c("pearson", "spearman", "kendall", "bicor", "distance", "maximal")) {
         stop(sprintf("Measure '%s' is not supported. Use one of: pearson, spearman, kendall, bicor, distance, maximal", meas))
