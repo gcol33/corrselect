@@ -8,8 +8,8 @@
 
 #include "corrselect_types.h"
 
-double meanAbsCorrelation(const Rcpp::NumericMatrix& corMatrix, const Combo& comb);
-bool validateMatrixStructure(const Rcpp::NumericMatrix& corMatrix);
+[[nodiscard]] double meanAbsCorrelation(const Rcpp::NumericMatrix& corMatrix, const Combo& comb);
+[[nodiscard]] bool validateMatrixStructure(const Rcpp::NumericMatrix& corMatrix);
 
 // Shared entry-point validation for the four Rcpp-exported backends
 // (findAllMaxSets, runELS, runBronKerbosch, greedyPruneBackend): square +

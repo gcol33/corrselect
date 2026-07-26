@@ -1,29 +1,41 @@
-#include "method_greedy.h"
+#include "corrselect_types.h"
 #include "utils.h"
 #include <Rcpp.h>
 #include <vector>
-#include <map>
 #include <algorithm>
 #include <cmath>
 #include <limits>
 
 using namespace Rcpp;
 
+// Tie-break tolerance: two candidates' max associations are treated as equal
+// (falling through to the average-association tie-breaker) when they differ
+// by less than this amount.
+static const double kTieBreakEpsilon = 1e-10;
+
+// Invalidation tolerance for the cached per-variable max-association: a
+// removed neighbor's association is treated as having plausibly been the
+// cached argmax (forcing a lazy recompute) when it is within this amount of
+// the cached value, guarding against float round-off hiding the true argmax.
+static const double kArgmaxInvalidationEpsilon = 1e-12;
+
 // Reads the association between variables i and j from the upper triangle
 // only (i<j), mirroring buildCompatibilityMatrix()'s i<j convention
 // (clique_core.cpp). validateMatrixStructure() permits a validly
 // upper-triangular-only matrix (lower triangle = NA); reading raw A(i,j)
 // for both i<j and i>j would misread such a matrix as having NA on roughly
-// half of all pairs.
-inline double assocAt(const NumericMatrix& A, int i, int j) {
+// half of all pairs. File-local (internal linkage), matching the
+// analogous isCompatible() helper in clique_core.h.
+static inline double assocAt(const NumericMatrix& A, int i, int j) {
     return (i < j) ? A(i, j) : A(j, i);
 }
 
 // Helper: compute maximum association between var and any other active variable.
 // An undefined (NaN) association is treated as worse than any defined value, so a
 // variable involved in an undefined association is never silently preferred for
-// retention during tie-breaking.
-double computeMaxAssoc(
+// retention during tie-breaking. File-local: called only from greedyPrune()
+// below, so it carries internal linkage rather than a header declaration.
+[[nodiscard]] static double computeMaxAssoc(
     const NumericMatrix& A,
     int var,
     const std::vector<bool>& active
@@ -42,8 +54,10 @@ double computeMaxAssoc(
     return max_val;
 }
 
-// Main greedy pruning algorithm
-Combo greedyPrune(
+// Main greedy pruning algorithm. File-local: the only caller is
+// greedyPruneBackend() below, so it carries internal linkage rather than a
+// header declaration.
+static Combo greedyPrune(
     const NumericMatrix& A,
     double threshold,
     const Combo& force_in
@@ -61,14 +75,17 @@ Combo greedyPrune(
         protected_vars[idx] = true;
     }
 
-    // Incrementally maintained per-variable tie-break statistics, so each
-    // outer iteration doesn't have to rescan every neighbor from scratch for
-    // every candidate (see #60). sumAbs/cnt/nanCount track the running
-    // average association exactly, updated in O(1) per neighbor whenever a
-    // variable is removed. maxVal is a cached max association that is only
+    // Incrementally maintained per-variable tie-break statistics, so scoring a
+    // candidate during tie-breaking doesn't have to rescan every neighbor
+    // from scratch (see #60). sumAbs/cnt/nanCount track the running average
+    // association exactly, updated in O(1) per neighbor whenever a variable
+    // is removed. maxVal is a cached max association that is only
     // recomputed (via computeMaxAssoc's O(n) scan) for a variable whose
     // removed neighbor could plausibly have been its argmax -- typically far
-    // fewer than all n variables per removal.
+    // fewer than all n variables per removal. This caching only speeds up
+    // tie-break scoring: the violation-detection scan below (which drives the
+    // outer loop) still rescans all pairs every iteration regardless, so
+    // overall worst-case complexity remains O(n^3) either way.
     std::vector<double> sumAbs(n, 0.0);
     std::vector<int> cnt(n, 0);
     std::vector<int> nanCount(n, 0);
@@ -120,8 +137,10 @@ Combo greedyPrune(
             break;
         }
 
-        // Compute badness scores (count of violations per variable)
-        std::map<int, int> badness;
+        // Compute badness scores (count of violations per variable). The key
+        // domain is the bounded range 0..n-1, so a plain vector sized n is a
+        // simpler and faster counting structure than a std::map here.
+        std::vector<int> badness(n, 0);
         for (const auto& violation : violations) {
             badness[violation.first]++;
             badness[violation.second]++;
@@ -133,9 +152,15 @@ Combo greedyPrune(
         double tie_max_assoc = -1.0;
         double tie_avg_assoc = -1.0;
 
-        for (const auto& entry : badness) {
-            int var = entry.first;
-            int bad_count = entry.second;
+        for (int var = 0; var < n; var++) {
+            int bad_count = badness[var];
+
+            // Variables with no violations this round (including inactive
+            // ones, which can never appear in `violations`) are never
+            // candidates.
+            if (bad_count == 0) {
+                continue;
+            }
 
             // Skip protected variables
             if (protected_vars[var]) {
@@ -161,14 +186,13 @@ Combo greedyPrune(
                     should_replace = true;
                 }
                 // Second tie-breaker: highest average association
-                else if (std::fabs(this_max - tie_max_assoc) < 1e-10 && this_avg > tie_avg_assoc) {
+                else if (std::fabs(this_max - tie_max_assoc) < kTieBreakEpsilon && this_avg > tie_avg_assoc) {
                     should_replace = true;
                 }
-                // Third tie-breaker (smallest column index wins): `badness`
-                // is a std::map, which the standard guarantees iterates keys
-                // in ascending order, so on a full tie `worst_idx` already
-                // holds the smallest index and `should_replace` correctly
-                // stays false here.
+                // Third tie-breaker (smallest column index wins): `var` is
+                // iterated in ascending order, so on a full tie `worst_idx`
+                // already holds the smallest index and `should_replace`
+                // correctly stays false here.
 
                 if (should_replace) {
                     worst_idx = var;
@@ -198,7 +222,7 @@ Combo greedyPrune(
                 double av = std::fabs(val);
                 sumAbs[i] -= av;
                 cnt[i]--;
-                if (nanCount[i] == 0 && av >= maxVal[i] - 1e-12) {
+                if (nanCount[i] == 0 && av >= maxVal[i] - kArgmaxInvalidationEpsilon) {
                     // removed neighbor may have been the argmax; recompute lazily
                     maxDirty[i] = true;
                 }

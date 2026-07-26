@@ -22,7 +22,7 @@ inline bool isCompatible(const Rcpp::NumericMatrix& corMatrix, double threshold,
 // and j may coexist in a subset, i.e. abs(corMatrix(i,j)) <= threshold.
 typedef std::vector<std::vector<bool>> AdjMatrix;
 
-AdjMatrix buildCompatibilityMatrix(const Rcpp::NumericMatrix& corMatrix, double threshold);
+[[nodiscard]] AdjMatrix buildCompatibilityMatrix(const Rcpp::NumericMatrix& corMatrix, double threshold);
 
 // Standard Bron-Kerbosch maximal-clique enumeration with optional pivoting
 // (Tomita et al. pivot rule: maximize |P intersect N(pivot)|). Appends each

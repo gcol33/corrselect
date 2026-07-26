@@ -180,7 +180,7 @@ src/                         # C++ source files (Rcpp)
 ├── clique_core.{cpp,h}     # Shared pivoted Bron-Kerbosch core (used by both method_els and method_bronkerbosch)
 ├── method_els.{cpp,h}      # Eppstein-Löffler-Strash implementation
 ├── method_bronkerbosch.{cpp,h}  # Bron-Kerbosch implementation
-├── method_greedy.{cpp,h}   # Greedy pruning backend (used by corrPrune())
+├── method_greedy.cpp       # Greedy pruning backend (used by corrPrune()); all helpers are file-local
 ├── utils.{cpp,h}           # Shared entry-point validation and correlation stats
 └── RcppExports.cpp         # Generated Rcpp bindings
 

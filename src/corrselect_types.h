@@ -3,7 +3,7 @@
 
 #include <vector>
 
-typedef std::vector<int> Combo;
-typedef std::vector<Combo> ComboList;
+using Combo = std::vector<int>;
+using ComboList = std::vector<Combo>;
 
 #endif
