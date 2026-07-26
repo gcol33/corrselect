@@ -53,6 +53,34 @@ CorrCombo(
 
 \item{object}{A \code{CorrCombo} object to summarize.}
 }
+\value{
+\code{CorrCombo()} returns an S7 \code{CorrCombo} object holding the discovered subsets and their
+correlation statistics, with properties \code{subset_list}, \code{avg_corr}, \code{min_corr}, \code{max_corr},
+\code{var_names}, \code{threshold}, \code{forced_in}, \code{search_type}, \code{cor_method}, and
+\code{n_rows_used} as described above.
+
+\code{print.CorrCombo()} returns \code{x}, invisibly. Called to print a formatted summary of a
+\code{CorrCombo} object to the console.
+
+\code{summary.CorrCombo()} returns a list of class \code{summary.CorrCombo} with 10 elements:
+\describe{
+\item{n_subsets}{Integer. Number of maximal subsets found.}
+\item{search_type}{Character string. One of \code{"els"} or \code{"bron-kerbosch"}.}
+\item{cor_method}{Character string. Correlation method used, or \code{"mixed"} if multiple methods were used.}
+\item{threshold}{Numeric scalar. The correlation threshold used during selection.}
+\item{n_rows_used}{Integer. Number of rows used to compute the correlation matrix, or \code{NA} for matrix input.}
+\item{forced_in}{Character vector. Variable names forced into every subset.}
+\item{size_range}{Integer vector of length 2 giving the smallest and largest subset sizes found
+(\code{c(NA, NA)} if no subsets were found).}
+\item{size_median}{Numeric scalar. Median subset size across all discovered subsets (\code{NA} if none found).}
+\item{avg_corr_range}{Numeric vector of length 2 giving the smallest and largest average absolute
+correlation across subsets (\code{c(NA, NA)} if none found).}
+\item{n_max_size}{Integer. Number of subsets that attain the largest size (\code{0} if none found).}
+}
+
+\code{print.summary.CorrCombo()} returns \code{x}, invisibly. Called to print a formatted
+\code{summary.CorrCombo} object to the console.
+}
 \description{
 Holds the result of \code{\link{corrSelect}} or \code{\link{MatSelect}}: a list of valid variable combinations
 and their correlation statistics.
