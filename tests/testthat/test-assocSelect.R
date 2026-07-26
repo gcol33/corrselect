@@ -17,7 +17,7 @@ test_that("assocSelect works with numeric-only input", {
 })
 
 test_that("assocSelect drops rows with NA", {
-  df <- data.frame(a = c(1, NA, 2), b = factor(c("x", "y", "x")))
+  df <- data.frame(a = c(1, NA, 2, 3), b = factor(c("x", "y", "x", "y")))
   expect_warning(res <- assocSelect(df, threshold = 0.7), "Removed")
   expect_true(inherits(res, "CorrCombo"))
 })
@@ -70,14 +70,16 @@ test_that("assocSelect works with tibble input", {
   expect_true(inherits(res, "CorrCombo"))
 })
 
-test_that("assocSelect handles constant columns", {
+test_that("assocSelect drops constant columns with a warning", {
   df <- data.frame(
     a = rep(1, 10),
     b = rnorm(10),
-    c = factor(rep("x", 10))
+    c = factor(rep("x", 10)),
+    d = rnorm(10)
   )
-  res <- assocSelect(df, threshold = 0.8)
+  res <- expect_warning(assocSelect(df, threshold = 0.8), "constant.*excluded")
   expect_true(inherits(res, "CorrCombo"))
+  expect_false(any(c("a", "c") %in% res@var_names))
 })
 
 test_that("assocSelect can use kendall for num-num", {
@@ -435,28 +437,32 @@ test_that("assocSelect errors for maximal when minerva not installed", {
   )
 })
 
-test_that("assocSelect handles factor with only one unique value", {
+test_that("assocSelect drops a constant factor and still succeeds on the rest", {
   set.seed(2019)
   n <- 20
   df <- data.frame(
     num1 = rnorm(n),
+    num2 = rnorm(n),
     single_level = factor(rep("A", n))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
+  res <- expect_warning(assocSelect(df, threshold = 0.9), "constant.*excluded")
   expect_true(inherits(res, "CorrCombo"))
+  expect_false("single_level" %in% res@var_names)
 })
 
-test_that("assocSelect handles numeric with zero variance (ss_tot = 0)", {
+test_that("assocSelect drops a constant numeric column and still succeeds on the rest", {
   set.seed(2020)
   n <- 20
   df <- data.frame(
     const_num = rep(3.14, n),
+    num1 = rnorm(n),
     cat1 = factor(sample(c("A", "B"), n, replace = TRUE))
   )
 
-  res <- assocSelect(df, threshold = 0.9)
+  res <- expect_warning(assocSelect(df, threshold = 0.9), "constant.*excluded")
   expect_true(inherits(res, "CorrCombo"))
+  expect_false("const_num" %in% res@var_names)
 })
 
 # ===========================================================================
@@ -663,20 +669,19 @@ test_that("assocSelect handles ordered-numeric pairs", {
 # Edge case tests for association computation branches
 # ===========================================================================
 
-test_that("assocSelect gives a fully-observed single-level factor exactly zero Cramer's V (#84)", {
+test_that(".pairwise_assoc_value() gives a fully-observed single-level factor exactly zero Cramer's V (#84)", {
   # f1 has only one level -- this hits .pairwise_assoc_value()'s
   # constant-column short-circuit (association is well-defined as exactly
   # 0), not cramersv's own min(dim(tbl)) < 2 NA path, despite the original
-  # title's "sparse 1-dim table" framing.
+  # title's "sparse 1-dim table" framing. assocSelect() itself now drops
+  # constant columns before this path is reached; corrPrune()'s grouped
+  # `by` path is where a within-group constant still exercises it.
   set.seed(2035)
-  df <- data.frame(
-    f1 = factor(c(rep("A", 20))),
-    f2 = factor(c(rep("X", 10), rep("Y", 10)))
-  )
+  f1 <- factor(c(rep("A", 20)))
+  f2 <- factor(c(rep("X", 10), rep("Y", 10)))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(f1, f2, "cramersv", "factor", "factor")
+  expect_equal(assoc, 0)
 })
 
 test_that("assocSelect's cramersv matches a chisq.test()-derived reference on an imbalanced table (#84)", {
@@ -722,18 +727,15 @@ test_that("assocSelect drops a pair into separate singleton subsets when cramers
 # Additional edge case tests for full coverage
 # ===========================================================================
 
-test_that("assocSelect gives a single-level factor (sampled partner) exactly zero Cramer's V (#84)", {
+test_that(".pairwise_assoc_value() gives a single-level factor (sampled partner) exactly zero Cramer's V (#84)", {
   # Same constant-column short-circuit as the "single-level factor" test
   # above, with a randomly-sampled (rather than fixed) partner column.
   set.seed(3001)
-  df <- data.frame(
-    f1 = factor(rep("A", 20)),
-    f2 = factor(sample(c("X", "Y"), 20, replace = TRUE))
-  )
+  f1 <- factor(rep("A", 20))
+  f2 <- factor(sample(c("X", "Y"), 20, replace = TRUE))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(f1, f2, "cramersv", "factor", "factor")
+  expect_equal(assoc, 0)
 })
 
 test_that("assocSelect's cramersv matches a chisq.test()-derived reference after unused levels are dropped (#84)", {
@@ -755,17 +757,14 @@ test_that("assocSelect's cramersv matches a chisq.test()-derived reference after
   expect_equal(res@avg_corr[1], v_ref, tolerance = 1e-8)
 })
 
-test_that("assocSelect gives a constant numeric column exactly zero association with a factor (#84)", {
+test_that(".pairwise_assoc_value() gives a constant numeric column exactly zero association with a factor (#84)", {
   set.seed(3005)
   n <- 25
-  df <- data.frame(
-    zero_var_num = rep(5.5, n),
-    cat = factor(sample(c("A", "B"), n, replace = TRUE))
-  )
+  zero_var_num <- rep(5.5, n)
+  cat <- factor(sample(c("A", "B"), n, replace = TRUE))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(zero_var_num, cat, "eta", "numeric", "factor")
+  expect_equal(assoc, 0)
 })
 
 test_that("assocSelect errors when every row is dropped for missing values (#32, #45)", {
@@ -941,20 +940,17 @@ test_that("assocSelect with kendall for numeric-ordered pairs", {
 # Edge case tests to increase coverage
 # ===========================================================================
 
-test_that("assocSelect gives a fully-constant factor column exactly zero Cramer's V (#84)", {
+test_that(".pairwise_assoc_value() gives a fully-constant factor column exactly zero Cramer's V (#84)", {
   # f2 has only one observed level -- the constant-column short-circuit in
   # .pairwise_assoc_value() fires (association well-defined as exactly 0),
   # not cramersv's own NA path, despite the original "degenerate table"
   # framing.
   set.seed(3101)
-  df <- data.frame(
-    f1 = factor(c("A", "A", "A", "A", "A", "B", "B", "B", "B", "B")),
-    f2 = factor(c("X", "X", "X", "X", "X", "X", "X", "X", "X", "X"))
-  )
+  f1 <- factor(c("A", "A", "A", "A", "A", "B", "B", "B", "B", "B"))
+  f2 <- factor(c("X", "X", "X", "X", "X", "X", "X", "X", "X", "X"))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(f1, f2, "cramersv", "factor", "factor")
+  expect_equal(assoc, 0)
 })
 
 test_that("assocSelect's eta matches a hand-computed sum-of-squares reference when one category is constant (#84)", {
@@ -986,18 +982,18 @@ test_that("assocSelect handles all-zero variance after split by factor", {
   expect_true(inherits(res, "CorrCombo"))
 })
 
-test_that("assocSelect falls back gracefully with problematic pairs", {
+test_that("assocSelect drops a constant ordered column and still succeeds on the rest", {
   set.seed(3104)
   n <- 30
-  # Create an ordered with only 1 level (edge case)
   df <- data.frame(
     num1 = rnorm(n),
     num2 = rnorm(n),
-    ord1 = ordered(rep(1, n))  # Single level ordered
+    ord1 = ordered(rep(1, n))  # Single level ordered -- constant, gets dropped
   )
 
-  res <- assocSelect(df, threshold = 0.99)
+  res <- expect_warning(assocSelect(df, threshold = 0.99), "constant.*excluded")
   expect_true(inherits(res, "CorrCombo"))
+  expect_false("ord1" %in% res@var_names)
 })
 
 test_that("assocSelect errors on unsupported method", {
@@ -1165,16 +1161,14 @@ test_that("assocSelect computes association for ordered-ordered pairs", {
 # Deep edge case tests for get_assoc internal function
 # ===========================================================================
 
-test_that("assocSelect gives a single-level factor exactly zero Cramer's V against a multi-level factor (#84)", {
+test_that(".pairwise_assoc_value() gives a single-level factor exactly zero Cramer's V against a multi-level factor (#84)", {
   set.seed(11001)
   n <- 20
   single_level <- factor(rep("A", n))
   multi_level <- factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
-  df <- data.frame(single_level = single_level, multi_level = multi_level)
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(single_level, multi_level, "cramersv", "factor", "factor")
+  expect_equal(assoc, 0)
 })
 
 test_that("assocSelect's cramersv matches a chisq.test()-derived reference once an unused level is dropped, not NA (#84)", {
@@ -1192,30 +1186,24 @@ test_that("assocSelect's cramersv matches a chisq.test()-derived reference once 
   expect_equal(res@avg_corr[1], 1)
 })
 
-test_that("assocSelect gives a constant numeric column exactly zero eta association with a factor (#84)", {
+test_that(".pairwise_assoc_value() gives a constant numeric column exactly zero eta association with a factor (#84)", {
   set.seed(11003)
   n <- 20
-  df <- data.frame(
-    const_num = rep(5.0, n),
-    factor_var = factor(sample(c("A", "B"), n, replace = TRUE))
-  )
+  const_num <- rep(5.0, n)
+  factor_var <- factor(sample(c("A", "B"), n, replace = TRUE))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(const_num, factor_var, "eta", "numeric", "factor")
+  expect_equal(assoc, 0)
 })
 
-test_that("assocSelect gives a single-level factor exactly zero eta association with a numeric variable (#84)", {
+test_that(".pairwise_assoc_value() gives a single-level factor exactly zero eta association with a numeric variable (#84)", {
   set.seed(11004)
   n <- 15
-  df <- data.frame(
-    numeric_var = rnorm(n),
-    single_cat = factor(rep("only", n))
-  )
+  numeric_var <- rnorm(n)
+  single_cat <- factor(rep("only", n))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(length(res@subset_list), 1)
-  expect_equal(res@avg_corr[1], 0)
+  assoc <- corrselect:::.pairwise_assoc_value(numeric_var, single_cat, "eta", "numeric", "factor")
+  expect_equal(assoc, 0)
 })
 
 # ===========================================================================

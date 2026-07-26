@@ -2,6 +2,27 @@
 ## and corrPrune(). Kept in one place so a fix to NA/constant-column handling
 ## or a metric's definition applies to every caller at once.
 
+# Drops columns whose values are all identical (a single distinct value --
+# works for any column type, unlike sd() == 0 which is numeric-only), with a
+# warning naming them. A constant column's association with anything is
+# mathematically undefined, not usefully "zero"; excluding it up front keeps
+# it from riding into every returned subset just because it can never cause a
+# threshold violation. Shared by corrSelect(), assocSelect(), and
+# corrPrune()'s upfront (whole-data) preprocessing -- not by the per-group
+# matrix builders in corrPrune()'s `by` path, where a column constant only
+# *within one group* is a different, legitimate case still handled by
+# .numeric_assoc_matrix()/.mixed_type_assoc_matrix()'s own within-group
+# zero-out logic below.
+.drop_constant_columns <- function(df) {
+  is_const <- vapply(df, function(x) length(unique(x)) <= 1, logical(1))
+  if (any(is_const)) {
+    warning("The following columns were constant and excluded: ",
+            paste(names(df)[is_const], collapse = ", "))
+    df <- df[, !is_const, drop = FALSE]
+  }
+  df
+}
+
 # Association value for a single pair of variables, used by assocSelect()
 # and corrPrune()'s mixed-type branch. `type_x`/`type_y` (one of "numeric",
 # "ordered", "factor") are only consulted by the "eta" method, to identify

@@ -61,12 +61,17 @@
 #' are all below `threshold`. The function works in several stages:
 #'
 #' 1. **Variable type detection**: Identifies numeric vs. categorical predictors
-#' 2. **Association measurement**: Computes appropriate pairwise associations
-#' 3. **Grouping (optional)**: If `by` is specified, computes associations within
+#' 2. **Constant-column removal**: Predictors that are constant across every
+#'    complete-case row are excluded with a warning, since their association
+#'    with anything is undefined and they would otherwise ride into the
+#'    result without contributing any information
+#' 3. **Association measurement**: Computes appropriate pairwise associations
+#' 4. **Grouping (optional)**: If `by` is specified, computes associations within
 #'    each group and aggregates using the specified quantile
-#' 4. **Feasibility check**: Verifies that `force_in` variables satisfy the
-#'    threshold constraint
-#' 5. **Subset selection**: Uses either exact or greedy search to find a valid subset
+#' 5. **Feasibility check**: Verifies that `force_in` variables satisfy the
+#'    threshold constraint (a `force_in` variable excluded for being constant
+#'    also errors here)
+#' 6. **Subset selection**: Uses either exact or greedy search to find a valid subset
 #'
 #' **Grouped Pruning**: When `by` is provided, the function ensures the selected
 #' predictors satisfy the threshold constraint across groups. For example, with
@@ -257,6 +262,39 @@ corrPrune <- function(
       "Unsupported column types in: %s",
       paste(bad, collapse = ", ")
     ))
+  }
+
+  # ===========================================================================
+  # Step 2b — Drop globally-constant columns (before any group split)
+  # ===========================================================================
+
+  # A column constant across every complete-case row can never violate the
+  # threshold, so it would otherwise ride into the final subset without
+  # contributing any information. Detected on the whole-data complete cases,
+  # ignoring `by`, since a globally-constant column is necessarily constant
+  # within every group too -- this is distinct from a column constant only
+  # *within one group*, which .numeric_assoc_matrix()/.mixed_type_assoc_matrix()'s
+  # own zero-out logic still handles further below. Skipped when there are
+  # fewer than 2 complete rows so this doesn't mask the "too few rows" error
+  # .compute_single_assoc_matrix() raises later.
+  complete_data <- data[complete.cases(data), , drop = FALSE]
+  if (nrow(complete_data) >= 2L) {
+    kept <- names(.drop_constant_columns(complete_data))
+    dropped_const <- setdiff(names(data), kept)
+    if (length(dropped_const) > 0L) {
+      bad_force_in <- intersect(force_in, dropped_const)
+      if (length(bad_force_in) > 0L) {
+        stop(sprintf(
+          "'force_in' variable(s) were excluded for being constant: %s",
+          paste(bad_force_in, collapse = ", ")
+        ))
+      }
+      data  <- data[, kept, drop = FALSE]
+      types <- types[kept]
+      if (ncol(data) == 0L) {
+        stop("No predictors remain after excluding constant columns.")
+      }
+    }
   }
 
   # ===========================================================================

@@ -90,11 +90,16 @@ the association constraint.
 are all below \code{threshold}. The function works in several stages:
 \enumerate{
 \item \strong{Variable type detection}: Identifies numeric vs. categorical predictors
+\item \strong{Constant-column removal}: Predictors that are constant across every
+complete-case row are excluded with a warning, since their association
+with anything is undefined and they would otherwise ride into the
+result without contributing any information
 \item \strong{Association measurement}: Computes appropriate pairwise associations
 \item \strong{Grouping (optional)}: If \code{by} is specified, computes associations within
 each group and aggregates using the specified quantile
 \item \strong{Feasibility check}: Verifies that \code{force_in} variables satisfy the
-threshold constraint
+threshold constraint (a \code{force_in} variable excluded for being constant
+also errors here)
 \item \strong{Subset selection}: Uses either exact or greedy search to find a valid subset
 }
 

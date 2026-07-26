@@ -4,15 +4,15 @@
 #' ordered factors, or unordered) factors—whose *pair-wise association* does not
 #' exceed a user-supplied threshold.
 #' The routine wraps \code{\link{MatSelect}()} and handles all pre-processing
-#' (type conversion, missing-row removal, constant-column checks) for typical
+#' (type conversion, missing-row removal, constant-column removal) for typical
 #' data-frame/tibble/data-table inputs.
 #'
 #' A single call can therefore screen a data set that mixes continuous and
 #' categorical features and return every subset whose internal associations are
 #' “sufficiently low” under the metric(s) you choose.
 #'
-#' Rows containing \code{NA} are dropped with a warning; constant columns are
-#' treated as having zero association with every other variable.
+#' Rows containing \code{NA} are dropped with a warning; constant columns
+#' (a single distinct value) are excluded with a warning.
 #'
 #' @param df A data frame (or tibble / data.table). May contain any mix of:
 #'   \itemize{
@@ -155,6 +155,11 @@ assocSelect <- function(df,
     stop("Fewer than two complete-case rows remain after removing missing values: ",
          "cannot compute associations.")
   }
+
+  # Drop constant variables
+  df <- .drop_constant_columns(df)
+  if (ncol(df) < 2) stop("Less than two columns remain after excluding constants.")
+  types <- types[names(df)]
 
   ## ---------- finalise methods ----------
   method_num_num <- match.arg(method_num_num)

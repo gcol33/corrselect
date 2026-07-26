@@ -73,7 +73,7 @@ Identifies combinations of variables of any common data type (numeric,
 ordered factors, or unordered) factors—whose \emph{pair-wise association} does not
 exceed a user-supplied threshold.
 The routine wraps \code{\link{MatSelect}()} and handles all pre-processing
-(type conversion, missing-row removal, constant-column checks) for typical
+(type conversion, missing-row removal, constant-column removal) for typical
 data-frame/tibble/data-table inputs.
 }
 \details{
@@ -81,8 +81,8 @@ A single call can therefore screen a data set that mixes continuous and
 categorical features and return every subset whose internal associations are
 “sufficiently low” under the metric(s) you choose.
 
-Rows containing \code{NA} are dropped with a warning; constant columns are
-treated as having zero association with every other variable.
+Rows containing \code{NA} are dropped with a warning; constant columns
+(a single distinct value) are excluded with a warning.
 
 The default association measure for each variable-type combination is:
 

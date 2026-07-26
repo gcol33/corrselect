@@ -138,14 +138,7 @@ corrSelect <- function(df,
   }
 
   # Drop constant variables
-  is_const <- vapply(df_num, function(x) sd(x) == 0, logical(1))
-  if (any(is_const)) {
-    const_vars <- names(df_num)[is_const]
-    warning("The following numeric columns were constant and excluded: ",
-            paste(const_vars, collapse = ", "))
-    df_num     <- df_num[, !is_const, drop = FALSE]
-    used_names <- used_names[!is_const]
-  }
+  df_num <- .drop_constant_columns(df_num)
   if (ncol(df_num) < 2) stop("Less than two numeric columns remain after excluding constants.")
 
   # Build correlation/association matrix

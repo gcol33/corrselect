@@ -64,20 +64,28 @@ test_that("Cramer's V matches a stats::chisq.test()-derived reference", {
   expect_equal(ncol(above), 2)
 })
 
-test_that("a constant numeric column has exactly zero association with a factor, in both functions", {
+test_that("assocSelect and corrPrune both drop a constant numeric column instead of keeping it at zero association (#117)", {
   set.seed(9380)
   df <- data.frame(num = rep(5, 20), cat = factor(sample(c("A", "B", "C"), 20, replace = TRUE)))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(res@avg_corr[1], 0)
+  # .pairwise_assoc_value()'s constant-column short-circuit is still exactly
+  # 0 -- corrPrune()'s grouped `by` path still exercises it for a column
+  # constant only *within one group*. It's just no longer reachable via
+  # assocSelect()/corrPrune()'s top-level, globally-constant case, which now
+  # excludes the column instead of keeping it at association 0.
+  expect_equal(corrselect:::.pairwise_assoc_value(df$num, df$cat, "eta", "numeric", "factor"), 0)
 
-  # A zero association means both variables are always kept, at any
-  # (positive) threshold.
-  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy")
-  expect_equal(ncol(pruned), 2)
+  pruned <- expect_warning(corrPrune(df, threshold = 0.01, mode = "greedy"), "constant.*excluded")
+  expect_equal(colnames(pruned), "cat")
+
+  # assocSelect() needs a third column to demonstrate "drops the constant and
+  # keeps working" rather than "drops the constant and has nothing left".
+  df3 <- cbind(df, extra = rnorm(20))
+  res <- expect_warning(assocSelect(df3, threshold = 1), "constant.*excluded")
+  expect_false("num" %in% res@var_names)
 })
 
-test_that("a single-level factor has exactly zero eta association with a numeric variable, in both functions (#65)", {
+test_that("assocSelect and corrPrune both drop a single-level factor instead of keeping it at zero eta association (#65, #117)", {
   # Consolidates ~6 near-duplicate single-level-factor tests that were
   # scattered across test-assocSelect.R, each only asserting
   # inherits(res, "CorrCombo") -- never that the eta value itself is
@@ -86,11 +94,14 @@ test_that("a single-level factor has exactly zero eta association with a numeric
   set.seed(9384)
   df <- data.frame(num = rnorm(20), cat = factor(rep("only_level", 20)))
 
-  res <- assocSelect(df, threshold = 1)
-  expect_equal(res@avg_corr[1], 0)
+  expect_equal(corrselect:::.pairwise_assoc_value(df$num, df$cat, "eta", "numeric", "factor"), 0)
 
-  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy")
-  expect_equal(ncol(pruned), 2)
+  pruned <- expect_warning(corrPrune(df, threshold = 0.01, mode = "greedy"), "constant.*excluded")
+  expect_equal(colnames(pruned), "num")
+
+  df3 <- cbind(df, extra = rnorm(20))
+  res <- expect_warning(assocSelect(df3, threshold = 1), "constant.*excluded")
+  expect_false("cat" %in% res@var_names)
 })
 
 test_that("a near-constant numeric column's eta matches the reference, checked in both functions", {
@@ -111,24 +122,22 @@ test_that("a near-constant numeric column's eta matches the reference, checked i
   expect_equal(ncol(above), 2)
 })
 
-test_that("a constant numeric column gets exactly zero bicor association via corrPrune, not NA (#64)", {
+test_that(".numeric_assoc_matrix() gives a constant numeric column exactly zero bicor association, not NA (#64)", {
   skip_if_not(requireNamespace("WGCNA", quietly = TRUE))
-  # corrSelect() pre-filters constant columns before ever computing a
-  # correlation matrix (see corrSelect.R's own is_const exclusion step), so
-  # it never actually reaches .numeric_assoc_matrix()'s constant-column
-  # zero-out override -- only corrPrune()'s all-numeric branch does (it has
-  # no equivalent pre-filter). If the override didn't fire, WGCNA::bicor()
-  # would return NA/NaN for the constant pair, which corrPrune()'s Step 4b
-  # rejects with an explicit "undefined (NA) values" error -- so the
-  # override firing is exactly what makes this call succeed at all.
+  # .numeric_assoc_matrix()'s constant-column zero-out override is what makes
+  # this well-defined -- without it, WGCNA::bicor() would return NA/NaN for
+  # the constant pair. corrPrune()'s grouped `by` path is where a
+  # within-group constant still exercises this at the corrPrune() level;
+  # corrPrune()/assocSelect()/corrSelect() themselves now drop
+  # globally-constant columns before ever reaching this override (#117).
   set.seed(9381)
   df <- data.frame(const = rep(3, 20), x = rnorm(20))
 
-  pruned <- corrPrune(df, threshold = 0.01, mode = "greedy", measure = "bicor")
-  expect_equal(sort(colnames(pruned)), c("const", "x"))
+  mat <- corrselect:::.numeric_assoc_matrix(df, "bicor")
+  expect_equal(mat["const", "x"], 0)
 })
 
-test_that("a constant numeric column gets exactly zero distance-correlation association via corrPrune, not NA (#64), with no upstream warning leaking through (#94)", {
+test_that(".numeric_assoc_matrix() gives a constant numeric column exactly zero distance-correlation association, not NA (#64), with no upstream warning leaking through (#94)", {
   skip_if_not(requireNamespace("energy", quietly = TRUE))
   set.seed(9382)
   df <- data.frame(const = rep(3, 20), x = rnorm(20))
@@ -136,14 +145,12 @@ test_that("a constant numeric column gets exactly zero distance-correlation asso
   # Regression test for #94: energy::dcor() warns on a near/zero-variance
   # input; that warning must not reach the caller, matching the other
   # numeric-numeric methods (pearson/spearman/kendall/bicor), all of which
-  # already suppress it since the is_const zero-out makes it moot.
-  pruned <- expect_no_warning(
-    corrPrune(df, threshold = 0.01, mode = "greedy", measure = "distance")
-  )
-  expect_equal(sort(colnames(pruned)), c("const", "x"))
+  # already suppress it since the constant-column zero-out makes it moot.
+  mat <- expect_no_warning(corrselect:::.numeric_assoc_matrix(df, "distance"))
+  expect_equal(mat["const", "x"], 0)
 })
 
-test_that("a constant numeric column gets exactly zero maximal-information-coefficient association via corrPrune, not NA (#64), with no upstream warning leaking through (#94)", {
+test_that(".numeric_assoc_matrix() gives a constant numeric column exactly zero maximal-information-coefficient association, not NA (#64), with no upstream warning leaking through (#94)", {
   skip_if_not(requireNamespace("minerva", quietly = TRUE))
   set.seed(9383)
   df <- data.frame(const = rep(3, 20), x = rnorm(20))
@@ -151,10 +158,8 @@ test_that("a constant numeric column gets exactly zero maximal-information-coeff
   # Regression test for #94: minerva::mine() warns
   # ("Found variables with nearly 0 variance") on a constant input; that
   # warning must not reach the caller.
-  pruned <- expect_no_warning(
-    corrPrune(df, threshold = 0.01, mode = "greedy", measure = "maximal")
-  )
-  expect_equal(sort(colnames(pruned)), c("const", "x"))
+  mat <- expect_no_warning(corrselect:::.numeric_assoc_matrix(df, "maximal"))
+  expect_equal(mat["const", "x"], 0)
 })
 
 # ===========================================================================

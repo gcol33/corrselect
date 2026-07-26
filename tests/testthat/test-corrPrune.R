@@ -659,28 +659,31 @@ test_that("corrPrune handles all rows with NA (errors)", {
   )
 })
 
-test_that("corrPrune handles constant-factor pairs, matching assocSelect (#33)", {
+test_that("corrPrune drops a constant factor column, matching assocSelect (#33, #117)", {
   # Regression test for issue #33: corrPrune()'s mixed-type dispatch had no
   # constant-column gate for the Cramer's V (factor-factor) branch, so a
   # single-level factor produced an undefined (NA) association via
-  # table()/chisq.test() and tripped the "surface NA explicitly" stop, even
-  # though assocSelect() -- which corrPrune()'s own docs claim to mirror --
-  # already treats a constant categorical variable as association = 0.
+  # table()/chisq.test() and tripped the "surface NA explicitly" stop. Per
+  # #117, corrPrune() and assocSelect() now agree on constant columns: both
+  # exclude them with a warning rather than keeping them at association 0.
   set.seed(9330)
   df <- data.frame(
     const_fac = factor(rep("A", 20)),
-    other_fac = factor(sample(c("X", "Y", "Z"), 20, TRUE))
+    other_fac = factor(sample(c("X", "Y", "Z"), 20, TRUE)),
+    num       = rnorm(20)
   )
 
-  expect_no_error(res <- corrPrune(df, threshold = 0.9))
+  res <- expect_warning(corrPrune(df, threshold = 0.9), "constant.*excluded")
   expect_s3_class(res, "data.frame")
-  expect_true(all(c("const_fac", "other_fac") %in% names(res)))
+  expect_false("const_fac" %in% names(res))
+  expect_true("other_fac" %in% names(res))
 
-  # assocSelect() already handled this case; corrPrune() should now agree.
-  expect_no_error(assocSelect(df, threshold = 0.9))
+  # assocSelect() should agree.
+  res_assoc <- expect_warning(assocSelect(df, threshold = 0.9), "constant.*excluded")
+  expect_false("const_fac" %in% res_assoc@var_names)
 })
 
-test_that("corrPrune handles a constant numeric column in a mixed-type data frame (#33)", {
+test_that("corrPrune drops a constant numeric column in a mixed-type data frame (#33)", {
   set.seed(9331)
   n <- 20
   df <- data.frame(
@@ -689,8 +692,9 @@ test_that("corrPrune handles a constant numeric column in a mixed-type data fram
     fac = factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
   )
 
-  expect_no_error(res <- corrPrune(df, threshold = 0.9))
+  res <- expect_warning(corrPrune(df, threshold = 0.9), "constant.*excluded")
   expect_s3_class(res, "data.frame")
+  expect_false("const_num" %in% names(res))
 })
 
 test_that("corrPrune still errors on genuinely all-missing columns after the #33 fix", {
@@ -709,6 +713,37 @@ test_that("corrPrune still errors on genuinely all-missing columns after the #33
     corrPrune(df2, threshold = 0.7),
     "no complete element pairs|All rows contain missing values|undefined \\(NA\\) values"
   )
+})
+
+test_that("corrPrune errors clearly when force_in names a constant column (#117)", {
+  set.seed(9332)
+  n <- 20
+  df <- data.frame(
+    const_num = rep(5, n),
+    other_num = rnorm(n),
+    fac = factor(sample(c("X", "Y", "Z"), n, replace = TRUE))
+  )
+
+  expect_error(
+    suppressWarnings(corrPrune(df, threshold = 0.9, force_in = "const_num")),
+    "'force_in'.*excluded for being constant"
+  )
+})
+
+test_that("corrPrune keeps a column constant only within one group (#117)", {
+  # A column constant only *within one group* is not globally constant, so
+  # it must not be dropped up front -- it's still a legitimate case for
+  # .numeric_assoc_matrix()'s own within-group zero-out logic.
+  set.seed(9333)
+  n <- 40
+  grp <- rep(c("A", "B"), each = n / 2)
+  x <- rnorm(n)
+  y <- ifelse(grp == "A", 5, rnorm(n))  # constant within group A only
+
+  df <- data.frame(x = x, y = y, grp = grp)
+
+  result <- corrPrune(df, threshold = 0.9, by = "grp")
+  expect_true("y" %in% attr(result, "selected_vars"))
 })
 
 test_that("corrPrune mixed-type branch warns and reports n_rows_used on missing data, matching assocSelect (#35)", {
@@ -867,28 +902,38 @@ test_that("corrPrune greedy mode with single force_in", {
   expect_true("x2" %in% attr(result, "selected_vars"))
 })
 
-test_that("corrPrune handles eta with constant categorical variable", {
+test_that("corrPrune drops a constant categorical variable and still runs exact mode on the rest", {
   set.seed(1110)
   n <- 30
   df <- data.frame(
     num1 = rnorm(n),
-    cat_const = factor(rep("A", n))  # Constant factor
+    num2 = rnorm(n),
+    cat_const = factor(rep("A", n))  # Constant factor -- excluded before search
   )
 
-  result <- corrPrune(df, threshold = 0.99, mode = "exact")
+  result <- expect_warning(
+    corrPrune(df, threshold = 0.99, mode = "exact"),
+    "constant.*excluded"
+  )
   expect_s3_class(result, "data.frame")
+  expect_false("cat_const" %in% names(result))
 })
 
-test_that("corrPrune handles eta with constant numeric variable", {
+test_that("corrPrune drops a constant numeric variable and still runs exact mode on the rest", {
   set.seed(1111)
   n <- 30
   df <- data.frame(
-    num_const = rep(5, n),  # Constant numeric (ss_tot = 0)
-    cat1 = factor(sample(c("A", "B"), n, replace = TRUE))
+    num_const = rep(5, n),  # Constant numeric -- excluded before search
+    cat1 = factor(sample(c("A", "B"), n, replace = TRUE)),
+    cat2 = factor(sample(c("X", "Y"), n, replace = TRUE))
   )
 
-  result <- corrPrune(df, threshold = 0.99, mode = "exact")
+  result <- expect_warning(
+    corrPrune(df, threshold = 0.99, mode = "exact"),
+    "constant.*excluded"
+  )
   expect_s3_class(result, "data.frame")
+  expect_false("num_const" %in% names(result))
 })
 
 test_that("corrPrune grouped pruning works with by parameter", {
