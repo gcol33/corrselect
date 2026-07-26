@@ -238,20 +238,8 @@ corrPrune <- function(
   }
   data <- data[, predictor_cols, drop = FALSE]
 
-  # Auto-convert and classify variable types (following assocSelect pattern)
-  data[] <- lapply(data, function(col) {
-    if (is.character(col)) {
-      factor(col)
-    } else if (is.logical(col)) {
-      factor(col)
-    } else if (is.factor(col)) {
-      droplevels(col)
-    } else if (is.integer(col)) {
-      as.numeric(col)
-    } else {
-      col
-    }
-  })
+  # Auto-convert and classify variable types (shared with assocSelect())
+  data <- .auto_convert_types(data)
 
   # Classify each column
   types <- vapply(data, function(x) class(x)[1], character(1))
@@ -319,28 +307,13 @@ corrPrune <- function(
   }
 
   # Real per-pair-type association-method metadata (mirrors assocSelect()'s
-  # `assoc_methods_used` attribute). Determined purely by the static variable
-  # types and the resolved numeric-numeric measure, so it is valid whether or
-  # not `by`-grouping is used. Reuses .full_assoc_method_map() -- the same
-  # type-pair -> method table .compute_single_assoc_matrix() dispatches
-  # through below -- rather than re-deriving an independent copy that could
-  # drift from it (see #59).
+  # `assoc_methods_used` attribute) is captured below in Step 4, directly from
+  # .compute_single_assoc_matrix()'s returned $assoc_methods_used -- it is
+  # structural (determined purely by the static variable types and the
+  # resolved numeric-numeric measure, not by any group's actual data), so it
+  # can never drift from the type-pair -> method table
+  # .mixed_type_assoc_matrix() actually dispatches through (see #59).
   assoc_methods_used <- list()
-  if (length(types) >= 2) {
-    if (all(types == "numeric")) {
-      assoc_methods_used <- list(numeric_numeric = measure_used)
-    } else {
-      full_assoc_methods <- .full_assoc_method_map(measure_used)
-      for (.i in seq_len(length(types) - 1)) {
-        for (.j in (.i + 1):length(types)) {
-          .key <- paste(types[.i], types[.j], sep = "_")
-          if (is.null(assoc_methods_used[[.key]])) {
-            assoc_methods_used[[.key]] <- full_assoc_methods[[.key]]
-          }
-        }
-      }
-    }
-  }
 
   # ===========================================================================
   # Step 4 — Compute effective association matrix
@@ -380,26 +353,36 @@ corrPrune <- function(
     # Globally-constant columns were already excluded in Step 2b above; a
     # column constant only within this call's rows (the grouped `by` path,
     # called once per group) still gets association 0 here, not NA -- see
-    # .numeric_assoc_matrix().
+    # .numeric_assoc_matrix(). No pair-type method was actually dispatched
+    # when there is only one variable (no pair exists), so assoc_methods_used
+    # stays empty in that case, matching .mixed_type_assoc_matrix()'s own
+    # behaviour when its inner loop has nothing to iterate over.
     if (all(var_types == "numeric")) {
       if (!meas %in% c("pearson", "spearman", "kendall", "bicor", "distance", "maximal")) {
         stop(sprintf("Measure '%s' is not supported. Use one of: pearson, spearman, kendall, bicor, distance, maximal", meas))
       }
-      .numeric_assoc_matrix(df_clean, meas)
+      list(
+        mat = .numeric_assoc_matrix(df_clean, meas),
+        assoc_methods_used = if (length(var_types) >= 2) list(numeric_numeric = meas) else list()
+      )
     } else {
-      # Mixed-type: shared pairwise builder (also used by assocSelect()).
-      # corrPrune() only exposes a configurable measure for numeric-numeric
-      # pairs; every other pair-type combination uses the fixed dispatch
-      # documented in ?corrPrune (spearman / eta / cramersv).
+      # Mixed-type: shared pairwise builder (also used by assocSelect()),
+      # whose returned $assoc_methods_used is passed straight through so
+      # corrPrune() never re-derives it independently. corrPrune() only
+      # exposes a configurable measure for numeric-numeric pairs; every other
+      # pair-type combination uses the fixed dispatch documented in
+      # ?corrPrune (spearman / eta / cramersv).
       full_assoc_methods <- .full_assoc_method_map(meas)
-      .mixed_type_assoc_matrix(df_clean, var_types, full_assoc_methods)$mat
+      .mixed_type_assoc_matrix(df_clean, var_types, full_assoc_methods)
     }
   }
 
   # Compute effective association matrix
   if (is.null(by)) {
     # Case A: No grouping
-    A_eff <- .compute_single_assoc_matrix(data, measure_used, types)
+    computed <- .compute_single_assoc_matrix(data, measure_used, types)
+    A_eff <- computed$mat
+    assoc_methods_used <- computed$assoc_methods_used
     n_rows_used <- nrow(data[complete.cases(data), ])
   } else {
     # Case B: Grouped association
@@ -423,7 +406,9 @@ corrPrune <- function(
 
     if (n_groups < 2) {
       warning("Only one group found; proceeding without grouping.")
-      A_eff <- .compute_single_assoc_matrix(data, measure_used, types)
+      computed <- .compute_single_assoc_matrix(data, measure_used, types)
+      A_eff <- computed$mat
+      assoc_methods_used <- computed$assoc_methods_used
       n_rows_used <- nrow(data[complete.cases(data), ])
     } else {
       # Compute association matrix for each group
@@ -449,8 +434,13 @@ corrPrune <- function(
         # "Removed N row(s)..." warning from .compute_single_assoc_matrix()
         # itself is allowed through; anything else (e.g. a stats::cor()
         # zero-variance warning on a small group) is muffled, same as before.
+        # assoc_methods_used is structural (types and measure_used are the
+        # same across every group), so re-assigning it on each iteration is
+        # harmless -- every computed group returns the same value.
         withCallingHandlers({
-          assoc_arrays[, , g] <- .compute_single_assoc_matrix(grp_data, measure_used, types)
+          computed_g <- .compute_single_assoc_matrix(grp_data, measure_used, types)
+          assoc_arrays[, , g] <- computed_g$mat
+          assoc_methods_used <- computed_g$assoc_methods_used
         }, warning = function(w) {
           if (!grepl("^Removed \\d+ row", conditionMessage(w))) {
             invokeRestart("muffleWarning")

@@ -114,19 +114,7 @@ assocSelect <- function(df,
   ## ---------- preprocessing ----------
   df <- as.data.frame(df)
   # Auto-convert and drop unused levels
-  df[] <- lapply(df, function(col) {
-    if (is.character(col)) {
-      factor(col)
-    } else if (is.logical(col)) {
-      factor(col)
-    } else if (is.factor(col)) {
-      droplevels(col)
-    } else if (is.integer(col)) {
-      as.numeric(col)
-    } else {
-      col
-    }
-  })
+  df <- .auto_convert_types(df)
 
   if (ncol(df) < 2) stop("`df` needs at least two columns.")
 

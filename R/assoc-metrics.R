@@ -2,6 +2,29 @@
 ## and corrPrune(). Kept in one place so a fix to NA/constant-column handling
 ## or a metric's definition applies to every caller at once.
 
+# Auto-converts a data frame's columns to the canonical types the shared
+# association machinery expects: character/logical columns become factors,
+# existing factors get droplevels() applied (dropping unused levels), integer
+# columns become numeric, and everything else is left unchanged. Shared by
+# assocSelect() and corrPrune() so a future change to these conversion rules
+# (e.g. adding Date support) only needs to be made once.
+.auto_convert_types <- function(df) {
+  df[] <- lapply(df, function(col) {
+    if (is.character(col)) {
+      factor(col)
+    } else if (is.logical(col)) {
+      factor(col)
+    } else if (is.factor(col)) {
+      droplevels(col)
+    } else if (is.integer(col)) {
+      as.numeric(col)
+    } else {
+      col
+    }
+  })
+  df
+}
+
 # Validates a `threshold` argument: must be a single, non-NA numeric value in
 # (0, 1]. Shared by corrSelect(), assocSelect(), and MatSelect() so the
 # contract and its error messages live in one place; corrPrune()/greedy's
