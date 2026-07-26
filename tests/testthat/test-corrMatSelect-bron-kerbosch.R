@@ -247,6 +247,21 @@ test_that("BK handles non-square matrix error", {
   )
 })
 
+test_that("MatSelect() reports an invalid `mat` before a force_in-flavored error, even when force_in is supplied (#115)", {
+  # Regression test for #115: force_in resolution used to run before `mat`'s
+  # own structural validation, so an invalid `mat` combined with a character
+  # force_in surfaced a misleading "no column names" error instead of the
+  # real "must be a numeric matrix" problem.
+  expect_error(
+    MatSelect(NULL, threshold = 0.5, force_in = "A"),
+    "must be a numeric matrix"
+  )
+  expect_error(
+    MatSelect(1:5, threshold = 0.5, force_in = c("A", "B")),
+    "must be a numeric matrix"
+  )
+})
+
 test_that("BK handles non-unit diagonal error", {
   m <- diag(0.9, 3)
 

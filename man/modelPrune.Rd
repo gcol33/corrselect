@@ -67,8 +67,9 @@ removable predictors remain.}
 for glm/glmer, control parameters for lme4/glmmTMB).}
 }
 \value{
-A data.frame containing only the retained predictors (and response).
-The result has the following attributes:
+A data.frame containing only the retained fixed-effect predictors
+(and response), plus any random-effect grouping/slope variables for
+mixed-model engines. The result has the following attributes:
 \describe{
 \item{selected_vars}{Character vector of retained predictor names}
 \item{removed_vars}{Character vector of removed predictor names (in order of removal)}

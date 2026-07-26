@@ -16,6 +16,38 @@ test_that("CorrCombo properties are correctly set", {
   expect_equal(combo@search_type, "els")
 })
 
+test_that("CorrCombo() validator rejects non-scalar threshold/search_type/cor_method (#114)", {
+  # Regression test for #114: the validator only checked avg_corr/min_corr/
+  # max_corr's lengths against subset_list, so a vectorized threshold or an
+  # invalid search_type built successfully and produced garbled print()
+  # output instead of erroring at construction.
+  base_args <- list(
+    subset_list = list(c("A", "B"), c("A", "C")),
+    avg_corr = c(0.2, 0.3),
+    min_corr = c(0.1, 0.2),
+    max_corr = c(0.3, 0.4),
+    var_names = c("A", "B", "C"),
+    n_rows_used = 5L
+  )
+
+  expect_error(
+    do.call(CorrCombo, c(base_args, list(threshold = c(0.1, 0.9), search_type = "els"))),
+    "threshold must be a single numeric value"
+  )
+  expect_error(
+    do.call(CorrCombo, c(base_args, list(threshold = 0.1, search_type = "not_a_real_method"))),
+    "search_type must be a single string"
+  )
+  expect_error(
+    do.call(CorrCombo, c(base_args, list(threshold = 0.1, search_type = c("els", "bron-kerbosch")))),
+    "search_type must be a single string"
+  )
+  expect_error(
+    do.call(CorrCombo, c(base_args, list(threshold = 0.1, search_type = "els", cor_method = c("pearson", "spearman")))),
+    "cor_method must be a single string"
+  )
+})
+
 test_that("show() method prints a summary for non-empty CorrCombo", {
   combo <- CorrCombo(
                subset_list = list(c("X1", "X2", "X3")),

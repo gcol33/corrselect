@@ -42,8 +42,9 @@
 #' @param ... Additional arguments passed to the modeling function (e.g., `family`
 #'   for glm/glmer, control parameters for lme4/glmmTMB).
 #'
-#' @return A data.frame containing only the retained predictors (and response).
-#'   The result has the following attributes:
+#' @return A data.frame containing only the retained fixed-effect predictors
+#'   (and response), plus any random-effect grouping/slope variables for
+#'   mixed-model engines. The result has the following attributes:
 #'   \describe{
 #'     \item{selected_vars}{Character vector of retained predictor names}
 #'     \item{removed_vars}{Character vector of removed predictor names (in order of removal)}
@@ -438,8 +439,12 @@ modelPrune <- function(
   # analogously, the bare variable names referenced by each surviving fixed
   # term (not `current_fixed` itself, which holds raw term labels like
   # "poly(disp, 2)" or "cyl:disp" and is not itself a column of `data`).
+  # Random-effect terms (e.g. "1 | site", "x | subject") are included too, so
+  # a mixed-model result stays directly refittable via `reformulate()` against
+  # the returned data.frame, not just via `attr(., "final_model")`.
   fixed_vars <- unique(unlist(lapply(current_fixed, function(term) all.vars(str2lang(term)))))
-  all_vars <- unique(c(response_vars, fixed_vars))
+  random_vars <- unique(unlist(lapply(parsed$random_effects, function(term) all.vars(str2lang(term)))))
+  all_vars <- unique(c(response_vars, fixed_vars, random_vars))
   data_pruned <- data[, all_vars, drop = FALSE]
 
   # Add attributes
@@ -669,11 +674,6 @@ modelPrune <- function(
     return(setNames(rep(NA, length(fixed_effects)), fixed_effects))
   }
 
-  # Handle edge case: single predictor
-  if (ncol(X) == 1) {
-    return(setNames(1.0, fixed_effects))
-  }
-
   # A non-finite entry (Inf/-Inf/NaN) anywhere in the design matrix means the
   # model/data is corrupted, not merely collinear -- stats::cor()/det() would
   # silently propagate it into NaN correlations rather than erroring, which
@@ -686,6 +686,13 @@ modelPrune <- function(
   }
 
   zero_var <- .zero_variance_cols(X)
+
+  # Handle edge case: single predictor. Still subject to the same
+  # constant-predictor contract as the multi-predictor path below (NA, not a
+  # "perfect" 1.0, when that lone predictor is constant).
+  if (ncol(X) == 1) {
+    return(setNames(if (zero_var[1]) NA_real_ else 1.0, fixed_effects))
+  }
 
   # Generalized VIF (Fox & Monette 1992): for a term occupying columns `idx`
   # among all p non-constant design columns, GVIF = det(R[idx,idx]) *
@@ -845,11 +852,6 @@ modelPrune <- function(
     return(setNames(rep(NA, length(fixed_effects)), fixed_effects))
   }
 
-  # Handle edge case: single predictor
-  if (ncol(X) == 1) {
-    return(setNames(1.0, fixed_effects))
-  }
-
   # Constant columns give `scale()` a zero SD to divide by, producing an
   # all-NaN column that fails `svd()` -- as a fallback that used to return
   # Inf for *every* predictor, not just the constant one. Exclude them from
@@ -857,6 +859,14 @@ modelPrune <- function(
   # condition index; the constant predictor itself is scored NA below,
   # matching VIF's documented undefined-for-constant-predictor contract.
   zero_var <- .zero_variance_cols(X)
+
+  # Handle edge case: single predictor. Still subject to the same
+  # constant-predictor contract as the multi-predictor path below (NA, not a
+  # "perfect" 1.0, when that lone predictor is constant).
+  if (ncol(X) == 1) {
+    return(setNames(if (zero_var[1]) NA_real_ else 1.0, fixed_effects))
+  }
+
   X_use <- X[, !zero_var, drop = FALSE]
 
   condition_indices <- NULL

@@ -53,44 +53,11 @@ MatSelect <- function(mat,
                       force_in = NULL,
                       ...) {
 
-  # Force-in conversion (names or indices)
-  if (!is.null(force_in)) {
-    if (is.character(force_in)) {
-      if (is.null(colnames(mat))) {
-        stop("`mat` has no column names: cannot use character `force_in`.")
-      }
-      missing_names <- setdiff(force_in, colnames(mat))
-      if (length(missing_names)) {
-        stop("`force_in` names not found in matrix: ",
-             paste(missing_names, collapse = ", "))
-      }
-      force_in <- match(force_in, colnames(mat))
-    }
-    
-    # Now: must be valid 1-based indices. Whole-number-ness is checked
-    # explicitly -- as.integer() truncates rather than rounds, so a
-    # non-integer index (e.g. from floating-point drift) would otherwise
-    # silently resolve to a different, valid column instead of erroring.
-    if (!is.numeric(force_in) || anyNA(force_in) ||
-        any(force_in != as.integer(force_in)) ||
-        any(force_in < 1) || any(force_in > ncol(mat))) {
-      stop("`force_in` must be valid 1-based column indices or names.")
-    }
-
-    force_in <- unique(force_in)
-  } else {
-    force_in <- integer(0)
-  }
-  
-
-  # Conditionally select default method
-  if (is.null(method)) {
-    method <- if (length(force_in) > 0) "els" else "bron-kerbosch"
-  } else {
-    method <- match.arg(method, choices = c("bron-kerbosch", "els"))
-  }
-
   ## ---- Input validation ----
+  # Runs before force_in resolution below: force_in's own checks assume `mat`
+  # is already a valid matrix (colnames()/ncol() on a malformed `mat` would
+  # otherwise surface as a misleading force_in-flavored error instead of the
+  # real problem with `mat` itself).
   if (!is.matrix(mat) || !is.numeric(mat)) {
     stop("`mat` must be a numeric matrix.")
   }
@@ -120,6 +87,42 @@ MatSelect <- function(mat,
     stop("`threshold` must be in the range (0, 1].")
   }
   n <- ncol(mat)
+
+  # Force-in conversion (names or indices)
+  if (!is.null(force_in)) {
+    if (is.character(force_in)) {
+      if (is.null(colnames(mat))) {
+        stop("`mat` has no column names: cannot use character `force_in`.")
+      }
+      missing_names <- setdiff(force_in, colnames(mat))
+      if (length(missing_names)) {
+        stop("`force_in` names not found in matrix: ",
+             paste(missing_names, collapse = ", "))
+      }
+      force_in <- match(force_in, colnames(mat))
+    }
+
+    # Now: must be valid 1-based indices. Whole-number-ness is checked
+    # explicitly -- as.integer() truncates rather than rounds, so a
+    # non-integer index (e.g. from floating-point drift) would otherwise
+    # silently resolve to a different, valid column instead of erroring.
+    if (!is.numeric(force_in) || anyNA(force_in) ||
+        any(force_in != as.integer(force_in)) ||
+        any(force_in < 1) || any(force_in > ncol(mat))) {
+      stop("`force_in` must be valid 1-based column indices or names.")
+    }
+
+    force_in <- unique(force_in)
+  } else {
+    force_in <- integer(0)
+  }
+
+  # Conditionally select default method
+  if (is.null(method)) {
+    method <- if (length(force_in) > 0) "els" else "bron-kerbosch"
+  } else {
+    method <- match.arg(method, choices = c("bron-kerbosch", "els"))
+  }
 
   ## ---- prepare names ----
   varnames   <- colnames(mat)

@@ -77,6 +77,11 @@ CorrCombo <- new_class("CorrCombo",
     if (!check_lengths(self@avg_corr)) return("avg_corr must match subset_list length or be empty.")
     if (!check_lengths(self@min_corr)) return("min_corr must match subset_list length or be empty.")
     if (!check_lengths(self@max_corr)) return("max_corr must match subset_list length or be empty.")
+    if (length(self@threshold) != 1) return("threshold must be a single numeric value.")
+    if (length(self@search_type) != 1 || !self@search_type %in% c("els", "bron-kerbosch")) {
+      return("search_type must be a single string, one of \"els\" or \"bron-kerbosch\".")
+    }
+    if (length(self@cor_method) > 1) return("cor_method must be a single string or empty.")
     NULL
   }
 )

@@ -358,6 +358,38 @@ test_that("modelPrune lme4 preserves random effects", {
   expect_true(inherits(final_model, "merMod"))
 })
 
+test_that("modelPrune keeps random-effect grouping/slope columns in the returned data.frame (#112)", {
+  # Regression test for #112: data_pruned used to be built only from the
+  # response and surviving fixed-effect terms, silently dropping the
+  # random-effect grouping variable -- so refitting from the returned
+  # data.frame (as the documented @return/@details text implies is possible)
+  # failed with "object 'group'/'subject' not found".
+  skip_if_not_installed("lme4")
+
+  set.seed(456)
+  df <- data.frame(
+    y = rnorm(100),
+    x1 = rnorm(100),
+    x2 = rnorm(100),
+    group = rep(1:10, each = 10),
+    subject = rep(1:20, each = 5)
+  )
+
+  result <- suppressWarnings(
+    modelPrune(y ~ x1 + x2 + (1 | group) + (1 | subject),
+               data = df, engine = "lme4", limit = 10)
+  )
+
+  expect_true(all(c("group", "subject") %in% names(result)))
+
+  # The returned data.frame must actually be refittable using the retained
+  # random-effect structure, not merely contain the columns by coincidence.
+  refit_formula <- reformulate(
+    c(attr(result, "selected_vars"), "(1 | group)", "(1 | subject)"), "y"
+  )
+  expect_no_error(suppressWarnings(lme4::lmer(refit_formula, data = result)))
+})
+
 test_that(".rebuild_formula() re-parenthesizes random-effect terms so bar syntax survives refitting (#102)", {
   # .parse_formula() extracts random-effect terms via terms()$term.labels,
   # which strips the parens around "(1 | group)" down to "1 | group" --
@@ -1973,6 +2005,24 @@ test_that("modelPrune VIF returns 1 for single predictor", {
   expect_s3_class(result, "data.frame")
   # Should have only 1 predictor (VIF = 1 for single predictor)
   expect_true(length(attr(result, "selected_vars")) >= 1)
+})
+
+test_that(".compute_vif()/.compute_condition_indices() return NA (not 1.0) for a constant single predictor (#113)", {
+  # Regression test for #113: the ncol(X) == 1 shortcut in both functions
+  # used to return the "perfect" value 1.0 unconditionally, before
+  # .zero_variance_cols() was consulted -- so a constant sole predictor never
+  # reached the NA-for-constant contract the multi-predictor path already
+  # honors.
+  set.seed(11300)
+  n <- 20
+  df <- data.frame(y = rnorm(n), x1 = rep(5, n))
+  fit <- lm(y ~ x1, data = df)
+
+  vif <- corrselect:::.compute_vif(fit, "lm", "x1")
+  expect_true(is.na(vif[["x1"]]))
+
+  ci <- corrselect:::.compute_condition_indices(fit, "lm", "x1")
+  expect_true(is.na(ci[["x1"]]))
 })
 
 # ===========================================================================
