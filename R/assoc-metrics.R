@@ -282,3 +282,65 @@
 
   mat
 }
+
+# Association matrix for a single data frame, used by corrPrune() both for
+# its ungrouped path and once per group in its grouped `by` path. Handles
+# listwise deletion of missing values up front so every pair-type computation
+# in this call sees the same complete-case data, rather than each pair
+# applying its own ad hoc NA policy, then dispatches to the shared
+# all-numeric or mixed-type builders above. Returns a list with the
+# association matrix ($mat) and the per-pair-type methods actually used
+# ($assoc_methods_used).
+.compute_single_assoc_matrix <- function(df_input, meas, var_types) {
+  dropped <- sum(!complete.cases(df_input))
+  if (dropped > 0) {
+    df_clean <- df_input[complete.cases(df_input), ]
+    if (dropped == nrow(df_input)) {
+      stop("All rows contain missing values")
+    }
+    warning(sprintf(
+      "Removed %d row%s with missing values when computing associations (rows are not removed from the returned data).",
+      dropped, if (dropped == 1) "" else "s"
+    ))
+  } else {
+    df_clean <- df_input
+  }
+
+  # A single remaining row makes sd()/cor() degenerate (NA, not 0/FALSE),
+  # which would otherwise surface here as an opaque "missing value where
+  # TRUE/FALSE needed" from .numeric_assoc_matrix()'s constant-column check
+  # rather than a clear, corrPrune-specific message (matching
+  # corrSelect()/assocSelect()'s equivalent guard).
+  if (nrow(df_clean) < 2) {
+    stop("Fewer than two complete-case rows remain after removing missing values: ",
+         "cannot compute associations.")
+  }
+
+  # If all numeric, use the shared vectorized correlation-based builder.
+  # Globally-constant columns are already excluded by the caller before this
+  # is invoked (corrPrune()'s .drop_constant_corrPrune_columns()); a column
+  # constant only within this call's rows (corrPrune()'s grouped `by` path,
+  # called once per group) still gets association 0 here, not NA -- see
+  # .numeric_assoc_matrix(). No pair-type method was actually dispatched
+  # when there is only one variable (no pair exists), so assoc_methods_used
+  # stays empty in that case, matching .mixed_type_assoc_matrix()'s own
+  # behaviour when its inner loop has nothing to iterate over.
+  if (all(var_types == "numeric")) {
+    if (!meas %in% c("pearson", "spearman", "kendall", "bicor", "distance", "maximal")) {
+      stop(sprintf("Measure '%s' is not supported. Use one of: pearson, spearman, kendall, bicor, distance, maximal", meas))
+    }
+    list(
+      mat = .numeric_assoc_matrix(df_clean, meas),
+      assoc_methods_used = if (length(var_types) >= 2) list(numeric_numeric = meas) else list()
+    )
+  } else {
+    # Mixed-type: shared pairwise builder (also used by assocSelect()),
+    # whose returned $assoc_methods_used is passed straight through so
+    # corrPrune() never re-derives it independently. corrPrune() only
+    # exposes a configurable measure for numeric-numeric pairs; every other
+    # pair-type combination uses the fixed dispatch documented in
+    # ?corrPrune (spearman / eta / cramersv).
+    full_assoc_methods <- .full_assoc_method_map(meas)
+    .mixed_type_assoc_matrix(df_clean, var_types, full_assoc_methods)
+  }
+}
