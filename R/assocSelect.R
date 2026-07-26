@@ -133,6 +133,12 @@ assocSelect <- function(df,
   # Validate threshold
   .validate_threshold(threshold)
 
+  # Resolve `force_in` (numeric indices or names) against the original,
+  # type-coerced data frame's columns, before any row/column filtering below
+  # removes candidates from consideration. Shared with corrSelect() so both
+  # data-frame entry points validate and report on `force_in` identically.
+  force_in <- .resolve_force_in(force_in, names(df))
+
   valid_types <- c("numeric", "ordered", "factor")
   types <- vapply(df, function(x) class(x)[1], character(1))
   bad   <- names(df)[!types %in% valid_types]
@@ -168,13 +174,15 @@ assocSelect <- function(df,
   mat <- built$mat
   assoc_methods_used <- built$assoc_methods_used
 
-  ## ---------- resolve force_in ----------
+  ## ---------- force_in (already name/index-validated above) against the
+  ## final, filtered matrix, then convert to indices ----------
   if (!is.null(force_in)) {
-    if (is.character(force_in)) {
-      if (!all(force_in %in% names(df)))
-        stop("Some entries in `force_in` do not match column names.")
-      force_in <- match(force_in, names(df))
+    if (!all(force_in %in% colnames(mat))) {
+      missing <- setdiff(force_in, colnames(mat))
+      stop("The following `force_in` columns were excluded from the association analysis: ",
+           paste(missing, collapse = ", "))
     }
+    force_in <- match(force_in, colnames(mat))
   }
 
   ## ---------- subset selection ----------

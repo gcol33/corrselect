@@ -38,6 +38,45 @@
   df
 }
 
+# Resolves a user-supplied `force_in` argument -- a character vector of
+# column names or a numeric vector of 1-based column indices -- against
+# `names_pool` (typically the input data frame's columns, before any
+# row/column filtering removes candidates from consideration), returning a
+# character vector of names, or NULL if `force_in` is NULL. Shared by
+# corrSelect() and assocSelect() so both data-frame entry points apply the
+# same whole-number range check to a numeric `force_in` and the same error
+# (naming the offending value(s)) to a `force_in` name absent from
+# `names_pool`, rather than each re-deriving its own check.
+#
+# `what` names, for the error message only, what `names_pool` represents;
+# a caller re-checking `force_in` against a later, filtered set of names
+# passes a different value so the message still makes sense in context.
+.resolve_force_in <- function(force_in, names_pool, what = "the data frame") {
+  if (is.null(force_in)) return(NULL)
+
+  if (is.numeric(force_in)) {
+    bad <- is.na(force_in) | force_in != as.integer(force_in) |
+      force_in < 1 | force_in > length(names_pool)
+    if (any(bad)) {
+      stop("`force_in` numeric indices must be whole numbers between 1 and ncol(df) = ",
+           length(names_pool), "; invalid: ",
+           paste(force_in[bad], collapse = ", "), ".")
+    }
+    return(names_pool[as.integer(force_in)])
+  }
+
+  if (is.character(force_in)) {
+    missing <- setdiff(force_in, names_pool)
+    if (length(missing) > 0) {
+      stop("The following `force_in` names are not in ", what, ": ",
+           paste(missing, collapse = ", "))
+    }
+    return(force_in)
+  }
+
+  stop("`force_in` must be a character vector of column names or a numeric vector of 1-based indices.")
+}
+
 # Association value for a single pair of variables, used by assocSelect()
 # and corrPrune()'s mixed-type branch. `type_x`/`type_y` (one of "numeric",
 # "ordered", "factor") are only consulted by the "eta" method, to identify

@@ -248,7 +248,16 @@ test_that("assocSelect errors on force_in names not in data", {
 
   expect_error(
     assocSelect(df, threshold = 0.9, force_in = c("a", "z")),
-    "do not match column names"
+    "not in the data frame: z"
+  )
+})
+
+test_that("assocSelect force_in with out-of-range numeric index errors specifically", {
+  df <- data.frame(a = 1:5, b = 5:1)
+
+  expect_error(
+    assocSelect(df, threshold = 0.9, force_in = 999),
+    "whole numbers between 1 and ncol.*invalid: 999"
   )
 })
 
