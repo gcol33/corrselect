@@ -78,8 +78,24 @@ corrSelect <- function(df,
   # Normalize cor_method
   cor_method <- match.arg(cor_method)
 
+  # Validate `df`'s type *before* coercion, so common misuse gets a clear,
+  # package-specific error instead of base R's generic coercion error.
+  # Data frames (and subclasses such as tibbles/data.tables), matrices, and
+  # lists of equal-length columns are all valid inputs to as.data.frame().
+  if (!is.data.frame(df) && !is.matrix(df)) {
+    if (is.list(df)) {
+      col_lengths <- lengths(df)
+      if (length(col_lengths) > 0 && length(unique(col_lengths)) > 1) {
+        stop("`df` must be a data frame: list elements have differing lengths (",
+             paste(col_lengths, collapse = ", "), ").")
+      }
+    } else {
+      stop("`df` must be a data frame (or an object coercible to one, ",
+           "such as a matrix or a list of equal-length columns); got an ",
+           "object of class '", paste(class(df), collapse = "/"), "'.")
+    }
+  }
   df <- as.data.frame(df)
-  if (!is.data.frame(df)) stop("`df` must be a data frame.")
   if (ncol(df) < 2) stop("`df` must have at least two columns.")
 
   # Validate threshold
