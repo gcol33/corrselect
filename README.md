@@ -72,9 +72,9 @@ corrPrune(longitudinal_example[, c("x1", "x2", "x3", "x4", "x5", "site")],
 
 ## Mixed-type data
 
-`assocSelect()` picks the right association measure for each pair of columns --
-Pearson for numeric-numeric, eta-squared for numeric-factor, Cramer's V for
-factor-factor -- and enumerates maximal subsets under all of them at once:
+`assocSelect()` picks the right association measure for each pair of columns
+(Pearson for numeric-numeric, eta-squared for numeric-factor, Cramer's V for
+factor-factor), and enumerates maximal subsets under all of them at once:
 
 ```r
 df <- data.frame(
@@ -89,10 +89,10 @@ assocSelect(df, threshold = 0.6)
 
 `corrPrune()` runs the same mixed-type dispatch under the hood, so a single
 pruning call works whether the input is all-numeric or a mix of numeric,
-factor, and ordered columns. Six numeric-numeric measures are available --
-`"pearson"`, `"spearman"`, `"kendall"`, `"bicor"` (WGCNA), `"distance"`
-(energy), and `"maximal"` (minerva) -- selectable via `measure` /
-`method_num_num`.
+factor, and ordered columns. Six numeric-numeric measures are available,
+selectable via `measure` / `method_num_num`: `"pearson"`, `"spearman"`,
+`"kendall"`, `"bicor"` (WGCNA), `"distance"` (energy), and `"maximal"`
+(minerva).
 
 ## Model-based pruning with any engine
 
