@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='504.00pt' height='360.00pt' viewBox='0 0 504.00 360.00'>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='468.00pt' height='324.00pt' viewBox='0 0 468.00 324.00'>
 <g class='svglite'>
 <defs>
   <style type='text/css'><![CDATA[
@@ -28,170 +28,169 @@
     }
   ]]></style>
 </defs>
-<rect width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
+<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
 <defs>
-  <clipPath id='cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA='>
-    <rect x='0.00' y='0.00' width='504.00' height='360.00' />
+  <clipPath id='cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA='>
+    <rect x='0.00' y='0.00' width='468.00' height='324.00' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA=)'>
-<text x='266.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='252.17px' lengthAdjust='spacingAndGlyphs'>Distribution of Absolute Correlations</text>
-<text x='266.40' y='341.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='108.72px' lengthAdjust='spacingAndGlyphs'>Absolute Correlation</text>
-<text transform='translate(12.96,172.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='56.69px' lengthAdjust='spacingAndGlyphs'>Frequency</text>
-<line x1='74.40' y1='286.56' x2='458.40' y2='286.56' style='stroke-width: 0.75;' />
-<line x1='74.40' y1='286.56' x2='74.40' y2='293.76' style='stroke-width: 0.75;' />
-<line x1='151.20' y1='286.56' x2='151.20' y2='293.76' style='stroke-width: 0.75;' />
-<line x1='228.00' y1='286.56' x2='228.00' y2='293.76' style='stroke-width: 0.75;' />
-<line x1='304.80' y1='286.56' x2='304.80' y2='293.76' style='stroke-width: 0.75;' />
-<line x1='381.60' y1='286.56' x2='381.60' y2='293.76' style='stroke-width: 0.75;' />
-<line x1='458.40' y1='286.56' x2='458.40' y2='293.76' style='stroke-width: 0.75;' />
-<text x='74.40' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
-<text x='151.20' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
-<text x='228.00' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.4</text>
-<text x='304.80' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.6</text>
-<text x='381.60' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.8</text>
-<text x='458.40' y='312.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>1.0</text>
-<line x1='59.04' y1='278.13' x2='59.04' y2='77.50' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='278.13' x2='51.84' y2='278.13' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='227.97' x2='51.84' y2='227.97' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='177.82' x2='51.84' y2='177.82' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='127.66' x2='51.84' y2='127.66' style='stroke-width: 0.75;' />
-<line x1='59.04' y1='77.50' x2='51.84' y2='77.50' style='stroke-width: 0.75;' />
-<text transform='translate(41.76,278.13) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
-<text transform='translate(41.76,227.97) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>5</text>
-<text transform='translate(41.76,177.82) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text>
-<text transform='translate(41.76,127.66) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>15</text>
-<text transform='translate(41.76,77.50) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>20</text>
+<g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
+<text x='250.80' y='40.46' text-anchor='middle' style='font-size: 1.68em; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Distribution of Absolute Correlations</text>
+<text x='250.80' y='302.16' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Absolute Correlation</text>
+<text transform='translate(15.12,153.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Frequency</text>
+<line x1='82.36' y1='238.32' x2='419.24' y2='238.32' style='stroke-width: 0.75;' />
+<line x1='82.36' y1='238.32' x2='82.36' y2='246.72' style='stroke-width: 0.75;' />
+<line x1='149.73' y1='238.32' x2='149.73' y2='246.72' style='stroke-width: 0.75;' />
+<line x1='217.11' y1='238.32' x2='217.11' y2='246.72' style='stroke-width: 0.75;' />
+<line x1='284.49' y1='238.32' x2='284.49' y2='246.72' style='stroke-width: 0.75;' />
+<line x1='351.87' y1='238.32' x2='351.87' y2='246.72' style='stroke-width: 0.75;' />
+<line x1='419.24' y1='238.32' x2='419.24' y2='246.72' style='stroke-width: 0.75;' />
+<text x='82.36' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.0</text>
+<text x='149.73' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.2</text>
+<text x='217.11' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.4</text>
+<text x='284.49' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.6</text>
+<text x='351.87' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.8</text>
+<text x='419.24' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>1.0</text>
+<line x1='68.88' y1='232.04' x2='68.88' y2='82.63' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='232.04' x2='60.48' y2='232.04' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='194.69' x2='60.48' y2='194.69' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='157.34' x2='60.48' y2='157.34' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='119.98' x2='60.48' y2='119.98' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='82.63' x2='60.48' y2='82.63' style='stroke-width: 0.75;' />
+<text transform='translate(48.72,232.04) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0</text>
+<text transform='translate(48.72,194.69) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>5</text>
+<text transform='translate(48.72,157.34) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>10</text>
+<text transform='translate(48.72,119.98) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>15</text>
+<text transform='translate(48.72,82.63) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>20</text>
 </g>
 <defs>
-  <clipPath id='cpNTkuMDR8NDczLjc2fDU5LjA0fDI4Ni41Ng=='>
-    <rect x='59.04' y='59.04' width='414.72' height='227.52' />
+  <clipPath id='cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg=='>
+    <rect x='68.88' y='68.88' width='363.84' height='169.44' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpNTkuMDR8NDczLjc2fDU5LjA0fDI4Ni41Ng==)'>
-<rect x='74.40' y='67.47' width='7.68' height='210.67' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='82.08' y='87.53' width='7.68' height='190.60' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='89.76' y='97.56' width='7.68' height='180.57' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='97.44' y='147.72' width='7.68' height='130.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='105.12' y='207.91' width='7.68' height='70.22' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='112.80' y='177.82' width='7.68' height='100.32' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='120.48' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='128.16' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='135.84' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='143.52' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='151.20' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='158.88' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='166.56' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='174.24' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='181.92' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='189.60' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='197.28' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='204.96' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='212.64' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='220.32' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='228.00' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='235.68' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='243.36' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='251.04' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='258.72' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='266.40' y='227.97' width='7.68' height='50.16' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='274.08' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='281.76' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='289.44' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='297.12' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='304.80' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='312.48' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='320.16' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='327.84' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='335.52' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='343.20' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='350.88' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='358.56' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='366.24' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='373.92' y='238.01' width='7.68' height='40.13' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='381.60' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='389.28' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
-<rect x='74.40' y='227.97' width='7.68' height='50.16' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='82.08' y='217.94' width='7.68' height='60.19' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='89.76' y='227.97' width='7.68' height='50.16' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='97.44' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='105.12' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='112.80' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='120.48' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='128.16' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='135.84' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='143.52' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='151.20' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='158.88' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='166.56' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='174.24' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='181.92' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='189.60' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='197.28' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='204.96' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='212.64' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='220.32' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='228.00' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='235.68' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='243.36' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='251.04' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='258.72' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='266.40' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='274.08' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='281.76' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='289.44' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='297.12' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='304.80' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='312.48' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='320.16' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='327.84' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='335.52' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='74.40' y='197.88' width='7.68' height='80.25' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='82.08' y='177.82' width='7.68' height='100.32' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='89.76' y='187.85' width='7.68' height='90.29' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='97.44' y='217.94' width='7.68' height='60.19' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='105.12' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='112.80' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='120.48' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='128.16' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='135.84' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='143.52' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='151.20' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='158.88' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='166.56' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='174.24' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='181.92' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='189.60' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='197.28' y='248.04' width='7.68' height='30.10' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='204.96' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='212.64' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='220.32' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='228.00' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='235.68' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='243.36' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='251.04' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='258.72' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='266.40' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='274.08' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='281.76' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='289.44' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='297.12' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='304.80' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='312.48' y='278.13' width='7.68' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='320.16' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='327.84' y='268.10' width='7.68' height='10.03' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='335.52' y='258.07' width='7.68' height='20.06' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
-<line x1='343.20' y1='286.56' x2='343.20' y2='59.04' style='stroke-width: 1.50; stroke-dasharray: 8.00,8.00;' />
-<rect rx='4' x='313.83' y='59.04' width='159.93' height='72.00' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
-<rect x='324.63' y='69.84' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #808080; fill-opacity: 0.40;' />
-<rect x='324.63' y='84.24' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #CC3333; fill-opacity: 0.40;' />
-<rect x='324.63' y='98.64' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #3380CC; fill-opacity: 0.40;' />
-<rect x='324.63' y='113.04' width='8.64' height='7.20' style='stroke-width: 0.75; stroke: none;' /> fill: #F5F6F8;' />
-<line x1='333.27' y1='116.64' x2='354.87' y2='116.64' style='stroke-width: 1.50; stroke-dasharray: 8.00,8.00;' />
-<text x='365.67' y='77.74' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='92.03px' lengthAdjust='spacingAndGlyphs'>Original (19 vars)</text>
-<text x='365.67' y='92.14' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='77.34px' lengthAdjust='spacingAndGlyphs'>caret (10 vars)</text>
-<text x='365.67' y='106.54' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='102.69px' lengthAdjust='spacingAndGlyphs'>corrselect (12 vars)</text>
-<text x='365.67' y='120.94' style='font-size: 12.00px; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' textLength='53.36px' lengthAdjust='spacingAndGlyphs'>Threshold</text>
+<g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
+<rect x='82.36' y='75.16' width='6.74' height='156.89' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='89.09' y='90.10' width='6.74' height='141.95' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='95.83' y='97.57' width='6.74' height='134.48' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='102.57' y='134.92' width='6.74' height='97.12' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='109.31' y='179.75' width='6.74' height='52.30' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='116.04' y='157.34' width='6.74' height='74.71' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='122.78' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='129.52' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='136.26' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='143.00' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='149.73' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='156.47' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='163.21' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='169.95' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='176.68' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='183.42' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='190.16' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='196.90' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='203.64' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='210.37' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='217.11' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='223.85' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='230.59' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='237.32' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='244.06' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='250.80' y='194.69' width='6.74' height='37.35' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='257.54' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='264.28' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='271.01' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='277.75' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='284.49' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='291.23' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='297.96' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='304.70' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='311.44' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='318.18' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='324.92' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='331.65' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='338.39' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='345.13' y='202.16' width='6.74' height='29.88' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='351.87' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='358.60' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #808080; fill-opacity: 0.40;' />
+<rect x='82.36' y='194.69' width='6.74' height='37.35' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='89.09' y='187.22' width='6.74' height='44.83' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='95.83' y='194.69' width='6.74' height='37.35' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='102.57' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='109.31' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='116.04' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='122.78' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='129.52' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='136.26' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='143.00' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='149.73' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='156.47' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='163.21' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='169.95' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='176.68' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='183.42' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='190.16' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='196.90' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='203.64' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='210.37' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='217.11' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='223.85' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='230.59' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='237.32' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='244.06' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='250.80' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='257.54' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='264.28' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='271.01' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='277.75' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='284.49' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='291.23' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='297.96' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='304.70' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='311.44' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='82.36' y='172.28' width='6.74' height='59.77' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='89.09' y='157.34' width='6.74' height='74.71' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='95.83' y='164.81' width='6.74' height='67.24' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='102.57' y='187.22' width='6.74' height='44.83' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='109.31' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='116.04' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='122.78' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='129.52' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='136.26' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='143.00' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='149.73' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='156.47' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='163.21' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='169.95' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='176.68' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='183.42' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='190.16' y='209.63' width='6.74' height='22.41' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='196.90' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='203.64' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='210.37' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='217.11' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='223.85' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='230.59' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='237.32' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='244.06' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='250.80' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='257.54' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='264.28' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='271.01' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='277.75' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='284.49' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='291.23' y='232.04' width='6.74' height='0.00' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='297.96' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='304.70' y='224.57' width='6.74' height='7.47' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<rect x='311.44' y='217.10' width='6.74' height='14.94' style='stroke-width: 0.75; fill: #3380CC; fill-opacity: 0.40;' />
+<line x1='318.18' y1='238.32' x2='318.18' y2='68.88' style='stroke-width: 1.50; stroke-dasharray: 8.00,8.00;' />
+<rect rx='4' x='265.09' y='68.88' width='167.63' height='84.00' style='stroke-width: 0.75; stroke: none; fill: #F5F6F8;' />
+<line x1='268.87' y1='136.08' x2='294.07' y2='136.08' style='stroke-width: 1.50; stroke-dasharray: 8.00,8.00;' />
+<rect x='275.89' y='80.10' width='11.17' height='11.17' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #808080; fill-opacity: 0.40;' />
+<rect x='275.89' y='96.90' width='11.17' height='11.17' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #CC3333; fill-opacity: 0.40;' />
+<rect x='275.89' y='113.70' width='11.17' height='11.17' style='stroke-width: 0.75; stroke: #FFFFFF; fill: #3380CC; fill-opacity: 0.40;' />
+<text x='306.67' y='90.69' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Original (19 vars)</text>
+<text x='306.67' y='107.49' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>caret (10 vars)</text>
+<text x='306.67' y='124.29' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>corrselect (12 vars)</text>
+<text x='306.67' y='141.09' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Threshold</text>
 </g>
 </g>
 </svg>

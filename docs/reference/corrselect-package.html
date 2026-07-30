@@ -5,13 +5,26 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="corrselect: Correlation-Based and Model-Based Predictor Pruning — corrselect-package"><meta name="description" content="Provides tools for reducing multicollinearity in predictor sets through
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="corrselect: Correlation-Based and Model-Based Predictor Pruning — corrselect-package"><meta name="description" content="Provides tools for reducing multicollinearity in predictor sets through
 association-based and model-based approaches. The package offers both fast
 greedy algorithms for quick pruning and exact graph-theoretic algorithms
 for exhaustive subset enumeration."><meta property="og:description" content="Provides tools for reducing multicollinearity in predictor sets through
 association-based and model-based approaches. The package offers both fast
 greedy algorithms for quick pruning and exact graph-theoretic algorithms
-for exhaustive subset enumeration."></head><body>
+for exhaustive subset enumeration."><script>
+(function () {
+  var D = String.fromCharCode(36);
+  window.MathJax = {
+    tex: {
+      inlineMath: [[D, D], ["\\(", "\\)"]],
+      displayMath: [[D + D, D + D], ["\\[", "\\]"]]
+    },
+    chtml: { linebreaks: { automatic: true, width: "90% container" } },
+    svg: { linebreaks: { automatic: true, width: "90% container" } },
+    options: { renderActions: { addMenu: [] } }
+  };
+})();
+</script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +32,7 @@ for exhaustive subset enumeration."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +87,7 @@ for exhaustive subset enumeration.</p>
 
 <p>These functions identify variable subsets where all pairwise correlations
 or associations remain below a user-defined threshold:</p><dl><dt><code><a href="corrPrune.html">corrPrune</a></code></dt>
-<dd><p>Fast greedy pruning for numeric data</p></dd>
+<dd><p>Association-based pruning for numeric or mixed-type data, using exact search by default and falling back to a fast greedy algorithm for large predictor sets</p></dd>
 
 <dt><code><a href="corrSelect.html">corrSelect</a></code></dt>
 <dd><p>Exhaustive enumeration for numeric data frames</p></dd>
@@ -117,8 +130,8 @@ collinear predictors from regression models:</p><dl><dt><code><a href="modelPrun
 <dl><dt><code><a href="corrSubset.html">corrSubset</a></code></dt>
 <dd><p>Extract specific subsets from results</p></dd>
 
-<dt><code><a href="CorrCombo.html">CorrCombo-class</a></code></dt>
-<dd><p>S4 class holding enumeration results</p></dd>
+<dt><code><a href="CorrCombo.html">CorrCombo</a></code></dt>
+<dd><p>Class holding enumeration results</p></dd>
 
 
 </dl></div>
@@ -129,8 +142,9 @@ collinear predictors from regression models:</p><dl><dt><code><a href="modelPrun
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p><strong>Maintainer</strong>: Gilles Colling <a href="mailto:gilles.colling051@gmail.com">gilles.colling051@gmail.com</a></p>
-    </div>
+    <p><strong>Maintainer</strong>: Gilles Colling <a href="mailto:gilles.colling051@gmail.com">gilles.colling051@gmail.com</a> (<a href="https://orcid.org/0000-0003-3070-6066" class="external-link">ORCID</a>) [copyright holder]</p>
+<p>Authors:</p><ul><li><p>Gilles Colling <a href="mailto:gilles.colling051@gmail.com">gilles.colling051@gmail.com</a> (<a href="https://orcid.org/0000-0003-3070-6066" class="external-link">ORCID</a>) [copyright holder]</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -150,6 +164,5 @@ collinear predictors from regression models:</p><dl><dt><code><a href="modelPrun
 
 
 
-  
-</body></html>
+  </body></html>
 

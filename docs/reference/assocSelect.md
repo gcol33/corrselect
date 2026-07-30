@@ -5,7 +5,8 @@ ordered factors, or unordered) factors—whose *pair-wise association*
 does not exceed a user-supplied threshold. The routine wraps
 [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)
 and handles all pre-processing (type conversion, missing-row removal,
-constant-column checks) for typical data-frame/tibble/data-table inputs.
+constant-column removal) for typical data-frame/tibble/data-table
+inputs.
 
 ## Usage
 
@@ -36,7 +37,7 @@ assocSelect(
 
 - threshold:
 
-  Numeric in \\(0,1)\\. Maximum allowed pair-wise *absolute*
+  Numeric in \\(0,1\]\\. Maximum allowed pair-wise *absolute*
   association. Default `0.7`.
 
 - method:
@@ -77,7 +78,7 @@ assocSelect(
 
 A
 [`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
-S4 object containing:
+object containing:
 
 - all valid subsets,
 
@@ -88,14 +89,28 @@ S4 object containing:
 The object’s `show()` method prints the association metrics that were
 *actually used* for this data set.
 
+Two additional attributes are attached to the returned object:
+
+- assoc_methods_used:
+
+  Named list mapping each variable-type-pair combination that actually
+  occurs in `df` (e.g. `"numeric_numeric"`, `"numeric_factor"`) to the
+  association method used for it.
+
+- assoc_methods_all:
+
+  Named list mapping every possible variable-type-pair combination to
+  its resolved method, regardless of whether that combination occurs in
+  `df`.
+
 ## Details
 
 A single call can therefore screen a data set that mixes continuous and
 categorical features and return every subset whose internal associations
 are “sufficiently low” under the metric(s) you choose.
 
-Rows containing `NA` are dropped with a warning; constant columns are
-treated as having zero association with every other variable.
+Rows containing `NA` are dropped with a warning; constant columns (a
+single distinct value) are excluded with a warning.
 
 The default association measure for each variable-type combination is:
 

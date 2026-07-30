@@ -26,8 +26,11 @@ Graph-theoretic algorithms for exhaustive search
 
 Helper functions for working with results
 
-- [`show(`*`<CorrCombo>`*`)`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
-  : CorrCombo S4 class
+- [`CorrCombo()`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
+  [`print(`*`<CorrCombo>`*`)`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
+  [`summary(`*`<CorrCombo>`*`)`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
+  [`print(`*`<summary.CorrCombo>`*`)`](https://gillescolling.com/corrselect/reference/CorrCombo.md)
+  : CorrCombo Class
 - [`as.data.frame(`*`<CorrCombo>`*`)`](https://gillescolling.com/corrselect/reference/as.data.frame.CorrCombo.md)
   : Coerce CorrCombo to a Data Frame
 - [`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)

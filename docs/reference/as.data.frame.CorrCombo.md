@@ -47,6 +47,6 @@ largest subset. Subsets shorter than the maximum length are padded with
 set.seed(1)
 mat <- matrix(rnorm(100), ncol = 10)
 colnames(mat) <- paste0("V", 1:10)
-res <- corrSelect(cor(mat), threshold = 0.5)
+res <- MatSelect(cor(mat), threshold = 0.5)
 as.data.frame(res)
 ```

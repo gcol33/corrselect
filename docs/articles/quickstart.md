@@ -113,17 +113,20 @@ attr(pruned, "removed_vars")
 
 When multiple maximal subsets exist (which is common),
 [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
-returns the subset with the **lowest average absolute correlation**.
-This selection criterion balances three goals:
+(in exact mode) selects among them by, in order:
 
-1.  **Minimize redundancy**: Lower average correlation means more
-    independent variables
+1.  **Largest subset size**: Keeping more variables is preferred over
+    keeping fewer
 
-2.  **Maximize information**: Prefers diverse variable combinations over
-    tightly clustered ones
+2.  **Lowest average absolute correlation**: Among subsets of the same
+    (largest) size, the one with the least redundancy is preferred
 
-3.  **Deterministic behavior**: Always returns the same result for the
-    same data
+3.  **Alphabetically first variable names**: A final tiebreaker for
+    deterministic behavior when size and average correlation are both
+    tied
+
+Subset size is checked first, so a smaller subset is never preferred
+over a larger one even if its average correlation is lower.
 
 To explore **all** maximal subsets instead of just the optimal one, use
 [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
@@ -224,7 +227,7 @@ show(results_mixed)
 #> Top combinations:
 #>   No.  Variables                          Avg    Max    Size
 #>   ------------------------------------------------------------
-#>   [ 1] x1, x2, cat1, ord1                0.077  0.184     4
+#>   [ 1] x1, x2, cat1, ord1                0.050  0.184     4
 
 # Verify all pairwise associations are below threshold
 cat("Max pairwise association:", max(results_mixed@max_corr), "\n")
@@ -294,6 +297,7 @@ corrPrune(data, threshold = 0.7, measure = "auto", mode = "auto",
 | `force_in` | Variables that must be retained | `NULL` |
 | `by` | Column name(s) for grouped pruning | `NULL` |
 | `group_q` | Quantile for aggregating group correlations (0-1\] | `1` |
+| `max_exact_p` | Max predictors for exact search when `mode = "auto"` | `100` |
 
 **Returns**: Data frame with pruned variables. Attributes:
 `selected_vars`, `removed_vars`.
@@ -339,7 +343,7 @@ corrSelect(df, threshold = 0.7, method = NULL, force_in = NULL,
 | `cor_method` | `"pearson"`, `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, `"maximal"` | `"pearson"` |
 | `force_in` | Variables required in all subsets | `NULL` |
 
-**Returns**: `CorrCombo` S4 object with slots: `subset_list`,
+**Returns**: `CorrCombo` object with properties: `subset_list`,
 `avg_corr`, `min_corr`, `max_corr`.
 
 ### assocSelect()
@@ -362,7 +366,7 @@ assocSelect(df, threshold = 0.7, method = NULL, force_in = NULL,
 | `method_num_ord` | Numeric-ordered: `"spearman"`, `"kendall"` | `"spearman"` |
 | `method_ord_ord` | Ordered-ordered: `"spearman"`, `"kendall"` | `"spearman"` |
 
-**Returns**: `CorrCombo` S4 object.
+**Returns**: `CorrCombo` object.
 
 ### MatSelect()
 
@@ -381,7 +385,7 @@ MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
 | `method`    | Algorithm: `"bron-kerbosch"`, `"els"`    | auto       |
 | `force_in`  | Variables required in all subsets        | `NULL`     |
 
-**Returns**: `CorrCombo` S4 object.
+**Returns**: `CorrCombo` object.
 
 ### corrSubset()
 
@@ -396,7 +400,7 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 |----|----|----|
 | `res` | `CorrCombo` object from `corrSelect`/`assocSelect`/`MatSelect` | *required* |
 | `df` | Original data frame | *required* |
-| `which` | Subset index or `"best"` (lowest avg correlation) | `"best"` |
+| `which` | Subset index or `"best"` (largest size, then lowest avg correlation) | `"best"` |
 | `keepExtra` | Include non-numeric columns in output? | `FALSE` |
 
 **Returns**: Data frame containing only the selected variables.
@@ -455,7 +459,7 @@ Section 5.
 ``` r
 
 sessionInfo()
-#> R version 4.5.2 (2025-10-31 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -463,8 +467,11 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
-#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal
@@ -473,14 +480,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.1.0
+#> [1] corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
-#>  [5] xfun_0.55         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
-#>  [9] rmarkdown_2.30    lifecycle_1.0.5   cli_3.6.5         svglite_2.2.2    
-#> [13] sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.4 jquerylib_0.1.4  
-#> [17] systemfonts_1.3.1 compiler_4.5.2    tools_4.5.2       bslib_0.9.0      
-#> [21] evaluate_1.0.5    Rcpp_1.1.1        yaml_2.3.12       otel_0.2.0       
-#> [25] jsonlite_2.0.0    rlang_1.1.7       fs_1.6.6          htmlwidgets_1.6.4
+#>  [5] xfun_0.57         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
+#>  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         S7_0.2.2         
+#> [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.5
+#> [17] jquerylib_0.1.4   systemfonts_1.3.2 compiler_4.6.0    tools_4.6.0      
+#> [21] bslib_0.11.0      evaluate_1.0.5    Rcpp_1.1.1-1.1    yaml_2.3.12      
+#> [25] otel_0.2.0        jsonlite_2.0.0    rlang_1.2.0       fs_2.1.0         
+#> [29] htmlwidgets_1.6.4
 ```

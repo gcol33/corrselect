@@ -1,5 +1,293 @@
 # Changelog
 
+## corrselect 3.2.3
+
+CRAN release: 2026-07-18
+
+### Bug Fixes
+
+- **C++ backend**: `runELS()` was a single greedy expansion per seed
+  vertex, not an implementation of Eppstein-Loffler-Strash, and could
+  silently miss valid maximal subsets. Replaced with a genuine ELS
+  implementation (degeneracy ordering + per-vertex bounded expansion),
+  sharing a verified Bron-Kerbosch pivot core with the `"bron-kerbosch"`
+  method. Verified against brute-force enumeration.
+- **Greedy backend**: an undefined (NaN) association was silently
+  treated as compatible (`NaN > threshold` is `false` in C++); NaN now
+  always registers as a threshold violation.
+- **MatSelect**: the symmetry check used exact floating-point equality,
+  inconsistent with the R layer’s `1e-8` tolerance, and could reject
+  matrices the R layer had already accepted as symmetric. Added a
+  minimum `ncol >= 2` guard, and `n_rows_used` no longer reports a
+  fabricated row count for matrix input (now `NA`).
+- **corrSelect**: numeric `force_in` indices were checked against the
+  final (filtered) correlation matrix but never remapped from the
+  original data frame’s column positions, so a numeric index could
+  silently force the wrong variable into every subset after non-numeric
+  or constant columns were dropped.
+- **corrPrune**: no longer errors on trivially satisfiable inputs (a
+  single predictor, or a set where every pair exceeds the threshold) –
+  the pairwise constraint holds vacuously for one variable, so one is
+  now retained instead of raising “No valid subsets found”.
+- **corrPrune / modelPrune / assocSelect**: undefined (NA) associations
+  were handled inconsistently – silently treated as zero association,
+  silently passed through the greedy backend, or produced
+  blank/uninformative errors. All undefined associations are now
+  surfaced explicitly with a clear message identifying the affected
+  variable pair(s).
+- **corrPrune**: the `measure` argument had no effect on mixed-type data
+  (numeric-numeric pairs always used Pearson regardless of the requested
+  measure). It now customizes numeric-numeric pairs as documented, and
+  the measure actually used per pair-type is reported via a new
+  `assoc_methods_used` attribute.
+- **modelPrune**: VIF and condition-number computation matched
+  design-matrix columns to predictor names with a prefix-based regex,
+  which could silently collide (e.g. `"x1"` matching the `"x10"`
+  column). Columns are now resolved via the model’s own `assign`
+  bookkeeping.
+- **modelPrune**: formulas with a transformed response
+  (e.g. `log(mpg) ~ .`) crashed during formula parsing.
+- **corrSubset**: `which = "best"` on a `CorrCombo` with no subsets
+  raised an uninformative “subscript out of bounds” error instead of a
+  clear message.
+- Internal Rcpp exports (`runELS`, `runBronKerbosch`) now validate
+  `force_in` bounds directly rather than relying solely on the R-level
+  dispatcher.
+- Added duplicate-column-name checks, `force_in`/`by` overlap detection,
+  and a coverage warning when most groups are skipped during grouped
+  aggregation in `corrPrune`.
+- **assocSelect**: `method = "eta"` computed eta (the square root)
+  instead of eta-squared, contradicting its own documentation.
+- **modelPrune**: VIF for a multi-level factor averaged its dummy
+  columns into one number instead of computing a generalized VIF, which
+  could report no collinearity for a factor that was severely collinear.
+  Now uses the standard Fox & Monette GVIF determinant ratio, verified
+  against [`car::vif()`](https://rdrr.io/pkg/car/man/vif.html).
+- **modelPrune**: refitting a reduced formula with a single
+  random-effect term (e.g. `(1 | group)`) via unparenthesized
+  `term | group` fragments was silently reinterpreted by
+  `lme4`/`glmmTMB` as a random slope instead of a random intercept, and
+  rejected outright for two or more random-effect terms.
+- **modelPrune**: added an explicit non-finite design-matrix check, a
+  zero-variance guard for VIF/condition-number scoring (constant
+  predictors now get `NA` instead of floating-point noise or `Inf`), and
+  fixed a crash when the surviving fixed-effect terms included
+  interactions or transformations
+  ([`poly()`](https://rdrr.io/r/stats/poly.html),
+  [`log()`](https://rdrr.io/r/base/Log.html), `:`).
+- **corrPrune**: the returned data frame was built from the internally
+  type-converted copy of `data` (character/logical coerced to factor,
+  integer to numeric), so a kept column’s type could silently change; it
+  is now subset from the caller’s original, untouched columns.
+- **corrPrune**: the threshold upper bound (`[0, 1]`) was validated only
+  when `mode = "auto"` routed through
+  [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md);
+  `threshold > 1` silently succeeded in `mode = "greedy"`. Now validated
+  once up front for every mode.
+- **corrPrune**: grouped (`by =`) aggregation quantiled *signed*
+  correlations, letting a strong negative association in one group be
+  averaged away by a weak positive one in another; associations are now
+  abs()-clamped before aggregation, matching the mixed-type code path.
+- **corrPrune**: grouped aggregation had four related silent data-loss
+  bugs – an unused factor level within one group produced an `NA`
+  silently dropped from the `group_q` quantile (breaking the documented
+  “`group_q = 1` holds in every group” guarantee), a
+  [`suppressWarnings()`](https://rdrr.io/r/base/warning.html) call hid
+  the informative NA-row-removal warning, `n_rows_used` double-counted
+  rows from skipped groups, and `NA` in the `by` column itself silently
+  excluded rows with no warning at all.
+- **corrPrune**: `force_in` association magnitude is now compared with
+  [`abs()`](https://rdrr.io/r/base/MathFun.html) rather than the signed
+  value, so negatively-correlated `force_in` pairs are correctly
+  rejected in exact mode (greedy mode already matched).
+- **corrPrune**: errors when `by` names every column, instead of
+  silently returning a zero-predictor result.
+- **corrPrune**: `distance`/`maximal` association metrics leaked
+  upstream package warnings for constant columns, unlike every other
+  method in the same dispatch; now suppressed to match.
+- **corrPrune**: hand-rolled its own type-pair-to-association-method
+  table for the `assoc_methods_used` attribute instead of reusing the
+  table actually used to compute the matrix, risking drift between the
+  two.
+- **corrPrune / assocSelect**: a constant column crashed
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)’s
+  all-numeric branch while
+  [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
+  handled the identical input gracefully; constant-column zeroing is now
+  applied structurally for every caller.
+- **corrSelect / assocSelect / corrPrune**:
+  [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
+  excluded constant (zero-variance) columns with a warning, while
+  [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
+  and
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
+  instead kept them and treated their association with everything as
+  `0`, so the same data set could return a different variable set
+  depending on which function was used
+  ([\#117](https://github.com/gcol33/corrselect/issues/117)). All three
+  now exclude constant columns with a warning; a `force_in` variable
+  excluded for being constant now errors with a specific message instead
+  of falling through to a generic one. Columns constant only *within one
+  group* of
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)’s
+  `by`/`group_q` aggregation are unaffected and still use the previous
+  zero-association handling.
+- **modelPrune**: the returned data.frame excluded random-effect
+  grouping/slope columns (e.g. `site` in `(1|site)`) for mixed-model
+  engines, so refitting from the returned data and
+  `attr(., "selected_vars")` failed with “object not found”; those
+  columns are now included
+  ([\#112](https://github.com/gcol33/corrselect/issues/112)).
+- **modelPrune**: `.compute_vif()`/`.compute_condition_indices()` scored
+  a constant single remaining predictor as a “perfect” `1.0` instead of
+  the documented `NA`, because their single-predictor shortcut ran
+  before the zero-variance guard; the guard now runs first
+  ([\#113](https://github.com/gcol33/corrselect/issues/113)).
+- **CorrCombo**: the S7 validator checked
+  `avg_corr`/`min_corr`/`max_corr` lengths but not that `threshold`,
+  `search_type`, and `cor_method` are scalars, so a malformed object
+  (e.g. a vectorized `threshold`, or an invalid `search_type`) built
+  successfully and produced garbled
+  [`print()`](https://rdrr.io/r/base/print.html) output; the validator
+  now rejects these at construction
+  ([\#114](https://github.com/gcol33/corrselect/issues/114)).
+- **MatSelect**: `force_in` was resolved against `mat`’s column
+  names/count before `mat` was validated as a numeric matrix, so an
+  invalid `mat` combined with `force_in` produced a misleading
+  `force_in`-flavored error instead of the real “must be a numeric
+  matrix” error; matrix validation now runs first
+  ([\#115](https://github.com/gcol33/corrselect/issues/115)).
+- **assocSelect**: reported a misleading “sparse combinations” error
+  when the real cause was fewer than two complete-case rows; now uses
+  the same explicit check
+  [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)
+  already had.
+- **MatSelect**: the `force_in` mutual-violation warning now names the
+  offending pair and value.
+- **MatSelect**: `use_pivot =` now errors on non-coercible input instead
+  of silently falling back to the default, and warns when supplied
+  together with `method = "els"` (a no-op there).
+- **MatSelect / assocSelect**: `force_in` is now validated as whole
+  numbers, matching
+  [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md)’s
+  existing check, so non-integer indices error instead of silently
+  truncating to a different column.
+- **MatSelect / corrSelect / assocSelect**: added a warning for
+  combinatorial blowup on large, permissive inputs where both the
+  variable count and compatibility-graph density make exponential
+  enumeration plausible.
+- **C++ backend**: `validateMatrixStructure()` let `NA`/`NaN`
+  correlation entries silently pass symmetry and diagonal checks
+  (IEEE-754 comparisons against `NaN` are always false), and checked the
+  diagonal only on the upper-triangular path, letting a symmetric matrix
+  with a wrong diagonal bypass validation entirely when a backend was
+  called directly.
+- **C++ backend**: `validateForcedIndices()` now deduplicates `force_in`
+  so `runELS()`/`runBronKerbosch()` can’t return a variable twice.
+- **C++ backend**: the shared Bron-Kerbosch base case never sorted a
+  clique’s element order, so the default search path (`bron-kerbosch`
+  with pivoting) returned scrambled combos, silently reordering
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)/[`corrSubset()`](https://gillescolling.com/corrselect/reference/corrSubset.md)
+  output columns.
+- **C++ backend**: `greedyPruneBackend()`, the fourth Rcpp-exported
+  backend, was missed by an earlier shared-validation refactor and
+  skipped `validateCorMatrix()`/`validateForcedIndices()` entirely.
+- **corrSubset**: the missing-value warning now lists only the subsets
+  that actually contain `NA`s.
+- Two package examples called `corrSelect(cor(mat))` where
+  `MatSelect(cor(mat))` was intended, silently computing correlations of
+  the correlation matrix rather than using it directly.
+- **C++ backend**: the `force_in` mutual-violation warning (naming the
+  offending pair when forced variables exceed the threshold against each
+  other) lived only in
+  [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md)’s
+  R layer, so calling the exported `runELS()`/`runBronKerbosch()`
+  directly gave no signal at all. The check now lives in a shared C++
+  helper (`utils.cpp`) called by both, so every entry point that forces
+  such variables in also warns about it
+  ([\#111](https://github.com/gcol33/corrselect/issues/111)).
+
+### New Features
+
+- Added
+  [`summary.CorrCombo()`](https://gillescolling.com/corrselect/reference/CorrCombo.md),
+  reporting aggregate statistics (size range, median, `avg_corr` range)
+  distinct from [`print()`](https://rdrr.io/r/base/print.html)’s
+  per-subset listing.
+
+### Performance
+
+- `runELS()`’s degeneracy ordering uses a bucket-queue instead of an
+  O(m^2) repeated min-degree scan, and no longer materializes the full n
+  x n compatibility matrix when `force_in` restricts the search to a
+  small induced subgraph.
+- The shared Bron-Kerbosch core backtracks its candidate set in place
+  instead of copying it on every recursive call.
+- The greedy backend caches per-variable tie-break statistics
+  incrementally instead of rescanning every candidate from scratch each
+  outer iteration.
+
+### Test Coverage Improvements
+
+- Added recovery-style and reference-verified tests for `corrPrune` and
+  `modelPrune`: hand-computed grouped quantile aggregation, exact-value
+  tie-break tests (lexicographic and greedy), a greedy-vs-exact identity
+  check, VIF verified against
+  [`car::vif()`](https://rdrr.io/pkg/car/man/vif.html), condition-number
+  verified against a manual SVD reference, and seed-repeated recovery
+  tests against simulated ground truth.
+- Fixed five `modelPrune` tests that silently passed a nonexistent
+  `threshold` argument instead of `limit`.
+- Added `test-brute-force-ground-truth.R`: an independent brute-force
+  maximal-subset enumerator, checked against ELS and Bron-Kerbosch (with
+  and without pivoting) across 40 random seeds, plus 25 more under
+  `force_in` constraints – validating maximality and exhaustiveness
+  simultaneously.
+- Added independent hand-derived reference-value tests for Pearson,
+  Spearman, Kendall, bicor, distance correlation, and maximal
+  information coefficient (previously only eta-squared/Cramer’s V had
+  these), and extended brute-force ground truth to near-0/near-1
+  threshold boundaries and larger `force_in` cases.
+- Extracted the previously duplicated
+  Pearson/Spearman/Kendall/bicor/distance/maximal/eta/Cramer’s V logic
+  (independently reimplemented across
+  [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.md),
+  [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md),
+  and both
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
+  branches, with divergent NA/constant-column policies) into shared
+  primitives in `R/assoc-metrics.R`, now the single source of truth for
+  every caller.
+
+------------------------------------------------------------------------
+
+## corrselect 3.2.2
+
+### Maintenance
+
+- Fixed `.Rbuildignore` to exclude non-standard hidden directories
+  flagged by CRAN incoming checks.
+- Removed temporary files from package source.
+
+------------------------------------------------------------------------
+
+## corrselect 3.2.0
+
+### Breaking Changes
+
+- **CorrCombo class migrated from S4 to S7**: The `CorrCombo` result
+  class now uses the modern S7 object system instead of S4. This brings
+  cleaner construction (`CorrCombo(...)` instead of
+  `new("CorrCombo", ...)`), built-in validation, and forward-looking OOP
+  design.
+- **`names` property renamed to `var_names`**: S7 reserves `names` as a
+  property name. Code accessing `result@names` must be updated to
+  `result@var_names`. All other `@` property access (`@subset_list`,
+  `@avg_corr`, etc.) is unchanged.
+- The `methods` package is no longer imported; `S7` is now a dependency.
+
+------------------------------------------------------------------------
+
 ## corrselect 3.1.0
 
 CRAN release: 2026-01-08

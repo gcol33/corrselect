@@ -13,13 +13,19 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
+  fig.width = 6.5,
+  fig.height = 4.5,
   dev = "svglite",
   fig.ext = "svg",
+  dev.args = list(pointsize = 14),
   cache = TRUE  # Cache expensive computations to speed up builds
 )
 library(corrselect)
+
+# Figure palette, light mode hex; the pkgdown CSS swaps in dark counterparts
+PAL <- c(blue = "#2E6F9E", red = "#B5342B", green = "#3F7A3D",
+         orange = "#9E5E0F", purple = "#7A4F9E", teal = "#2A7A7A",
+         grey = "#5C6166")
 ```
 
 ## Overview
@@ -96,7 +102,7 @@ The pruning successfully reduced dimensionality while ensuring no remaining pair
 
 The histogram below shows how `corrPrune()` reshapes the correlation structure. Before pruning (red), many variable pairs exceed the 0.7 threshold. After pruning (blue), all pairwise correlations fall below the threshold.
 
-```{r, fig.width=7, fig.height=5, fig.alt="Histogram showing distribution of absolute correlations before and after pruning. Red bars show many correlations exceed 0.7 threshold before pruning. Blue bars show all correlations below 0.7 after pruning."}
+```{r, fig.alt="Histogram showing distribution of absolute correlations before and after pruning. Red bars show many correlations exceed 0.7 threshold before pruning. Blue bars show all correlations below 0.7 after pruning."}
 cor_before <- cor(bioclim_example[, -1])
 cor_after  <- cor(bio_clean)
 
@@ -130,17 +136,19 @@ hist(vals_after,
 # Threshold line
 abline(v = 0.7, col = "black", lty = 2, lwd = 2)
 
+# Squares rather than fill boxes, so the swatches and the threshold rule
+# share one symbol column and line up
 legend("topright",
        legend = c("Before", "After", "Threshold"),
-       fill   = c(rgb(0.8, 0.2, 0.2, 0.4),
+       pch    = c(22, 22, NA),
+       pt.bg  = c(rgb(0.8, 0.2, 0.2, 0.4),
                   rgb(0.2, 0.5, 0.8, 0.4),
                   NA),
-       border = c("white", "white", NA),
+       pt.cex = 2,
        lty    = c(NA, NA, 2),
        lwd    = c(NA, NA, 2),
-       col    = c(NA, NA, "black"),
-       bty    = "o",
-       bg = "white")
+       col    = c("white", "white", "black"),
+       bty    = "n")
 ```
 
 ### Fit models
@@ -221,14 +229,14 @@ print(comparison)
 
 The plot below illustrates the pruning tradeoff: as we remove variables, condition number (κ) drops dramatically while adjusted R² remains high. This demonstrates that many of the original 19 variables were redundant for prediction.
 
-```{r, fig.width=8, fig.height=5, fig.alt="Dual-axis line plot showing number of predictors (x-axis) versus adjusted R² (blue, left y-axis) and condition number κ (red, right y-axis, log scale). As predictors decrease from 19 to 8, adjusted R² remains high (above 0.7) while κ drops from over 10000 to below 100, demonstrating that pruning dramatically improves numerical stability with minimal loss of explanatory power."}
+```{r, fig.width=7, fig.height=5, dev.args=list(pointsize=15), fig.alt="Dual-axis line plot showing number of predictors (x-axis) versus adjusted R² (blue, left y-axis) and condition number κ (red, right y-axis, log scale). As predictors decrease from 19 to 8, adjusted R² remains high (above 0.7) while κ drops from over 10000 to below 100, demonstrating that pruning dramatically improves numerical stability with minimal loss of explanatory power."}
 # Extract data
 n_vars <- comparison$Predictors
 adj_r2 <- comparison$Adj_R2
 kappa  <- comparison$Kappa
 
 # Left y-axis: Adjusted R²
-par(mar = c(5, 4, 4, 4))  # extra space on the right for second axis
+par(mar = c(7, 4, 3, 5))  # right: second axis; bottom: legend below the plot
 
 plot(
   n_vars, adj_r2,
@@ -268,13 +276,20 @@ plot(
 # Right-hand axis ticks using pretty() on log scale
 log_ticks <- pretty(log_kappa)
 kappa_labels <- round(10^log_ticks)
-axis(4, at = log_ticks, labels = kappa_labels)
-mtext("Condition Number (κ)", side = 4, line = 3)
+axis(4, at = log_ticks, labels = kappa_labels, las = 1)
+mtext("Condition Number (κ)", side = 4, line = 3.5)
 
-# Legend centered at top
+# Legend along the bottom edge of the figure. Placed in device coordinates so
+# it centres on the figure rather than on the plot region, which the wider
+# right margin would otherwise pull it off-centre from. One entry per row: side
+# by side, the two labels together span the full figure width, and R sizes the
+# columns from its own font metrics rather than the one the browser renders in
 legend(
-  "top",
-  inset = 0.02,
+  x      = grconvertX(0.5, from = "ndc", to = "user"),
+  y      = grconvertY(0.02, from = "ndc", to = "user"),
+  xjust  = 0.5,
+  yjust  = 0,
+  xpd    = NA,
   legend = c("Adjusted R² (higher better)", "κ (lower better)"),
   col    = c(
     rgb(0.2, 0.5, 0.8, 1),
@@ -282,10 +297,7 @@ legend(
   ),
   pch    = c(19, 17),
   lwd    = 2,
-  horiz  = TRUE,
-  bty    = "o",
-  bg = "white",
-  x.intersp = 0.8
+  bty    = "n"
 )
 
 ```
@@ -300,7 +312,7 @@ Multicollinearity inflates coefficient variance, making estimates unstable. The 
 
 - The pruned model yields clearer, more interpretable effect sizes
 
-```{r, fig.width=7, fig.height=5, fig.alt="Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning."}
+```{r, fig.width=7, fig.height=5, dev.args=list(pointsize=15), fig.alt="Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning."}
 # Extract coefficients (excluding intercept)
 coef_full  <- coef(model_full)[-1]
 coef_final <- coef(model_final)[-1]
@@ -336,7 +348,7 @@ plot(
   ylim = ylim
 )
 
-axis(1, at = x, labels = all_vars, las = 2, cex.axis = 0.7)
+axis(1, at = x, labels = all_vars, las = 2)
 
 # Full model bars
 rect(
@@ -448,7 +460,7 @@ Good balance: all three constructs retained representation, ensuring the reduced
 
 The barplots show (1) how many items survived pruning within each construct and (2) the overall variable reduction.
 
-```{r, fig.width=8, fig.height=5, fig.alt="Two side-by-side barplots. Left panel shows items kept per construct (Satisfaction, Engagement, Loyalty) with gray bars for original 10 items and blue bars showing reduced counts after pruning, demonstrating balanced retention across all three constructs. Right panel shows total variable reduction from 31 to approximately 10 variables using salmon and light green bars."}
+```{r, fig.width=8, fig.height=5, dev.args=list(pointsize=17), fig.alt="Two side-by-side barplots. Left panel shows items kept per construct (Satisfaction, Engagement, Loyalty) with gray bars for original 10 items and blue bars showing reduced counts after pruning, demonstrating balanced retention across all three constructs. Right panel shows total variable reduction from 31 to approximately 10 variables using salmon and light green bars."}
 par(mfrow = c(1, 2))
 
 # Items kept per construct
@@ -457,15 +469,21 @@ construct_data <- rbind(
   c(satisfaction_kept, engagement_kept, loyalty_kept)
 )
 
-barplot(construct_data,
-        beside = TRUE,
-        names.arg = c("Satisfaction", "Engagement", "Loyalty"),
-        col = c("lightgray", "lightblue"),
-        legend.text = c("Original (10)", "After pruning"),
-        args.legend = list(x = "topright", bty = "n"),
-        main = "Items per Construct",
-        ylab = "Number of Items",
-        ylim = c(0, 12))
+# ylim leaves headroom above the tallest bar for the legend
+bp <- barplot(construct_data,
+              beside = TRUE,
+              col = c("lightgray", "lightblue"),
+              legend.text = c("Original (10)", "After pruning"),
+              args.legend = list(x = "topright", bty = "n"),
+              main = "Items per Construct",
+              ylab = "Number of Items",
+              ylim = c(0, 14))
+
+# Construct names set at an angle. Upright they are wider than the spacing
+# between groups, and the axis then drops every other one
+text(colMeans(bp), par("usr")[3] - 0.4,
+     labels = c("Satisfaction", "Engagement", "Loyalty"),
+     srt = 45, adj = 1, xpd = TRUE)
 
 # Percentage reduction
 barplot(c(ncol(survey_numeric), ncol(survey_clean)),
@@ -581,7 +599,7 @@ The greedy algorithm completed in milliseconds while ensuring all pairwise corre
 
 ### Dimensionality reduction
 
-```{r, fig.width=8, fig.height=5, fig.alt="Barplot comparing gene counts before and after pruning. Salmon bar shows 200 original genes, light blue bar shows approximately 100 genes after pruning (50% retained). Text labels display exact counts and retention percentage, demonstrating substantial dimensionality reduction while maintaining low pairwise correlations."}
+```{r, fig.alt="Barplot comparing gene counts before and after pruning. Salmon bar shows 200 original genes, light blue bar shows approximately 100 genes after pruning (50% retained). Text labels display exact counts and retention percentage, demonstrating substantial dimensionality reduction while maintaining low pairwise correlations."}
 # Barplot showing reduction
 reduction_data <- c(ncol(gene_expr), ncol(genes_pruned))
 barplot(reduction_data,
@@ -774,7 +792,7 @@ All remaining predictors now have VIF < 5, indicating acceptable multicollineari
 
 The plot below shows how pruning reduced VIF values across the retained fixed effects:
 
-```{r, eval=FALSE, fig.width=8, fig.height=5, fig.alt="Side-by-side barplot showing VIF values for fixed effects before (red bars) and after (blue bars) pruning in a mixed-effects model. Red dashed horizontal line marks VIF threshold of 5. Before pruning, several predictors exceed the threshold with VIF values above 5. After pruning, all retained predictors have VIF below 5, demonstrating successful multicollinearity reduction while preserving random effects structure."}
+```{r, eval=FALSE, fig.width=7.5, fig.height=5, dev.args=list(pointsize=16), fig.alt="Side-by-side barplot showing VIF values for fixed effects before (red bars) and after (blue bars) pruning in a mixed-effects model. Red dashed horizontal line marks VIF threshold of 5. Before pruning, several predictors exceed the threshold with VIF values above 5. After pruning, all retained predictors have VIF below 5, demonstrating successful multicollinearity reduction while preserving random effects structure."}
 # Extract VIF values
 predictors <- comparison_vif$Predictor
 vif_before <- comparison_vif$VIF_Before

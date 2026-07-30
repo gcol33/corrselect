@@ -4,8 +4,8 @@ First of all, thank you very much for taking the time to contribute to
 the **corrselect** project!
 
 This document provides guidelines for contributing to corrselect—its
-codebase and documentation.  
-These guidelines are meant to guide you, not to restrict you.  
+codebase and documentation.\
+These guidelines are meant to guide you, not to restrict you.\
 If in doubt, use your best judgment and feel free to propose
 improvements through an issue or pull request.
 
@@ -30,13 +30,13 @@ improvements through an issue or pull request.
 ## Code of Conduct
 
 This project and everyone participating in it is governed by our **Code
-of Conduct** (`CODE_OF_CONDUCT.md`).  
+of Conduct** (`CODE_OF_CONDUCT.md`).\
 By participating, you are expected to uphold this code and maintain a
 respectful, inclusive environment.
 
 ## Installation
 
-This installation guide is focused on development.  
+This installation guide is focused on development.\
 For regular installation, please see the
 [README](https://gillescolling.com/corrselect/README.md).
 
@@ -107,7 +107,7 @@ devtools::document()
 
 ## Testing
 
-corrselect uses **testthat** for testing.  
+corrselect uses **testthat** for testing.\
 All tests are located in `tests/testthat/`.
 
 Run the full test suite:
@@ -162,7 +162,7 @@ Build the pkgdown site locally:
 pkgdown::build_site()
 ```
 
-The generated site is saved in the `docs/` directory.  
+The generated site is saved in the `docs/` directory.\
 Open `docs/index.html` in your browser to view it.
 
 ### Design of the docs

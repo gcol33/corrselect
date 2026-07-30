@@ -155,17 +155,19 @@ hist(vals_after,
 # Threshold line
 abline(v = 0.7, col = "black", lty = 2, lwd = 2)
 
+# Squares rather than fill boxes, so the swatches and the threshold rule
+# share one symbol column and line up
 legend("topright",
        legend = c("Before", "After", "Threshold"),
-       fill   = c(rgb(0.8, 0.2, 0.2, 0.4),
+       pch    = c(22, 22, NA),
+       pt.bg  = c(rgb(0.8, 0.2, 0.2, 0.4),
                   rgb(0.2, 0.5, 0.8, 0.4),
                   NA),
-       border = c("white", "white", NA),
+       pt.cex = 2,
        lty    = c(NA, NA, 2),
        lwd    = c(NA, NA, 2),
-       col    = c(NA, NA, "black"),
-       bty    = "o",
-       bg = "white")
+       col    = c("white", "white", "black"),
+       bty    = "n")
 ```
 
 ![Histogram showing distribution of absolute correlations before and
@@ -273,7 +275,7 @@ adj_r2 <- comparison$Adj_R2
 kappa  <- comparison$Kappa
 
 # Left y-axis: Adjusted R²
-par(mar = c(5, 4, 4, 4))  # extra space on the right for second axis
+par(mar = c(7, 4, 3, 5))  # right: second axis; bottom: legend below the plot
 
 plot(
   n_vars, adj_r2,
@@ -313,13 +315,20 @@ plot(
 # Right-hand axis ticks using pretty() on log scale
 log_ticks <- pretty(log_kappa)
 kappa_labels <- round(10^log_ticks)
-axis(4, at = log_ticks, labels = kappa_labels)
-mtext("Condition Number (κ)", side = 4, line = 3)
+axis(4, at = log_ticks, labels = kappa_labels, las = 1)
+mtext("Condition Number (κ)", side = 4, line = 3.5)
 
-# Legend centered at top
+# Legend along the bottom edge of the figure. Placed in device coordinates so
+# it centres on the figure rather than on the plot region, which the wider
+# right margin would otherwise pull it off-centre from. One entry per row: side
+# by side, the two labels together span the full figure width, and R sizes the
+# columns from its own font metrics rather than the one the browser renders in
 legend(
-  "top",
-  inset = 0.02,
+  x      = grconvertX(0.5, from = "ndc", to = "user"),
+  y      = grconvertY(0.02, from = "ndc", to = "user"),
+  xjust  = 0.5,
+  yjust  = 0,
+  xpd    = NA,
   legend = c("Adjusted R² (higher better)", "κ (lower better)"),
   col    = c(
     rgb(0.2, 0.5, 0.8, 1),
@@ -327,10 +336,7 @@ legend(
   ),
   pch    = c(19, 17),
   lwd    = 2,
-  horiz  = TRUE,
-  bty    = "o",
-  bg = "white",
-  x.intersp = 0.8
+  bty    = "n"
 )
 ```
 
@@ -393,7 +399,7 @@ plot(
   ylim = ylim
 )
 
-axis(1, at = x, labels = all_vars, las = 2, cex.axis = 0.7)
+axis(1, at = x, labels = all_vars, las = 2)
 
 # Full model bars
 rect(
@@ -507,7 +513,7 @@ cat(sprintf("Reduced from %d → %d variables\n",
 # Which items were kept?
 selected <- attr(survey_clean, "selected_vars")
 print(selected)
-#> [1] "age"            "satisfaction_1" "engagement_1"   "loyalty_1"     
+#> [1] "age"            "satisfaction_2" "engagement_2"   "loyalty_1"     
 #> [5] "loyalty_5"      "loyalty_7"      "loyalty_10"
 ```
 
@@ -554,15 +560,21 @@ construct_data <- rbind(
   c(satisfaction_kept, engagement_kept, loyalty_kept)
 )
 
-barplot(construct_data,
-        beside = TRUE,
-        names.arg = c("Satisfaction", "Engagement", "Loyalty"),
-        col = c("lightgray", "lightblue"),
-        legend.text = c("Original (10)", "After pruning"),
-        args.legend = list(x = "topright", bty = "n"),
-        main = "Items per Construct",
-        ylab = "Number of Items",
-        ylim = c(0, 12))
+# ylim leaves headroom above the tallest bar for the legend
+bp <- barplot(construct_data,
+              beside = TRUE,
+              col = c("lightgray", "lightblue"),
+              legend.text = c("Original (10)", "After pruning"),
+              args.legend = list(x = "topright", bty = "n"),
+              main = "Items per Construct",
+              ylab = "Number of Items",
+              ylim = c(0, 14))
+
+# Construct names set at an angle. Upright they are wider than the spacing
+# between groups, and the axis then drops every other one
+text(colMeans(bp), par("usr")[3] - 0.4,
+     labels = c("Satisfaction", "Engagement", "Loyalty"),
+     srt = 45, adj = 1, xpd = TRUE)
 
 # Percentage reduction
 barplot(c(ncol(survey_numeric), ncol(survey_clean)),
@@ -608,24 +620,24 @@ summary(model_survey)
 #> 
 #> Residuals:
 #>      Min       1Q   Median       3Q      Max 
-#> -19.8718  -3.9671  -0.2193   4.0766  20.0132 
+#> -18.0836  -4.0125  -0.3464   3.6563  14.9006 
 #> 
 #> Coefficients:
 #>                Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)    26.01351    2.11317  12.310   <2e-16 ***
-#> age             0.02558    0.04152   0.616   0.5385    
-#> satisfaction_1  4.97997    0.32940  15.118   <2e-16 ***
-#> engagement_1    0.26170    0.30292   0.864   0.3887    
-#> loyalty_1       0.37258    0.32254   1.155   0.2495    
-#> loyalty_5       0.30218    0.30068   1.005   0.3162    
-#> loyalty_7       0.01332    0.32027   0.042   0.9669    
-#> loyalty_10     -0.51598    0.30702  -1.681   0.0945 .  
+#> (Intercept)    26.03861    1.86493  13.962   <2e-16 ***
+#> age            -0.02033    0.03660  -0.556    0.579    
+#> satisfaction_2  5.76754    0.29641  19.458   <2e-16 ***
+#> engagement_2   -0.15966    0.26402  -0.605    0.546    
+#> loyalty_1       0.34560    0.27893   1.239    0.217    
+#> loyalty_5       0.22123    0.26367   0.839    0.402    
+#> loyalty_7      -0.02205    0.28007  -0.079    0.937    
+#> loyalty_10     -0.35330    0.26838  -1.316    0.190    
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 6.397 on 192 degrees of freedom
-#> Multiple R-squared:  0.6916, Adjusted R-squared:  0.6804 
-#> F-statistic: 61.52 on 7 and 192 DF,  p-value: < 2.2e-16
+#> Residual standard error: 5.603 on 192 degrees of freedom
+#> Multiple R-squared:  0.7634, Adjusted R-squared:  0.7548 
+#> F-statistic: 88.52 on 7 and 192 DF,  p-value: < 2.2e-16
 ```
 
 #### Model comparison
@@ -655,7 +667,7 @@ data.frame(
 )
 #>              Model        R2    Adj_R2 Num_Predictors
 #> 1   Full (33 vars) 0.9822173 0.8034025             33
-#> 2 Pruned (10 vars) 0.6916262 0.6803834             10
+#> 2 Pruned (10 vars) 0.7634347 0.7548099             10
 ```
 
 ------------------------------------------------------------------------
@@ -701,35 +713,36 @@ scenario where regularization or dimensionality reduction is essential.
 
 #### Greedy pruning
 
-The greedy algorithm iteratively selects variables, prioritizing those
-with the lowest maximum correlation to already-selected variables. This
-heuristic runs in O(p²) time compared to the exponential complexity of
-exact methods.
+The greedy algorithm is a backward-elimination heuristic: it starts with
+all variables and iteratively removes the “worst” one – prioritizing the
+variable with the most threshold violations, then the highest max
+correlation, then the highest average correlation – until every
+remaining pair satisfies the threshold. This heuristic runs in O(p²)
+time compared to the exponential complexity of exact methods.
 
 ``` r
-
-library(microbenchmark)
 
 # Extract gene expression data (exclude ID and outcome)
 gene_expr <- genes_example[, -(1:2)]
 
-# Greedy pruning with timing
-greedy_timing <- microbenchmark(
-  genes_pruned <- corrPrune(
+# Greedy pruning with timing (median of 3 runs)
+greedy_times <- sapply(1:3, function(i) {
+  system.time(corrPrune(
     data = gene_expr,
     threshold = 0.8,
     mode = "greedy"  # Fast for large p
-  ),
-  times = 3
-)
-greedy_ms <- median(greedy_timing$time) / 1e6
+  ))["elapsed"]
+})
+greedy_ms <- median(greedy_times) * 1000
+
+genes_pruned <- corrPrune(data = gene_expr, threshold = 0.8, mode = "greedy")
 
 # Reduction
 cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
             ncol(genes_pruned),
             greedy_ms))
-#> Reduced from 200 → 177 genes (10.4 ms)
+#> Reduced from 200 → 177 genes (20.0 ms)
 ```
 
 The greedy algorithm completed in milliseconds while ensuring all
@@ -770,19 +783,17 @@ dramatically as the number of variables increases.
 # Subset for comparison (use smaller subset for vignette build speed)
 gene_subset <- gene_expr[, 1:20]  # Reduced from 50 to 20 for faster builds
 
-# Benchmark exact mode
-exact_time <- median(microbenchmark(
-  exact_result <- corrPrune(gene_subset, threshold = 0.8, mode = "exact"),
-  times = 3,
-  unit = "ms"
-)$time) / 1e6  # Convert nanoseconds to milliseconds
+# Benchmark exact mode (median of 3 runs)
+exact_times <- sapply(1:3, function(i) {
+  system.time(corrPrune(gene_subset, threshold = 0.8, mode = "exact"))["elapsed"]
+})
+exact_time <- median(exact_times) * 1000  # seconds -> milliseconds
 
-# Benchmark greedy mode
-greedy_time <- median(microbenchmark(
-  greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy"),
-  times = 3,
-  unit = "ms"
-)$time) / 1e6  # Convert nanoseconds to milliseconds
+# Benchmark greedy mode (median of 3 runs)
+greedy_times <- sapply(1:3, function(i) {
+  system.time(corrPrune(gene_subset, threshold = 0.8, mode = "greedy"))["elapsed"]
+})
+greedy_time <- median(greedy_times) * 1000  # seconds -> milliseconds
 
 # Run once more to get actual results for comparison
 exact_result <- corrPrune(gene_subset, threshold = 0.8, mode = "exact")
@@ -790,11 +801,11 @@ greedy_result <- corrPrune(gene_subset, threshold = 0.8, mode = "greedy")
 
 # Compare
 cat(sprintf("Exact mode: %d genes kept (%.1f ms)\n", ncol(exact_result), exact_time))
-#> Exact mode: 11 genes kept (3.5 ms)
+#> Exact mode: 11 genes kept (0.0 ms)
 cat(sprintf("Greedy mode: %d genes kept (%.1f ms)\n", ncol(greedy_result), greedy_time))
-#> Greedy mode: 10 genes kept (0.5 ms)
+#> Greedy mode: 10 genes kept (0.0 ms)
 cat(sprintf("Speedup: %.1fx faster\n", exact_time / greedy_time))
-#> Speedup: 6.6x faster
+#> Speedup: NaNx faster
 ```
 
 The greedy mode is substantially faster. For the full 200-gene dataset,
@@ -1141,7 +1152,7 @@ details
 ``` r
 
 sessionInfo()
-#> R version 4.5.2 (2025-10-31 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1162,15 +1173,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.1.0    
+#> [1] testthat_3.3.2   corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.7      
-#>  [5] xfun_0.55         otel_0.2.0        textshaping_1.0.4 jsonlite_2.0.0   
-#>  [9] htmltools_0.5.9   sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
-#> [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5  
-#> [17] compiler_4.5.2    codetools_0.2-20  fs_1.6.6          htmlwidgets_1.6.4
-#> [21] Rcpp_1.1.1        systemfonts_1.3.1 digest_0.6.39     R6_2.6.1         
-#> [25] bslib_0.9.0       tools_4.5.2       pkgdown_2.2.0     cachem_1.1.0     
-#> [29] desc_1.4.3
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      
+#>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       brio_1.1.5       
+#> [13] rmarkdown_2.31    evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0    
+#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    codetools_0.2-20 
+#> [21] fs_2.1.0          htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2
+#> [25] digest_0.6.39     R6_2.6.1          magrittr_2.0.5    bslib_0.11.0     
+#> [29] tools_4.6.0       pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
 ```

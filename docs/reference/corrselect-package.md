@@ -12,7 +12,9 @@ correlations or associations remain below a user-defined threshold:
 
 - [`corrPrune`](https://gillescolling.com/corrselect/reference/corrPrune.md):
 
-  Fast greedy pruning for numeric data
+  Association-based pruning for numeric or mixed-type data, using exact
+  search by default and falling back to a fast greedy algorithm for
+  large predictor sets
 
 - [`corrSelect`](https://gillescolling.com/corrselect/reference/corrSelect.md):
 
@@ -54,9 +56,9 @@ The exact enumeration functions (`corrSelect`, `assocSelect`,
 
   Extract specific subsets from results
 
-- [`CorrCombo-class`](https://gillescolling.com/corrselect/reference/CorrCombo.md):
+- [`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md):
 
-  S4 class holding enumeration results
+  Class holding enumeration results
 
 ## See also
 
@@ -67,3 +69,9 @@ Vignettes:
 ## Author
 
 **Maintainer**: Gilles Colling <gilles.colling051@gmail.com>
+([ORCID](https://orcid.org/0000-0003-3070-6066)) \[copyright holder\]
+
+Authors:
+
+- Gilles Colling <gilles.colling051@gmail.com>
+  ([ORCID](https://orcid.org/0000-0003-3070-6066)) \[copyright holder\]

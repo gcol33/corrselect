@@ -13,8 +13,8 @@
     }
   };
 </script><script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="corrselect: Correlation-Based Variable Selection in R">
@@ -22,9 +22,22 @@
 ">
 <meta property="og:description" content="Graph-theoretic algorithms for removing redundant predictors based on pairwise correlation or association thresholds.
 ">
+<script>
+(function () {
+  var D = String.fromCharCode(36);
+  window.MathJax = {
+    tex: {
+      inlineMath: [[D, D], ["\\(", "\\)"]],
+      displayMath: [[D + D, D + D], ["\\[", "\\]"]]
+    },
+    chtml: { linebreaks: { automatic: true, width: "90% container" } },
+    svg: { linebreaks: { automatic: true, width: "90% container" } },
+    options: { renderActions: { addMenu: [] } }
+  };
+})();
+</script>
 </head>
 <body>
-
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -32,7 +45,7 @@
 
     <a class="navbar-brand me-2" href="index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +94,7 @@
 <p><em>every uncorrelated subset of predictors</em></p>
 <p><a href="https://CRAN.R-project.org/package=corrselect" class="external-link"><img src="https://www.r-pkg.org/badges/version/corrselect" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/corrselect" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/corrselect" alt="Monthly downloads"></a> <a href="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/gcol33/corrselect" class="external-link"><img src="https://codecov.io/gh/gcol33/corrselect/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://doi.org/10.21105/joss.09539" class="external-link"><img src="https://joss.theoj.org/papers/10.21105/joss.09539/status.svg" alt="DOI"></a></p>
 <p><strong>Exact enumeration of maximal predictor sets under a correlation threshold.</strong></p>
-<p>Feed it your predictors. <code>corrselect</code> returns the maximal sets whose pairwise correlations all stay under your threshold, found exactly by graph enumeration (Bron–Kerbosch / Eppstein–Löffler–Strash) in C++. A greedy filter hands you one set and hides the rest. This keeps every variable it can, and shows you all the valid choices.</p>
+<p>Hand it a data frame and a threshold. <code>corrselect</code> finds every maximal set of predictors whose pairwise correlations all stay under that threshold, by graph enumeration (Bron–Kerbosch / Eppstein–Löffler–Strash) in C++, and returns whichever view you need: a single pruned data frame, or every valid subset to choose from.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/">corrselect</a></span><span class="op">)</span></span>
 <span></span>
@@ -91,29 +104,78 @@
 <span><span class="co"># or enumerate *every* maximal low-correlation set</span></span>
 <span><span class="fu"><a href="reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="exact-not-greedy">Exact, not greedy<a class="anchor" aria-label="anchor" href="#exact-not-greedy"></a>
+<h2 id="every-valid-choice-ranked">Every valid choice, ranked<a class="anchor" aria-label="anchor" href="#every-valid-choice-ranked"></a>
 </h2>
-<p>The usual tool, <code>caret::findCorrelation()</code>, removes variables greedily: it is order-dependent, non-deterministic, and typically drops more than it needs to. <code>corrselect</code> solves the same threshold constraint by maximal-clique enumeration, so it retains at least as many variables and returns the same answer every run.</p>
+<p><code><a href="reference/corrSelect.html">corrSelect()</a></code> returns every maximal low-correlation subset, ranked by size then average correlation:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="va">res</span></span>
+<span><span class="co">#&gt; CorrCombo object</span></span>
+<span><span class="co">#&gt; -----------------</span></span>
+<span><span class="co">#&gt;   Method:      bron-kerbosch</span></span>
+<span><span class="co">#&gt;   Correlation: pearson</span></span>
+<span><span class="co">#&gt;   Threshold:   0.700</span></span>
+<span><span class="co">#&gt;   Subsets:     15 maximal subsets</span></span>
+<span><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
+<span><span class="co">#&gt;   Pivot:       TRUE</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; Top combinations:</span></span>
+<span><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
+<span><span class="co">#&gt;   ------------------------------------------------------------</span></span>
+<span><span class="co">#&gt;   [ 1] mpg, drat, qsec, gear, carb       0.416  0.700     5</span></span>
+<span><span class="co">#&gt;   [ 2] cyl, drat, qsec, gear, carb       0.434  0.700     5</span></span>
+<span><span class="co">#&gt;   [ 3] mpg, drat, vs, gear, carb         0.466  0.700     5</span></span>
+<span><span class="co">#&gt;   ... (12 more combinations)</span></span>
 <span></span>
-<span><span class="fu">caret</span><span class="fu">::</span><span class="fu">findCorrelation</span><span class="op">(</span><span class="va">m</span>, cutoff <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>              <span class="co"># greedy, ordering-dependent</span></span>
-<span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span>   <span class="co"># exact, deterministic</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/corrSubset.html">corrSubset</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">mtcars</span>, which <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span>   <span class="co"># pull the top-ranked subset back out as a data frame</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="whats-in-the-box">What’s in the box<a class="anchor" aria-label="anchor" href="#whats-in-the-box"></a>
+<h2 id="keeping-variables-you-already-trust-across-groups">Keeping variables you already trust, across groups<a class="anchor" aria-label="anchor" href="#keeping-variables-you-already-trust-across-groups"></a>
 </h2>
-<ul>
-<li>
-<strong><code><a href="reference/corrPrune.html">corrPrune()</a></code></strong>: association-based pruning, model-free. Exact mode for <code>p &lt;= 100</code>, greedy mode for larger <code>p</code>, protect variables with <code>force_in</code>.</li>
-<li>
-<strong><code><a href="reference/modelPrune.html">modelPrune()</a></code></strong>: VIF-based pruning for <code>lm</code>, <code>glm</code>, <code>lme4</code>, <code>glmmTMB</code>, or any custom engine (INLA, mgcv, brms, …).</li>
-<li>
-<strong><code><a href="reference/corrSelect.html">corrSelect()</a></code> / <code><a href="reference/MatSelect.html">MatSelect()</a></code></strong>: exhaustive enumeration of all maximal sets, on a data frame or directly on a correlation matrix.</li>
-<li>
-<strong><code><a href="reference/assocSelect.html">assocSelect()</a></code></strong>: mixed-type data (numeric, factor, ordered), with the right association metric chosen per pair.</li>
-</ul>
-<p>Multiple association metrics are supported: <code>"pearson"</code>, <code>"spearman"</code>, <code>"kendall"</code>, <code>"bicor"</code> (WGCNA), <code>"distance"</code> (energy), <code>"maximal"</code> (minerva), and <code>"eta"</code> / <code>"cramersv"</code> for mixed-type data.</p>
+<p><code>force_in</code> protects variables that must survive pruning regardless of what else gets dropped; <code>by</code> requires the threshold to hold separately inside every group:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># hp and wt are kept no matter what else is removed</span></span>
+<span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, force_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hp"</span>, <span class="st">"wt"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># threshold holds within every level of `site`, checked group by group</span></span>
+<span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">longitudinal_example</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"x3"</span>, <span class="st">"x4"</span>, <span class="st">"x5"</span>, <span class="st">"site"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>          threshold <span class="op">=</span> <span class="fl">0.6</span>, by <span class="op">=</span> <span class="st">"site"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="mixed-type-data">Mixed-type data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a>
+</h2>
+<p><code><a href="reference/assocSelect.html">assocSelect()</a></code> picks the right association measure for each pair of columns (Pearson for numeric-numeric, eta-squared for numeric-factor, Cramer’s V for factor-factor), and enumerates maximal subsets under all of them at once:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">170</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">70</span>, <span class="fl">12</span><span class="op">)</span>,</span>
+<span>  group  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fl">30</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  rating <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"med"</span>, <span class="st">"high"</span><span class="op">)</span>, <span class="fl">30</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/assocSelect.html">assocSelect</a></span><span class="op">(</span><span class="va">df</span>, threshold <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/corrPrune.html">corrPrune()</a></code> runs the same mixed-type dispatch under the hood, so a single pruning call works whether the input is all-numeric or a mix of numeric, factor, and ordered columns. Six numeric-numeric measures are available, selectable via <code>measure</code> / <code>method_num_num</code>: <code>"pearson"</code>, <code>"spearman"</code>, <code>"kendall"</code>, <code>"bicor"</code> (WGCNA), <code>"distance"</code> (energy), and <code>"maximal"</code> (minerva).</p>
+</div>
+<div class="section level2">
+<h2 id="model-based-pruning-with-any-engine">Model-based pruning with any engine<a class="anchor" aria-label="anchor" href="#model-based-pruning-with-any-engine"></a>
+</h2>
+<p><code><a href="reference/modelPrune.html">modelPrune()</a></code> removes predictors by VIF or condition number, refitting after each removal. Built-in engines cover <code>lm</code>, <code>glm</code>, <code>lme4</code>, and <code>glmmTMB</code>; anything else plugs in as a two-function engine:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># linear model, VIF threshold</span></span>
+<span><span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span> <span class="op">+</span> <span class="va">disp</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># any modeling package, via a custom engine (here: INLA)</span></span>
+<span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"inla"</span>,</span>
+<span>  fit  <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">INLA</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/INLA/man/inla.html" class="external-link">inla</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  diagnostics <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">fixed_effects</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">[</span>, <span class="st">"sd"</span><span class="op">]</span>          <span class="co"># posterior SD as the badness score</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">scores</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="va">fixed_effects</span><span class="op">]</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">df</span>, engine <span class="op">=</span> <span class="va">inla_engine</span>, limit <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="corrprune-or-modelprune">
@@ -162,44 +224,34 @@
 <p>Use <code><a href="reference/corrPrune.html">corrPrune()</a></code> first to cut dimensionality, then <code><a href="reference/modelPrune.html">modelPrune()</a></code> for final cleanup inside a modeling framework.</p>
 </div>
 <div class="section level2">
-<h2 id="model-based-pruning-with-any-engine">Model-based pruning with any engine<a class="anchor" aria-label="anchor" href="#model-based-pruning-with-any-engine"></a>
+<h2 id="exact-where-it-matters-greedy-where-it-scales">Exact where it matters, greedy where it scales<a class="anchor" aria-label="anchor" href="#exact-where-it-matters-greedy-where-it-scales"></a>
 </h2>
-<p><code><a href="reference/modelPrune.html">modelPrune()</a></code> works with <code>lm</code>, <code>glm</code>, <code>lme4</code>, <code>glmmTMB</code>, or any package you wire in:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># linear model, VIF threshold</span></span>
-<span><span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span> <span class="op">+</span> <span class="va">disp</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># any modeling package, via a custom engine (here: INLA)</span></span>
-<span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  name <span class="op">=</span> <span class="st">"inla"</span>,</span>
-<span>  fit  <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">INLA</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/INLA/man/inla.html" class="external-link">inla</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>, <span class="va">...</span><span class="op">)</span></span>
-<span>  <span class="op">}</span>,</span>
-<span>  diagnostics <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">fixed_effects</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">[</span>, <span class="st">"sd"</span><span class="op">]</span>          <span class="co"># posterior SD as the badness score</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">scores</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">summary.fixed</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="va">fixed_effects</span><span class="op">]</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">df</span>, engine <span class="op">=</span> <span class="va">inla_engine</span>, limit <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/corrPrune.html">corrPrune()</a></code> picks a search mode for you: exact enumeration up to <code>max_exact_p</code> predictors (100 by default), and a greedy C++ backend beyond that. Exact mode guarantees the largest subset satisfying the threshold; greedy mode trades that guarantee for speed on wide data. Both are available directly, so you can pin one explicitly:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span>   <span class="co"># guaranteed-maximal, small/medium p</span></span>
+<span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"greedy"</span><span class="op">)</span>  <span class="co"># fast, approximate, any p</span></span></code></pre></div>
+<p><code><a href="https://rdrr.io/pkg/caret/man/findCorrelation.html" class="external-link">caret::findCorrelation()</a></code> solves this with greedy iterative removal, which is order-dependent and can vary between runs on the same data. <code>corrPrune(mode = "exact")</code> solves the same threshold constraint by maximal-clique enumeration, retaining at least as many variables and returning the same answer every run. The <a href="https://gillescolling.com/corrselect/articles/comparison.html">Comparison vignette</a> walks through this and three other alternatives (Boruta, glmnet, manual VIF removal) side by side on the same dataset.</p>
 </div>
 <div class="section level2">
-<h2 id="mixed-type-data">Mixed-type data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a>
+<h2 id="whats-in-the-box">What’s in the box<a class="anchor" aria-label="anchor" href="#whats-in-the-box"></a>
 </h2>
-<p><code><a href="reference/assocSelect.html">assocSelect()</a></code> chooses the right association metric per pair (Pearson, Spearman, eta-squared, Cramér’s V):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">170</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">70</span>, <span class="fl">12</span><span class="op">)</span>,</span>
-<span>  group  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fl">30</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  rating <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"med"</span>, <span class="st">"high"</span><span class="op">)</span>, <span class="fl">30</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/assocSelect.html">assocSelect</a></span><span class="op">(</span><span class="va">df</span>, threshold <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li>
+<strong><code><a href="reference/corrPrune.html">corrPrune()</a></code></strong>: association-based pruning, model-free. Exact mode for <code>p &lt;= 100</code>, greedy mode for larger <code>p</code>, protect variables with <code>force_in</code>, hold the threshold across groups with <code>by</code>.</li>
+<li>
+<strong><code><a href="reference/modelPrune.html">modelPrune()</a></code></strong>: VIF-based pruning for <code>lm</code>, <code>glm</code>, <code>lme4</code>, <code>glmmTMB</code>, or any custom engine (INLA, mgcv, brms, …).</li>
+<li>
+<strong><code><a href="reference/corrSelect.html">corrSelect()</a></code> / <code><a href="reference/MatSelect.html">MatSelect()</a></code></strong>: exhaustive enumeration of all maximal sets, on a data frame or directly on a correlation matrix.</li>
+<li>
+<strong><code><a href="reference/corrSubset.html">corrSubset()</a></code></strong>: pull one or more maximal subsets back out of a <code>CorrCombo</code> as data frames.</li>
+<li>
+<strong><code><a href="reference/assocSelect.html">assocSelect()</a></code></strong>: mixed-type data (numeric, factor, ordered), with the right association metric chosen per pair.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"corrselect"</span><span class="op">)</span>            <span class="co"># CRAN</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span>                   <span class="co"># development version</span></span>
@@ -214,6 +266,7 @@
 <li><a href="https://gillescolling.com/corrselect/articles/comparison.html">Comparison</a></li>
 <li><a href="https://gillescolling.com/corrselect/articles/advanced.html">Advanced Usage</a></li>
 <li><a href="https://gillescolling.com/corrselect/articles/theory.html">Theory</a></li>
+<li><a href="https://gillescolling.com/corrselect/reference/index.html">Function Reference</a></li>
 </ul>
 </div>
 <div class="section level2">
@@ -234,14 +287,17 @@
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">corrselect</span>,</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="dt">author</span>  = {Colling, Gilles},</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="dt">title</span>   = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Journal of Open Source Software},</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="dt">year</span>    = {2025},</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.21105/joss.09539},</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="dt">url</span>     = {https://joss.theoj.org/papers/10.21105/joss.09539}</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">corrselect</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="dt">author</span>  = {Colling, Gilles},</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="dt">title</span>   = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Journal of Open Source Software},</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="dt">year</span>    = {2026},</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="dt">volume</span>  = {11},</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="dt">number</span>  = {118},</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="dt">pages</span>   = {9539},</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="dt">doi</span>     = {10.21105/joss.09539},</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="dt">url</span>     = {https://joss.theoj.org/papers/10.21105/joss.09539}</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -305,6 +361,5 @@
 
 
 
-  
-</body>
+  </body>
 </html>

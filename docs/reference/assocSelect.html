@@ -5,17 +5,30 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Select Variable Subsets with Low Association (Mixed-Type Data Frame Interface) — assocSelect"><meta name="description" content="Identifies combinations of variables of any common data type (numeric,
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Select Variable Subsets with Low Association (Mixed-Type Data Frame Interface) — assocSelect"><meta name="description" content="Identifies combinations of variables of any common data type (numeric,
 ordered factors, or unordered) factors—whose pair-wise association does not
 exceed a user-supplied threshold.
 The routine wraps MatSelect() and handles all pre-processing
-(type conversion, missing-row removal, constant-column checks) for typical
+(type conversion, missing-row removal, constant-column removal) for typical
 data-frame/tibble/data-table inputs."><meta property="og:description" content="Identifies combinations of variables of any common data type (numeric,
 ordered factors, or unordered) factors—whose pair-wise association does not
 exceed a user-supplied threshold.
 The routine wraps MatSelect() and handles all pre-processing
-(type conversion, missing-row removal, constant-column checks) for typical
-data-frame/tibble/data-table inputs."></head><body>
+(type conversion, missing-row removal, constant-column removal) for typical
+data-frame/tibble/data-table inputs."><script>
+(function () {
+  var D = String.fromCharCode(36);
+  window.MathJax = {
+    tex: {
+      inlineMath: [[D, D], ["\\(", "\\)"]],
+      displayMath: [[D + D, D + D], ["\\[", "\\]"]]
+    },
+    chtml: { linebreaks: { automatic: true, width: "90% container" } },
+    svg: { linebreaks: { automatic: true, width: "90% container" } },
+    options: { renderActions: { addMenu: [] } }
+  };
+})();
+</script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +36,7 @@ data-frame/tibble/data-table inputs."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +82,7 @@ data-frame/tibble/data-table inputs."></head><body>
 ordered factors, or unordered) factors—whose <em>pair-wise association</em> does not
 exceed a user-supplied threshold.
 The routine wraps <code><a href="MatSelect.html">MatSelect()</a></code> and handles all pre-processing
-(type conversion, missing-row removal, constant-column checks) for typical
+(type conversion, missing-row removal, constant-column removal) for typical
 data-frame/tibble/data-table inputs.</p>
     </div>
 
@@ -99,7 +112,7 @@ data-frame/tibble/data-table inputs.</p>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>Numeric in \((0,1)\). Maximum allowed pair-wise
+<dd><p>Numeric in \((0,1]\). Maximum allowed pair-wise
 <em>absolute</em> association. Default <code>0.7</code>.</p></dd>
 
 
@@ -138,19 +151,31 @@ One of <code>"spearman"</code> (default) or <code>"kendall"</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code><a href="CorrCombo.html">CorrCombo</a></code> S4 object containing:</p><ul><li><p>all valid subsets,</p></li>
+    <p>A <code><a href="CorrCombo.html">CorrCombo</a></code> object containing:</p><ul><li><p>all valid subsets,</p></li>
 <li><p>their summary association statistics,</p></li>
 <li><p>metadata (algorithm used, rows kept, forced-in variables, etc.).</p></li>
 </ul><p>The object’s <code>show()</code> method prints the association metrics that were
 <em>actually used</em> for this data set.</p>
-    </div>
+<p>Two additional attributes are attached to the returned object:</p><dl><dt>assoc_methods_used</dt>
+<dd><p>Named list mapping each variable-type-pair
+combination that actually occurs in <code>df</code> (e.g.
+<code>"numeric_numeric"</code>, <code>"numeric_factor"</code>) to the association
+method used for it.</p></dd>
+
+<dt>assoc_methods_all</dt>
+<dd><p>Named list mapping every possible
+variable-type-pair combination to its resolved method, regardless of
+whether that combination occurs in <code>df</code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A single call can therefore screen a data set that mixes continuous and
 categorical features and return every subset whose internal associations are
 “sufficiently low” under the metric(s) you choose.</p>
-<p>Rows containing <code>NA</code> are dropped with a warning; constant columns are
-treated as having zero association with every other variable.</p>
+<p>Rows containing <code>NA</code> are dropped with a warning; constant columns
+(a single distinct value) are excluded with a warning.</p>
 <p>The default association measure for each variable-type combination is:</p>
 <dl><dt>numeric – numeric</dt>
 <dd><p><code>method_num_num</code> (default <code>"pearson"</code>)</p></dd>
@@ -223,6 +248,5 @@ are missing.</p>
 
 
 
-  
-</body></html>
+  </body></html>
 

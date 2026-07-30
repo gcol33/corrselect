@@ -26,7 +26,7 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 - df:
 
   A data frame or matrix. Must contain all variables listed in
-  `res@names`. Columns not in `res@names` are ignored unless
+  `res@var_names`. Columns not in `res@var_names` are ignored unless
   `keepExtra = TRUE`.
 
 - which:
@@ -46,8 +46,8 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 
 - keepExtra:
 
-  Logical. If `TRUE`, columns in `df` not in `res@names` (e.g., factors,
-  characters) are retained. Defaults to `FALSE`.
+  Logical. If `TRUE`, columns in `df` not in `res@var_names` (e.g.,
+  factors, characters) are retained. Defaults to `FALSE`.
 
 ## Value
 
@@ -77,8 +77,8 @@ colnames(df) <- paste0("V", 1:10)
 # Compute correlation matrix
 cmat <- cor(df)
 
-# Select subsets using corrSelect
-res <- corrSelect(cmat, threshold = 0.5)
+# Select subsets using MatSelect (cmat is already a correlation matrix)
+res <- MatSelect(cmat, threshold = 0.5)
 
 # Extract the best subset (default)
 corrSubset(res, df)

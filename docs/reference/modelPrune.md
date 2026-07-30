@@ -105,8 +105,9 @@ modelPrune(
 
 ## Value
 
-A data.frame containing only the retained predictors (and response). The
-result has the following attributes:
+A data.frame containing only the retained fixed-effect predictors (and
+response), plus any random-effect grouping/slope variables for
+mixed-model engines. The result has the following attributes:
 
 - selected_vars:
 
@@ -158,6 +159,17 @@ preserved exactly as specified in the original formula.
 fixed-effects design matrix. For categorical predictors, VIF represents
 the inflation for the entire factor (not individual dummy variables).
 
+**Condition Number Computation**: Condition indices are computed via
+singular value decomposition of the fixed-effects design matrix, which
+is centered and scaled (`scale(X, center = TRUE, scale = TRUE)`) before
+the decomposition; this is a common convention for collinearity
+screening but means the diagnostic does not reflect intercept-related
+collinearity the way an uncentered decomposition would. For a
+categorical predictor with multiple dummy columns, the predictor's
+condition index is approximated as the maximum condition index across
+its associated columns, rather than a proper joint decomposition
+restricted to that factor's subspace.
+
 **Determinism**: The algorithm is deterministic. Ties in diagnostic
 values are broken by removing the predictor that appears last in the
 formula.
@@ -184,8 +196,10 @@ names(pruned)
 # Force certain predictors to remain
 pruned <- modelPrune(mpg ~ ., data = mtcars, force_in = "drat", limit = 20)
 
-# GLM example (requires family argument)
-pruned <- modelPrune(am ~ ., data = mtcars, engine = "glm",
+# GLM example (requires family argument). Uses a small predictor set
+# that avoids quasi-complete separation on this data (unlike `am ~ .`,
+# which regresses a 32-row binary response on all 10 mtcars predictors).
+pruned <- modelPrune(vs ~ mpg + wt + hp, data = mtcars, engine = "glm",
                      family = binomial(), limit = 5)
 
 if (FALSE) { # \dontrun{

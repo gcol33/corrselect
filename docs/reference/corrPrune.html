@@ -5,13 +5,26 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Association-Based Predictor Pruning — corrPrune"><meta name="description" content="corrPrune() performs model-free variable subset selection by iteratively
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Association-Based Predictor Pruning — corrPrune"><meta name="description" content="corrPrune() performs model-free variable subset selection by iteratively
 removing predictors until all pairwise associations fall below a specified
 threshold. It returns a single pruned data frame with predictors that satisfy
 the association constraint."><meta property="og:description" content="corrPrune() performs model-free variable subset selection by iteratively
 removing predictors until all pairwise associations fall below a specified
 threshold. It returns a single pruned data frame with predictors that satisfy
-the association constraint."></head><body>
+the association constraint."><script>
+(function () {
+  var D = String.fromCharCode(36);
+  window.MathJax = {
+    tex: {
+      inlineMath: [[D, D], ["\\(", "\\)"]],
+      displayMath: [[D + D, D + D], ["\\[", "\\]"]]
+    },
+    chtml: { linebreaks: { automatic: true, width: "90% container" } },
+    svg: { linebreaks: { automatic: true, width: "90% container" } },
+    options: { renderActions: { addMenu: [] } }
+  };
+})();
+</script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +32,7 @@ the association constraint."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,22 +105,33 @@ the association constraint.</p>
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
 <dd><p>Numeric scalar. Maximum allowed pairwise association
-(default: 0.7). Must be non-negative.</p></dd>
+(default: 0.7). Must be in <code>[0, 1]</code> – every supported association
+measure is bounded in <code>[0, 1]</code> (in absolute value), so this range is
+enforced the same way regardless of <code>mode</code> (<code>threshold = 0</code> is valid
+only in <code>mode = "greedy"</code>; see Mode Selection below).</p></dd>
 
 
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
-<dd><p>Character string specifying the association measure to use.
-Options: <code>"auto"</code> (default), <code>"pearson"</code>, <code>"spearman"</code>, <code>"kendall"</code>,
-<code>"cramersv"</code>, <code>"eta"</code>, etc. When <code>"auto"</code>, Pearson correlation is used
-for all-numeric data, and appropriate measures are selected for mixed-type
-data.</p></dd>
+<dd><p>Character string specifying the numeric-numeric association
+measure to use. One of <code>"auto"</code> (default, Pearson), <code>"pearson"</code>,
+<code>"spearman"</code>, <code>"kendall"</code>, <code>"bicor"</code>, <code>"distance"</code>, or <code>"maximal"</code>. This
+only customizes numeric-numeric pairs; every other pair-type combination
+is fixed and not affected by <code>measure</code>: eta-squared for
+numeric-categorical pairs, Cramer's V for categorical-categorical pairs,
+and Spearman for numeric-ordered and ordered-ordered pairs. The measure
+actually used for each pair-type combination is reported in the
+<code>assoc_methods_used</code> attribute of the result.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>Character string specifying the search algorithm. Options:</p><ul><li><p><code>"auto"</code> (default): uses exact search if number of predictors &lt;= <code>max_exact_p</code>,
-otherwise uses greedy search</p></li>
-<li><p><code>"exact"</code>: exhaustive search for maximal subsets (may be slow for large p)</p></li>
-<li><p><code>"greedy"</code>: fast approximate search using iterative removal</p></li>
+<dd><p>Character string specifying the search algorithm. Options:</p><ul><li><p><code>"auto"</code> (default): uses exact search if number of predictors &lt;= <code>max_exact_p</code>
+and there are at least 2 predictors with <code>threshold &gt; 0</code>, otherwise uses
+greedy search (exact search requires both, since it routes through
+<code><a href="MatSelect.html">MatSelect()</a></code>)</p></li>
+<li><p><code>"exact"</code>: exhaustive search for maximal subsets (may be slow for large p);
+requires at least 2 predictors and <code>threshold &gt; 0</code></p></li>
+<li><p><code>"greedy"</code>: fast approximate search using iterative removal; supports a
+single predictor and <code>threshold = 0</code></p></li>
 </ul></dd>
 
 
@@ -139,7 +163,10 @@ mode is used when <code>mode = "auto"</code>. Default: 100.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame containing the pruned subset of predictors. The result
+    <p>A data.frame containing the pruned subset of predictors, with the
+selected columns unchanged from <code>data</code> (same types and values –
+character/logical/integer columns are converted internally only for
+association computation, never in the returned data). The result
 has the following attributes:</p><dl><dt>selected_vars</dt>
 <dd><p>Character vector of retained variable names</p></dd>
 
@@ -150,10 +177,16 @@ has the following attributes:</p><dl><dt>selected_vars</dt>
 <dd><p>Character string indicating which mode was used ("exact" or "greedy")</p></dd>
 
 <dt>measure</dt>
-<dd><p>Character string indicating which association measure was used</p></dd>
+<dd><p>Character string indicating which measure was used for numeric-numeric pairs</p></dd>
+
+<dt>assoc_methods_used</dt>
+<dd><p>Named list mapping each pair-type combination (e.g. "numeric_numeric", "numeric_factor") to the association method actually used</p></dd>
 
 <dt>threshold</dt>
 <dd><p>The threshold value used</p></dd>
+
+<dt>n_rows_used</dt>
+<dd><p>Number of complete-case rows used to compute associations (see Details); the returned data itself is not row-filtered</p></dd>
 
 
 </dl></div>
@@ -161,11 +194,16 @@ has the following attributes:</p><dl><dt>selected_vars</dt>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>corrPrune()</code> identifies a subset of predictors whose pairwise associations
 are all below <code>threshold</code>. The function works in several stages:</p><ol><li><p><strong>Variable type detection</strong>: Identifies numeric vs. categorical predictors</p></li>
+<li><p><strong>Constant-column removal</strong>: Predictors that are constant across every
+complete-case row are excluded with a warning, since their association
+with anything is undefined and they would otherwise ride into the
+result without contributing any information</p></li>
 <li><p><strong>Association measurement</strong>: Computes appropriate pairwise associations</p></li>
 <li><p><strong>Grouping (optional)</strong>: If <code>by</code> is specified, computes associations within
 each group and aggregates using the specified quantile</p></li>
 <li><p><strong>Feasibility check</strong>: Verifies that <code>force_in</code> variables satisfy the
-threshold constraint</p></li>
+threshold constraint (a <code>force_in</code> variable excluded for being constant
+also errors here)</p></li>
 <li><p><strong>Subset selection</strong>: Uses either exact or greedy search to find a valid subset</p></li>
 </ol><p><strong>Grouped Pruning</strong>: When <code>by</code> is provided, the function ensures the selected
 predictors satisfy the threshold constraint across groups. For example, with
@@ -225,6 +263,5 @@ earlier criteria are tied.</p></li>
 
 
 
-  
-</body></html>
+  </body></html>
 

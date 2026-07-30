@@ -58,8 +58,8 @@ All other vignettes refer back to these definitions.
 
 ### **Association measure**
 
-A symmetric function  
-\\a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}\\  
+A symmetric function\
+\\a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}\\\
 that quantifies the relationship between two variables.
 
 Common cases:
@@ -71,7 +71,7 @@ Common cases:
 
 - **Numeric–factor:** eta-squared \\\eta^2\\
 
-All measures used in the package are normalized so that  
+All measures used in the package are normalized so that\
 \\\|a\_{ij}\| \in \[0,1\]\\.
 
 ------------------------------------------------------------------------
@@ -79,8 +79,8 @@ All measures used in the package are normalized so that
 ### **Association matrix**
 
 A symmetric \\p \times p\\ matrix \\A\\ whose entry \\a\_{ij}\\ is the
-association between variables \\i\\ and \\j\\.  
-The diagonal satisfies \\a\_{ii} = 1\\.  
+association between variables \\i\\ and \\j\\.\
+The diagonal satisfies \\a\_{ii} = 1\\.\
 For correlation-based analysis, \\A\\ typically comes from
 [`cor()`](https://rdrr.io/r/stats/cor.html).
 
@@ -88,9 +88,9 @@ For correlation-based analysis, \\A\\ typically comes from
 
 ### **Threshold** (\\\tau\\)
 
-A user-defined cutoff in \\(0,1)\\.  
-Pairs with \\\|a\_{ij}\| \ge \tau\\ are considered too strongly
-associated and cannot both appear in a valid subset.
+A user-defined cutoff in \\(0,1\]\\. Pairs with \\\|a\_{ij}\| \> \tau\\
+are considered too strongly associated and cannot both appear in a valid
+subset.
 
 Common choices:
 
@@ -104,16 +104,16 @@ Common choices:
 
 ### **Valid subset**
 
-A subset \\S \subseteq \\1,\dots,p\\\\ satisfying  
-\\\|a\_{ij}\| \< \tau\\ for all distinct \\i, j \in S\\.  
-All pairwise associations within \\S\\ remain below the threshold.
+A subset \\S \subseteq \\1,\dots,p\\\\ satisfying\
+\\\|a\_{ij}\| \le \tau\\ for all distinct \\i, j \in S\\. All pairwise
+associations within \\S\\ remain at or below the threshold.
 
 ------------------------------------------------------------------------
 
 ### **Maximal valid subset**
 
-A valid subset that cannot be enlarged.  
-Formally, no variable \\v \notin S\\ satisfies \\\|a\_{vi}\| \< \tau\\
+A valid subset that cannot be enlarged.\
+Formally, no variable \\v \notin S\\ satisfies \\\|a\_{vi}\| \le \tau\\
 for all \\i \in S\\.
 
 (“Maximal” is not the same as “maximum”, which refers to the largest
@@ -127,7 +127,7 @@ An undirected graph \\G = (V, E)\\ where:
 
 - each vertex in \\V\\ represents a variable
 
-- an edge \\(i,j)\\ exists exactly when \\\|a\_{ij}\| \< \tau\\
+- an edge \\(i,j)\\ exists exactly when \\\|a\_{ij}\| \le \tau\\
 
 Edges therefore connect *compatible* (low-association) variables.
 
@@ -135,14 +135,14 @@ Edges therefore connect *compatible* (low-association) variables.
 
 ### **Clique**
 
-A subset of vertices in which every pair is connected by an edge.  
+A subset of vertices in which every pair is connected by an edge.\
 In the threshold graph, cliques correspond to valid subsets.
 
 ------------------------------------------------------------------------
 
 ### **Maximal clique**
 
-A clique that cannot be extended by adding any additional vertex.  
+A clique that cannot be extended by adding any additional vertex.\
 Maximal cliques correspond exactly to maximal valid subsets.
 
 ------------------------------------------------------------------------
@@ -150,14 +150,14 @@ Maximal cliques correspond exactly to maximal valid subsets.
 ### **Forced-in variables** (`force_in`)
 
 A set \\F \subseteq V\\ of variables that must appear in all returned
-solutions.  
+solutions.\
 Only maximal cliques containing all elements of \\F\\ are considered.
 
 ------------------------------------------------------------------------
 
 ### **ELS (Eppstein–Löffler–Strash)**
 
-A degeneracy-based algorithm for maximal clique enumeration.  
+A degeneracy-based algorithm for maximal clique enumeration.\
 Recommended when `force_in` is used.
 
 Complexity: \\O(d \cdot 3^{d/3})\\, where \\d\\ is the graph’s
@@ -168,7 +168,7 @@ degeneracy.
 ### **Bron–Kerbosch**
 
 A classical backtracking algorithm for enumerating maximal cliques,
-optionally with pivoting.  
+optionally with pivoting.\
 Used by default when `force_in` is not specified.
 
 Worst-case complexity: \\O(3^{p/3})\\.
@@ -178,15 +178,15 @@ Worst-case complexity: \\O(3^{p/3})\\.
 ### **Greedy mode**
 
 A fast heuristic that constructs a single maximal clique via greedy
-selection.  
-Runs in \\O(p^2)\\.  
+selection.\
+Runs in \\O(p^2)\\.\
 Does not guarantee the largest possible subset.
 
 ------------------------------------------------------------------------
 
 ### **Exact mode**
 
-Enumerates *all* maximal cliques using ELS or Bron–Kerbosch.  
+Enumerates *all* maximal cliques using ELS or Bron–Kerbosch.\
 Identifies the maximum (largest) valid subset.
 
 ------------------------------------------------------------------------
@@ -195,9 +195,9 @@ Identifies the maximum (largest) valid subset.
 
 Chooses the method automatically:
 
-- exact mode for \\p \le 20\\
+- exact mode for \\p \le\\ `max_exact_p` (default 100)
 
-- greedy mode for \\p \> 20\\
+- greedy mode for \\p \>\\ `max_exact_p`
 
 This balances optimality with computational cost.
 
@@ -252,14 +252,14 @@ corrselect transforms this statistical problem into a **graph problem**:
 
 1.  **Represent variables as nodes** in a graph
 
-2.  **Draw edges between compatible variables** (correlation below
+2.  **Draw edges between compatible variables** (correlation at or below
     threshold τ)
 
 3.  **Find maximal groups** where all nodes are connected (maximal
     cliques)
 
 Each maximal clique represents a valid subset: a group of variables
-where every pair has correlation below τ.
+where every pair has correlation at or below τ.
 
 ### Why “Maximal” Not “Maximum”?
 
@@ -314,28 +314,28 @@ Observations:
 
 Set threshold τ = 0.7. Which pairs violate the threshold?
 
-- V1-V2: \|0.85\| ≥ 0.7 ✗ (too high)
+- V1-V2: \|0.85\| \> 0.7 ✗ (too high)
 
-- V3-V4: \|0.75\| ≥ 0.7 ✗ (too high)
+- V3-V4: \|0.75\| \> 0.7 ✗ (too high)
 
-- All other pairs: \< 0.7 ✓ (acceptable)
+- All other pairs: \<= 0.7 ✓ (acceptable)
 
 ### Graph Representation
 
 Now we build the **threshold graph** where edges connect *compatible*
-variables (correlation \< 0.7).
+variables (correlation at or below 0.7).
 
 **Text representation**:
 
     Variables: V1, V2, V3, V4
 
-    Edges (|correlation| < 0.7):
+    Edges (|correlation| <= 0.7):
       V1 —— V3  (cor = 0.10)
       V1 —— V4  (cor = 0.15)
       V2 —— V3  (cor = 0.12)
       V2 —— V4  (cor = 0.18)
 
-    Missing edges (|correlation| ≥ 0.7):
+    Missing edges (|correlation| > 0.7):
       V1 ⨯ V2  (cor = 0.85, too high)
       V3 ⨯ V4  (cor = 0.75, too high)
 
@@ -349,8 +349,8 @@ Let’s verify this with code:
 
 ``` r
 
-# Adjacency matrix for threshold graph (edges where |cor| < 0.7)
-adj_matrix <- abs(cor_4var) < 0.7
+# Adjacency matrix for threshold graph (edges where |cor| <= 0.7)
+adj_matrix <- abs(cor_4var) <= 0.7
 diag(adj_matrix) <- FALSE  # No self-loops
 
 # Visualize as adjacency matrix
@@ -389,28 +389,28 @@ node_pos <- matrix(c(
   2, 0     # V4 (bottom-right)
 ), ncol = 2, byrow = TRUE)
 
-# Plot setup
-par(mar = c(2, 2, 3, 2))
-plot(node_pos, type = "n", xlim = c(-0.5, 2.5), ylim = c(-0.5, 1.5),
-     xlab = "", ylab = "", axes = FALSE,
-     main = "Threshold Graph (τ = 0.7)\nEdges connect variables with |correlation| < 0.7")
+# Plot setup, with a right-hand gutter reserved for the clique list
+par(mar = c(1, 1, 3, 1))
+plot(node_pos, type = "n", xlim = c(-0.4, 4.1), ylim = c(-0.6, 1.6),
+     xlab = "", ylab = "", axes = FALSE, asp = 1,
+     main = "Threshold Graph (τ = 0.7)")
 
-# Draw edges (where correlation < 0.7)
-edge_color <- rgb(0.2, 0.5, 0.8, 0.6)
-edge_lwd <- 2
+# Edges are the pairs with correlation < 0.7, and here each one is also a
+# maximal clique, so both get the same color
+edges <- which(adj_matrix & upper.tri(adj_matrix), arr.ind = TRUE)
+edges <- edges[order(edges[, "row"], edges[, "col"]), , drop = FALSE]
+edge_cols <- unname(PAL[c("blue", "orange", "teal", "purple")])
 
-for (i in 1:4) {
-  for (j in 1:4) {
-    if (i < j && adj_matrix[i, j]) {
-      segments(node_pos[i, 1], node_pos[i, 2],
-               node_pos[j, 1], node_pos[j, 2],
-               col = edge_color, lwd = edge_lwd)
-    }
-  }
+for (k in seq_len(nrow(edges))) {
+  i <- edges[k, "row"]
+  j <- edges[k, "col"]
+  segments(node_pos[i, 1], node_pos[i, 2],
+           node_pos[j, 1], node_pos[j, 2],
+           col = edge_cols[k], lwd = 2)
 }
 
 # Draw nodes
-node_size <- 0.15
+node_size <- 0.18
 for (i in 1:4) {
   # Node circle
   symbols(node_pos[i, 1], node_pos[i, 2],
@@ -419,38 +419,38 @@ for (i in 1:4) {
 
   # Node label
   text(node_pos[i, 1], node_pos[i, 2],
-       labels = paste0("V", i), cex = 1.2, font = 2)
+       labels = paste0("V", i), cex = 1.25, font = 2)
 }
 
 # Add correlation annotations
-text(1, 1.35, "cor = 0.85\n(too high, no edge)", cex = 0.8, col = "red")
-text(1, -0.35, "cor = 0.75\n(too high, no edge)", cex = 0.8, col = "red")
+text(1, 1.45, "cor = 0.85, no edge", col = PAL[["red"]])
+text(1, -0.45, "cor = 0.75, no edge", col = PAL[["red"]])
 
-# Legend showing maximal cliques
-legend("right",
-       legend = c("Maximal cliques:", "{V1, V3}", "{V1, V4}", "{V2, V3}", "{V2, V4}"),
-       bty = "o", bg = "white", cex = 0.9,
-       pch = c(NA, 19, 19, 19, 19),
-       col = c(NA, "black", "black", "black", "black"))
-
-# Add box around graph
-box()
+# Maximal cliques, listed in the reserved gutter and colored to their edge
+text(2.7, 1.1, "Maximal cliques", font = 2, adj = 0)
+clique_labels <- sprintf("{V%d, V%d}", edges[, "row"], edges[, "col"])
+text(2.7, 0.75 - (seq_along(clique_labels) - 1) * 0.22, clique_labels,
+     col = edge_cols, adj = c(0, 1))
 ```
 
 ![Graph visualization with 4 nodes (V1, V2, V3, V4) arranged in a square
-pattern. Blue edges connect variable pairs with absolute correlation
-below 0.7 threshold. Red labels on edges show actual correlation values.
-Large red circles highlight nodes, with white labels. The graph
-structure reveals two maximal cliques: {V1,V3} and {V2,V4},
-corresponding to maximal subsets where all pairwise correlations remain
-below threshold.](theory_files/figure-html/unnamed-chunk-3-1.svg)
+pattern. An edge connects each variable pair with absolute correlation
+at or below the 0.7 threshold. Red labels above and below the square
+give the two correlations that exceed the threshold, where no edge is
+drawn. The graph structure reveals four maximal cliques of size two,
+listed to the right of the square: {V1,V3}, {V1,V4}, {V2,V3} and
+{V2,V4}, corresponding to maximal subsets where all pairwise
+correlations remain at or below threshold. Each clique in the list
+carries the color of the edge it comes
+from.](theory_files/figure-html/unnamed-chunk-3-1.svg)
 
 **Graph interpretation**:
 
 - **Nodes**: Each variable is a vertex
 
-- **Edges** (blue lines): Connect variables with correlation \< 0.7
-  (compatible pairs)
+- **Edges** (colored lines): Connect variables with correlation \< 0.7
+  (compatible pairs). Each edge carries the color of the clique it forms
+  in the list on the right
 
 - **Missing edges** (no connection): Variables with correlation ≥ 0.7
   (cannot coexist)
@@ -487,9 +487,9 @@ with known block structure:
 
 data(cor_example)
 
-# Build threshold graph (edges where |correlation| < 0.7)
+# Build threshold graph (edges where |correlation| <= 0.7)
 threshold <- 0.7
-adj_mat <- abs(cor_example) < threshold
+adj_mat <- abs(cor_example) <= threshold
 diag(adj_mat) <- FALSE
 
 if (requireNamespace("igraph", quietly = TRUE)) {
@@ -503,32 +503,29 @@ if (requireNamespace("igraph", quietly = TRUE)) {
   cat(sprintf("Found %d maximal cliques at threshold %.1f\n", length(cliques), threshold))
 
   # Color nodes by which block they belong to
-  block_colors <- c(rep("#d73027", 5),   # Block 1 (V1-V5): high correlation
-                    rep("#fc8d59", 5),   # Block 2 (V6-V10): moderate
-                    rep("#91bfdb", 5),   # Block 3 (V11-V15): low
-                    rep("#4575b4", 5))   # Block 4 (V16-V20): minimal
+  block_pal <- PAL[c("red", "orange", "teal", "blue")]
+  block_colors <- rep(block_pal, each = 5)
 
-  # Plot network
-  par(mar = c(1, 1, 3, 1))
+  # Plot network, with bottom margin reserved for the legend
+  par(mar = c(4, 1, 3, 1))
   plot(g,
-       vertex.size = 10,
-       vertex.color = block_colors,
-       vertex.label.cex = 0.8,
-       vertex.label.color = "black",
-       edge.color = rgb(0.5, 0.5, 0.5, 0.3),
-       edge.width = 1,
+       vertex.size = 22,
+       vertex.color = "white",
+       vertex.frame.color = block_colors,
+       vertex.frame.width = 2,
+       vertex.label.color = block_colors,
+       edge.color = adjustcolor(PAL[["grey"]], alpha.f = 0.4),
+       edge.width = 1.5,
        layout = layout_with_fr(g),
-       main = sprintf("Threshold Graph (τ = %.1f): Variables with |cor| < %.1f are connected",
-                     threshold, threshold))
+       main = sprintf("Threshold Graph (τ = %.1f)", threshold))
 
-  # Add legend
-  legend("topleft",
-         legend = c("Block 1 (V1-V5): High cor",
-                   "Block 2 (V6-V10): Moderate cor",
-                   "Block 3 (V11-V15): Low cor",
-                   "Block 4 (V16-V20): Minimal cor"),
-         fill = c("#d73027", "#fc8d59", "#91bfdb", "#4575b4"),
-         bty = "o", bg = "white", cex = 0.8)
+  # Add legend below the network
+  legend("bottom", inset = -0.16, xpd = TRUE, ncol = 2,
+         legend = c("Block 1 (V1-V5): high cor",
+                   "Block 2 (V6-V10): moderate",
+                   "Block 3 (V11-V15): low",
+                   "Block 4 (V16-V20): minimal"),
+         fill = block_pal, border = block_pal, bty = "n")
 } else {
   cat("Install igraph for network visualization: install.packages('igraph')\n")
   cat("Adjacency matrix (first 5×5 block):\n")
@@ -546,15 +543,16 @@ if (requireNamespace("igraph", quietly = TRUE)) {
 ```
 
 ![Network graph visualization of 20 variables organized into 4
-correlation blocks. Nodes are colored by block: red (Block 1, V1-V5,
-high correlation), orange (Block 2, V6-V10, moderate), light blue (Block
-3, V11-V15, low), and dark blue (Block 4, V16-V20, minimal). Gray edges
-connect variables with absolute correlation below 0.7 threshold. The
-force-directed layout clusters highly correlated variables together,
-revealing the block structure. Variables within blocks have few
-connections (high correlation), while variables across blocks have many
-connections (low correlation), illustrating which combinations can form
-maximal cliques.](theory_files/figure-html/unnamed-chunk-4-1.svg)
+correlation blocks. Node outlines and labels are colored by block: red
+(Block 1, V1-V5, high correlation), orange (Block 2, V6-V10, moderate),
+teal (Block 3, V11-V15, low), and blue (Block 4, V16-V20, minimal). Grey
+edges connect variables with absolute correlation at or below 0.7
+threshold. The force-directed layout clusters highly correlated
+variables together, revealing the block structure. Variables within
+blocks have few connections (high correlation), while variables across
+blocks have many connections (low correlation), illustrating which
+combinations can form maximal
+cliques.](theory_files/figure-html/unnamed-chunk-4-1.svg)
 
 **Interpretation**:
 
@@ -590,24 +588,24 @@ A **clique** is a group where every pair is connected. In our graph:
 
 **Maximal cliques:** Can any 2-variable clique be extended?
 
-- **{V1, V3}**  
-  Add V2? No (V1–V2 not connected).  
-  Add V4? No (V3–V4 not connected).  
+- **{V1, V3}**\
+  Add V2? No (V1–V2 not connected).\
+  Add V4? No (V3–V4 not connected).\
   **Maximal ✓**
 
-- **{V1, V4}**  
-  Add V2? No (V1–V2 not connected).  
-  Add V3? No (V3–V4 not connected).  
+- **{V1, V4}**\
+  Add V2? No (V1–V2 not connected).\
+  Add V3? No (V3–V4 not connected).\
   **Maximal ✓**
 
-- **{V2, V3}**  
-  Add V1? No (V1–V2 not connected).  
-  Add V4? No (V3–V4 not connected).  
+- **{V2, V3}**\
+  Add V1? No (V1–V2 not connected).\
+  Add V4? No (V3–V4 not connected).\
   **Maximal ✓**
 
-- **{V2, V4}**  
-  Add V1? No (V1–V2 not connected).  
-  Add V3? No (V3–V4 not connected).  
+- **{V2, V4}**\
+  Add V1? No (V1–V2 not connected).\
+  Add V3? No (V3–V4 not connected).\
   **Maximal ✓**
 
 So there are **4 maximal cliques of size 2**, each representing a valid
@@ -624,7 +622,7 @@ show(results)
 #>   Method:      bron-kerbosch
 #>   Threshold:   0.700
 #>   Subsets:     4 maximal subsets
-#>   Data Rows:   4 used in correlation
+#>   Data Rows:   not applicable (matrix input)
 #>   Pivot:       TRUE
 #> 
 #> Top combinations:
@@ -642,7 +640,7 @@ show(results)
 
 - All have size 2 (cannot be extended further)
 
-- Each satisfies \|correlation\| \< 0.7 for all pairs
+- Each satisfies \|correlation\| \<= 0.7 for all pairs
 
 - Mean/max correlations are low (well below threshold)
 
@@ -681,8 +679,8 @@ complex clustering.
 
 The core problem is straightforward: given a set of \\p\\ variables with
 known pairwise associations (correlations), identify all largest
-possible subsets where every pair of variables has an association below
-a user-defined threshold \\\tau\\.
+possible subsets where every pair of variables has an association at or
+below a user-defined threshold \\\tau\\.
 
 Think of this as a social network where variables are people and edges
 represent “get along well” (low correlation). We want to find all
@@ -701,7 +699,7 @@ only search for groups containing all VIPs.
 - Association matrix \\A \in \mathbb{R}^{p \times p}\\ with \\a\_{ij} =
   a\_{ji}\\ and \\a\_{ii} = 1\\ for all \\i\\
 
-- Threshold \\\tau \in (0, 1)\\
+- Threshold \\\tau \in (0, 1\]\\
 
 - Optional forced-in set \\F \subseteq \\1, \dots, p\\\\
 
@@ -711,13 +709,13 @@ A subset \\S \subseteq \\1, \dots, p\\\\ is valid if:
 
 1.  \\F \subseteq S\\ (if \\F\\ specified)
 
-2.  \\\|a\_{ij}\| \< \tau\\ for all \\i, j \in S\\ with \\i \neq j\\
+2.  \\\|a\_{ij}\| \le \tau\\ for all \\i, j \in S\\ with \\i \neq j\\
 
 **Objective:**
 
 Find all maximal valid subsets \\\mathcal{S} = \\S_1, \dots, S_m\\\\
 where \\S_k\\ is maximal if no variable \\v \notin S_k\\ satisfies
-\\\|a\_{vi}\| \< \tau\\ for all \\i \in S_k\\.
+\\\|a\_{vi}\| \le \tau\\ for all \\i \in S_k\\.
 
 **Output:**
 
@@ -750,22 +748,22 @@ All measures are bounded: \\a\_{ij} \in \[0, 1\]\\ or \\a\_{ij} \in
 
 ### Threshold Constraint
 
-Fix a threshold \\\tau \in (0, 1)\\. A subset \\S \subseteq \\1, \dots,
+Fix a threshold \\\tau \in (0, 1\]\\. A subset \\S \subseteq \\1, \dots,
 p\\\\ is **valid** if:
 
-\\ \forall i, j \in S,\\ i \neq j: \quad \|a\_{ij}\| \< \tau \\
+\\ \forall i, j \in S,\\ i \neq j: \quad \|a\_{ij}\| \le \tau \\
 
 ### Maximal Valid Subsets
 
 A valid subset \\S\\ is **maximal** if no variable \\k \notin S\\
 satisfies:
 
-\\ \|a\_{ki}\| \< \tau \quad \text{for all } i \in S \\
+\\ \|a\_{ki}\| \le \tau \quad \text{for all } i \in S \\
 
 > **Key Points: Problem Formulation**
 >
-> - Input: p × p association matrix A, threshold τ ∈ (0,1)
-> - Valid subset: S where \|a_ij\| \< τ for all pairs i,j ∈ S
+> - Input: p × p association matrix A, threshold τ ∈ (0,1\]
+> - Valid subset: S where \|a_ij\| \<= τ for all pairs i,j ∈ S
 > - Maximal: cannot add any variable without violating threshold
 > - Goal: enumerate all maximal valid subsets
 
@@ -800,8 +798,8 @@ Define the **threshold graph** \\G = (V, E)\\ where:
 
 - \\V = \\1, \dots, p\\\\ (nodes represent variables)
 
-- \\(i, j) \in E\\ if and only if \\\|a\_{ij}\| \< \tau\\ (edges connect
-  compatible variables)
+- \\(i, j) \in E\\ if and only if \\\|a\_{ij}\| \le \tau\\ (edges
+  connect compatible variables)
 
 **Note the reversal**: An edge \\(i, j)\\ means variables \\i\\ and
 \\j\\ have *low* correlation (can coexist). This is the complement of
@@ -854,13 +852,10 @@ Threshold graph construction with \\\tau = 0.7\\:
 
 # Build adjacency matrix for threshold graph
 tau <- 0.7
-adj_matrix <- abs(cor_6var) < tau
+adj_matrix <- abs(cor_6var) <= tau
 diag(adj_matrix) <- FALSE
 
-# Visualize correlation structure and threshold graph
-par(mfrow = c(1, 2))
-
-# Panel 1: Correlation heatmap
+# Correlation heatmap
 col_pal <- colorRampPalette(c("#3B4992", "white", "#EE0000"))(100)
 image(1:6, 1:6, t(cor_6var[6:1, ]),
       col = col_pal,
@@ -868,107 +863,123 @@ image(1:6, 1:6, t(cor_6var[6:1, ]),
       main = "Correlation Matrix",
       axes = FALSE,
       zlim = c(-1, 1))
-axis(1, at = 1:6, labels = colnames(cor_6var), cex.axis = 0.8)
-axis(2, at = 6:1, labels = colnames(cor_6var), cex.axis = 0.8)
+axis(1, at = 1:6, labels = colnames(cor_6var))
+axis(2, at = 6:1, labels = colnames(cor_6var))
 
 # Add correlation values
 for (i in 1:6) {
   for (j in 1:6) {
     col_text <- if (abs(cor_6var[j, i]) > 0.5) "white" else "black"
-    text(i, 7 - j, sprintf("%.2f", cor_6var[j, i]),
-         cex = 0.7, col = col_text)
+    text(i, 7 - j, sprintf("%.2f", cor_6var[j, i]), col = col_text, font = 2)
   }
 }
 abline(h = 3.5, lwd = 2, lty = 2, col = "black")
 abline(v = 3.5, lwd = 2, lty = 2, col = "black")
+```
 
-# Panel 2: Threshold graph (edges where |cor| < tau)
+![Correlation matrix heatmap for the 6-variable example, with blue
+(negative), white (zero), and red (positive) colors, numerical values
+overlaid on each cell, and black dashed lines separating the two
+correlation blocks. Variables V1 to V3 form one high-correlation block
+and V4 to V6 another, with low correlations between the
+blocks.](theory_files/figure-html/unnamed-chunk-7-1.svg)
+
+The same structure as a threshold graph, where an edge means the pair
+can coexist:
+
+``` r
+
+# Threshold graph (edges where |cor| <= tau)
+# The bottom margin holds the legend clear of the nodes
+par(mar = c(4, 1, 3, 1))
 plot.new()
 plot.window(xlim = c(0, 1), ylim = c(0, 1))
 title(main = sprintf("Threshold Graph (τ = %.1f)", tau))
 
-# Node positions (2 groups based on correlation structure)
+# Node positions: one block per side, each block a triangle so that a
+# within-block edge never runs through the third node
 pos <- matrix(c(
-  0.2, 0.8,  # V1
-  0.3, 0.6,  # V2
-  0.1, 0.4,  # V3
-  0.7, 0.8,  # V4
-  0.8, 0.5,  # V5
-  0.9, 0.3   # V6
+  0.20, 0.85,  # V1
+  0.05, 0.50,  # V2
+  0.20, 0.15,  # V3
+  0.80, 0.85,  # V4
+  0.95, 0.50,  # V5
+  0.80, 0.15   # V6
 ), ncol = 2, byrow = TRUE)
 
-# Draw edges (compatible variable pairs)
+# Draw edges, separating pairs inside one block from pairs across the two,
+# since whether a block is internally compatible is what the cliques turn on
+block <- rep(1:2, each = 3)
 for (i in 1:5) {
   for (j in (i + 1):6) {
     if (adj_matrix[i, j]) {
+      within <- block[i] == block[j]
       lines(c(pos[i, 1], pos[j, 1]), c(pos[i, 2], pos[j, 2]),
-            col = "gray70", lwd = 1.5)
+            col = if (within) PAL[["orange"]] else PAL[["blue"]],
+            lty = if (within) 2 else 1, lwd = 2)
     }
   }
 }
 
-# Draw nodes
+# Draw nodes, colored by block
+node_cols <- c(rep(PAL[["red"]], 3), rep(PAL[["teal"]], 3))
 points(pos[, 1], pos[, 2], pch = 21, cex = 4,
-       bg = c(rep(rgb(0.8, 0.2, 0.2, 0.7), 3),
-              rep(rgb(0.2, 0.5, 0.8, 0.7), 3)),
-       col = "black", lwd = 2)
+       bg = "white", col = node_cols, lwd = 2)
 
 # Add labels
 text(pos[, 1], pos[, 2], labels = colnames(cor_6var),
-     col = "white", font = 2, cex = 0.8)
+     col = node_cols, font = 2)
 
 # Add legend
-legend("bottomleft",
-       legend = c("Clique 1 (V1-V3)", "Clique 2 (V4-V6)", "Edge: |cor| < 0.7"),
-       pch = c(21, 21, NA),
-       pt.bg = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7), NA),
-       pt.cex = 2,
-       lty = c(NA, NA, 1),
-       col = c("black", "black", "gray70"),
-       lwd = c(2, 2, 1.5),
-       bty = "o",
-       bg = "white",
-       cex = 0.7)
+legend("bottom", inset = -0.28, xpd = TRUE,
+       legend = c("Block 1 (V1-V3)", "Block 2 (V4-V6)",
+                  "Edge across blocks", "Edge within a block"),
+       pch = c(21, 21, NA, NA),
+       pt.bg = c("white", "white", NA, NA),
+       pt.cex = 1.6,
+       lty = c(NA, NA, 1, 2),
+       col = c(PAL[["red"]], PAL[["teal"]], PAL[["blue"]], PAL[["orange"]]),
+       lwd = 2,
+       ncol = 2,
+       bty = "n")
 ```
 
-![Two side-by-side visualizations for 6-variable example. Left panel:
-correlation matrix heatmap with blue (negative), white (zero), and red
-(positive) colors, numerical values overlaid, and black dashed lines
-separating two correlation blocks. Right panel: threshold graph showing
-6 nodes positioned in two groups based on correlation structure, with
-blue edges connecting variables where absolute correlation is below 0.7.
-The dual visualization demonstrates how correlation matrix structure
-translates to threshold graph topology, revealing maximal cliques within
-and across correlation
-blocks.](theory_files/figure-html/unnamed-chunk-7-1.svg)
-
-``` r
-
-
-par(mfrow = c(1, 1))
-```
+![Threshold graph for the 6-variable example, with the two correlation
+blocks on opposite sides: red nodes V1 to V3 on the left, teal nodes V4
+to V6 on the right. An edge connects each pair whose absolute
+correlation is at or below 0.7. Solid blue edges run between the blocks
+and dashed orange edges within one. All nine cross-block pairs have
+edges; the only within-block edges are the three among V4, V5 and V6,
+and V1 to V3 have none among themselves. Maximal cliques therefore
+combine V4, V5 and V6 with one variable from the left
+block.](theory_files/figure-html/unnamed-chunk-8-1.svg)
 
 **Interpreting the visualization**:
 
-The left panel shows the correlation matrix with clear block structure.
-Variables V1-V3 are highly correlated with each other (correlations
-0.75-0.85, shown in red), as are V4-V6 (correlations 0.55-0.65).
-Between-block correlations are low (0.10-0.30, shown in blue/white).
+The correlation matrix has clear block structure. Variables V1-V3 are
+highly correlated with each other (correlations 0.75-0.85, shown in
+red), as are V4-V6 (correlations 0.55-0.65). Between-block correlations
+are low (0.10-0.30, shown in blue/white).
 
-The right panel shows the corresponding threshold graph with \\\tau =
-0.7\\. An edge connects two variables if their absolute correlation is
-*below* 0.7 (compatible variables). Note that:
+The threshold graph is the same structure at \\\tau = 0.7\\. An edge
+connects two variables if their absolute correlation is *at or below*
+0.7 (compatible variables). Note that:
 
-- **Within high-correlation groups**: V1-V3 have no edges connecting
-  them (correlations exceed 0.7). Similarly, V4-V6 are not fully
-  connected.
+- **Within the high-correlation block**: V1-V3 have no edges connecting
+  them (every pair exceeds 0.7).
 
-- **Between groups**: All V1-V3 to V4-V6 pairs have edges (low
-  between-group correlation).
+- **Within the moderate block**: V4-V6 are fully connected (0.55-0.65,
+  all at or below 0.7).
 
-This graph structure immediately reveals the two maximal cliques:
-\\\\V1, V2, V3\\\\ and \\\\V4, V5, V6\\\\. No variable can be added to
-either clique without violating the threshold constraint.
+- **Between blocks**: All V1-V3 to V4-V6 pairs have edges (low
+  between-block correlation).
+
+The cliques follow from that structure. \\\\V4, V5, V6\\\\ is a
+triangle, and each of V1, V2, V3 connects to all three, so each extends
+the triangle to a clique of size 4. V1, V2 and V3 are pairwise
+non-adjacent, so at most one of them can appear in any clique. That
+leaves three maximal cliques: \\\\V1, V4, V5, V6\\\\, \\\\V2, V4, V5,
+V6\\\\ and \\\\V3, V4, V5, V6\\\\.
 
 Identify maximal cliques:
 
@@ -982,7 +993,7 @@ show(results)
 #>   Method:      els
 #>   Threshold:   0.700
 #>   Subsets:     3 maximal subsets
-#>   Data Rows:   6 used in correlation
+#>   Data Rows:   not applicable (matrix input)
 #> 
 #> Top combinations:
 #>   No.  Variables                          Avg    Max    Size
@@ -994,26 +1005,27 @@ show(results)
 
 **Interpreting the results**:
 
-MatSelect identified two maximal subsets of size 3, exactly matching the
-visual graph analysis. Both subsets satisfy \\\|a\_{ij}\| \< 0.7\\ for
+MatSelect identified three maximal subsets of size 4, exactly matching
+the visual graph analysis. Each satisfies \\\|a\_{ij}\| \le 0.7\\ for
 all pairs within the subset.
 
-- **Subset 1** (V1, V2, V3): Mean correlation 0.80, max 0.85 - highly
-  redundant within-group
+- **Subset 1** (V1, V4, V5, V6): Mean correlation 0.375, max 0.65
 
-- **Subset 2** (V4, V5, V6): Mean correlation 0.60, max 0.65 -
-  moderately correlated within-group
+- **Subset 2** (V2, V4, V5, V6): Mean correlation 0.400, max 0.65
 
-Neither subset can be extended: adding any variable from the other group
-would introduce a pair with correlation above 0.7. For this symmetric
-example, both subsets have equal size and are equally valid solutions.
-In practice, you might choose based on domain knowledge (prefer
-variables with established theory) or downstream model performance.
+- **Subset 3** (V3, V4, V5, V6): Mean correlation 0.425, max 0.65
+
+None can be extended: adding a second variable from V1-V3 would
+introduce a pair with correlation above 0.7. The three differ only in
+which block-1 variable they carry, and subset 1 has the lowest average
+correlation. In practice, you might choose based on domain knowledge
+(prefer variables with established theory) or downstream model
+performance.
 
 > **Key Points: Graph-Theoretic Interpretation**
 >
 > - Build threshold graph: nodes = variables, edges connect pairs with
->   \|a_ij\| \< τ
+>   \|a_ij\| \<= τ
 > - Maximal valid subsets ↔︎ maximal cliques in threshold graph
 > - Proven algorithms (ELS, Bron-Kerbosch) enumerate all maximal cliques
 >   efficiently
@@ -1033,7 +1045,7 @@ below.
 Controls which edges appear in the threshold graph.
 
 - `corrPrune(data, threshold = 0.7)` keeps an edge only if \\\|a\_{ij}\|
-  \< 0.7\\
+  \le 0.7\\
 
 - Lower thresholds → stricter pruning → sparser graphs → smaller valid
   subsets
@@ -1056,33 +1068,33 @@ Ensures that certain variables appear in every returned subset.
 - `corrPrune(data, threshold = 0.7, force_in = c("age", "gender"))`
 
 - Internally, the algorithm verifies that \\F\\ itself is a valid subset
-  (all pairs in \\F\\ satisfy \\\|a\_{ij}\| \< \tau\\)
+  (all pairs in \\F\\ satisfy \\\|a\_{ij}\| \le \tau\\)
 
 ### **Search type → `mode` and `method` arguments**
 
-- `mode = "exact"`  
+- `mode = "exact"`\
   Enumerates all maximal cliques using ELS or Bron–Kerbosch
-- `mode = "greedy"`  
+- `mode = "greedy"`\
   Constructs a single maximal clique via a greedy heuristic
-- `mode = "auto"`  
-  Uses exact mode for \\p \le 20\\, greedy mode for larger \\p\\
+- `mode = "auto"` Uses exact mode for \\p \le\\ `max_exact_p` (default
+  100), greedy mode for larger \\p\\
 
 Choice of enumeration algorithm:
 
-- `method = "els"`  
+- `method = "els"`\
   Eppstein–Löffler–Strash; recommended when `force_in` is specified
-- `method = "bron-kerbosch"`  
+- `method = "bron-kerbosch"`\
   Bron–Kerbosch with pivoting (default)
 
 ### **Association matrix (\\A\\) → Data input and matrix-based functions**
 
 How the association structure enters the algorithm:
 
-- `corrPrune(data)`  
+- `corrPrune(data)`\
   Computes the correlation matrix internally and finds cliques
-- `MatSelect(cor_matrix)`  
+- `MatSelect(cor_matrix)`\
   Uses a precomputed association matrix directly
-- `assocSelect(data)`  
+- `assocSelect(data)`\
   Computes mixed association measures (Pearson, eta-squared, Cramér’s V)
   before selection
 
@@ -1090,9 +1102,9 @@ How the association structure enters the algorithm:
 
 Depends directly on the threshold:
 
-- Sparse graphs (low \\\tau\\)  
+- Sparse graphs (low \\\tau\\)\
   Few edges → fast exact enumeration
-- Dense graphs (high \\\tau\\)  
+- Dense graphs (high \\\tau\\)\
   Many edges → potentially exponential growth in maximal cliques
 
 These properties motivate the `auto` mode: exact for small \\p\\, greedy
@@ -1103,8 +1115,8 @@ for larger \\p\\.
 Mathematical formulation:
 
 \\ \text{Find all maximal } S \subseteq \\1,\dots,p\\ \text{ such that }
-\|a\_{ij}\| \< 0.7\\ \forall i, j \in S,\\ \text{with } \\ \text{age} \\
-\subseteq S. \\
+\|a\_{ij}\| \le 0.7\\ \forall i, j \in S,\\ \text{with } \\ \text{age}
+\\ \subseteq S. \\
 
 Implementation:
 
@@ -1247,12 +1259,14 @@ Pivot \\u \in P \cup X\\ reduces recursive calls.
 
 ### Greedy Heuristic
 
-Iteratively removes variables with highest average absolute association
-until all pairs satisfy \\\|a\_{ij}\| \< \tau\\.
+Backward elimination: starts with all variables and iteratively removes
+the “worst” one, in order of (1) most threshold violations, (2) highest
+max association, (3) highest average association, (4) lowest column
+index, until all remaining pairs satisfy \\\|a\_{ij}\| \le \tau\\.
 
 Returns a single valid subset (not necessarily maximal or optimal).
 
-Complexity: \\O(p^2)\\ vs \\O(2^p)\\ for exact enumeration.
+Complexity: \\O(p^2)\\ vs \\O(3^{p/3})\\ for exact enumeration.
 
 > **Key Points: Search Algorithms**
 >
@@ -1262,7 +1276,8 @@ Complexity: \\O(p^2)\\ vs \\O(2^p)\\ for exact enumeration.
 > - **Bron-Kerbosch**: O(3^{p/3}), pivoting improves performance
 > - **Greedy**: O(p²), fast but returns single (possibly non-optimal)
 >   subset
-> - Rule of thumb: exact for p ≤ 20, greedy for p \> 20
+> - Rule of thumb: exact for p \<= `max_exact_p` (default 100), greedy
+>   for p \> `max_exact_p`
 
 ------------------------------------------------------------------------
 
@@ -1428,30 +1443,31 @@ Complexity: \\O(p^2)\\ vs \\O(2^p)\\ for exact enumeration.
 **Output**: Single valid subset (not necessarily maximal)
 
     Algorithm GreedyPrune(A, τ, F):
-      # Step 1: Initialize with all variables
+      # Step 1: Initialize with all variables active
       S ← {1, ..., p}
 
       # Step 2: Validate forced-in set
       if F ≠ ∅:
         for each i, j ∈ F:
-          if |a_ij| ≥ τ:
+          if |a_ij| > τ:
             return ∅  (infeasible)
 
-      # Step 3: Iteratively remove highest-correlated variables
-      while ∃ i, j ∈ S: |a_ij| ≥ τ:
-        # Compute average absolute correlation for each variable
-        for each v ∈ S \ F:
-          avg[v] ← (1 / |S| - 1) × Σ_{u ∈ S, u ≠ v} |a_vu|
+      # Step 3: Iteratively remove the worst violating variable
+      while ∃ i, j ∈ S: |a_ij| > τ:
+        # badness[v] = number of variables v currently violates the
+        # threshold with; only variables with badness[v] > 0 are candidates
+        for each v ∈ S:
+          badness[v] ← |{u ∈ S : u ≠ v, |a_vu| > τ}|
 
-        # Remove variable with highest average correlation
-        v_max ← argmax_{v ∈ S \ F} avg[v]
-        S ← S \ {v_max}
+        # Remove the worst candidate (see Tie-Breaking below), excluding F
+        v_worst ← worst(S \ F, badness, A)
+        S ← S \ {v_worst}
 
       # Step 4: Return pruned subset
       return S
 
-**Complexity:**  
-\\O(p^2 k)\\, where \\k\\ is the number of variables removed.
+**Complexity:** \\O(p^2 k)\\, where \\k\\ is the number of variables
+removed.
 
 **Properties:**
 
@@ -1463,12 +1479,18 @@ Complexity: \\O(p^2)\\ vs \\O(2^p)\\ for exact enumeration.
 
 - **Forced-in support:** variables in \\F\\ are never removed
 
-**Tie-breaking:** When several variables share the same average absolute
-correlation:
+**Tie-breaking:** `worst()` selects the removed variable among
+candidates with `badness[v] > 0`, in order:
 
-1.  Prefer the variable with the lower median absolute correlation
+1.  Highest `badness[v]` (most threshold violations)
 
-2.  If still tied, prefer the lexicographically first variable name
+2.  If still tied, highest max absolute association with any other
+    active variable
+
+3.  If still tied, highest average absolute association with all other
+    active variables
+
+4.  If still tied, lowest column index
 
 ------------------------------------------------------------------------
 
@@ -1483,8 +1505,8 @@ Modify the search:
 
 - Require \\F \subseteq S\\ for all valid \\S\\
 
-- Verify \\\|a\_{ij}\| \< \tau\\ for all \\i, j \in F\\ (else problem is
-  infeasible)
+- Verify \\\|a\_{ij}\| \le \tau\\ for all \\i, j \in F\\ (else problem
+  is infeasible)
 
 - Search for maximal extensions of \\F\\ within remaining variables
 
@@ -1528,7 +1550,7 @@ Deterministic: same input produces same output
 
 ## Output Structure
 
-All selection functions return a `CorrCombo` S4 object containing:
+All selection functions return a `CorrCombo` object containing:
 
 - `subset_list`: list of character vectors (variable names per subset)
 
@@ -1587,7 +1609,7 @@ the **single maximum** subset. Why?
 
 ### Why Hard Threshold Not Soft Constraint?
 
-corrselect enforces a hard threshold: \\\|a\_{ij}\| \< \tau\\ for all
+corrselect enforces a hard threshold: \\\|a\_{ij}\| \le \tau\\ for all
 pairs. Alternative approaches use soft constraints (penalty functions,
 regularization). Why hard thresholds?
 
@@ -1707,10 +1729,10 @@ suffices (e.g., automated pipelines).
 
 **Maximal clique enumeration**
 
-- **Eppstein, D., Löffler, M., & Strash, D. (2010).**  
-  *Listing all maximal cliques in sparse graphs in near-optimal time.*  
+- **Eppstein, D., Löffler, M., & Strash, D. (2010).**\
+  *Listing all maximal cliques in sparse graphs in near-optimal time.*\
   Algorithms and Computation: ISAAC 2010, Lecture Notes in Computer
-  Science 6506, 403–414.  
+  Science 6506, 403–414.\
   [doi:10.1007/978-3-642-17517-6_36](https://doi.org/10.1007/978-3-642-17517-6_36)
   - **Foundation for the ELS algorithm:** degeneracy-based maximal
     clique enumeration
@@ -1718,18 +1740,18 @@ suffices (e.g., automated pipelines).
   - Complexity \\O(d \cdot 3^{d/3})\\, where \\d\\ is graph degeneracy
 
   - Used when `force_in` is specified
-- **Bron, C., & Kerbosch, J. (1973).**  
-  *Algorithm 457: Finding all cliques of an undirected graph.*  
-  Communications of the ACM, 16(9), 575–577.  
+- **Bron, C., & Kerbosch, J. (1973).**\
+  *Algorithm 457: Finding all cliques of an undirected graph.*\
+  Communications of the ACM, 16(9), 575–577.\
   [doi:10.1145/362342.362367](https://doi.org/10.1145/362342.362367)
   - **Foundation for the Bron–Kerbosch algorithm:** classic backtracking
     with pivoting
 
   - Default exact enumeration method
-- **Tomita, E., Tanaka, A., & Takahashi, H. (2006).**  
+- **Tomita, E., Tanaka, A., & Takahashi, H. (2006).**\
   *The worst-case time complexity for generating all maximal cliques and
-  computational experiments.*  
-  Theoretical Computer Science, 363(1), 28–42.  
+  computational experiments.*\
+  Theoretical Computer Science, 363(1), 28–42.\
   [doi:10.1016/j.tcs.2006.06.015](https://doi.org/10.1016/j.tcs.2006.06.015)
   - **Pivoting strategy:** refined pivot rules for Bron–Kerbosch
 
@@ -1944,7 +1966,7 @@ suffices (e.g., automated pipelines).
 ``` r
 
 sessionInfo()
-#> R version 4.5.2 (2025-10-31 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1952,8 +1974,11 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
-#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal
@@ -1962,15 +1987,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.2.1     corrselect_3.1.0
+#> [1] igraph_2.3.1     corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.5         knitr_1.51        rlang_1.1.7      
-#>  [5] xfun_0.55         otel_0.2.0        textshaping_1.0.4 jsonlite_2.0.0   
-#>  [9] htmltools_0.5.9   sass_0.4.10       rmarkdown_2.30    evaluate_1.0.5   
-#> [13] jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5  
-#> [17] compiler_4.5.2    fs_1.6.6          pkgconfig_2.0.3   htmlwidgets_1.6.4
-#> [21] Rcpp_1.1.1        systemfonts_1.3.1 digest_0.6.39     R6_2.6.1         
-#> [25] magrittr_2.0.4    bslib_0.9.0       tools_4.5.2       pkgdown_2.2.0    
-#> [29] cachem_1.1.0      desc_1.4.3
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      
+#>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   
+#> [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      
+#> [17] lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0          pkgconfig_2.0.3  
+#> [21] htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2 digest_0.6.39    
+#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.11.0      tools_4.6.0      
+#> [29] pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
 ```

@@ -21,7 +21,7 @@ MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
 
 - threshold:
 
-  A numeric scalar in (0, 1). Maximum allowed absolute pairwise value.
+  A numeric scalar in (0, 1\]. Maximum allowed absolute pairwise value.
   Defaults to `0.7`.
 
 - method:
@@ -34,18 +34,26 @@ MatSelect(mat, threshold = 0.7, method = NULL, force_in = NULL, ...)
 - force_in:
 
   Optional integer vector of 1-based column indices to force into every
-  subset.
+  subset. If the forced variables are themselves mutually correlated
+  beyond `threshold`, `MatSelect()` warns (naming the offending pair)
+  but still forces them into every returned subset – unlike
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md),
+  which treats this condition as infeasible and errors instead.
 
 - ...:
 
-  Additional arguments passed to the backend, e.g., `use_pivot`
-  (logical) for enabling pivoting in Bron–Kerbosch (ignored by ELS).
+  Additional arguments passed to the backend. The only supported
+  argument is `use_pivot` (logical), for enabling pivoting in
+  Bron–Kerbosch (ignored by ELS); any other named argument is an error.
 
 ## Value
 
 An object of class
 [`CorrCombo`](https://gillescolling.com/corrselect/reference/CorrCombo.md),
-containing all valid subsets and their correlation statistics.
+containing all valid subsets and their correlation statistics. If every
+variable is pairwise correlated above `threshold`, the only valid
+maximal subsets are single variables; these are returned with
+`min_corr`/`max_corr` set to `NA` (there is no pair to summarize).
 
 ## Examples
 
@@ -64,6 +72,7 @@ res2 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = F
 # Bron–Kerbosch with pivoting
 res3 <- MatSelect(cmat, threshold = 0.5, method = "bron-kerbosch", use_pivot = TRUE)
 
-# Force variable 1 into every subset (with warning if too correlated)
-res4 <- MatSelect(cmat, threshold = 0.5, force_in = 1)
+# Force variables 1 and 2 into every subset (warns if they are mutually
+# correlated beyond the threshold; both are still forced in regardless)
+res4 <- MatSelect(cmat, threshold = 0.5, force_in = c(1, 2))
 ```

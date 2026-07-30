@@ -69,7 +69,7 @@ preserving random effects structure.
 ``` r
 data(longitudinal_example)
 
-if (FALSE) { # \dontrun{
+# \donttest{
 # Prune fixed effects in mixed model (requires lme4)
 if (requireNamespace("lme4", quietly = TRUE)) {
   pruned <- modelPrune(
@@ -82,5 +82,5 @@ if (requireNamespace("lme4", quietly = TRUE)) {
   # Random effects preserved, only fixed effects pruned
   attr(pruned, "selected_vars")
 }
-} # }
+# }
 ```

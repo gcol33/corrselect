@@ -27,7 +27,7 @@ variables $`i`$ and $`j`$. Enumeration relies on two exact
 graph-theoretic algorithms:
 
 1.  **Eppstein–Löffler–Strash (ELS)**, a degeneracy-ordered backtracking
-    algorithm optimized for sparse graphs.  
+    algorithm optimized for sparse graphs.\
 2.  **Bron–Kerbosch (BK)**, a classical recursive clique-finding method,
     with optional pivoting to reduce search space.
 
@@ -249,13 +249,13 @@ By default,
 uses Pearson correlation. You can choose alternatives with the
 `cor_method` argument:
 
-- `"pearson"`: linear correlation (default)  
-- `"spearman"`: rank-based monotonic association  
-- `"kendall"`: Kendall’s tau  
+- `"pearson"`: linear correlation (default)\
+- `"spearman"`: rank-based monotonic association\
+- `"kendall"`: Kendall’s tau\
 - `"bicor"`: robust biweight midcorrelation
-  ([`WGCNA::bicor`](https://rdrr.io/pkg/WGCNA/man/bicor.html))  
+  ([`WGCNA::bicor`](https://rdrr.io/pkg/WGCNA/man/bicor.html))\
 - `"distance"`: distance correlation
-  ([`energy::dcor`](https://rdrr.io/pkg/energy/man/dcov.html))  
+  ([`energy::dcor`](https://rdrr.io/pkg/energy/man/dcov.html))\
 - `"maximal"`: maximal information coefficient
   ([`minerva::mine`](https://rdrr.io/pkg/minerva/man/mine.html))
 
@@ -385,7 +385,7 @@ for a fixed threshold $`t \in (0, 1)`$.
 This is equivalent to finding all **maximal cliques** in the
 **thresholded correlation graph**, where:
 
-- Nodes represent variables  
+- Nodes represent variables\
 - Edges connect nodes whose absolute correlation is **below** the
   threshold
 
@@ -401,9 +401,9 @@ extended without violating the correlation limit.
 The ELS algorithm efficiently enumerates all maximal cliques in a sparse
 graph using **degeneracy ordering**:
 
-1.  Compute a degeneracy ordering $`v_1, \dots, v_p`$.  
+1.  Compute a degeneracy ordering $`v_1, \dots, v_p`$.\
 2.  For each $`i`$, extend current clique $`S`$ from $`\{v_i\}`$ within
-    candidate set $`C = \{v_{i+1}, \dots, v_p\}`$.  
+    candidate set $`C = \{v_{i+1}, \dots, v_p\}`$.\
 3.  Recursively build cliques, pruning when no further vertices can be
     added.
 
@@ -447,16 +447,16 @@ $`P \setminus N(u)`$ reduces recursive calls.
 
 Most existing R tools:
 
-- Filter one variable at a time (e.g. `findCorrelation`)  
-- Use greedy or backward-selection heuristics  
+- Filter one variable at a time (e.g. `findCorrelation`)\
+- Use greedy or backward-selection heuristics\
 - Do not enumerate **all** valid subsets
 
 **corrselect** uniquely provides:
 
-- **Exact** enumeration of maximal subsets  
-- Support for multiple correlation measures  
-- Optional forcing of variables  
-- Full inspection via `CorrCombo` objects  
+- **Exact** enumeration of maximal subsets\
+- Support for multiple correlation measures\
+- Optional forcing of variables\
+- Full inspection via `CorrCombo` objects\
 - Fast C++ implementations via Rcpp
 
 This makes it ideal for pipelines where **interpretability** and
@@ -535,10 +535,10 @@ summary(res@avg_corr)
 
 A `CorrCombo` S4 object contains:
 
-- `subset_list`: list of character vectors (variable names)  
+- `subset_list`: list of character vectors (variable names)\
 - `avg_corr`, `min_corr`, `max_corr`: numeric vectors of correlation
-  metrics  
-- `threshold`, `forced_in`, `search_type`, `cor_method`, `n_rows_used`  
+  metrics\
+- `threshold`, `forced_in`, `search_type`, `cor_method`, `n_rows_used`\
 - Attribute `use_pivot` (if applicable)
 
 Inspect slots:

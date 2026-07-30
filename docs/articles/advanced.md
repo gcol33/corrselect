@@ -34,8 +34,10 @@ corrselect offers two algorithmic approaches for
 #### Exact Mode (Graph-Theoretic)
 
 **Algorithm**: Eppstein–Löffler–Strash (ELS) or Bron–Kerbosch
-**Complexity**: O(2^p) - exponential in number of predictors
-**Guarantee**: Finds the **largest** maximal independent set
+**Complexity**: O(3^(p/3)) for Bron-Kerbosch, O(d \* 3^(d/3)) for ELS (d
+= degeneracy) - exponential in number of predictors, tighter than the
+naive O(2^p) enumeration bound **Guarantee**: Finds the **largest**
+maximal independent set
 
 ``` r
 
@@ -49,7 +51,9 @@ cat("Exact mode kept:", ncol(exact_result), "variables\n")
 
 **Use exact mode when**:
 
-- p ≤ 20 (feasible runtime)
+- p \<= 100 (feasible runtime; this is
+  [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)’s
+  default `max_exact_p`)
 
 - You need guaranteed optimal solution
 
@@ -72,13 +76,14 @@ cat("Greedy mode kept:", ncol(greedy_result), "variables\n")
 
 **Use greedy mode when**:
 
-- p \> 20 (exact becomes slow)
+- p \> 100 (exact becomes slow; raise `max_exact_p` to push this
+  boundary higher)
 
 - Speed is priority
 
 - Near-optimal is acceptable
 
-- High-dimensional data (p \> 100)
+- High-dimensional data (several hundred variables or more)
 
 #### Auto Mode (Recommended)
 
@@ -86,7 +91,7 @@ Automatically selects based on p:
 
 ``` r
 
-# Auto mode: smart switching (exact if p ≤ 20, greedy otherwise)
+# Auto mode: smart switching (exact if p <= max_exact_p [default 100], greedy otherwise)
 auto_result <- corrPrune(mtcars, threshold = 0.7, mode = "auto")
 cat("Auto mode kept:", ncol(auto_result), "variables\n")
 #> Auto mode kept: 5 variables
@@ -99,7 +104,6 @@ Let’s measure runtime scaling:
 ``` r
 
 # Generate datasets with increasing p
-library(microbenchmark)
 
 benchmark_corrPrune <- function(p_values) {
   results <- data.frame(
@@ -114,23 +118,21 @@ benchmark_corrPrune <- function(p_values) {
     cor_mat <- 0.5^abs(outer(1:p, 1:p, "-"))
     data <- as.data.frame(MASS::mvrnorm(n = 100, mu = rep(0, p), Sigma = cor_mat))
 
-    # Exact mode (skip if p too large)
+    # Exact mode (skip if p too large), median of 3 runs
     exact_time_ms <- if (p <= 500) {
-      median(microbenchmark(
-        corrPrune(data, threshold = 0.7, mode = "exact"),
-        times = 3,  # Few iterations for speed
-        unit = "ms"
-      )$time) / 1e6  # Convert nanoseconds to milliseconds
+      times <- sapply(1:3, function(i) {
+        system.time(corrPrune(data, threshold = 0.7, mode = "exact"))["elapsed"]
+      })
+      median(times) * 1000  # seconds -> milliseconds
     } else {
       NA
     }
 
-    # Greedy mode
-    greedy_time_ms <- median(microbenchmark(
-      corrPrune(data, threshold = 0.7, mode = "greedy"),
-      times = 3,  # Few iterations for speed
-      unit = "ms"
-    )$time) / 1e6  # Convert nanoseconds to milliseconds
+    # Greedy mode, median of 3 runs
+    greedy_times_ms <- sapply(1:3, function(i) {
+      system.time(corrPrune(data, threshold = 0.7, mode = "greedy"))["elapsed"]
+    })
+    greedy_time_ms <- median(greedy_times_ms) * 1000  # seconds -> milliseconds
 
     results <- rbind(results, data.frame(
       p = p,
@@ -145,16 +147,52 @@ benchmark_corrPrune <- function(p_values) {
 # Benchmark (extended range to show comprehensive scaling behavior)
 p_values <- c(10, 20, 50, 100, 200, 300, 500, 1000)
 benchmark <- benchmark_corrPrune(p_values)
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 200
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 200
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 200
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 300
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 300
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 300
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 500
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 500
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
+#> Warning in MatSelect(mat = A_eff, threshold = threshold, method = NULL, : 500
+#> variables with 100% of pairs at or below the threshold: exhaustive
+#> maximal-subset enumeration can be exponential in the worst case. Consider
+#> corrPrune(mode = "greedy") for large variable counts.
 print(benchmark)
 #>      p exact_time_ms greedy_time_ms
-#> 1   10           0.7            0.4
-#> 2   20           0.7            0.4
-#> 3   50           1.6            1.1
-#> 4  100           5.6            2.3
-#> 5  200          20.9            3.8
-#> 6  300          85.7            7.7
-#> 7  500         358.5           26.3
-#> 8 1000            NA           92.6
+#> 1   10             0              0
+#> 2   20             0              0
+#> 3   50             0              0
+#> 4  100            10              0
+#> 5  200            60             10
+#> 6  300           220             10
+#> 7  500           920             30
+#> 8 1000            NA            140
 ```
 
 ``` r
@@ -246,10 +284,20 @@ cat("Identical:", identical(names(result1), names(result2)), "\n")
 #> Identical: TRUE
 ```
 
-**Tie-breaking rules**: 1. Prefer variables with lower **mean absolute
-correlation** with others
+This example uses the default `mode = "auto"`, which resolves to exact
+search for this small `p`. Exact mode’s tie-breaking rules, applied when
+multiple maximal subsets exist:
 
-2.  If still tied, prefer **lexicographically first** (alphabetical)
+1.  Prefer the **largest subset size**
+
+2.  If still tied, prefer the **lowest average absolute correlation**
+
+3.  If still tied, prefer **lexicographically first** variable names
+
+(Greedy mode, selected via `mode = "greedy"`, breaks ties differently:
+it removes the variable with the most threshold violations first, then
+the highest max association, then the highest average association, then
+the lowest column index – see the Theory vignette for details.)
 
 This ensures reproducibility across runs, machines, and R versions.
 
@@ -438,7 +486,9 @@ pruned <- modelPrune(
 
 #### How It Works
 
-1.  **fit**: Calls `INLA::inla()` to compute posterior distributions
+1.  **fit**: Calls
+    [`INLA::inla()`](https://rdrr.io/pkg/INLA/man/inla.html) to compute
+    posterior distributions
 
 2.  **diagnostics**: Extracts posterior standard deviations from
     `model$summary.fixed`
@@ -809,35 +859,33 @@ correlation matrix:
 set.seed(123)
 large_data <- as.data.frame(matrix(rnorm(100 * 50), ncol = 50))
 
-# Benchmark: Recompute correlation every time
-time1 <- median(microbenchmark(
-  {
+# Benchmark: Recompute correlation every time (median of 3 runs)
+time1_runs <- sapply(1:3, function(i) {
+  system.time({
     result1 <- corrPrune(large_data, threshold = 0.7)
     result2 <- corrPrune(large_data, threshold = 0.8)
     result3 <- corrPrune(large_data, threshold = 0.9)
-  },
-  times = 3,
-  unit = "ms"
-)$time) / 1e6  # Convert nanoseconds to milliseconds
+  })["elapsed"]
+})
+time1 <- median(time1_runs) * 1000  # seconds -> milliseconds
 
-# Benchmark: Compute correlation once, reuse
+# Benchmark: Compute correlation once, reuse (median of 3 runs)
 cor_matrix <- cor(large_data)
-time2 <- median(microbenchmark(
-  {
+time2_runs <- sapply(1:3, function(i) {
+  system.time({
     result1 <- MatSelect(cor_matrix, threshold = 0.7)
     result2 <- MatSelect(cor_matrix, threshold = 0.8)
     result3 <- MatSelect(cor_matrix, threshold = 0.9)
-  },
-  times = 3,
-  unit = "ms"
-)$time) / 1e6  # Convert nanoseconds to milliseconds
+  })["elapsed"]
+})
+time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 8.3 ms
+#> Recomputing each time: 20.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 2.9 ms
+#> Precomputed matrix: 0.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 2.8x faster
+#> Speedup: Infx faster
 ```
 
 **Use precomputed matrices when**:
@@ -923,10 +971,8 @@ reproducibility), but you can parallelize **across** multiple analyses.
 
 Decision tree for mode selection:
 
-    p ≤ 15:  Use "exact" (fast enough, guaranteed optimal)
-    15 < p ≤ 25:  Use "exact" if time permits, "greedy" if speed critical
-    p > 25:  Use "greedy" or "auto"
-    p > 100: Always use "greedy"
+    p <= max_exact_p (default 100):  Use "exact" (guaranteed optimal; practical up to p ~ 500)
+    p > max_exact_p:  Use "greedy" (exact becomes slow; raise max_exact_p to push this boundary higher)
 
 ------------------------------------------------------------------------
 
@@ -954,7 +1000,107 @@ tryCatch({
 }, error = function(e) {
   cat("Error:", e$message, "\n")
 })
-#> Error: No valid subsets found that satisfy the threshold constraint
+#>               x1
+#> 1   -0.560475647
+#> 2   -0.230177489
+#> 3    1.558708314
+#> 4    0.070508391
+#> 5    0.129287735
+#> 6    1.715064987
+#> 7    0.460916206
+#> 8   -1.265061235
+#> 9   -0.686852852
+#> 10  -0.445661970
+#> 11   1.224081797
+#> 12   0.359813827
+#> 13   0.400771451
+#> 14   0.110682716
+#> 15  -0.555841135
+#> 16   1.786913137
+#> 17   0.497850478
+#> 18  -1.966617157
+#> 19   0.701355902
+#> 20  -0.472791408
+#> 21  -1.067823706
+#> 22  -0.217974915
+#> 23  -1.026004448
+#> 24  -0.728891229
+#> 25  -0.625039268
+#> 26  -1.686693311
+#> 27   0.837787044
+#> 28   0.153373118
+#> 29  -1.138136937
+#> 30   1.253814921
+#> 31   0.426464221
+#> 32  -0.295071483
+#> 33   0.895125661
+#> 34   0.878133488
+#> 35   0.821581082
+#> 36   0.688640254
+#> 37   0.553917654
+#> 38  -0.061911711
+#> 39  -0.305962664
+#> 40  -0.380471001
+#> 41  -0.694706979
+#> 42  -0.207917278
+#> 43  -1.265396352
+#> 44   2.168955965
+#> 45   1.207961998
+#> 46  -1.123108583
+#> 47  -0.402884835
+#> 48  -0.466655354
+#> 49   0.779965118
+#> 50  -0.083369066
+#> 51   0.253318514
+#> 52  -0.028546755
+#> 53  -0.042870457
+#> 54   1.368602284
+#> 55  -0.225770986
+#> 56   1.516470604
+#> 57  -1.548752804
+#> 58   0.584613750
+#> 59   0.123854244
+#> 60   0.215941569
+#> 61   0.379639483
+#> 62  -0.502323453
+#> 63  -0.333207384
+#> 64  -1.018575383
+#> 65  -1.071791226
+#> 66   0.303528641
+#> 67   0.448209779
+#> 68   0.053004227
+#> 69   0.922267468
+#> 70   2.050084686
+#> 71  -0.491031166
+#> 72  -2.309168876
+#> 73   1.005738524
+#> 74  -0.709200763
+#> 75  -0.688008616
+#> 76   1.025571370
+#> 77  -0.284773007
+#> 78  -1.220717712
+#> 79   0.181303480
+#> 80  -0.138891362
+#> 81   0.005764186
+#> 82   0.385280401
+#> 83  -0.370660032
+#> 84   0.644376549
+#> 85  -0.220486562
+#> 86   0.331781964
+#> 87   1.096839013
+#> 88   0.435181491
+#> 89  -0.325931586
+#> 90   1.148807618
+#> 91   0.993503856
+#> 92   0.548396960
+#> 93   0.238731735
+#> 94  -0.627906076
+#> 95   1.360652449
+#> 96  -0.600259587
+#> 97   2.187332993
+#> 98   1.532610626
+#> 99  -0.235700359
+#> 100 -1.026420900
 ```
 
 **Solutions**: 1. Increase threshold
@@ -967,17 +1113,13 @@ tryCatch({
 
 # Solution 1: Increase threshold
 result <- corrPrune(high_cor_data, threshold = 0.95)
-#> Error in `corrPrune()`:
-#> ! No valid subsets found that satisfy the threshold constraint
 print(names(result))
-#> [1] "x1" "x2" "x3"
+#> [1] "x1"
 
 # Solution 2: Force keep one variable
 result <- corrPrune(high_cor_data, threshold = 0.5, force_in = "x1")
-#> Error in `corrPrune()`:
-#> ! No valid subsets found that satisfy the threshold constraint
 print(names(result))
-#> [1] "x1" "x2" "x3"
+#> [1] "x1"
 ```
 
 #### Error: force_in variables conflict with threshold
@@ -1016,9 +1158,6 @@ tryCatch({
 }, error = function(e) {
   cat("Error:", e$message, "\n")
 })
-#> Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable
-#> Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable
-#> Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable
 #>               y          x1          x2
 #> 1   -0.71524219 -0.07355602 -0.60189285
 #> 2   -0.75268897 -1.16865142 -0.99369859
@@ -1132,9 +1271,6 @@ first to remove perfect collinearity:
 step1 <- corrPrune(perfect_data[, -1], threshold = 0.99)
 step2_data <- data.frame(y = perfect_data$y, step1)
 result <- modelPrune(y ~ ., data = step2_data, limit = 5)
-#> Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable
-#> Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable
-#> Warning in summary.lm(fit): essentially perfect fit: summary may be unreliable
 print(attr(result, "selected_vars"))
 #> [1] "x1" "x2"
 ```
@@ -1193,16 +1329,21 @@ cor_vec <- cor_mat[upper.tri(cor_mat)]
 
 par(mfrow = c(1, 2))
 
-# Histogram of correlations
+# Histogram of correlations, with headroom above the bars for the threshold marks
+h <- hist(abs(cor_vec), breaks = 30, plot = FALSE)
+thresholds_marked <- c(0.5, 0.7, 0.9)
+threshold_cols <- c("red", "blue", "green")
 hist(abs(cor_vec), breaks = 30,
-     main = "Distribution of |Correlations|",
+     main = "Correlations",
      xlab = "|Correlation|",
-     col = "lightblue")
-abline(v = c(0.5, 0.7, 0.9), col = c("red", "blue", "green"), lwd = 2, lty = 2)
-legend("topright",
-       legend = c("0.5 (strict)", "0.7 (moderate)", "0.9 (lenient)"),
-       col = c("red", "blue", "green"), lwd = 2, lty = 2,
-       bty = "o", bg = "white")
+     col = "lightblue",
+     ylim = c(0, max(h$counts) * 1.35))
+# Each threshold labelled at its own line, which a legend of three rows
+# would not fit beside in a half-width panel
+segments(x0 = thresholds_marked, y0 = 0, y1 = max(h$counts) * 1.05,
+         col = threshold_cols, lwd = 2, lty = 2)
+text(thresholds_marked, max(h$counts) * 1.12, thresholds_marked,
+     col = threshold_cols, adj = c(0.5, 0))
 
 # Subset size vs threshold
 thresholds <- seq(0.3, 0.95, by = 0.05)
@@ -1214,8 +1355,8 @@ sizes <- sapply(thresholds, function(t) {
 
 plot(thresholds, sizes, type = "b",
      xlab = "Threshold",
-     ylab = "Number of Variables Retained",
-     main = "Threshold Sensitivity",
+     ylab = "Variables kept",
+     main = "Threshold sensitivity",
      col = "blue", lwd = 2)
 abline(h = ncol(mtcars), lty = 2, col = "gray")
 text(0.3, ncol(mtcars), "Original", pos = 3)
@@ -1229,6 +1370,9 @@ of variables retained versus threshold, demonstrating sensitivity
 analysis with plateau beginning around 0.7, helping identify optimal
 threshold for balancing redundancy reduction and information
 retention.](advanced_files/figure-html/unnamed-chunk-28-1.svg)
+
+The marked thresholds are 0.5 (strict), 0.7 (moderate) and 0.9
+(lenient).
 
 **Strategy**: Choose threshold where curve begins to plateau.
 
@@ -1261,7 +1405,39 @@ tryCatch({
 }, error = function(e) {
   cat("Error:", e$message, "\n")
 })
-#> Error: `threshold` must be in the range (0, 1].
+#>                     carb
+#> Mazda RX4              4
+#> Mazda RX4 Wag          4
+#> Datsun 710             1
+#> Hornet 4 Drive         1
+#> Hornet Sportabout      2
+#> Valiant                1
+#> Duster 360             4
+#> Merc 240D              2
+#> Merc 230               2
+#> Merc 280               4
+#> Merc 280C              4
+#> Merc 450SE             3
+#> Merc 450SL             3
+#> Merc 450SLC            3
+#> Cadillac Fleetwood     4
+#> Lincoln Continental    4
+#> Chrysler Imperial      4
+#> Fiat 128               1
+#> Honda Civic            2
+#> Toyota Corolla         1
+#> Toyota Corona          1
+#> Dodge Challenger       2
+#> AMC Javelin            2
+#> Camaro Z28             4
+#> Pontiac Firebird       2
+#> Fiat X1-9              1
+#> Porsche 914-2          2
+#> Lotus Europa           2
+#> Ford Pantera L         4
+#> Ferrari Dino           6
+#> Maserati Bora          8
+#> Volvo 142E             2
 ```
 
 #### Mixed-Type Data
@@ -1283,19 +1459,19 @@ show(result)
 #>   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric
 #>                = eta, factor_factor = cramersv
 #>   Threshold:   0.600
-#>   Subsets:     20 maximal subsets
+#>   Subsets:     19 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
 #> Top combinations:
 #>   No.  Variables                          Avg    Max    Size
 #>   ------------------------------------------------------------
-#>   [ 1] wt, vs, gear, carb                0.436  0.583     4
-#>   [ 2] vs, am, carb                      0.265  0.570     3
-#>   [ 3] wt, qsec, gear                    0.324  0.583     3
-#>   [ 4] disp, carb, am                    0.348  0.591     3
-#>   [ 5] drat, vs, carb                    0.367  0.570     3
-#>   ... (15 more combinations)
+#>   [ 1] drat, vs, am, carb                0.273  0.570     4
+#>   [ 2] cyl, drat, am, carb               0.325  0.523     4
+#>   [ 3] cyl, drat, qsec, am               0.336  0.523     4
+#>   [ 4] wt, vs, am, carb                  0.344  0.570     4
+#>   [ 5] wt, vs, gear, carb                0.436  0.583     4
+#>   ... (14 more combinations)
 ```
 
 ------------------------------------------------------------------------
@@ -1376,9 +1552,10 @@ pipeline <- function(data, response) {
 
 #### Algorithms
 
-- Use **exact mode** for p ≤ 20 (optimal, reproducible)
+- Use **exact mode** for p \<= 100 (optimal, reproducible; the default
+  `max_exact_p`)
 
-- Use **greedy mode** for p \> 20 (fast, near-optimal)
+- Use **greedy mode** for p \> 100 (fast, near-optimal)
 
 - Use **auto mode** to let corrselect decide
 
@@ -1449,7 +1626,8 @@ pipeline <- function(data, response) {
 - [`vignette("comparison")`](https://gillescolling.com/corrselect/articles/comparison.md) -
   vs caret, Boruta, glmnet
 
-- `vignette("corrselect_vignette")` - Original exact methods vignette
+- [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md) -
+  Formal problem statement and exact methods
 
 - [`?corrPrune`](https://gillescolling.com/corrselect/reference/corrPrune.md) -
   Association-based pruning
@@ -1465,7 +1643,7 @@ pipeline <- function(data, response) {
 ``` r
 
 sessionInfo()
-#> R version 4.5.2 (2025-10-31 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1473,8 +1651,11 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
-#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal
@@ -1483,15 +1664,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] microbenchmark_1.5.0 corrselect_3.1.0    
+#> [1] corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] vctrs_0.7.1       svglite_2.2.2     cli_3.6.5         knitr_1.51       
-#>  [5] rlang_1.1.7       xfun_0.55         otel_0.2.0        textshaping_1.0.4
-#>  [9] jsonlite_2.0.0    glue_1.8.0        htmltools_0.5.9   sass_0.4.10      
-#> [13] rmarkdown_2.30    evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65      
-#> [17] fastmap_1.2.0     yaml_2.3.12       lifecycle_1.0.5   compiler_4.5.2   
-#> [21] fs_1.6.6          htmlwidgets_1.6.4 Rcpp_1.1.1        systemfonts_1.3.1
-#> [25] digest_0.6.39     R6_2.6.1          pillar_1.11.1     bslib_0.9.0      
-#> [29] tools_4.5.2       pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      
+#>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   
+#> [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0    
+#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0         
+#> [21] htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2 digest_0.6.39    
+#> [25] R6_2.6.1          bslib_0.11.0      tools_4.6.0       pkgdown_2.2.0    
+#> [29] cachem_1.1.0      desc_1.4.3
 ```

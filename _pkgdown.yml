@@ -78,7 +78,7 @@ reference:
 - title: Utility Functions
   desc: Helper functions for working with results
   contents:
-  - CorrCombo-class
+  - CorrCombo
   - as.data.frame.CorrCombo
   - corrSubset
   - corrselect-package

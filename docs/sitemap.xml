@@ -8,7 +8,6 @@
 <url><loc>https://gillescolling.com/corrselect/articles/theory.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/articles/workflows.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/authors.html</loc></url>
-<url><loc>https://gillescolling.com/corrselect/CLAUDE.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/CONTRIBUTING.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/index.html</loc></url>
@@ -18,6 +17,7 @@
 <url><loc>https://gillescolling.com/corrselect/reference/as.data.frame.CorrCombo.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/assocSelect.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/bioclim_example.html</loc></url>
+<url><loc>https://gillescolling.com/corrselect/reference/CorrCombo-class.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/CorrCombo.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/corrPrune.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/corrselect-package.html</loc></url>
@@ -29,6 +29,9 @@
 <url><loc>https://gillescolling.com/corrselect/reference/longitudinal_example.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/MatSelect.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/modelPrune.html</loc></url>
+<url><loc>https://gillescolling.com/corrselect/reference/show,CorrCombo-method.html</loc></url>
 <url><loc>https://gillescolling.com/corrselect/reference/survey_example.html</loc></url>
+<url><loc>https://gillescolling.com/corrselect/_sheet.html</loc></url>
+<url><loc>https://gillescolling.com/corrselect/_sheet2.html</loc></url>
 </urlset>
 

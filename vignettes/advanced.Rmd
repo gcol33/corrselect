@@ -13,12 +13,18 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
+  fig.width = 6.5,
+  fig.height = 4.5,
   dev = "svglite",
-  fig.ext = "svg"
+  fig.ext = "svg",
+  dev.args = list(pointsize = 14)
 )
 library(corrselect)
+
+# Figure palette, light mode hex; the pkgdown CSS swaps in dark counterparts
+PAL <- c(blue = "#2E6F9E", red = "#B5342B", green = "#3F7A3D",
+         orange = "#9E5E0F", purple = "#7A4F9E", teal = "#2A7A7A",
+         grey = "#5C6166")
 ```
 
 ## Overview
@@ -155,7 +161,7 @@ benchmark <- benchmark_corrPrune(p_values)
 print(benchmark)
 ```
 
-```{r, fig.width=8, fig.height=5, fig.alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data."}
+```{r, fig.alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data."}
 # Visualize scaling
 # Separate data for exact mode (only where available) and greedy mode (all points)
 exact_valid <- !is.na(benchmark$exact_time_ms) & benchmark$exact_time_ms > 0
@@ -923,7 +929,7 @@ print(attr(result, "selected_vars"))
 
 ### Empirical Approach: Visualize First
 
-```{r, fig.width=10, fig.height=4, fig.alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention."}
+```{r, fig.width=9, fig.height=4.5, dev.args=list(pointsize=19), fig.alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention."}
 data(mtcars)
 
 # Visualize correlation distribution
@@ -932,16 +938,21 @@ cor_vec <- cor_mat[upper.tri(cor_mat)]
 
 par(mfrow = c(1, 2))
 
-# Histogram of correlations
+# Histogram of correlations, with headroom above the bars for the threshold marks
+h <- hist(abs(cor_vec), breaks = 30, plot = FALSE)
+thresholds_marked <- c(0.5, 0.7, 0.9)
+threshold_cols <- c("red", "blue", "green")
 hist(abs(cor_vec), breaks = 30,
-     main = "Distribution of |Correlations|",
+     main = "Correlations",
      xlab = "|Correlation|",
-     col = "lightblue")
-abline(v = c(0.5, 0.7, 0.9), col = c("red", "blue", "green"), lwd = 2, lty = 2)
-legend("topright",
-       legend = c("0.5 (strict)", "0.7 (moderate)", "0.9 (lenient)"),
-       col = c("red", "blue", "green"), lwd = 2, lty = 2,
-       bty = "o", bg = "white")
+     col = "lightblue",
+     ylim = c(0, max(h$counts) * 1.35))
+# Each threshold labelled at its own line, which a legend of three rows
+# would not fit beside in a half-width panel
+segments(x0 = thresholds_marked, y0 = 0, y1 = max(h$counts) * 1.05,
+         col = threshold_cols, lwd = 2, lty = 2)
+text(thresholds_marked, max(h$counts) * 1.12, thresholds_marked,
+     col = threshold_cols, adj = c(0.5, 0))
 
 # Subset size vs threshold
 thresholds <- seq(0.3, 0.95, by = 0.05)
@@ -953,12 +964,14 @@ sizes <- sapply(thresholds, function(t) {
 
 plot(thresholds, sizes, type = "b",
      xlab = "Threshold",
-     ylab = "Number of Variables Retained",
-     main = "Threshold Sensitivity",
+     ylab = "Variables kept",
+     main = "Threshold sensitivity",
      col = "blue", lwd = 2)
 abline(h = ncol(mtcars), lty = 2, col = "gray")
 text(0.3, ncol(mtcars), "Original", pos = 3)
 ```
+
+The marked thresholds are 0.5 (strict), 0.7 (moderate) and 0.9 (lenient).
 
 **Strategy**: Choose threshold where curve begins to plateau.
 

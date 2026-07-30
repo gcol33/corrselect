@@ -47,10 +47,11 @@ cat("Response: species_richness (continuous)\n")
 
 cor_matrix <- cor(predictors)
 
-# Correlation heatmap
+# Correlation heatmap, with a color scale bar in a narrow second panel
 col_pal <- colorRampPalette(c("#3B4992", "white", "#EE0000"))(100)
 
-par(mar = c(1, 1, 3, 1))
+layout(matrix(1:2, nrow = 1), widths = c(0.85, 0.15))
+par(mar = c(4.5, 4.5, 3, 0.5))
 nc <- ncol(cor_matrix)
 nr <- nrow(cor_matrix)
 image(seq_len(nc), seq_len(nr), t(cor_matrix[nr:1, ]),
@@ -58,25 +59,25 @@ image(seq_len(nc), seq_len(nr), t(cor_matrix[nr:1, ]),
       xlab = "", ylab = "", axes = FALSE,
       main = "Bioclimatic Variable Correlations (p = 19)",
       zlim = c(-1, 1))
-axis(1, at = seq_len(nc), labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
-axis(2, at = nc:1, labels = colnames(cor_matrix), las = 2, cex.axis = 0.7)
+axis(1, at = seq_len(nc), labels = colnames(cor_matrix), las = 2)
+axis(2, at = nc:1, labels = colnames(cor_matrix), las = 2)
 
-for (i in seq_len(nc)) {
-  for (j in seq_len(nr)) {
-    text_col <- if (abs(cor_matrix[j, i]) > 0.6) "white" else "black"
-    text(i, nr - j + 1, sprintf("%.2f", cor_matrix[j, i]),
-         cex = 0.5, col = text_col)
-  }
-}
+# Scale bar
+par(mar = c(4.5, 0.5, 3, 3))
+breaks <- seq(-1, 1, length.out = length(col_pal) + 1)
+image(1, breaks[-1], matrix(breaks[-1], nrow = 1),
+      col = col_pal, axes = FALSE, xlab = "", ylab = "", zlim = c(-1, 1))
+axis(4, at = seq(-1, 1, by = 0.5), las = 1)
+mtext("correlation", side = 4, line = 2)
 ```
 
 ![Correlation heatmap of 19 bioclimatic variables displayed as a
-color-coded matrix. Blue indicates negative correlations, white
-indicates near-zero correlations, and red indicates positive
-correlations. Numerical correlation values are overlaid on each cell.
-The heatmap reveals block structure with correlations ranging from -0.15
-to 0.97, showing strong correlations among temperature-related variables
-and precipitation-related
+color-coded matrix, with a color scale bar to the right. Blue indicates
+negative correlations, white indicates near-zero correlations, and red
+indicates positive correlations. The heatmap reveals block structure
+with correlations ranging from -0.15 to 0.97, showing strong
+correlations among temperature-related variables and
+precipitation-related
 variables.](comparison_files/figure-html/unnamed-chunk-2-1.svg)
 
 Block structure present: correlations range from -0.15 to 0.97.
@@ -169,6 +170,8 @@ if (requireNamespace("caret", quietly = TRUE)) {
 
   abline(v = 0.7, col = "black", lwd = 2, lty = 2)
 
+  # Squares rather than fill boxes, so the swatches and the threshold rule
+  # share one symbol column and line up
   legend("topright",
          legend = c(
            paste0("Original (", ncol(predictors), " vars)"),
@@ -176,18 +179,22 @@ if (requireNamespace("caret", quietly = TRUE)) {
            paste0("corrselect (", ncol(result_corrselect), " vars)"),
            "Threshold"
          ),
-         fill   = c(
+         pch    = c(22, 22, 22, NA),
+         pt.bg  = c(
            rgb(0.5, 0.5, 0.5, 0.4),
            rgb(0.8, 0.2, 0.2, 0.4),
            rgb(0.2, 0.5, 0.8, 0.4),
            NA
          ),
-         border = c("white", "white", "white", NA),
+         pt.cex = 2,
          lty    = c(NA, NA, NA, 2),
          lwd    = c(NA, NA, NA, 2),
-         col    = c(NA, NA, NA, "black"),
+         col    = c("white", "white", "white", "black"),
+         # The threshold rule runs the full height of the panel and would
+         # otherwise cross the labels
          bty    = "o",
-         bg = "white")
+         box.lty = 0,
+         bg     = "white")
 }
 ```
 
@@ -244,13 +251,18 @@ Boruta tests variable importance via random forest permutation:
 
 ``` r
 
-if (requireNamespace("Boruta", quietly = TRUE)) {
+if (requireNamespace("Boruta", quietly = TRUE) &&
+    requireNamespace("ranger", quietly = TRUE)) {
   # Boruta: "Which variables predict species_richness?"
+  # getImp = getImpRfZ pins the ranger importance backend so the seeded run
+  # is reproducible across Boruta versions (Boruta 10 defaults to the fru
+  # backend, which is stochastic even at a fixed seed).
   set.seed(123)
   boruta_result <- Boruta::Boruta(
     species_richness ~ .,
     data    = bioclim_example,
-    maxRuns = 100
+    maxRuns = 100,
+    getImp  = Boruta::getImpRfZ
   )
 
   cat("Boruta variable importance screening:\n")
@@ -284,14 +296,14 @@ corrselect minimizes redundancy.
 
 ### Comparison
 
-| Criterion             | Boruta                     | corrselect              |
-|-----------------------|----------------------------|-------------------------|
-| **Objective**         | Predictive power           | Redundancy removal      |
-| **Criterion**         | Permutation importance     | \\\\r\_{ij}\\ \< \tau\\ |
-| **Response**          | Required                   | Not required            |
-| **Multicollinearity** | Indirect                   | Direct                  |
-| **Stochastic**        | Yes                        | No                      |
-| **Complexity**        | High (\\\ge 100\\ forests) | Low (graph)             |
+| Criterion             | Boruta                     | corrselect               |
+|-----------------------|----------------------------|--------------------------|
+| **Objective**         | Predictive power           | Redundancy removal       |
+| **Criterion**         | Permutation importance     | \\\\r\_{ij}\\ \le \tau\\ |
+| **Response**          | Required                   | Not required             |
+| **Multicollinearity** | Indirect                   | Direct                   |
+| **Stochastic**        | Yes                        | No                       |
+| **Complexity**        | High (\\\ge 100\\ forests) | Low (graph)              |
 
 ### Sequential Application
 
@@ -365,6 +377,9 @@ if (requireNamespace("glmnet", quietly = TRUE)) {
   cat("  Variables retained:", length(selected_lasso), "\n")
   cat(" ", paste(selected_lasso, collapse = ", "), "\n")
 }
+#> glmnet (LASSO, λ = lambda.1se):
+#>   Variables retained: 4 
+#>   BIO1, BIO12, BIO15, BIO16
 ```
 
 ``` r
@@ -383,6 +398,10 @@ if (requireNamespace("glmnet", quietly = TRUE)) {
   cat("  corrselect: R² =", round(summary(model_corrselect)$r.squared, 3),
       "with", ncol(result_corrselect), "predictors\n")
 }
+#> 
+#> Model comparison (OLS on selected variables):
+#>   glmnet:     R² = 0.983 with 4 predictors
+#>   corrselect: R² = 0.909 with 12 predictors
 ```
 
 glmnet selects fewer variables (\\\|S\_{\text{glmnet}}\| \le
@@ -394,27 +413,34 @@ maximizes retention under correlation constraint.
 ``` r
 
 if (requireNamespace("glmnet", quietly = TRUE)) {
-  par(mfrow = c(1, 2), mar = c(8, 4, 3, 2))
+  par(mfrow = c(1, 2), mar = c(5.5, 4.5, 3, 1))
 
   # glmnet coefficients (shrinkage)
   coef_vals <- coef_lasso[coef_lasso[, 1] != 0, ][-1]
   barplot(sort(abs(coef_vals), decreasing = TRUE),
           las = 2,
-          main = "glmnet: Shrunk Coefficients",
-          ylab = "Absolute Coefficient Value",
-          col = "salmon",
-          cex.names = 0.7)
+          main = "glmnet: shrunk",
+          ylab = "|Coefficient|",
+          col = "salmon")
 
   # corrselect: unbiased OLS coefficients
   coef_corrselect <- coef(model_corrselect)[-1]  # Remove intercept
   barplot(sort(abs(coef_corrselect), decreasing = TRUE),
           las = 2,
-          main = "corrselect: Unbiased OLS Coefficients",
-          ylab = "Absolute Coefficient Value",
-          col = rgb(0.2, 0.5, 0.8, 0.7),
-          cex.names = 0.7)
+          main = "corrselect: OLS",
+          ylab = "|Coefficient|",
+          col = rgb(0.2, 0.5, 0.8, 0.7))
 }
 ```
+
+![Side-by-side barplots comparing coefficient magnitudes between glmnet
+(left panel, salmon bars) and corrselect (right panel, blue bars). Left
+panel shows glmnet's shrunk coefficients affected by L1 penalty, biased
+toward zero. Right panel shows corrselect's unbiased OLS coefficients on
+pruned variables with preserved effect sizes. The comparison illustrates
+the tradeoff between prediction-focused shrinkage and
+interpretation-focused hard
+selection.](comparison_files/figure-html/unnamed-chunk-11-1.svg)
 
 Left: L1 penalty shrinks coefficients toward zero (biased). Right: OLS
 on pruned variables (unbiased). glmnet optimizes prediction with
@@ -509,6 +535,14 @@ if (requireNamespace("car", quietly = TRUE)) {
     cat("(Stopped at max_iter = 10; VIF threshold not yet reached)\n")
   }
 }
+#> Manual VIF removal (iterative):
+#> Loading required package: car
+#> Loading required package: carData
+#> Iteration 1 : Removing BIO2 (VIF = 5.83 )
+#> Iteration 2 : Removing BIO7 (VIF = 5.66 )
+#> Iteration 3 : Removing BIO5 (VIF = 5.03 )
+#> 
+#> Variables kept: 16
 ```
 
 ## modelPrune() Comparison
@@ -532,6 +566,12 @@ if (requireNamespace("car", quietly = TRUE)) {
   cat("\nFinal VIF values:\n")
   print(round(car::vif(final_model), 2))
 }
+#> 
+#> Final VIF values:
+#>  BIO1  BIO3  BIO4  BIO6  BIO8  BIO9 BIO10 BIO11 BIO12 BIO13 BIO14 BIO15 BIO16 
+#>  2.09  3.68  3.81  2.57  4.03  4.27  4.96  3.06  1.76  2.51  3.11  3.01  2.43 
+#> BIO17 BIO18 BIO19 
+#>  2.88  2.82  1.70
 ```
 
 ## Visual: VIF Comparison
@@ -564,7 +604,6 @@ if (requireNamespace("car", quietly = TRUE)) {
           main = "VIF Before and After modelPrune()",
           ylab = "VIF",
           col = c(rgb(0.8, 0.2, 0.2, 0.7), rgb(0.2, 0.5, 0.8, 0.7)),
-          cex.names = 0.6,
           names.arg = rownames(vif_combined)[1:n_show])
   abline(h = 5, col = "black", lwd = 2, lty = 2)
   legend("topright",
@@ -578,6 +617,16 @@ if (requireNamespace("car", quietly = TRUE)) {
          bg = "white")
 }
 ```
+
+![Side-by-side barplot showing VIF values before (red bars) and after
+(blue bars) applying modelPrune() for the top 15 variables ordered by
+initial VIF. Black horizontal dashed line marks the VIF limit of 5.
+Before pruning, many variables show high VIF values indicating severe
+multicollinearity. After modelPrune(), all retained variables have VIF
+below the threshold, and high-VIF variables are completely removed
+(shown as red-only bars), demonstrating automated and effective
+multicollinearity
+reduction.](comparison_files/figure-html/unnamed-chunk-14-1.svg)
 
 ### Comparison
 
@@ -616,7 +665,7 @@ reproducible documentation.
 ### corrselect Distinguishing Features
 
 1.  **Maximal clique enumeration**: Optimal retention under
-    \\\|r\_{ij}\| \< \tau\\ constraint
+    \\\|r\_{ij}\| \le \tau\\ constraint
 
 2.  **Deterministic**: ELS and Bron-Kerbosch algorithms guarantee
     reproducibility
@@ -690,7 +739,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ``` r
 
 sessionInfo()
-#> R version 4.5.2 (2025-10-31 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -698,8 +747,11 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=en_US.UTF-8  LC_CTYPE=en_US.UTF-8    LC_MONETARY=en_US.UTF-8
-#> [4] LC_NUMERIC=C            LC_TIME=en_US.UTF-8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
 #> time zone: Europe/Luxembourg
 #> tzcode source: internal
@@ -708,35 +760,36 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.1.0
+#> [1] car_3.1-5        carData_3.0-6    corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6         xfun_0.55            bslib_0.9.0         
-#>  [4] ggplot2_4.0.1        htmlwidgets_1.6.4    recipes_1.3.1       
-#>  [7] lattice_0.22-7       vctrs_0.7.1          tools_4.5.2         
-#> [10] generics_0.1.4       stats4_4.5.2         parallel_4.5.2      
-#> [13] tibble_3.3.1         ModelMetrics_1.2.2.2 pkgconfig_2.0.3     
-#> [16] Matrix_1.7-4         data.table_1.18.0    RColorBrewer_1.1-3  
-#> [19] S7_0.2.1             desc_1.4.3           lifecycle_1.0.5     
-#> [22] compiler_4.5.2       farver_2.1.2         stringr_1.6.0       
-#> [25] textshaping_1.0.4    codetools_0.2-20     htmltools_0.5.9     
-#> [28] class_7.3-23         sass_0.4.10          yaml_2.3.12         
-#> [31] prodlim_2025.04.28   pillar_1.11.1        pkgdown_2.2.0       
-#> [34] jquerylib_0.1.4      MASS_7.3-65          cachem_1.1.0        
-#> [37] gower_1.0.2          iterators_1.0.14     rpart_4.1.24        
-#> [40] foreach_1.5.2        nlme_3.1-168         parallelly_1.46.1   
-#> [43] lava_1.8.2           tidyselect_1.2.1     digest_0.6.39       
-#> [46] stringi_1.8.7        future_1.68.0        dplyr_1.1.4         
-#> [49] reshape2_1.4.5       purrr_1.2.0          listenv_0.10.0      
-#> [52] splines_4.5.2        fastmap_1.2.0        grid_4.5.2          
-#> [55] cli_3.6.5            magrittr_2.0.4       survival_3.8-3      
-#> [58] future.apply_1.20.1  withr_3.0.2          scales_1.4.0        
-#> [61] lubridate_1.9.4      timechange_0.3.0     rmarkdown_2.30      
-#> [64] globals_0.18.0       otel_0.2.0           nnet_7.3-20         
-#> [67] timeDate_4051.111    evaluate_1.0.5       knitr_1.51          
-#> [70] hardhat_1.4.2        caret_7.0-1          rlang_1.1.7         
-#> [73] Rcpp_1.1.1           glue_1.8.0           pROC_1.19.0.1       
-#> [76] ipred_0.9-15         svglite_2.2.2        jsonlite_2.0.0      
-#> [79] R6_2.6.1             plyr_1.8.9           systemfonts_1.3.1   
-#> [82] fs_1.6.6
+#>  [1] tidyselect_1.2.1     timeDate_4052.112    dplyr_1.2.1         
+#>  [4] farver_2.1.2         S7_0.2.2             fastmap_1.2.0       
+#>  [7] pROC_1.19.0.1        caret_7.0-1          digest_0.6.39       
+#> [10] rpart_4.1.27         timechange_0.4.0     lifecycle_1.0.5     
+#> [13] survival_3.8-6       magrittr_2.0.5       compiler_4.6.0      
+#> [16] rlang_1.2.0          sass_0.4.10          tools_4.6.0         
+#> [19] yaml_2.3.12          data.table_1.18.4    knitr_1.51          
+#> [22] htmlwidgets_1.6.4    plyr_1.8.9           RColorBrewer_1.1-3  
+#> [25] abind_1.4-8          withr_3.0.2          purrr_1.2.2         
+#> [28] desc_1.4.3           nnet_7.3-20          grid_4.6.0          
+#> [31] stats4_4.6.0         future_1.70.0        ggplot2_4.0.3       
+#> [34] globals_0.19.1       scales_1.4.0         iterators_1.0.14    
+#> [37] MASS_7.3-65          cli_3.6.6            rmarkdown_2.31      
+#> [40] generics_0.1.4       otel_0.2.0           future.apply_1.20.2 
+#> [43] reshape2_1.4.5       cachem_1.1.0         stringr_1.6.0       
+#> [46] splines_4.6.0        parallel_4.6.0       vctrs_0.7.3         
+#> [49] hardhat_1.4.3        glmnet_5.0           Matrix_1.7-5        
+#> [52] jsonlite_2.0.0       Formula_1.2-5        listenv_0.10.1      
+#> [55] systemfonts_1.3.2    foreach_1.5.2        gower_1.0.2         
+#> [58] jquerylib_0.1.4      recipes_1.3.2        glue_1.8.1          
+#> [61] parallelly_1.47.0    pkgdown_2.2.0        codetools_0.2-20    
+#> [64] lubridate_1.9.5      stringi_1.8.7        shape_1.4.6.1       
+#> [67] gtable_0.3.6         tibble_3.3.1         pillar_1.11.1       
+#> [70] htmltools_0.5.9      ipred_0.9-15         lava_1.9.1          
+#> [73] R6_2.6.1             textshaping_1.0.5    evaluate_1.0.5      
+#> [76] lattice_0.22-9       bslib_0.11.0         class_7.3-23        
+#> [79] Rcpp_1.1.1-1.1       svglite_2.2.2        nlme_3.1-169        
+#> [82] prodlim_2026.03.11   xfun_0.57            fs_2.1.0            
+#> [85] pkgconfig_2.0.3      ModelMetrics_1.2.2.2
 ```

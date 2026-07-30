@@ -30,27 +30,38 @@ corrPrune(
 - threshold:
 
   Numeric scalar. Maximum allowed pairwise association (default: 0.7).
-  Must be non-negative.
+  Must be in `[0, 1]` – every supported association measure is bounded
+  in `[0, 1]` (in absolute value), so this range is enforced the same
+  way regardless of `mode` (`threshold = 0` is valid only in
+  `mode = "greedy"`; see Mode Selection below).
 
 - measure:
 
-  Character string specifying the association measure to use. Options:
-  `"auto"` (default), `"pearson"`, `"spearman"`, `"kendall"`,
-  `"cramersv"`, `"eta"`, etc. When `"auto"`, Pearson correlation is used
-  for all-numeric data, and appropriate measures are selected for
-  mixed-type data.
+  Character string specifying the numeric-numeric association measure to
+  use. One of `"auto"` (default, Pearson), `"pearson"`, `"spearman"`,
+  `"kendall"`, `"bicor"`, `"distance"`, or `"maximal"`. This only
+  customizes numeric-numeric pairs; every other pair-type combination is
+  fixed and not affected by `measure`: eta-squared for
+  numeric-categorical pairs, Cramer's V for categorical-categorical
+  pairs, and Spearman for numeric-ordered and ordered-ordered pairs. The
+  measure actually used for each pair-type combination is reported in
+  the `assoc_methods_used` attribute of the result.
 
 - mode:
 
   Character string specifying the search algorithm. Options:
 
   - `"auto"` (default): uses exact search if number of predictors \<=
-    `max_exact_p`, otherwise uses greedy search
+    `max_exact_p` and there are at least 2 predictors with
+    `threshold > 0`, otherwise uses greedy search (exact search requires
+    both, since it routes through
+    [`MatSelect()`](https://gillescolling.com/corrselect/reference/MatSelect.md))
 
   - `"exact"`: exhaustive search for maximal subsets (may be slow for
-    large p)
+    large p); requires at least 2 predictors and `threshold > 0`
 
-  - `"greedy"`: fast approximate search using iterative removal
+  - `"greedy"`: fast approximate search using iterative removal;
+    supports a single predictor and `threshold = 0`
 
 - force_in:
 
@@ -81,8 +92,11 @@ corrPrune(
 
 ## Value
 
-A data.frame containing the pruned subset of predictors. The result has
-the following attributes:
+A data.frame containing the pruned subset of predictors, with the
+selected columns unchanged from `data` (same types and values –
+character/logical/integer columns are converted internally only for
+association computation, never in the returned data). The result has the
+following attributes:
 
 - selected_vars:
 
@@ -98,11 +112,22 @@ the following attributes:
 
 - measure:
 
-  Character string indicating which association measure was used
+  Character string indicating which measure was used for numeric-numeric
+  pairs
+
+- assoc_methods_used:
+
+  Named list mapping each pair-type combination (e.g. "numeric_numeric",
+  "numeric_factor") to the association method actually used
 
 - threshold:
 
   The threshold value used
+
+- n_rows_used:
+
+  Number of complete-case rows used to compute associations (see
+  Details); the returned data itself is not row-filtered
 
 ## Details
 
@@ -113,16 +138,22 @@ stages:
 1.  **Variable type detection**: Identifies numeric vs. categorical
     predictors
 
-2.  **Association measurement**: Computes appropriate pairwise
+2.  **Constant-column removal**: Predictors that are constant across
+    every complete-case row are excluded with a warning, since their
+    association with anything is undefined and they would otherwise ride
+    into the result without contributing any information
+
+3.  **Association measurement**: Computes appropriate pairwise
     associations
 
-3.  **Grouping (optional)**: If `by` is specified, computes associations
+4.  **Grouping (optional)**: If `by` is specified, computes associations
     within each group and aggregates using the specified quantile
 
-4.  **Feasibility check**: Verifies that `force_in` variables satisfy
-    the threshold constraint
+5.  **Feasibility check**: Verifies that `force_in` variables satisfy
+    the threshold constraint (a `force_in` variable excluded for being
+    constant also errors here)
 
-5.  **Subset selection**: Uses either exact or greedy search to find a
+6.  **Subset selection**: Uses either exact or greedy search to find a
     valid subset
 
 **Grouped Pruning**: When `by` is provided, the function ensures the
