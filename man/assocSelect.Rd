@@ -89,13 +89,20 @@ The default association measure for each variable-type combination is:
 \describe{
 \item{numeric – numeric}{\code{method_num_num} (default \code{"pearson"})}
 \item{numeric – ordered}{\code{method_num_ord}}
-\item{numeric – unordered}{\code{"eta"} (ANOVA \eqn{\eta^{2}})}
+\item{numeric – unordered}{\code{"eta"} (the correlation ratio
+\eqn{\eta = \sqrt{\eta^{2}}} of a one-way ANOVA)}
 \item{ordered – ordered}{\code{method_ord_ord}}
 \item{ordered – unordered}{\code{"cramersv"}}
 \item{unordered – unordered}{\code{"cramersv"}}
 }
 
-All association measures are rescaled to \eqn{[0,1]} before thresholding.
+Every measure above is a correlation magnitude in \eqn{[0,1]}, so
+\code{threshold} means the same thing for every variable-type pair. \eqn{\eta}
+is the multiple correlation between the numeric variable and the factor and
+equals the absolute point-biserial correlation for a two-level factor;
+Cramer's V equals the absolute phi coefficient for a 2x2 table. A binary
+variable therefore gets the same association whether it is supplied as a
+0/1 numeric column or as a two-level factor.
 External packages are required for
 \code{"bicor"} (\pkg{WGCNA}),
 \code{"distance"} (\pkg{energy}),

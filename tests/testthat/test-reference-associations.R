@@ -3,7 +3,7 @@
 #
 # assocSelect()'s get_assoc() and corrPrune()'s .compute_single_assoc_matrix()
 # are near-identical, independently-maintained switch() blocks implementing
-# the same eta-squared / Cramer's V logic (see the corrPrune constant-factor
+# the same eta / Cramer's V logic (see the corrPrune constant-factor
 # divergence fixed in #33). Neither dispatch table is reachable from outside
 # its enclosing function (both are local closures, not package-namespace
 # functions), so values are recovered indirectly:
@@ -19,19 +19,19 @@
 #     above -> both kept).
 #
 # Reference values are computed independently in each test via the textbook
-# eta-squared formula (sum-of-squares decomposition) or stats::chisq.test()
+# correlation-ratio formula (sum-of-squares decomposition) or stats::chisq.test()
 # (an independently-tested base-R implementation of the chi-square
 # statistic), not by re-calling corrselect's own dispatch code.
 # ===========================================================================
 
-test_that("eta-squared matches a hand-computed sum-of-squares reference", {
+test_that("eta matches a hand-computed sum-of-squares reference", {
   num <- c(1, 2, 3, 7, 8, 9)
   cat <- factor(c("A", "A", "A", "B", "B", "B"))
   df  <- data.frame(num = num, cat = cat)
 
   ss_tot <- sum((num - mean(num))^2)
   ss_bet <- sum(tapply(num, cat, function(z) length(z) * (mean(z) - mean(num))^2))
-  eta_ref <- ss_bet / ss_tot
+  eta_ref <- sqrt(ss_bet / ss_tot)
 
   res <- assocSelect(df, threshold = 1)
   expect_equal(length(res@subset_list), 1)
@@ -111,7 +111,7 @@ test_that("a near-constant numeric column's eta matches the reference, checked i
 
   ss_tot <- sum((near_const - mean(near_const))^2)
   ss_bet <- sum(tapply(near_const, cat, function(z) length(z) * (mean(z) - mean(near_const))^2))
-  eta_ref <- ss_bet / ss_tot
+  eta_ref <- sqrt(ss_bet / ss_tot)
 
   res <- assocSelect(df, threshold = 1)
   expect_equal(res@avg_corr[1], eta_ref, tolerance = 1e-8)
@@ -165,7 +165,7 @@ test_that(".numeric_assoc_matrix() gives a constant numeric column exactly zero 
 # ===========================================================================
 # Reference-verified tests for the six numeric correlation methods (#83).
 #
-# Unlike eta-squared/Cramer's V above, these six methods delegate their
+# Unlike eta/Cramer's V above, these six methods delegate their
 # per-pair computation to an already-independently-tested implementation
 # (stats::cor() for pearson/spearman/kendall; WGCNA::bicor(), energy::dcor(),
 # minerva::mine() for the rest) -- so the risk here isn't the underlying
@@ -360,4 +360,57 @@ test_that("a sparse (but valid) contingency table's Cramer's V matches the refer
   above <- corrPrune(df, threshold = v_ref + 0.05, mode = "greedy")
   expect_equal(ncol(below), 1)
   expect_equal(ncol(above), 2)
+})
+
+test_that("a binary variable gets the same association as 0/1 numeric and as a two-level factor (#129)", {
+  # eta is the correlation ratio, so for a two-level factor it equals the
+  # absolute point-biserial correlation between the numeric variable and the
+  # 0/1 coding. Re-encoding a binary column therefore cannot change which
+  # variables survive; thresholding a variance-explained quantity for one
+  # pair type and a correlation magnitude for the others would let it.
+  set.seed(129)
+  n <- 60
+  b <- rep(c(0, 1), each = n / 2)
+  x <- 1.5 * b + rnorm(n)
+
+  r_ref <- abs(cor(x, b))
+  eta <- corrselect:::.pairwise_assoc_value(x, factor(b), "eta", "numeric", "factor")
+  expect_equal(eta, r_ref, tolerance = 1e-10)
+
+  # Both encodings therefore prune identically at a threshold below the
+  # shared association value.
+  thr <- r_ref - 0.05
+  as_numeric <- corrPrune(data.frame(x = x, b = b), threshold = thr, mode = "greedy")
+  as_factor  <- corrPrune(data.frame(x = x, b = factor(b)), threshold = thr, mode = "greedy")
+  expect_equal(colnames(as_numeric), colnames(as_factor))
+  expect_equal(ncol(as_numeric), 1)
+
+  # ... and at a threshold above it, both keep the pair.
+  thr_above <- min(r_ref + 0.05, 1)
+  expect_equal(ncol(corrPrune(data.frame(x = x, b = b), threshold = thr_above, mode = "greedy")), 2)
+  expect_equal(ncol(corrPrune(data.frame(x = x, b = factor(b)), threshold = thr_above, mode = "greedy")), 2)
+})
+
+test_that("eta is defined over the observed levels when a factor level is unused (#127)", {
+  # tapply() fills a level with no observations with NA, but the term for an
+  # empty level is n_g * (xbar_g - xbar)^2 with n_g = 0, i.e. exactly 0. The
+  # value is well defined; only the computation was returning NA.
+  num <- c(1, 2, 3, 7, 8, 9)
+  cat <- factor(c("A", "A", "A", "B", "B", "B"), levels = c("A", "B", "C"))
+
+  observed <- droplevels(cat)
+  ss_tot <- sum((num - mean(num))^2)
+  ss_bet <- sum(tapply(num, observed, function(z) length(z) * (mean(z) - mean(num))^2))
+  eta_ref <- sqrt(ss_bet / ss_tot)
+
+  eta <- corrselect:::.pairwise_assoc_value(num, cat, "eta", "numeric", "factor")
+  expect_false(is.na(eta))
+  expect_equal(eta, eta_ref, tolerance = 1e-10)
+
+  # The unused level must not change the value at all.
+  expect_equal(
+    eta,
+    corrselect:::.pairwise_assoc_value(num, observed, "eta", "numeric", "factor"),
+    tolerance = 1e-12
+  )
 })

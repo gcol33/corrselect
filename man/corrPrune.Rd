@@ -21,19 +21,28 @@ corrPrune(
 
 \item{threshold}{Numeric scalar. Maximum allowed pairwise association
 (default: 0.7). Must be in \verb{[0, 1]} -- every supported association
-measure is bounded in \verb{[0, 1]} (in absolute value), so this range is
-enforced the same way regardless of \code{mode} (\code{threshold = 0} is valid
-only in \code{mode = "greedy"}; see Mode Selection below).}
+measure is a correlation magnitude in \verb{[0, 1]} (see \code{measure}), so this
+range is enforced the same way regardless of \code{mode} (\code{threshold = 0} is
+valid only in \code{mode = "greedy"}; see Mode Selection below).}
 
 \item{measure}{Character string specifying the numeric-numeric association
 measure to use. One of \code{"auto"} (default, Pearson), \code{"pearson"},
 \code{"spearman"}, \code{"kendall"}, \code{"bicor"}, \code{"distance"}, or \code{"maximal"}. This
 only customizes numeric-numeric pairs; every other pair-type combination
-is fixed and not affected by \code{measure}: eta-squared for
-numeric-categorical pairs, Cramer's V for categorical-categorical pairs,
-and Spearman for numeric-ordered and ordered-ordered pairs. The measure
-actually used for each pair-type combination is reported in the
-\code{assoc_methods_used} attribute of the result.}
+is fixed and not affected by \code{measure}: eta (the correlation ratio,
+\eqn{\sqrt{\eta^{2}}}) for numeric-categorical pairs, Cramer's V for
+categorical-categorical pairs, and Spearman for numeric-ordered and
+ordered-ordered pairs. The measure actually used for each pair-type
+combination is reported in the \code{assoc_methods_used} attribute of the
+result.
+
+All of these are correlation magnitudes on a common scale, so \code{threshold}
+means the same thing for every pair type: eta is the multiple correlation
+between the numeric variable and the factor, equal to the absolute
+point-biserial correlation for a two-level factor, and Cramer's V equals
+the absolute phi coefficient for a 2x2 table. Encoding a binary variable
+as 0/1 numeric or as a two-level factor therefore gives the same
+association, and the same pruning result.}
 
 \item{mode}{Character string specifying the search algorithm. Options:
 \itemize{

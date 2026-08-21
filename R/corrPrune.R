@@ -8,18 +8,27 @@
 #' @param data A data.frame containing candidate predictors.
 #' @param threshold Numeric scalar. Maximum allowed pairwise association
 #'   (default: 0.7). Must be in `[0, 1]` -- every supported association
-#'   measure is bounded in `[0, 1]` (in absolute value), so this range is
-#'   enforced the same way regardless of `mode` (`threshold = 0` is valid
-#'   only in `mode = "greedy"`; see Mode Selection below).
+#'   measure is a correlation magnitude in `[0, 1]` (see `measure`), so this
+#'   range is enforced the same way regardless of `mode` (`threshold = 0` is
+#'   valid only in `mode = "greedy"`; see Mode Selection below).
 #' @param measure Character string specifying the numeric-numeric association
 #'   measure to use. One of `"auto"` (default, Pearson), `"pearson"`,
 #'   `"spearman"`, `"kendall"`, `"bicor"`, `"distance"`, or `"maximal"`. This
 #'   only customizes numeric-numeric pairs; every other pair-type combination
-#'   is fixed and not affected by `measure`: eta-squared for
-#'   numeric-categorical pairs, Cramer's V for categorical-categorical pairs,
-#'   and Spearman for numeric-ordered and ordered-ordered pairs. The measure
-#'   actually used for each pair-type combination is reported in the
-#'   `assoc_methods_used` attribute of the result.
+#'   is fixed and not affected by `measure`: eta (the correlation ratio,
+#'   \eqn{\sqrt{\eta^{2}}}) for numeric-categorical pairs, Cramer's V for
+#'   categorical-categorical pairs, and Spearman for numeric-ordered and
+#'   ordered-ordered pairs. The measure actually used for each pair-type
+#'   combination is reported in the `assoc_methods_used` attribute of the
+#'   result.
+#'
+#'   All of these are correlation magnitudes on a common scale, so `threshold`
+#'   means the same thing for every pair type: eta is the multiple correlation
+#'   between the numeric variable and the factor, equal to the absolute
+#'   point-biserial correlation for a two-level factor, and Cramer's V equals
+#'   the absolute phi coefficient for a 2x2 table. Encoding a binary variable
+#'   as 0/1 numeric or as a two-level factor therefore gives the same
+#'   association, and the same pruning result.
 #' @param mode Character string specifying the search algorithm. Options:
 #'   - `"auto"` (default): uses exact search if number of predictors <= `max_exact_p`
 #'     and there are at least 2 predictors with `threshold > 0`, otherwise uses
@@ -372,7 +381,7 @@ corrPrune <- function(
 
 #' Resolve corrPrune()'s numeric-numeric association measure. `measure`
 #' customizes the numeric-numeric sub-measure only; other pair-type
-#' combinations always use eta-squared (numeric-categorical) or Cramer's V
+#' combinations always use eta (numeric-categorical) or Cramer's V
 #' (categorical-categorical), mirroring assocSelect()'s fixed dispatch table.
 #' This applies whether or not the data is all-numeric, so a mixed-type call
 #' can still request e.g. measure = "kendall" for its numeric-numeric pairs.
@@ -386,7 +395,7 @@ corrPrune <- function(
     return(measure)
   }
   stop(sprintf(
-    "'measure' must be one of: %s. It customizes numeric-numeric associations only; other pair types always use eta-squared or Cramer's V.",
+    "'measure' must be one of: %s. It customizes numeric-numeric associations only; other pair types always use eta or Cramer's V.",
     paste(c("auto", numeric_measure_choices), collapse = ", ")
   ))
 }
@@ -483,24 +492,35 @@ corrPrune <- function(
   # opposed to a skipped group, already warned about individually).
   group_computed <- rows_per_group >= 2
 
-  # A cell is genuinely undefined if some *computed* group still
-  # produced NA for that specific pair -- e.g. a factor level that
-  # happens to be unused within that one group, or a degenerate
-  # contingency table -- as distinct from a skipped group's NA, which is
-  # a deliberate, already-warned exclusion. Silently dropping the former
-  # from the group_q quantile (as the aggregation below does for the
-  # latter) would let group_q = 1's "holds in every group" guarantee
-  # pass without that group's association ever actually being checked.
+  # A cell is genuinely undefined if some *computed* group still produced NA
+  # for that specific pair -- a categorical-categorical pair whose
+  # contingency table is degenerate within that one group -- as distinct from
+  # a skipped group's NA, which is a deliberate, already-warned exclusion.
+  # Silently dropping the former from the group_q quantile (as the
+  # aggregation below does for the latter) would let group_q = 1's "holds in
+  # every group" guarantee pass without that group's association ever
+  # actually being checked.
   undefined_cells <- apply(assoc_arrays, c(1, 2), function(vals) {
     any(is.na(vals) & group_computed)
   })
   diag(undefined_cells) <- FALSE
   if (any(undefined_cells)) {
     bad_idx <- which(undefined_cells & upper.tri(undefined_cells), arr.ind = TRUE)
-    bad_pairs <- sprintf("'%s' and '%s'", names(data)[bad_idx[, 1]], names(data)[bad_idx[, 2]])
+    # Name the groups each pair failed in, not just the pair: which group is
+    # degenerate is what the user has to act on.
+    bad_pairs <- vapply(seq_len(nrow(bad_idx)), function(k) {
+      i <- bad_idx[k, 1]
+      j <- bad_idx[k, 2]
+      grps <- group_levels[is.na(assoc_arrays[i, j, ]) & group_computed]
+      sprintf("'%s' and '%s' (group%s %s)",
+              names(data)[i], names(data)[j],
+              if (length(grps) == 1) "" else "s",
+              paste(sprintf("'%s'", grps), collapse = ", "))
+    }, character(1))
     stop(sprintf(
-      "Association is undefined for %s in at least one group that had enough data to be included (e.g. an unused factor level, or a degenerate contingency table within that group). Excluding it from the group_q aggregate would silently skip verifying that group; consider excluding the offending variable, choosing a coarser grouping, or filtering the degenerate group explicitly.",
-      paste(bad_pairs, collapse = ", ")
+      "Association is undefined for %s. %s had enough data to be included, so excluding these pairs from the group_q aggregate would silently skip verifying them. For a categorical-categorical pair this happens when a level of one variable has no observations in that group, leaving an all-zero row or column in the contingency table Cramer's V is computed from. Consider excluding the offending variable, choosing a coarser grouping, or filtering the degenerate group explicitly.",
+      paste(bad_pairs, collapse = "; "),
+      if (nrow(bad_idx) == 1) "That group" else "Those groups"
     ))
   }
 

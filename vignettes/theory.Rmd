@@ -71,10 +71,16 @@ Common cases:
 
 - **Categorical–categorical:** Cramér’s V  
 
-- **Numeric–factor:** eta-squared \(\eta^2\)
+- **Numeric–factor:** the correlation ratio \(\eta = \sqrt{\eta^2}\)
 
-All measures used in the package are normalized so that  
-\(|a_{ij}| \in [0,1]\).
+All measures used in the package are correlation magnitudes with
+\(|a_{ij}| \in [0,1]\), which is what lets a single threshold \(\tau\) apply to
+every pair. \(\eta\) is the multiple correlation between the numeric variable
+and the factor and reduces to the absolute point-biserial correlation for a
+two-level factor; Cramér's V reduces to the absolute \(\varphi\) coefficient
+for a \(2 \times 2\) table. A binary variable therefore gets the same
+association value whether it enters as a 0/1 numeric column or as a two-level
+factor, and the same \(\tau\) cuts it in both encodings.
 
 ---
 
@@ -617,13 +623,18 @@ For numeric variables, $a_{ij}$ may be a correlation coefficient (Pearson, Spear
 | Type $(X_i, X_j)$ | Measure |
 |-------------------|---------|
 | numeric, numeric | Pearson/Spearman/Kendall |
-| numeric, factor | $\eta^2$ |
+| numeric, factor | $\eta$ |
 | numeric, ordered | Spearman/Kendall |
 | factor, factor | Cramér's V |
 | factor, ordered | Cramér's V |
 | ordered, ordered | Spearman/Kendall |
 
-All measures are bounded: $a_{ij} \in [0, 1]$ or $a_{ij} \in [-1, 1]$.
+All measures are bounded: $a_{ij} \in [0, 1]$ or $a_{ij} \in [-1, 1]$. They are
+also on a common scale: each is a correlation magnitude, so $\tau$ carries the
+same meaning in every cell of $A$. Thresholding $\eta^2$ for numeric–factor
+pairs while thresholding $|r|$ elsewhere would cut a numeric–factor pair only
+once its underlying correlation passed $\sqrt{\tau}$, so re-encoding a binary
+column as a factor could change which variables survive.
 
 ### Threshold Constraint
 
@@ -891,7 +902,7 @@ How the association structure enters the algorithm:
 - `MatSelect(cor_matrix)`  
   Uses a precomputed association matrix directly
 - `assocSelect(data)`  
-  Computes mixed association measures (Pearson, eta-squared, Cramér's V) before selection
+  Computes mixed association measures (Pearson, the correlation ratio eta, Cramér's V) before selection
 
 ### **Graph density → Performance considerations**
 
@@ -1565,7 +1576,7 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 
 - Kelley, T. L. (1935). An unbiased correlation ratio measure. *Proceedings of the National Academy of Sciences*, 21(9), 554-559.
 
-  - **Eta-squared (correlation ratio)**: Association between numeric and categorical variables
+  - **Correlation ratio (eta)**: Association between numeric and categorical variables
 
   - Used in assocSelect() for numeric-factor pairs
 

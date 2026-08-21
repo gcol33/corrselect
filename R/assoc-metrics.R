@@ -151,9 +151,28 @@
     eta = {
       cat_var <- if (type_x == "factor") x else y
       num_var <- if (type_x == "numeric") x else y
+
+      # droplevels(): a level with no observations contributes
+      # n_g * (xbar_g - xbar)^2 = 0 to the between-group sum of squares, but
+      # tapply() fills such a level with NA, which the enclosing sum() would
+      # propagate, reporting a well-defined association as undefined. The
+      # rows seen here are frequently a subset of the rows the factor's
+      # levels were built from -- one group of corrPrune(by = ) is exactly
+      # that -- so an unused level is the common case, not an edge case.
+      cat_var <- droplevels(as.factor(cat_var))
+
       ss_tot <- sum((num_var - mean(num_var))^2)
-      sum(tapply(num_var, cat_var,
-                 function(z) length(z) * (mean(z) - mean(num_var))^2)) / ss_tot
+      ss_between <- sum(tapply(num_var, cat_var,
+                               function(z) length(z) * (mean(z) - mean(num_var))^2))
+
+      # eta, the correlation ratio, rather than eta-squared: the square root
+      # puts numeric-categorical pairs on the same correlation-magnitude
+      # scale as |r| for numeric pairs and Cramer's V for categorical pairs,
+      # so one threshold means the same thing for every pair type. For a
+      # two-level factor eta equals the absolute point-biserial correlation,
+      # so a binary variable encoded as 0/1 numeric and the same variable
+      # encoded as a two-level factor get the same association value.
+      sqrt(ss_between / ss_tot)
     },
     stop("Unsupported association method: ", method)
   )

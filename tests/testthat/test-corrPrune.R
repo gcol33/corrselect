@@ -1892,24 +1892,47 @@ test_that("corrPrune grouped group_q aggregation matches hand-computed quantiles
   expect_setequal(attr(res_min, "selected_vars"), c("x", "y"))
 })
 
-test_that("corrPrune grouped mode errors when a factor level is unused within one group (#55)", {
-  # region has an "East" level, but group A only ever has North/South -- the
-  # eta/Cramer's V computation for group A therefore returns NA for any pair
-  # involving region, even though group A had plenty of complete rows. This
-  # must not be silently dropped from the group_q aggregation (which would
-  # let group_q = 1's "holds in all groups" guarantee pass unverified).
-  set.seed(1)
-  n <- 30
-  site <- rep(c("A", "B"), each = 15)
-  region <- factor(rep(NA_character_, n), levels = c("North", "South", "East"))
-  region[site == "A"] <- sample(c("North", "South"), 15, replace = TRUE)
-  region[site == "B"] <- sample(c("North", "South", "East"), 15, replace = TRUE)
-  df <- data.frame(x1 = rnorm(n), x2 = rnorm(n), region = region, site = site)
+test_that("corrPrune grouped mode errors on a degenerate contingency table within one group (#55)", {
+  # region has an "East" level that group A never takes, so group A's
+  # region-by-soil table carries an all-zero row and Cramer's V is undefined
+  # there, even though group A had plenty of complete rows. This must not be
+  # silently dropped from the group_q aggregation (which would let
+  # group_q = 1's "holds in all groups" guarantee pass unverified).
+  site   <- rep(c("A", "B"), each = 6)
+  region <- factor(c("North", "North", "South", "South", "North", "South",
+                     "North", "South", "East",  "East",  "North", "South"),
+                   levels = c("North", "South", "East"))
+  soil   <- factor(c("clay", "sand", "clay", "sand", "sand", "clay",
+                     "clay", "sand", "clay", "sand", "sand", "clay"))
+  df <- data.frame(soil = soil, region = region, site = site)
 
-  expect_error(
+  err <- expect_error(
     corrPrune(df, threshold = 0.9, by = "site", group_q = 1),
     "undefined"
   )
+  # The message has to name both the pair and the group that is degenerate,
+  # since which group to drop or coarsen is what the user acts on.
+  expect_match(conditionMessage(err), "'soil' and 'region'", fixed = TRUE)
+  expect_match(conditionMessage(err), "'A'", fixed = TRUE)
+})
+
+test_that("corrPrune grouped mode handles a factor level unused within one group for numeric-factor pairs (#127)", {
+  # Same shape as the Cramer's V case above, but the pair is numeric-factor,
+  # where the association is defined over the levels that were observed: an
+  # unused level contributes n_g * (xbar_g - xbar)^2 = 0 to the between-group
+  # sum of squares. A group missing one level of a factor is the ordinary
+  # case for small groups, so this must return rather than error.
+  set.seed(127)
+  n <- 40
+  site   <- rep(c("A", "B"), each = 20)
+  region <- factor(rep(NA_character_, n), levels = c("North", "South", "East"))
+  region[site == "A"] <- rep(c("North", "South"), 10)
+  region[site == "B"] <- rep(c("North", "South", "East"), length.out = 20)
+  df <- data.frame(x1 = rnorm(n), region = region, site = site)
+
+  res <- corrPrune(df, threshold = 0.9, by = "site", group_q = 1)
+  expect_s3_class(res, "data.frame")
+  expect_setequal(attr(res, "selected_vars"), c("x1", "region"))
 })
 
 test_that("corrPrune grouped mode warns about NA rows confined to a single group (#55)", {
