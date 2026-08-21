@@ -47,9 +47,17 @@ List findAllMaxSets(
     avgCorr[i] = meanAbsCorrelation(corMatrix, results[i]);
   }
 
+  // stable_sort, not sort: subsets that tie on both size and bitwise-equal
+  // avg correlation keep the enumeration order they came out of the search
+  // in, which is itself deterministic. std::sort leaves their relative order
+  // unspecified, so it can differ between compilers and standard library
+  // versions -- and exact ties are ordinary, not exotic: when every pair
+  // exceeds the threshold every maximal subset is a singleton with an avg
+  // correlation of exactly 0. This ordering is what corrSubset(which =
+  // "best") and print.CorrCombo()'s "Top combinations" read.
   std::vector<size_t> order(results.size());
   for (size_t i = 0; i < order.size(); ++i) order[i] = i;
-  std::sort(order.begin(), order.end(),
+  std::stable_sort(order.begin(), order.end(),
     [&](size_t i, size_t j) {
       if (results[i].size() != results[j].size()) return results[i].size() > results[j].size();
       return avgCorr[i] < avgCorr[j];

@@ -379,3 +379,23 @@ test_that("MatSelect keeps a size-1 force_in subset when all variables are mutua
   expect_equal(length(result@subset_list), 1)
   expect_equal(result@subset_list[[1]], "A")
 })
+
+test_that("MatSelect orders a fully degenerate matrix reproducibly (#128)", {
+  # Every pair is above the threshold, so every maximal subset is a single
+  # variable and its average absolute correlation is exactly 0: size and
+  # average correlation tie across all p results and nothing but the sort's
+  # stability decides the order. std::sort leaves that order unspecified, so
+  # it could differ between compilers; std::stable_sort pins it to the
+  # enumeration order, which the input determines.
+  p <- 6
+  mat <- matrix(0.95, p, p)
+  diag(mat) <- 1
+  colnames(mat) <- rownames(mat) <- paste0("v", seq_len(p))
+
+  res <- MatSelect(mat, threshold = 0.5)
+
+  expect_equal(length(res@subset_list), p)
+  expect_true(all(lengths(res@subset_list) == 1))
+  expect_true(all(res@avg_corr == 0))
+  expect_equal(unlist(res@subset_list), paste0("v", seq_len(p)))
+})

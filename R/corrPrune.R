@@ -87,8 +87,10 @@
 #' deterministic tie-breaking is applied:
 #' \itemize{
 #'   \item \strong{Exact mode}: Selects by (1) largest subset size, (2) lowest
-#'     average correlation, (3) alphabetically first variable names. Column
-#'     order does not affect the result.
+#'     average correlation, (3) lexicographically first variable names,
+#'     compared in C order (`method = "radix"`) so the result does not depend
+#'     on the session's collation locale. Column order does not affect the
+#'     result.
 #'   \item \strong{Greedy mode}: Removes the variable with (1) most constraint
 #'     violations, (2) highest max association, (3) highest average association,
 #'     (4) lowest column index. Column order can influence the result when
@@ -648,13 +650,19 @@ corrPrune <- function(
     if (length(candidates_idx) == 1) {
       selected_idx <- candidates_idx[1]
     } else {
-      # Still tied: use lexicographic order
+      # Still tied: use lexicographic order. method = "radix" on both the
+      # within-subset sort and the between-subset order: the default
+      # character collation follows the session's LC_COLLATE, so names that
+      # mix case or contain punctuation (e.g. "BIO1" alongside "bio_mean")
+      # order differently under C and under en_US, and the same data at the
+      # same threshold would select a different subset in two sessions on the
+      # same machine. Radix ordering is fixed and locale-independent.
       candidates_subsets <- combo_result@subset_list[candidates_idx]
       # Sort each subset and concatenate for comparison
       sorted_strings <- vapply(candidates_subsets, function(s) {
-        paste(sort(s), collapse = ",")
+        paste(sort(s, method = "radix"), collapse = ",")
       }, character(1))
-      lex_order <- order(sorted_strings)
+      lex_order <- order(sorted_strings, method = "radix")
       selected_idx <- candidates_idx[lex_order[1]]
     }
   }

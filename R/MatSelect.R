@@ -38,6 +38,12 @@ NULL
 #' the only valid maximal subsets are single variables; these are returned with
 #' \code{min_corr}/\code{max_corr} set to \code{NA} (there is no pair to summarize).
 #'
+#' Subsets are ordered by decreasing size, then increasing average absolute
+#' correlation. Subsets tying on both keep the order the search enumerated
+#' them in, which is itself determined by \code{mat} and \code{threshold}, so
+#' the ordering is reproducible across platforms. It is this ordering that
+#' \code{\link{corrSubset}(which = "best")} and \code{print()} read.
+#'
 #' @examples
 #' set.seed(42)
 #' mat <- matrix(rnorm(100), ncol = 10)

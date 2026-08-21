@@ -117,8 +117,10 @@ iterative removal strategy based on association scores.
 deterministic tie-breaking is applied:
 \itemize{
 \item \strong{Exact mode}: Selects by (1) largest subset size, (2) lowest
-average correlation, (3) alphabetically first variable names. Column
-order does not affect the result.
+average correlation, (3) lexicographically first variable names,
+compared in C order (\code{method = "radix"}) so the result does not depend
+on the session's collation locale. Column order does not affect the
+result.
 \item \strong{Greedy mode}: Removes the variable with (1) most constraint
 violations, (2) highest max association, (3) highest average association,
 (4) lowest column index. Column order can influence the result when

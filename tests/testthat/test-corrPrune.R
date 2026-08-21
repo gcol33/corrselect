@@ -1963,6 +1963,45 @@ test_that("corrPrune exact mode resolves an exact avg-correlation tie lexicograp
   expect_equal(sort(attr(result, "selected_vars")), c("a", "c"))
 })
 
+test_that("corrPrune exact mode's tie-break does not depend on the collation locale (#128)", {
+  # Same tie construction as above, but with names that mix case. C collation
+  # puts every uppercase name before every lowercase one, while en_US
+  # collation interleaves them, so the two disagree on which of the four tied
+  # pairs is "alphabetically first" -- the same data at the same threshold
+  # would select a different subset in two sessions on the same machine.
+  # Single lowercase letters collate identically everywhere and cannot
+  # exercise this.
+  set.seed(42)
+  n <- 20
+  Q <- qr.Q(qr(matrix(rnorm(n * 2), n, 2)))
+  z1 <- Q[, 1]; z2 <- Q[, 2]
+  df <- data.frame(BIO1 = z1, bio2 = -z1, BIO3 = z2, bio4 = -z2)
+
+  pick <- function() {
+    sort(attr(corrPrune(df, threshold = 0.5, mode = "exact"), "selected_vars"),
+         method = "radix")
+  }
+
+  old_collate <- Sys.getlocale("LC_COLLATE")
+  on.exit(suppressWarnings(Sys.setlocale("LC_COLLATE", old_collate)), add = TRUE)
+
+  # Session default.
+  expect_equal(pick(), c("BIO1", "BIO3"))
+
+  # Fixed C collation, available everywhere.
+  suppressWarnings(Sys.setlocale("LC_COLLATE", "C"))
+  expect_equal(pick(), c("BIO1", "BIO3"))
+
+  # A collation that orders case differently from C, if this machine has one.
+  case_insensitive <- c("en_US.UTF-8", "English_United States.1252", "en_US")
+  for (loc in case_insensitive) {
+    if (suppressWarnings(Sys.setlocale("LC_COLLATE", loc)) != "") {
+      expect_equal(pick(), c("BIO1", "BIO3"))
+      break
+    }
+  }
+})
+
 test_that("corrPrune greedy mode removes the variable with the most violations first", {
   # a is built to correlate with both b (via base1) and c (via base2), while
   # b and c share nothing and are uncorrelated with each other. So a has 2

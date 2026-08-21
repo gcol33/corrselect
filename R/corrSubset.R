@@ -15,6 +15,11 @@
 #'     \item \code{"all"}: all available subsets.
 #'   }
 #'   Subsets are ranked by decreasing size, then increasing average correlation.
+#'   Subsets tying on both keep the order the search enumerated them in, which
+#'   is itself determined by the input, so the ranking is reproducible across
+#'   platforms. Exact ties are common -- for instance, when every pair exceeds
+#'   the threshold, every subset is a single variable with an average
+#'   correlation of 0.
 #' @param keepExtra Logical. If \code{TRUE}, columns in \code{df} not in \code{res@var_names}
 #'   (e.g., factors, characters) are retained. Defaults to \code{FALSE}.
 #'
