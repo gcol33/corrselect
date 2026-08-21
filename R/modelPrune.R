@@ -26,8 +26,10 @@
 #'   - `"vif"` (default): Variance Inflation Factor. Measures how much the variance
 #'     of a coefficient is inflated due to collinearity. Values > 5-10 indicate
 #'     problematic multicollinearity.
-#'   - `"condition_number"`: Condition indices based on singular value decomposition
-#'     of the design matrix. Higher values indicate greater collinearity.
+#'   - `"condition_number"`: Condition index of the principal directions that
+#'     carry a predictor's coefficient variance, from a singular value
+#'     decomposition of the design matrix (see Details). Runs from 1 up to the
+#'     overall condition number; higher values indicate greater collinearity.
 #'   For custom engines, this parameter is ignored (diagnostics are computed by the
 #'   engine's `diagnostics` function).
 #' @param limit Numeric scalar. Maximum allowed value for the criterion.
@@ -72,15 +74,34 @@
 #' fixed-effects design matrix. For categorical predictors, VIF represents
 #' the inflation for the entire factor (not individual dummy variables).
 #'
-#' **Condition Number Computation**: Condition indices are computed via
-#' singular value decomposition of the fixed-effects design matrix, which is
-#' centered and scaled (`scale(X, center = TRUE, scale = TRUE)`) before the
-#' decomposition; this is a common convention for collinearity screening but
-#' means the diagnostic does not reflect intercept-related collinearity the
-#' way an uncentered decomposition would. For a categorical predictor with
-#' multiple dummy columns, the predictor's condition index is approximated as
-#' the maximum condition index across its associated columns, rather than a
-#' proper joint decomposition restricted to that factor's subspace.
+#' **Condition Number Computation**: The fixed-effects design matrix is
+#' centered and scaled (`scale(X, center = TRUE, scale = TRUE)`) and
+#' decomposed by SVD. This is a common convention for collinearity screening,
+#' but it means the diagnostic does not reflect intercept-related collinearity
+#' the way an uncentered decomposition would.
+#'
+#' A condition index belongs to a principal direction of the design matrix,
+#' not to a column, so each predictor is scored through the variance
+#' decomposition of Belsley, Kuh and Welsch. Direction \eqn{k} has condition
+#' index \eqn{\eta_k = d_{\max}/d_k} and carries a share
+#' \eqn{\pi_{jk} = (v_{jk}^2/d_k^2) / \sum_m (v_{jm}^2/d_m^2)} of predictor
+#' \eqn{j}'s coefficient variance. The predictor's score is
+#' \eqn{\sum_k \pi_{jk}\,\eta_k}, the condition index of the directions its
+#' coefficient variance actually sits on. It runs from 1, for a predictor
+#' whose variance sits on the best-conditioned direction, up to the overall
+#' condition number for one whose variance sits on the worst, so `limit` is
+#' read on the familiar condition-index scale. A predictor loading on a
+#' numerically singular direction scores `Inf`.
+#'
+#' The score reflects where a predictor's coefficient variance sits rather
+#' than how large it is, so it stays on the condition-index scale rather than
+#' the variance-ratio scale of the VIF. `limit` is therefore read differently
+#' under the two criteria and the same numeric value does not mean the same
+#' thing for both.
+#'
+#' For a categorical predictor with multiple dummy columns, the score is the
+#' maximum across its columns rather than a joint decomposition restricted to
+#' that factor's subspace.
 #'
 #' **Determinism**: The algorithm is deterministic. Ties in diagnostic values
 #' are broken by removing the predictor that appears last in the formula.
@@ -88,6 +109,10 @@
 #' **Force-in Constraints**: If variables in `force_in` violate the diagnostic
 #' threshold, the function will error. This ensures that the constraint is
 #' feasible before pruning begins.
+#'
+#' @references
+#' Belsley, D. A., Kuh, E. and Welsch, R. E. (1980) *Regression Diagnostics:
+#' Identifying Influential Data and Sources of Collinearity*. Wiley, New York.
 #'
 #' @seealso
 #' \code{\link{corrPrune}} for association-based predictor pruning,
@@ -835,6 +860,60 @@ modelPrune <- function(
   X
 }
 
+#' Per-predictor condition-index scores from a design-matrix SVD
+#'
+#' `svd()$d` holds the singular values of the whole design matrix, so its k-th
+#' entry describes the k-th principal direction, not the k-th column. Pairing
+#' the two by position gives each predictor the condition index of whichever
+#' direction happens to share its position, which always puts the overall
+#' condition number `max(d)/min(d)` on the last column of the design matrix,
+#' whatever the collinearity structure actually is.
+#'
+#' Belsley, Kuh and Welsch instead attribute a direction to the predictors
+#' whose coefficient variance it carries. Direction k has condition index
+#' `eta_k = max(d)/d_k` and contributes `phi_jk = v_jk^2 / d_k^2` to the
+#' variance of coefficient j; normalising within a predictor,
+#' `pi_jk = phi_jk / sum_m phi_jm`, gives the share of predictor j's
+#' coefficient variance that direction k carries. The score returned here is
+#' `sum_k pi_jk * eta_k`, the condition index of the directions predictor j's
+#' variance actually sits on. It runs from 1 (variance concentrated on the
+#' best-conditioned direction) to the overall condition number (concentrated
+#' on the worst), and depends only on *where* a predictor's variance sits, not
+#' on how large it is -- which is what keeps it a distinct diagnostic from the
+#' VIF rather than a monotone rescaling of one.
+#'
+#' A numerically singular direction makes the coefficient variance of every
+#' predictor loading on it unbounded, so those predictors score `Inf`. The
+#' rest are scored on the remaining directions, which is what the general
+#' formula gives them anyway: their loading on a singular direction is zero.
+#' @noRd
+.condition_index_scores <- function(svd_result, col_names, n_rows) {
+  d <- svd_result$d
+  V <- svd_result$v
+
+  # Rank tolerance in the usual max(d) * eps * max(dim) form, and a separate
+  # tolerance for squared loadings, which are dimensionless rather than on
+  # the scale of the singular values.
+  sv_tol   <- max(d) * .Machine$double.eps * max(n_rows, length(d))
+  load_tol <- sqrt(.Machine$double.eps)
+
+  singular <- d <= sv_tol
+  scores <- rep(Inf, length(col_names))
+
+  if (!all(singular)) {
+    d_ok <- d[!singular]
+    eta <- max(d) / d_ok
+    phi <- sweep(V[, !singular, drop = FALSE]^2, 2, d_ok^2, "/")
+    scores <- as.vector((phi / rowSums(phi)) %*% eta)
+  }
+
+  if (any(singular)) {
+    scores[rowSums(V[, singular, drop = FALSE]^2) > load_tol] <- Inf
+  }
+
+  setNames(scores, col_names)
+}
+
 #' Compute condition indices for fixed effects
 #' @noRd
 .compute_condition_indices <- function(model, engine, fixed_effects) {
@@ -879,17 +958,19 @@ modelPrune <- function(
 
     if (is.null(svd_result)) {
       warning("SVD failed for design matrix.")
+    } else if (length(svd_result$d) < ncol(X_use)) {
+      # Fewer singular values than columns (n < p): part of the column space
+      # is never resolved, so the null directions that carry the collinearity
+      # are not in `v` at all and no per-predictor score can be read off.
+      warning("Design matrix has fewer rows than columns; condition indices are undefined.")
     } else {
-      d <- svd_result$d
-      max_sv <- max(d)
-      condition_indices <- setNames(max_sv / d, colnames(X_use))
+      condition_indices <- .condition_index_scores(svd_result, colnames(X_use), nrow(X_scaled))
     }
   }
 
-  # Map condition indices back to fixed effects: use the maximum condition
-  # index across the columns associated with each effect (an approximation --
-  # see ?modelPrune's Details for why a full per-factor decomposition isn't
-  # done here).
+  # Map condition indices back to fixed effects: use the maximum score across
+  # the columns associated with each effect (see ?modelPrune's Details for how
+  # a multi-column factor is handled).
   .map_fixed_effects_by_columns(
     X, model, engine_str, fixed_effects,
     score_fn = function(pred, matching_cols) {

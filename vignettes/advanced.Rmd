@@ -307,10 +307,18 @@ For built-in engines (`lm`, `glm`, `lme4`, `glmmTMB`), two criteria are availabl
 
 - **`condition_number`**: SVD-based condition indices - alternative collinearity diagnostic
 
+A condition index describes a principal direction of the design matrix rather
+than a single column, so each predictor is scored through the Belsley-Kuh-Welsch
+variance decomposition: the condition index of the directions that carry its
+coefficient variance. The score runs from 1 up to the overall condition number,
+so `limit` sits on the condition-index scale and the same numeric value means
+something different under `criterion = "vif"`.
+
 ```{r}
 # Using condition number instead of VIF
 result_cn <- modelPrune(mpg ~ ., data = mtcars, criterion = "condition_number", limit = 10)
 cat("Selected:", attr(result_cn, "selected_vars"), "\n")
+cat("Removed:", attr(result_cn, "removed_vars"), "\n")
 ```
 
 

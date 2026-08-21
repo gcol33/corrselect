@@ -45,8 +45,10 @@ For built-in engines, supported values are:
 \item \code{"vif"} (default): Variance Inflation Factor. Measures how much the variance
 of a coefficient is inflated due to collinearity. Values > 5-10 indicate
 problematic multicollinearity.
-\item \code{"condition_number"}: Condition indices based on singular value decomposition
-of the design matrix. Higher values indicate greater collinearity.
+\item \code{"condition_number"}: Condition index of the principal directions that
+carry a predictor's coefficient variance, from a singular value
+decomposition of the design matrix (see Details). Runs from 1 up to the
+overall condition number; higher values indicate greater collinearity.
 For custom engines, this parameter is ignored (diagnostics are computed by the
 engine's \code{diagnostics} function).
 }}
@@ -105,15 +107,34 @@ exactly as specified in the original formula.
 fixed-effects design matrix. For categorical predictors, VIF represents
 the inflation for the entire factor (not individual dummy variables).
 
-\strong{Condition Number Computation}: Condition indices are computed via
-singular value decomposition of the fixed-effects design matrix, which is
-centered and scaled (\code{scale(X, center = TRUE, scale = TRUE)}) before the
-decomposition; this is a common convention for collinearity screening but
-means the diagnostic does not reflect intercept-related collinearity the
-way an uncentered decomposition would. For a categorical predictor with
-multiple dummy columns, the predictor's condition index is approximated as
-the maximum condition index across its associated columns, rather than a
-proper joint decomposition restricted to that factor's subspace.
+\strong{Condition Number Computation}: The fixed-effects design matrix is
+centered and scaled (\code{scale(X, center = TRUE, scale = TRUE)}) and
+decomposed by SVD. This is a common convention for collinearity screening,
+but it means the diagnostic does not reflect intercept-related collinearity
+the way an uncentered decomposition would.
+
+A condition index belongs to a principal direction of the design matrix,
+not to a column, so each predictor is scored through the variance
+decomposition of Belsley, Kuh and Welsch. Direction \eqn{k} has condition
+index \eqn{\eta_k = d_{\max}/d_k} and carries a share
+\eqn{\pi_{jk} = (v_{jk}^2/d_k^2) / \sum_m (v_{jm}^2/d_m^2)} of predictor
+\eqn{j}'s coefficient variance. The predictor's score is
+\eqn{\sum_k \pi_{jk}\,\eta_k}, the condition index of the directions its
+coefficient variance actually sits on. It runs from 1, for a predictor
+whose variance sits on the best-conditioned direction, up to the overall
+condition number for one whose variance sits on the worst, so \code{limit} is
+read on the familiar condition-index scale. A predictor loading on a
+numerically singular direction scores \code{Inf}.
+
+The score reflects where a predictor's coefficient variance sits rather
+than how large it is, so it stays on the condition-index scale rather than
+the variance-ratio scale of the VIF. \code{limit} is therefore read differently
+under the two criteria and the same numeric value does not mean the same
+thing for both.
+
+For a categorical predictor with multiple dummy columns, the score is the
+maximum across its columns rather than a joint decomposition restricted to
+that factor's subspace.
 
 \strong{Determinism}: The algorithm is deterministic. Ties in diagnostic values
 are broken by removing the predictor that appears last in the formula.
@@ -157,6 +178,10 @@ pruned <- modelPrune(y ~ x1 + x2 + x3, data = df,
                      engine = inla_engine, limit = 0.5)
 }
 
+}
+\references{
+Belsley, D. A., Kuh, E. and Welsch, R. E. (1980) \emph{Regression Diagnostics:
+Identifying Influential Data and Sources of Collinearity}. Wiley, New York.
 }
 \seealso{
 \code{\link{corrPrune}} for association-based predictor pruning,

@@ -1646,8 +1646,10 @@ test_that("modelPrune with condition_number criterion works", {
 
   expect_s3_class(result, "data.frame")
   expect_equal(attr(result, "criterion"), "condition_number")
-  # Should prune at least one collinear variable
+  # Should prune at least one collinear variable, and the independent one has
+  # to survive: it carries none of the near-dependency.
   expect_true(length(attr(result, "removed_vars")) >= 1)
+  expect_true("x3" %in% attr(result, "selected_vars"))
 })
 
 test_that("modelPrune condition_number prunes collinear predictors", {
@@ -1664,8 +1666,10 @@ test_that("modelPrune condition_number prunes collinear predictors", {
   result <- modelPrune(y ~ x1 + x2 + x3, data = df, criterion = "condition_number", limit = 5)
 
   expect_s3_class(result, "data.frame")
-  # With a strict limit, at least one collinear should be removed
+  # With a strict limit, at least one collinear should be removed, and the
+  # independent predictor has to survive.
   expect_true(length(attr(result, "removed_vars")) >= 1)
+  expect_true("x3" %in% attr(result, "selected_vars"))
 })
 
 test_that("modelPrune condition_number with single predictor returns 1",
@@ -2298,7 +2302,41 @@ test_that("modelPrune .compute_vif() returns NA (not 0) when VIF computation err
   )
 })
 
-test_that("modelPrune condition_number matches a manually computed SVD reference", {
+test_that("modelPrune condition_number matches a closed-form reference on an analytic correlation structure (#126)", {
+  # X is built to have correlation matrix exactly R = [[1, r, 0], [r, 1, 0],
+  # [0, 0, 1]], whose eigenstructure is known in closed form: eigenvalues
+  # 1 + r, 1, 1 - r with eigenvectors (1,1,0)/sqrt(2), (0,0,1) and
+  # (1,-1,0)/sqrt(2). Working the Belsley-Kuh-Welsch variance decomposition
+  # through by hand for that structure gives
+  #   score(x1) = score(x2) = (1-r)/2 + (1+r)/2 * sqrt((1+r)/(1-r))
+  #   score(x3) = sqrt(1 + r)
+  # with no reference to how the implementation pairs columns with
+  # singular values.
+  set.seed(126)
+  n <- 80
+  r <- 0.99
+
+  # Columns orthogonal to the intercept, so they are centred, and orthonormal,
+  # so cor(Z) is exactly the identity; Z %*% chol(R) then has cor() exactly R.
+  Z <- qr.Q(qr(cbind(1, matrix(rnorm(n * 3), n, 3))))[, -1, drop = FALSE]
+  R <- matrix(c(1, r, 0, r, 1, 0, 0, 0, 1), 3, 3)
+  X <- Z %*% chol(R)
+  colnames(X) <- c("x1", "x2", "x3")
+  df <- data.frame(y = rnorm(n), X)
+  expect_equal(unname(cor(X)), R, tolerance = 1e-10)
+
+  fit <- lm(y ~ x1 + x2 + x3, data = df)
+  ours <- corrselect:::.compute_condition_indices(fit, "lm", c("x1", "x2", "x3"))
+
+  collinear_ref <- (1 - r) / 2 + (1 + r) / 2 * sqrt((1 + r) / (1 - r))
+  independent_ref <- sqrt(1 + r)
+
+  expect_equal(unname(ours[["x1"]]), collinear_ref, tolerance = 1e-6)
+  expect_equal(unname(ours[["x2"]]), collinear_ref, tolerance = 1e-6)
+  expect_equal(unname(ours[["x3"]]), independent_ref, tolerance = 1e-6)
+})
+
+test_that("modelPrune condition_number matches a variance-decomposition reference computed via eigen() (#126)", {
   set.seed(7)
   n <- 60
   df <- data.frame(y = rnorm(n), x1 = rnorm(n), x2 = rnorm(n), x3 = rnorm(n))
@@ -2307,16 +2345,101 @@ test_that("modelPrune condition_number matches a manually computed SVD reference
   fit <- lm(y ~ x1 + x2 + x3, data = df)
   ours <- corrselect:::.compute_condition_indices(fit, "lm", c("x1", "x2", "x3"))
 
-  # Independent reference: build and scale the design matrix, run svd()
-  # directly (not via any corrselect helper), and derive condition indices
-  # with the same max(d)/d_i formula the function itself documents.
+  # Independent reference: take the eigendecomposition of the predictor
+  # correlation matrix (not the SVD of the design matrix the implementation
+  # uses) and apply the Belsley-Kuh-Welsch variance decomposition to it.
+  X <- model.matrix(fit)
+  X <- X[, colnames(X) != "(Intercept)", drop = FALSE]
+  e <- eigen(cor(X), symmetric = TRUE)
+  lambda <- e$values
+  V <- e$vectors
+
+  cond_index <- sqrt(max(lambda) / lambda)
+  phi <- sweep(V^2, 2, lambda, "/")
+  prop <- phi / rowSums(phi)
+  reference <- setNames(as.vector(prop %*% cond_index), colnames(X))
+
+  expect_equal(unname(ours[c("x1", "x2", "x3")]),
+               unname(reference[c("x1", "x2", "x3")]),
+               tolerance = 1e-6)
+})
+
+test_that("modelPrune condition_number scores the collinear predictors above the independent one (#126)", {
+  # x1 and x2 carry the near-dependency and x3 is independent of both, so the
+  # pruning loop must reach for x1 or x2 first. Scoring the singular values
+  # by column position instead put the overall condition number on the last
+  # column of the design matrix and removed x3 first.
+  set.seed(1263)
+  n <- 200
+  x1 <- rnorm(n)
+  df <- data.frame(
+    y  = rnorm(n),
+    x1 = x1,
+    x2 = x1 + rnorm(n, sd = 0.01),
+    x3 = rnorm(n)
+  )
+
+  scores <- corrselect:::.compute_condition_indices(
+    lm(y ~ x1 + x2 + x3, data = df), "lm", c("x1", "x2", "x3")
+  )
+  expect_gt(scores[["x1"]], scores[["x3"]])
+  expect_gt(scores[["x2"]], scores[["x3"]])
+
+  result <- modelPrune(y ~ x1 + x2 + x3, data = df,
+                       criterion = "condition_number", limit = 10)
+  removed <- attr(result, "removed_vars")
+  expect_true(length(removed) >= 1)
+  expect_false(removed[1] == "x3")
+  expect_true("x3" %in% attr(result, "selected_vars"))
+})
+
+test_that("modelPrune condition_number scores a predictor on a singular direction as Inf (#126)", {
+  set.seed(1264)
+  n <- 40
+  x1 <- rnorm(n)
+  x2 <- rnorm(n)
+  df <- data.frame(y = rnorm(n), x1 = x1, x2 = x2)
+  df$x3 <- df$x1 + df$x2  # exact linear dependency
+
+  X <- cbind(x1 = df$x1, x2 = df$x2, x3 = df$x3)
+  scores <- corrselect:::.condition_index_scores(
+    svd(scale(X, center = TRUE, scale = TRUE)), colnames(X), nrow(X)
+  )
+  expect_true(all(is.infinite(scores)))
+})
+
+test_that("modelPrune condition_number scores stay on the condition-index scale (#126)", {
+  # Every score is a weighted average of the design matrix's condition
+  # indices, so it lies between 1 (the best-conditioned direction) and the
+  # overall condition number. Column-position scoring broke this from the
+  # other side: it handed the overall condition number to the last column
+  # whatever that column's role in the near-dependency was.
+  set.seed(1265)
+  n <- 150
+  z <- rnorm(n)
+  df <- data.frame(
+    y  = rnorm(n),
+    x1 = z + rnorm(n, sd = 0.05),
+    x2 = z + rnorm(n, sd = 0.05),
+    x3 = rnorm(n),
+    x4 = rnorm(n)
+  )
+  preds <- c("x1", "x2", "x3", "x4")
+  fit <- lm(y ~ x1 + x2 + x3 + x4, data = df)
+
+  scores <- corrselect:::.compute_condition_indices(fit, "lm", preds)
+
   X <- model.matrix(fit)
   X <- X[, colnames(X) != "(Intercept)", drop = FALSE]
   sv <- svd(scale(X, center = TRUE, scale = TRUE))$d
-  reference <- setNames(max(sv) / sv, colnames(X))
+  kappa <- max(sv) / min(sv)
 
-  expect_equal(unname(ours[c("x1", "x2", "x3")]), unname(reference[c("x1", "x2", "x3")]),
-               tolerance = 1e-6)
+  expect_true(all(scores >= 1 - 1e-8))
+  expect_true(all(scores <= kappa + 1e-8))
+  # The predictors carrying the near-dependency sit near the top of that
+  # range and the independent ones near the bottom.
+  expect_gt(min(scores[c("x1", "x2")]), 0.9 * kappa)
+  expect_lt(max(scores[c("x3", "x4")]), 0.1 * kappa)
 })
 
 test_that("modelPrune tie-breaking removes the last-in-formula-order variable (exact value)", {

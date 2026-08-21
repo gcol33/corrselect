@@ -267,6 +267,10 @@ modelPrune(formula, data, engine = "lm", criterion = "vif",
 | `limit` | Maximum allowed diagnostic value | `5` |
 | `force_in` | Variables that must be retained | `NULL` |
 
+`"vif"` is a variance ratio and `"condition_number"` is a condition index
+running from 1 to the design matrix's overall condition number, so `limit` is
+read on a different scale for each. See `vignette("advanced")`.
+
 **Returns**: Pruned data frame. Attributes: `selected_vars`, `removed_vars`, `final_model`.
 
 ### corrSelect()
