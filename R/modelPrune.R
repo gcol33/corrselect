@@ -541,8 +541,7 @@ modelPrune <- function(
     # happens to still parse close enough to fit without erroring, silently
     # turning a random intercept into an unintended random-slopes model; two
     # or more terms, e.g. "1 | subject" and "1 | site", collide outright and
-    # lme4 raises "model frame and formula mismatch in model.matrix()"). See
-    # #102.
+    # lme4 raises "model frame and formula mismatch in model.matrix()").
     rhs <- paste(c(rhs, paste0("(", random_effects, ")")), collapse = " + ")
   }
 

@@ -64,7 +64,7 @@ void validateCorMatrix(const NumericMatrix& corMatrix) {
 // (findAllMaxSets, runELS, runBronKerbosch, greedyPruneBackend): validates
 // bounds AND deduplicates, so a repeated index can never reach the search
 // core of any of them (a duplicate would otherwise resurface as the same
-// variable listed twice in a returned combo -- see #31).
+// variable listed twice in a returned combo).
 void validateForcedIndices(Combo& forcedVec, int n) {
   for (size_t i = 0; i < forcedVec.size(); ++i) {
     if (forcedVec[i] < 0 || forcedVec[i] >= n)

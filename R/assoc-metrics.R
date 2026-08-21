@@ -251,7 +251,7 @@
 # that aggregate across multiple matrices (corrPrune()'s grouped `by` path)
 # rely on every association being a non-negative magnitude, since a signed
 # value would let a strong negative association in one group be averaged
-# away by a weak positive one in another (see #97).
+# away by a weak positive one in another.
 .numeric_assoc_matrix <- function(df_num, method) {
   p <- ncol(df_num)
   is_const <- vapply(df_num, function(x) stats::sd(x) == 0, logical(1))

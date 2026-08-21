@@ -30,7 +30,7 @@ Combo forceInToCombo(Rcpp::Nullable<Rcpp::IntegerVector> force_in);
 // honored and forced into every returned subset regardless. Shared by
 // runELS() and runBronKerbosch() (and so, transitively, by
 // findAllMaxSets(), which dispatches to them) so every entry point that
-// forces such variables in gives this signal, not only MatSelect() (#111).
+// forces such variables in gives this signal, not only MatSelect().
 void warnIfForcedMutuallyIncompatible(const Rcpp::NumericMatrix& corMatrix,
                                       double threshold,
                                       const Combo& forcedVec);

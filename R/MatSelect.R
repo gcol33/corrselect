@@ -144,14 +144,14 @@ MatSelect <- function(mat,
   ## ---- forced_in vars that are too correlated internally ----
   # MatSelect() honors an explicit force_in request even when it is
   # internally incompatible with `threshold` -- unlike corrPrune(), which
-  # treats the same condition as infeasible and stop()s (see #98). This
+  # treats the same condition as infeasible and stop()s. This
   # divergence is intentional: MatSelect() is the low-level enumeration
   # primitive and force_in is a direct instruction, while corrPrune()
   # promises a single subset that satisfies threshold. The warning naming
   # the specific offending pair is issued by the shared C++ validation path
   # (warnIfForcedMutuallyIncompatible() in src/utils.cpp, called from
   # runELS()/runBronKerbosch() below), so a caller who bypasses MatSelect()
-  # and calls those Rcpp exports directly still gets it (#111).
+  # and calls those Rcpp exports directly still gets it.
 
   ## ---- warn about possible combinatorial blowup ----
   # Exhaustive maximal-subset enumeration is worst-case exponential in the

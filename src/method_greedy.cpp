@@ -77,7 +77,7 @@ static Combo greedyPrune(
 
     // Incrementally maintained per-variable tie-break statistics, so scoring a
     // candidate during tie-breaking doesn't have to rescan every neighbor
-    // from scratch (see #60). sumAbs/cnt/nanCount track the running average
+    // from scratch. sumAbs/cnt/nanCount track the running average
     // association exactly, updated in O(1) per neighbor whenever a variable
     // is removed. maxVal is a cached max association that is only
     // recomputed (via computeMaxAssoc's O(n) scan) for a variable whose
