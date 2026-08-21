@@ -106,9 +106,9 @@ the association constraint.</p>
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
 <dd><p>Numeric scalar. Maximum allowed pairwise association
 (default: 0.7). Must be in <code>[0, 1]</code> – every supported association
-measure is bounded in <code>[0, 1]</code> (in absolute value), so this range is
-enforced the same way regardless of <code>mode</code> (<code>threshold = 0</code> is valid
-only in <code>mode = "greedy"</code>; see Mode Selection below).</p></dd>
+measure is a correlation magnitude in <code>[0, 1]</code> (see <code>measure</code>), so this
+range is enforced the same way regardless of <code>mode</code> (<code>threshold = 0</code> is
+valid only in <code>mode = "greedy"</code>; see Mode Selection below).</p></dd>
 
 
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
@@ -116,11 +116,19 @@ only in <code>mode = "greedy"</code>; see Mode Selection below).</p></dd>
 measure to use. One of <code>"auto"</code> (default, Pearson), <code>"pearson"</code>,
 <code>"spearman"</code>, <code>"kendall"</code>, <code>"bicor"</code>, <code>"distance"</code>, or <code>"maximal"</code>. This
 only customizes numeric-numeric pairs; every other pair-type combination
-is fixed and not affected by <code>measure</code>: eta-squared for
-numeric-categorical pairs, Cramer's V for categorical-categorical pairs,
-and Spearman for numeric-ordered and ordered-ordered pairs. The measure
-actually used for each pair-type combination is reported in the
-<code>assoc_methods_used</code> attribute of the result.</p></dd>
+is fixed and not affected by <code>measure</code>: eta (the correlation ratio,
+\(\sqrt{\eta^{2}}\)) for numeric-categorical pairs, Cramer's V for
+categorical-categorical pairs, and Spearman for numeric-ordered and
+ordered-ordered pairs. The measure actually used for each pair-type
+combination is reported in the <code>assoc_methods_used</code> attribute of the
+result.</p>
+<p>All of these are correlation magnitudes on a common scale, so <code>threshold</code>
+means the same thing for every pair type: eta is the multiple correlation
+between the numeric variable and the factor, equal to the absolute
+point-biserial correlation for a two-level factor, and Cramer's V equals
+the absolute phi coefficient for a 2x2 table. Encoding a binary variable
+as 0/1 numeric or as a two-level factor therefore gives the same
+association, and the same pruning result.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
@@ -215,8 +223,10 @@ returns the largest one. Greedy mode is faster but approximate, using an
 iterative removal strategy based on association scores.</p>
 <p><strong>Tie-Breaking</strong>: When multiple subsets or variables are equally good,
 deterministic tie-breaking is applied:</p><ul><li><p><strong>Exact mode</strong>: Selects by (1) largest subset size, (2) lowest
-average correlation, (3) alphabetically first variable names. Column
-order does not affect the result.</p></li>
+average correlation, (3) lexicographically first variable names,
+compared in C order (<code>method = "radix"</code>) so the result does not depend
+on the session's collation locale. Column order does not affect the
+result.</p></li>
 <li><p><strong>Greedy mode</strong>: Removes the variable with (1) most constraint
 violations, (2) highest max association, (3) highest average association,
 (4) lowest column index. Column order can influence the result when

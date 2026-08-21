@@ -30,10 +30,10 @@ corrPrune(
 - threshold:
 
   Numeric scalar. Maximum allowed pairwise association (default: 0.7).
-  Must be in `[0, 1]` – every supported association measure is bounded
-  in `[0, 1]` (in absolute value), so this range is enforced the same
-  way regardless of `mode` (`threshold = 0` is valid only in
-  `mode = "greedy"`; see Mode Selection below).
+  Must be in `[0, 1]` – every supported association measure is a
+  correlation magnitude in `[0, 1]` (see `measure`), so this range is
+  enforced the same way regardless of `mode` (`threshold = 0` is valid
+  only in `mode = "greedy"`; see Mode Selection below).
 
 - measure:
 
@@ -41,11 +41,21 @@ corrPrune(
   use. One of `"auto"` (default, Pearson), `"pearson"`, `"spearman"`,
   `"kendall"`, `"bicor"`, `"distance"`, or `"maximal"`. This only
   customizes numeric-numeric pairs; every other pair-type combination is
-  fixed and not affected by `measure`: eta-squared for
-  numeric-categorical pairs, Cramer's V for categorical-categorical
-  pairs, and Spearman for numeric-ordered and ordered-ordered pairs. The
-  measure actually used for each pair-type combination is reported in
-  the `assoc_methods_used` attribute of the result.
+  fixed and not affected by `measure`: eta (the correlation ratio,
+  \\\sqrt{\eta^{2}}\\) for numeric-categorical pairs, Cramer's V for
+  categorical-categorical pairs, and Spearman for numeric-ordered and
+  ordered-ordered pairs. The measure actually used for each pair-type
+  combination is reported in the `assoc_methods_used` attribute of the
+  result.
+
+  All of these are correlation magnitudes on a common scale, so
+  `threshold` means the same thing for every pair type: eta is the
+  multiple correlation between the numeric variable and the factor,
+  equal to the absolute point-biserial correlation for a two-level
+  factor, and Cramer's V equals the absolute phi coefficient for a 2x2
+  table. Encoding a binary variable as 0/1 numeric or as a two-level
+  factor therefore gives the same association, and the same pruning
+  result.
 
 - mode:
 
@@ -171,8 +181,9 @@ using an iterative removal strategy based on association scores.
 deterministic tie-breaking is applied:
 
 - **Exact mode**: Selects by (1) largest subset size, (2) lowest average
-  correlation, (3) alphabetically first variable names. Column order
-  does not affect the result.
+  correlation, (3) lexicographically first variable names, compared in C
+  order (`method = "radix"`) so the result does not depend on the
+  session's collation locale. Column order does not affect the result.
 
 - **Greedy mode**: Removes the variable with (1) most constraint
   violations, (2) highest max association, (3) highest average

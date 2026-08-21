@@ -187,12 +187,12 @@ print(benchmark)
 #>      p exact_time_ms greedy_time_ms
 #> 1   10             0              0
 #> 2   20             0              0
-#> 3   50             0              0
+#> 3   50             0             10
 #> 4  100            10              0
-#> 5  200            60             10
-#> 6  300           220             10
-#> 7  500           920             30
-#> 8 1000            NA            140
+#> 5  200            70             20
+#> 6  300           220             20
+#> 7  500           950             50
+#> 8 1000            NA            160
 ```
 
 ``` r
@@ -377,12 +377,22 @@ available:
 - **`condition_number`**: SVD-based condition indices - alternative
   collinearity diagnostic
 
+A condition index describes a principal direction of the design matrix
+rather than a single column, so each predictor is scored through the
+Belsley-Kuh-Welsch variance decomposition: the condition index of the
+directions that carry its coefficient variance. The score runs from 1 up
+to the overall condition number, so `limit` sits on the condition-index
+scale and the same numeric value means something different under
+`criterion = "vif"`.
+
 ``` r
 
 # Using condition number instead of VIF
 result_cn <- modelPrune(mpg ~ ., data = mtcars, criterion = "condition_number", limit = 10)
 cat("Selected:", attr(result_cn, "selected_vars"), "\n")
-#> Selected: cyl disp hp drat wt qsec vs am
+#> Selected: cyl hp drat wt qsec vs am gear carb
+cat("Removed:", attr(result_cn, "removed_vars"), "\n")
+#> Removed: disp
 ```
 
 #### How Custom Engines Work
@@ -1459,19 +1469,19 @@ show(result)
 #>   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric
 #>                = eta, factor_factor = cramersv
 #>   Threshold:   0.600
-#>   Subsets:     19 maximal subsets
+#>   Subsets:     20 maximal subsets
 #>   Data Rows:   32 used in correlation
 #>   Pivot:       TRUE
 #> 
 #> Top combinations:
 #>   No.  Variables                          Avg    Max    Size
 #>   ------------------------------------------------------------
-#>   [ 1] drat, vs, am, carb                0.273  0.570     4
-#>   [ 2] cyl, drat, am, carb               0.325  0.523     4
-#>   [ 3] cyl, drat, qsec, am               0.336  0.523     4
-#>   [ 4] wt, vs, am, carb                  0.344  0.570     4
-#>   [ 5] wt, vs, gear, carb                0.436  0.583     4
-#>   ... (14 more combinations)
+#>   [ 1] wt, vs, gear, carb                0.436  0.583     4
+#>   [ 2] vs, am, carb                      0.265  0.570     3
+#>   [ 3] wt, qsec, gear                    0.324  0.583     3
+#>   [ 4] disp, am, carb                    0.348  0.591     3
+#>   [ 5] drat, vs, carb                    0.367  0.570     3
+#>   ... (15 more combinations)
 ```
 
 ------------------------------------------------------------------------
@@ -1667,12 +1677,12 @@ sessionInfo()
 #> [1] corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      
 #>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
 #>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   
 #> [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0    
 #> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0         
-#> [21] htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          bslib_0.11.0      tools_4.6.0       pkgdown_2.2.0    
+#> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
+#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.0       pkgdown_2.2.0    
 #> [29] cachem_1.1.0      desc_1.4.3
 ```

@@ -122,6 +122,11 @@ Bron–Kerbosch (ignored by ELS); any other named argument is an error.</p></dd>
 correlation statistics. If every variable is pairwise correlated above <code>threshold</code>,
 the only valid maximal subsets are single variables; these are returned with
 <code>min_corr</code>/<code>max_corr</code> set to <code>NA</code> (there is no pair to summarize).</p>
+<p>Subsets are ordered by decreasing size, then increasing average absolute
+correlation. Subsets tying on both keep the order the search enumerated
+them in, which is itself determined by <code>mat</code> and <code>threshold</code>, so
+the ordering is reproducible across platforms. It is this ordering that
+<code><a href="corrSubset.html">corrSubset</a>(which = "best")</code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> read.</p>
     </div>
 
     <div class="section level2">

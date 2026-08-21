@@ -85,9 +85,9 @@ corrPrune(longitudinal_example[, c("x1", "x2", "x3", "x4", "x5", "site")],
 
 [`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)
 picks the right association measure for each pair of columns (Pearson
-for numeric-numeric, eta-squared for numeric-factor, Cramer’s V for
-factor-factor), and enumerates maximal subsets under all of them at
-once:
+for numeric-numeric, the correlation ratio eta for numeric-factor,
+Cramer’s V for factor-factor), and enumerates maximal subsets under all
+of them at once:
 
 ``` r
 

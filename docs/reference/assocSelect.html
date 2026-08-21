@@ -184,7 +184,8 @@ categorical features and return every subset whose internal associations are
 <dd><p><code>method_num_ord</code></p></dd>
 
 <dt>numeric – unordered</dt>
-<dd><p><code>"eta"</code> (ANOVA \(\eta^{2}\))</p></dd>
+<dd><p><code>"eta"</code> (the correlation ratio
+\(\eta = \sqrt{\eta^{2}}\) of a one-way ANOVA)</p></dd>
 
 <dt>ordered – ordered</dt>
 <dd><p><code>method_ord_ord</code></p></dd>
@@ -196,7 +197,13 @@ categorical features and return every subset whose internal associations are
 <dd><p><code>"cramersv"</code></p></dd>
 
 
-</dl><p>All association measures are rescaled to \([0,1]\) before thresholding.
+</dl><p>Every measure above is a correlation magnitude in \([0,1]\), so
+<code>threshold</code> means the same thing for every variable-type pair. \(\eta\)
+is the multiple correlation between the numeric variable and the factor and
+equals the absolute point-biserial correlation for a two-level factor;
+Cramer's V equals the absolute phi coefficient for a 2x2 table. A binary
+variable therefore gets the same association whether it is supplied as a
+0/1 numeric column or as a two-level factor.
 External packages are required for
 <code>"bicor"</code> (<span class="pkg">WGCNA</span>),
 <code>"distance"</code> (<span class="pkg">energy</span>),

@@ -124,7 +124,8 @@ The default association measure for each variable-type combination is:
 
 - numeric – unordered:
 
-  `"eta"` (ANOVA \\\eta^{2}\\)
+  `"eta"` (the correlation ratio \\\eta = \sqrt{\eta^{2}}\\ of a one-way
+  ANOVA)
 
 - ordered – ordered:
 
@@ -138,10 +139,16 @@ The default association measure for each variable-type combination is:
 
   `"cramersv"`
 
-All association measures are rescaled to \\\[0,1\]\\ before
-thresholding. External packages are required for `"bicor"` (WGCNA),
-`"distance"` (energy), and `"maximal"` (minerva); an informative error
-is thrown if they are missing.
+Every measure above is a correlation magnitude in \\\[0,1\]\\, so
+`threshold` means the same thing for every variable-type pair. \\\eta\\
+is the multiple correlation between the numeric variable and the factor
+and equals the absolute point-biserial correlation for a two-level
+factor; Cramer's V equals the absolute phi coefficient for a 2x2 table.
+A binary variable therefore gets the same association whether it is
+supplied as a 0/1 numeric column or as a two-level factor. External
+packages are required for `"bicor"` (WGCNA), `"distance"` (energy), and
+`"maximal"` (minerva); an informative error is thrown if they are
+missing.
 
 ## See also
 

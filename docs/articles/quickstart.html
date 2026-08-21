@@ -50,7 +50,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/quickstart.html">Get Started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/quickstart.html">Get Started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -94,7 +94,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-07-30</h4>
+            <h4 data-toc-skip class="date">2026-08-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/quickstart.Rmd" class="external-link"><code>vignettes/quickstart.Rmd</code></a></small>
       <div class="d-none name"><code>quickstart.Rmd</code></div>
@@ -309,7 +309,7 @@ optimal one, use <code><a href="../reference/corrSelect.html">corrSelect()</a></
 <span><span class="co">#&gt; Top combinations:</span></span>
 <span><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
 <span><span class="co">#&gt;   ------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   [ 1] x1, x2, cat1, ord1                0.050  0.184     4</span></span>
+<span><span class="co">#&gt;   [ 1] x1, x2, cat1, ord1                0.077  0.184     4</span></span>
 <span></span>
 <span><span class="co"># Verify all pairwise associations are below threshold</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Max pairwise association:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">results_mixed</span><span class="op">@</span><span class="va">max_corr</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -529,6 +529,11 @@ model.</p>
 </tr>
 </tbody>
 </table>
+<p><code>"vif"</code> is a variance ratio and
+<code>"condition_number"</code> is a condition index running from 1 to
+the design matrix’s overall condition number, so <code>limit</code> is
+read on a different scale for each. See
+<code><a href="../articles/advanced.html">vignette("advanced")</a></code>.</p>
 <p><strong>Returns</strong>: Pruned data frame. Attributes:
 <code>selected_vars</code>, <code>removed_vars</code>,
 <code>final_model</code>.</p>
@@ -811,8 +816,8 @@ formulation</p></li>
 <span><span class="co">#&gt;  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         S7_0.2.2         </span></span>
 <span><span class="co">#&gt; [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.5</span></span>
 <span><span class="co">#&gt; [17] jquerylib_0.1.4   systemfonts_1.3.2 compiler_4.6.0    tools_4.6.0      </span></span>
-<span><span class="co">#&gt; [21] bslib_0.11.0      evaluate_1.0.5    Rcpp_1.1.1-1.1    yaml_2.3.12      </span></span>
-<span><span class="co">#&gt; [25] otel_0.2.0        jsonlite_2.0.0    rlang_1.2.0       fs_2.1.0         </span></span>
+<span><span class="co">#&gt; [21] bslib_0.12.0      evaluate_1.0.5    Rcpp_1.1.2        yaml_2.3.12      </span></span>
+<span><span class="co">#&gt; [25] otel_0.2.0        jsonlite_2.0.0    rlang_1.3.0       fs_2.1.0         </span></span>
 <span><span class="co">#&gt; [29] htmlwidgets_1.6.4</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

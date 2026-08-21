@@ -52,7 +52,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/quickstart.html">Get Started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start</a></li>
@@ -94,7 +94,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-07-30</h4>
+            <h4 data-toc-skip class="date">2026-08-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/theory.Rmd" class="external-link"><code>vignettes/theory.Rmd</code></a></small>
       <div class="d-none name"><code>theory.Rmd</code></div>
@@ -162,9 +162,19 @@ that quantifies the relationship between two variables.</p>
 <ul>
 <li><p><strong>Numeric–numeric:</strong> Pearson’s <span class="math inline">\(\rho\)</span>, Spearman’s <span class="math inline">\(\rho_s\)</span>, Kendall’s <span class="math inline">\(\tau_K\)</span></p></li>
 <li><p><strong>Categorical–categorical:</strong> Cramér’s V</p></li>
-<li><p><strong>Numeric–factor:</strong> eta-squared <span class="math inline">\(\eta^2\)</span></p></li>
+<li><p><strong>Numeric–factor:</strong> the correlation ratio <span class="math inline">\(\eta = \sqrt{\eta^2}\)</span></p></li>
 </ul>
-<p>All measures used in the package are normalized so that<br><span class="math inline">\(|a_{ij}| \in [0,1]\)</span>.</p>
+<p>All measures used in the package are correlation magnitudes with
+<span class="math inline">\(|a_{ij}| \in [0,1]\)</span>, which is what
+lets a single threshold <span class="math inline">\(\tau\)</span> apply
+to every pair. <span class="math inline">\(\eta\)</span> is the multiple
+correlation between the numeric variable and the factor and reduces to
+the absolute point-biserial correlation for a two-level factor; Cramér’s
+V reduces to the absolute <span class="math inline">\(\varphi\)</span>
+coefficient for a <span class="math inline">\(2 \times 2\)</span> table.
+A binary variable therefore gets the same association value whether it
+enters as a 0/1 numeric column or as a two-level factor, and the same
+<span class="math inline">\(\tau\)</span> cuts it in both encodings.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -695,6 +705,7 @@ has 20 variables with known block structure:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Adjacency matrix (first 5×5 block):\n"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">adj_mat</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">*</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; Warning: package 'igraph' was built under R version 4.6.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'igraph'</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
@@ -1160,7 +1171,7 @@ chosen based on variable types:</p>
 </tr>
 <tr class="even">
 <td>numeric, factor</td>
-<td><span class="math inline">\(\eta^2\)</span></td>
+<td><span class="math inline">\(\eta\)</span></td>
 </tr>
 <tr class="odd">
 <td>numeric, ordered</td>
@@ -1181,8 +1192,14 @@ chosen based on variable types:</p>
 </tbody>
 </table>
 <p>All measures are bounded: <span class="math inline">\(a_{ij} \in [0,
-1]\)</span> or <span class="math inline">\(a_{ij} \in [-1,
-1]\)</span>.</p>
+1]\)</span> or <span class="math inline">\(a_{ij} \in [-1, 1]\)</span>.
+They are also on a common scale: each is a correlation magnitude, so
+<span class="math inline">\(\tau\)</span> carries the same meaning in
+every cell of <span class="math inline">\(A\)</span>. Thresholding <span class="math inline">\(\eta^2\)</span> for numeric–factor pairs while
+thresholding <span class="math inline">\(|r|\)</span> elsewhere would
+cut a numeric–factor pair only once its underlying correlation passed
+<span class="math inline">\(\sqrt{\tau}\)</span>, so re-encoding a
+binary column as a factor could change which variables survive.</p>
 </div>
 <div class="section level3">
 <h3 id="threshold-constraint">Threshold Constraint<a class="anchor" aria-label="anchor" href="#threshold-constraint"></a>
@@ -1769,8 +1786,8 @@ Computes the correlation matrix internally and finds cliques</li>
 Uses a precomputed association matrix directly</li>
 <li>
 <code>assocSelect(data)</code><br>
-Computes mixed association measures (Pearson, eta-squared, Cramér’s V)
-before selection</li>
+Computes mixed association measures (Pearson, the correlation ratio eta,
+Cramér’s V) before selection</li>
 </ul>
 </div>
 <div class="section level3">
@@ -2624,8 +2641,8 @@ random sampling. <em>Philosophical Magazine</em>, 50(302), 157-175.</p>
 <em>Proceedings of the National Academy of Sciences</em>, 21(9),
 554-559.</p>
 <ul>
-<li><p><strong>Eta-squared (correlation ratio)</strong>: Association
-between numeric and categorical variables</p></li>
+<li><p><strong>Correlation ratio (eta)</strong>: Association between
+numeric and categorical variables</p></li>
 <li><p>Used in assocSelect() for numeric-factor pairs</p></li>
 </ul>
 </li>
@@ -2758,16 +2775,16 @@ alternatives</p></li>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] igraph_2.3.1     corrselect_3.2.3</span></span>
+<span><span class="co">#&gt; [1] igraph_2.3.3     corrselect_3.2.3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      </span></span>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      </span></span>
 <span><span class="co">#&gt;  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         </span></span>
 <span><span class="co">#&gt;  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   </span></span>
 <span><span class="co">#&gt; [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      </span></span>
 <span><span class="co">#&gt; [17] lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0          pkgconfig_2.0.3  </span></span>
-<span><span class="co">#&gt; [21] htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2 digest_0.6.39    </span></span>
-<span><span class="co">#&gt; [25] R6_2.6.1          magrittr_2.0.5    bslib_0.11.0      tools_4.6.0      </span></span>
+<span><span class="co">#&gt; [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    </span></span>
+<span><span class="co">#&gt; [25] R6_2.6.1          magrittr_2.0.5    bslib_0.12.0      tools_4.6.0      </span></span>
 <span><span class="co">#&gt; [29] pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -52,7 +52,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/quickstart.html">Get Started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/quickstart.html">Quick Start</a></li>
@@ -94,7 +94,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-07-30</h4>
+            <h4 data-toc-skip class="date">2026-08-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -278,12 +278,12 @@ more)</p></li>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
 <span><span class="co">#&gt; 1   10             0              0</span></span>
 <span><span class="co">#&gt; 2   20             0              0</span></span>
-<span><span class="co">#&gt; 3   50             0              0</span></span>
+<span><span class="co">#&gt; 3   50             0             10</span></span>
 <span><span class="co">#&gt; 4  100            10              0</span></span>
-<span><span class="co">#&gt; 5  200            60             10</span></span>
-<span><span class="co">#&gt; 6  300           220             10</span></span>
-<span><span class="co">#&gt; 7  500           920             30</span></span>
-<span><span class="co">#&gt; 8 1000            NA            140</span></span></code></pre></div>
+<span><span class="co">#&gt; 5  200            70             20</span></span>
+<span><span class="co">#&gt; 6  300           220             20</span></span>
+<span><span class="co">#&gt; 7  500           950             50</span></span>
+<span><span class="co">#&gt; 8 1000            NA            160</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -369,13 +369,15 @@ more)</p></li>
   </clipPath>
 </defs>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
-<line x1='155.41' y1='213.64' x2='172.64' y2='213.64' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='188.76' y1='210.33' x2='241.38' y2='187.77' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='257.27' y1='182.50' x2='411.08' y2='145.52' style='stroke-width: 1.50; stroke: #3380CC;' />
-<circle cx='147.01' cy='213.64' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='181.04' cy='213.64' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='249.10' cy='184.46' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='419.24' cy='143.56' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<line x1='103.87' y1='210.90' x2='139.10' y2='198.27' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='155.41' y1='195.43' x2='172.64' y2='195.43' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='188.95' y1='192.62' x2='241.18' y2='174.04' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='257.36' y1='169.74' x2='410.98' y2='142.00' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='95.97' cy='213.74' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='147.01' cy='195.43' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='181.04' cy='195.43' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='249.10' cy='171.23' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='419.24' cy='140.51' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
 <line x1='78.95' y1='238.32' x2='419.24' y2='238.32' style='stroke-width: 0.75;' />
@@ -391,35 +393,35 @@ more)</p></li>
 <text x='283.13' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>600</text>
 <text x='351.19' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>800</text>
 <text x='419.24' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>1000</text>
-<line x1='68.88' y1='232.04' x2='68.88' y2='72.94' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='232.04' x2='68.88' y2='73.80' style='stroke-width: 0.75;' />
 <line x1='68.88' y1='232.04' x2='60.48' y2='232.04' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='213.64' x2='60.48' y2='213.64' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='195.23' x2='60.48' y2='195.23' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='170.90' x2='60.48' y2='170.90' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='152.49' x2='60.48' y2='152.49' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='134.09' x2='60.48' y2='134.09' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='109.75' x2='60.48' y2='109.75' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='91.35' x2='60.48' y2='91.35' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='72.94' x2='60.48' y2='72.94' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='213.74' x2='60.48' y2='213.74' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='195.43' x2='60.48' y2='195.43' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='171.23' x2='60.48' y2='171.23' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='152.92' x2='60.48' y2='152.92' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='134.62' x2='60.48' y2='134.62' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='110.41' x2='60.48' y2='110.41' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='92.11' x2='60.48' y2='92.11' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='73.80' x2='60.48' y2='73.80' style='stroke-width: 0.75;' />
 <text transform='translate(48.72,232.04) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>5</text>
-<text transform='translate(48.72,195.23) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>20</text>
-<text transform='translate(48.72,152.49) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>100</text>
-<text transform='translate(48.72,109.75) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>500</text>
+<text transform='translate(48.72,195.43) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>20</text>
+<text transform='translate(48.72,152.92) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>100</text>
+<text transform='translate(48.72,110.41) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>500</text>
 <polygon points='68.88,238.32 432.72,238.32 432.72,68.88 68.88,68.88 ' style='stroke-width: 0.75;' />
 <text x='250.80' y='40.46' text-anchor='middle' style='font-size: 1.68em; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact vs Greedy Scaling</text>
 <text x='250.80' y='302.16' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Number of Predictors (p)</text>
 <text transform='translate(15.12,153.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Time (milliseconds, log scale)</text>
 </g>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
-<line x1='117.87' y1='206.81' x2='142.12' y2='172.89' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='152.91' y1='160.08' x2='175.14' y2='137.54' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='188.37' y1='127.46' x2='241.76' y2='97.66' style='stroke-width: 1.50; stroke: #CC3333;' />
-<circle cx='112.98' cy='213.64' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='147.01' cy='166.06' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='181.04' cy='131.56' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='249.10' cy='93.56' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<line x1='117.62' y1='206.73' x2='142.37' y2='169.35' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='153.29' y1='156.76' x2='174.76' y2='137.68' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='188.35' y1='127.95' x2='241.79' y2='97.61' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='112.98' cy='213.74' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='147.01' cy='162.34' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='181.04' cy='132.10' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='249.10' cy='93.46' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <line x1='249.10' y1='238.32' x2='249.10' y2='68.88' style='stroke-width: 0.75; stroke: #7F7F7F; stroke-dasharray: 4.00,4.00;' />
-<text x='257.50' y='96.90' style='font-size: 1.4em;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact mode limit</text>
+<text x='257.50' y='96.80' style='font-size: 1.4em;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact mode limit</text>
 <rect rx='4' x='68.88' y='68.88' width='93.77' height='50.40' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='72.66' y1='85.68' x2='97.86' y2='85.68' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='72.66' y1='102.48' x2='97.86' y2='102.48' style='stroke-width: 1.50; stroke: #3380CC;' />
@@ -575,11 +577,20 @@ Factor - classic multicollinearity measure</p></li>
 <li><p><strong><code>condition_number</code></strong>: SVD-based
 condition indices - alternative collinearity diagnostic</p></li>
 </ul>
+<p>A condition index describes a principal direction of the design
+matrix rather than a single column, so each predictor is scored through
+the Belsley-Kuh-Welsch variance decomposition: the condition index of
+the directions that carry its coefficient variance. The score runs from
+1 up to the overall condition number, so <code>limit</code> sits on the
+condition-index scale and the same numeric value means something
+different under <code>criterion = "vif"</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using condition number instead of VIF</span></span>
 <span><span class="va">result_cn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, criterion <span class="op">=</span> <span class="st">"condition_number"</span>, limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result_cn</span>, <span class="st">"selected_vars"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Selected: cyl disp hp drat wt qsec vs am</span></span></code></pre></div>
+<span><span class="co">#&gt; Selected: cyl hp drat wt qsec vs am gear carb</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Removed:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result_cn</span>, <span class="st">"removed_vars"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Removed: disp</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="how-custom-engines-work">How Custom Engines Work<a class="anchor" aria-label="anchor" href="#how-custom-engines-work"></a>
@@ -1782,19 +1793,19 @@ plateau.</p>
 <span><span class="co">#&gt;   AssocMethod: numeric_factor = eta, numeric_numeric = pearson, factor_numeric</span></span>
 <span><span class="co">#&gt;                = eta, factor_factor = cramersv</span></span>
 <span><span class="co">#&gt;   Threshold:   0.600</span></span>
-<span><span class="co">#&gt;   Subsets:     19 maximal subsets</span></span>
+<span><span class="co">#&gt;   Subsets:     20 maximal subsets</span></span>
 <span><span class="co">#&gt;   Data Rows:   32 used in correlation</span></span>
 <span><span class="co">#&gt;   Pivot:       TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Top combinations:</span></span>
 <span><span class="co">#&gt;   No.  Variables                          Avg    Max    Size</span></span>
 <span><span class="co">#&gt;   ------------------------------------------------------------</span></span>
-<span><span class="co">#&gt;   [ 1] drat, vs, am, carb                0.273  0.570     4</span></span>
-<span><span class="co">#&gt;   [ 2] cyl, drat, am, carb               0.325  0.523     4</span></span>
-<span><span class="co">#&gt;   [ 3] cyl, drat, qsec, am               0.336  0.523     4</span></span>
-<span><span class="co">#&gt;   [ 4] wt, vs, am, carb                  0.344  0.570     4</span></span>
-<span><span class="co">#&gt;   [ 5] wt, vs, gear, carb                0.436  0.583     4</span></span>
-<span><span class="co">#&gt;   ... (14 more combinations)</span></span></code></pre></div>
+<span><span class="co">#&gt;   [ 1] wt, vs, gear, carb                0.436  0.583     4</span></span>
+<span><span class="co">#&gt;   [ 2] vs, am, carb                      0.265  0.570     3</span></span>
+<span><span class="co">#&gt;   [ 3] wt, qsec, gear                    0.324  0.583     3</span></span>
+<span><span class="co">#&gt;   [ 4] disp, am, carb                    0.348  0.591     3</span></span>
+<span><span class="co">#&gt;   [ 5] drat, vs, carb                    0.367  0.570     3</span></span>
+<span><span class="co">#&gt;   ... (15 more combinations)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -1992,13 +2003,13 @@ exact methods</p></li>
 <span><span class="co">#&gt; [1] corrselect_3.2.3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      </span></span>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      </span></span>
 <span><span class="co">#&gt;  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         </span></span>
 <span><span class="co">#&gt;  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   </span></span>
 <span><span class="co">#&gt; [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0    </span></span>
 <span><span class="co">#&gt; [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0         </span></span>
-<span><span class="co">#&gt; [21] htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2 digest_0.6.39    </span></span>
-<span><span class="co">#&gt; [25] R6_2.6.1          bslib_0.11.0      tools_4.6.0       pkgdown_2.2.0    </span></span>
+<span><span class="co">#&gt; [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    </span></span>
+<span><span class="co">#&gt; [25] R6_2.6.1          bslib_0.12.0      tools_4.6.0       pkgdown_2.2.0    </span></span>
 <span><span class="co">#&gt; [29] cachem_1.1.0      desc_1.4.3</span></span></code></pre></div>
 </div>
 </div>

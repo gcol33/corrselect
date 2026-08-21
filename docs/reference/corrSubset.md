@@ -42,7 +42,11 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
   - `"all"`: all available subsets.
 
   Subsets are ranked by decreasing size, then increasing average
-  correlation.
+  correlation. Subsets tying on both keep the order the search
+  enumerated them in, which is itself determined by the input, so the
+  ranking is reproducible across platforms. Exact ties are common – for
+  instance, when every pair exceeds the threshold, every subset is a
+  single variable with an average correlation of 0.
 
 - keepExtra:
 

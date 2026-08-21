@@ -227,7 +227,7 @@ show(results_mixed)
 #> Top combinations:
 #>   No.  Variables                          Avg    Max    Size
 #>   ------------------------------------------------------------
-#>   [ 1] x1, x2, cat1, ord1                0.050  0.184     4
+#>   [ 1] x1, x2, cat1, ord1                0.077  0.184     4
 
 # Verify all pairwise associations are below threshold
 cat("Max pairwise association:", max(results_mixed@max_corr), "\n")
@@ -320,6 +320,11 @@ modelPrune(formula, data, engine = "lm", criterion = "vif",
 | `criterion` | `"vif"` or `"condition_number"`                   | `"vif"`    |
 | `limit`     | Maximum allowed diagnostic value                  | `5`        |
 | `force_in`  | Variables that must be retained                   | `NULL`     |
+
+`"vif"` is a variance ratio and `"condition_number"` is a condition
+index running from 1 to the design matrix’s overall condition number, so
+`limit` is read on a different scale for each. See
+[`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md).
 
 **Returns**: Pruned data frame. Attributes: `selected_vars`,
 `removed_vars`, `final_model`.
@@ -488,7 +493,7 @@ sessionInfo()
 #>  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         S7_0.2.2         
 #> [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.0     textshaping_1.0.5
 #> [17] jquerylib_0.1.4   systemfonts_1.3.2 compiler_4.6.0    tools_4.6.0      
-#> [21] bslib_0.11.0      evaluate_1.0.5    Rcpp_1.1.1-1.1    yaml_2.3.12      
-#> [25] otel_0.2.0        jsonlite_2.0.0    rlang_1.2.0       fs_2.1.0         
+#> [21] bslib_0.12.0      evaluate_1.0.5    Rcpp_1.1.2        yaml_2.3.12      
+#> [25] otel_0.2.0        jsonlite_2.0.0    rlang_1.3.0       fs_2.1.0         
 #> [29] htmlwidgets_1.6.4
 ```

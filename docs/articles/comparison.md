@@ -768,10 +768,10 @@ sessionInfo()
 #>  [7] pROC_1.19.0.1        caret_7.0-1          digest_0.6.39       
 #> [10] rpart_4.1.27         timechange_0.4.0     lifecycle_1.0.5     
 #> [13] survival_3.8-6       magrittr_2.0.5       compiler_4.6.0      
-#> [16] rlang_1.2.0          sass_0.4.10          tools_4.6.0         
+#> [16] rlang_1.3.0          sass_0.4.10          tools_4.6.0         
 #> [19] yaml_2.3.12          data.table_1.18.4    knitr_1.51          
 #> [22] htmlwidgets_1.6.4    plyr_1.8.9           RColorBrewer_1.1-3  
-#> [25] abind_1.4-8          withr_3.0.2          purrr_1.2.2         
+#> [25] abind_1.4-8          withr_3.0.3          purrr_1.2.2         
 #> [28] desc_1.4.3           nnet_7.3-20          grid_4.6.0          
 #> [31] stats4_4.6.0         future_1.70.0        ggplot2_4.0.3       
 #> [34] globals_0.19.1       scales_1.4.0         iterators_1.0.14    
@@ -788,8 +788,8 @@ sessionInfo()
 #> [67] gtable_0.3.6         tibble_3.3.1         pillar_1.11.1       
 #> [70] htmltools_0.5.9      ipred_0.9-15         lava_1.9.1          
 #> [73] R6_2.6.1             textshaping_1.0.5    evaluate_1.0.5      
-#> [76] lattice_0.22-9       bslib_0.11.0         class_7.3-23        
-#> [79] Rcpp_1.1.1-1.1       svglite_2.2.2        nlme_3.1-169        
+#> [76] lattice_0.22-9       bslib_0.12.0         class_7.3-23        
+#> [79] Rcpp_1.1.2           svglite_2.2.2        nlme_3.1-169        
 #> [82] prodlim_2026.03.11   xfun_0.57            fs_2.1.0            
 #> [85] pkgconfig_2.0.3      ModelMetrics_1.2.2.2
 ```

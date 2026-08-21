@@ -69,10 +69,17 @@ Common cases:
 
 - **Categorical–categorical:** Cramér’s V
 
-- **Numeric–factor:** eta-squared \\\eta^2\\
+- **Numeric–factor:** the correlation ratio \\\eta = \sqrt{\eta^2}\\
 
-All measures used in the package are normalized so that\
-\\\|a\_{ij}\| \in \[0,1\]\\.
+All measures used in the package are correlation magnitudes with
+\\\|a\_{ij}\| \in \[0,1\]\\, which is what lets a single threshold
+\\\tau\\ apply to every pair. \\\eta\\ is the multiple correlation
+between the numeric variable and the factor and reduces to the absolute
+point-biserial correlation for a two-level factor; Cramér’s V reduces to
+the absolute \\\varphi\\ coefficient for a \\2 \times 2\\ table. A
+binary variable therefore gets the same association value whether it
+enters as a 0/1 numeric column or as a two-level factor, and the same
+\\\tau\\ cuts it in both encodings.
 
 ------------------------------------------------------------------------
 
@@ -531,6 +538,7 @@ if (requireNamespace("igraph", quietly = TRUE)) {
   cat("Adjacency matrix (first 5×5 block):\n")
   print(adj_mat[1:5, 1:5] * 1)
 }
+#> Warning: package 'igraph' was built under R version 4.6.1
 #> 
 #> Attaching package: 'igraph'
 #> The following objects are masked from 'package:stats':
@@ -737,14 +745,19 @@ For numeric variables, \\a\_{ij}\\ may be a correlation coefficient
 | Type \\(X_i, X_j)\\ | Measure                  |
 |---------------------|--------------------------|
 | numeric, numeric    | Pearson/Spearman/Kendall |
-| numeric, factor     | \\\eta^2\\               |
+| numeric, factor     | \\\eta\\                 |
 | numeric, ordered    | Spearman/Kendall         |
 | factor, factor      | Cramér’s V               |
 | factor, ordered     | Cramér’s V               |
 | ordered, ordered    | Spearman/Kendall         |
 
 All measures are bounded: \\a\_{ij} \in \[0, 1\]\\ or \\a\_{ij} \in
-\[-1, 1\]\\.
+\[-1, 1\]\\. They are also on a common scale: each is a correlation
+magnitude, so \\\tau\\ carries the same meaning in every cell of \\A\\.
+Thresholding \\\eta^2\\ for numeric–factor pairs while thresholding
+\\\|r\|\\ elsewhere would cut a numeric–factor pair only once its
+underlying correlation passed \\\sqrt{\tau}\\, so re-encoding a binary
+column as a factor could change which variables survive.
 
 ### Threshold Constraint
 
@@ -1095,8 +1108,8 @@ How the association structure enters the algorithm:
 - `MatSelect(cor_matrix)`\
   Uses a precomputed association matrix directly
 - `assocSelect(data)`\
-  Computes mixed association measures (Pearson, eta-squared, Cramér’s V)
-  before selection
+  Computes mixed association measures (Pearson, the correlation ratio
+  eta, Cramér’s V) before selection
 
 ### **Graph density → Performance considerations**
 
@@ -1878,7 +1891,7 @@ suffices (e.g., automated pipelines).
 - Kelley, T. L. (1935). An unbiased correlation ratio measure.
   *Proceedings of the National Academy of Sciences*, 21(9), 554-559.
 
-  - **Eta-squared (correlation ratio)**: Association between numeric and
+  - **Correlation ratio (eta)**: Association between numeric and
     categorical variables
 
   - Used in assocSelect() for numeric-factor pairs
@@ -1987,15 +2000,15 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.3.1     corrselect_3.2.3
+#> [1] igraph_2.3.3     corrselect_3.2.3
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      
 #>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
 #>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   
 #> [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      
 #> [17] lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0          pkgconfig_2.0.3  
-#> [21] htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.11.0      tools_4.6.0      
+#> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
+#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.12.0      tools_4.6.0      
 #> [29] pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
 ```

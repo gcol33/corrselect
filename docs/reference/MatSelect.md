@@ -55,6 +55,13 @@ variable is pairwise correlated above `threshold`, the only valid
 maximal subsets are single variables; these are returned with
 `min_corr`/`max_corr` set to `NA` (there is no pair to summarize).
 
+Subsets are ordered by decreasing size, then increasing average absolute
+correlation. Subsets tying on both keep the order the search enumerated
+them in, which is itself determined by `mat` and `threshold`, so the
+ordering is reproducible across platforms. It is this ordering that
+[`corrSubset`](https://gillescolling.com/corrselect/reference/corrSubset.md)`(which = "best")`
+and [`print()`](https://rdrr.io/r/base/print.html) read.
+
 ## Examples
 
 ``` r
