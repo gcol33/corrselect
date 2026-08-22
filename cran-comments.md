@@ -15,9 +15,8 @@ Changes" in NEWS.md.
 
 ## Test environments
 
-* local: Windows 11 x64, R 4.6.0
-* win-builder: R-devel, R-release
-* mac-builder: R-release
+* local: Windows 11 x64, R 4.6.0 -- Status: OK
+* win-builder: R-devel (2026-08-21 r90440) and R 4.6.1 -- both Status: OK
 
 ## Notes for the reviewer
 
