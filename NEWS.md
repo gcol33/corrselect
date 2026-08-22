@@ -1,4 +1,4 @@
-# corrselect 3.2.3
+# corrselect 3.3.0
 
 ## Breaking Changes
 
@@ -9,19 +9,6 @@
 - **modelPrune**: `criterion = "condition_number"` paired each predictor with the singular value sitting at its column position. Since `svd()$d` is ordered by principal direction rather than by column, the overall condition number always landed on the last column of the design matrix and pruning stripped terms from the end of the formula whatever the collinearity structure was. Predictors are now scored through the Belsley-Kuh-Welsch variance decomposition, as the condition index of the principal directions carrying their coefficient variance. On `mtcars` with `limit = 10` this removes `disp` instead of `gear` and `carb` (#126).
 - **assocSelect / corrPrune**: eta returned `NA` whenever a factor carried a level with no observations, because `tapply()` fills an empty level with `NA` and the between-group sum of squares propagated it. The term for an empty level is `n_g * (xbar_g - xbar)^2` with `n_g = 0`, so the association was well defined all along. This aborted `corrPrune(by = ...)` on mixed-type data whenever a single group was missing one factor level, which is the ordinary case for small groups (#127).
 - **C++ backend / corrPrune**: two documented determinism claims did not hold across platforms. Subsets tying on both size and average correlation were ordered by `std::sort`, which leaves tied elements in an unspecified relative order that can differ between compilers; the ordering `corrSubset(which = "best")` and `print()` read is now stable and follows the enumeration order. Separately, `corrPrune()`'s exact-mode lexicographic tie-break used the session's collation locale, so variable names mixing case or punctuation could select a different subset in two sessions on the same machine; it now compares in C order (#128).
-
-- **C++ backend**: `runELS()` was a single greedy expansion per seed vertex, not an implementation of Eppstein-Loffler-Strash, and could silently miss valid maximal subsets. Replaced with a genuine ELS implementation (degeneracy ordering + per-vertex bounded expansion), sharing a verified Bron-Kerbosch pivot core with the `"bron-kerbosch"` method. Verified against brute-force enumeration.
-- **Greedy backend**: an undefined (NaN) association was silently treated as compatible (`NaN > threshold` is `false` in C++); NaN now always registers as a threshold violation.
-- **MatSelect**: the symmetry check used exact floating-point equality, inconsistent with the R layer's `1e-8` tolerance, and could reject matrices the R layer had already accepted as symmetric. Added a minimum `ncol >= 2` guard, and `n_rows_used` no longer reports a fabricated row count for matrix input (now `NA`).
-- **corrSelect**: numeric `force_in` indices were checked against the final (filtered) correlation matrix but never remapped from the original data frame's column positions, so a numeric index could silently force the wrong variable into every subset after non-numeric or constant columns were dropped.
-- **corrPrune**: no longer errors on trivially satisfiable inputs (a single predictor, or a set where every pair exceeds the threshold) -- the pairwise constraint holds vacuously for one variable, so one is now retained instead of raising "No valid subsets found".
-- **corrPrune / modelPrune / assocSelect**: undefined (NA) associations were handled inconsistently -- silently treated as zero association, silently passed through the greedy backend, or produced blank/uninformative errors. All undefined associations are now surfaced explicitly with a clear message identifying the affected variable pair(s).
-- **corrPrune**: the `measure` argument had no effect on mixed-type data (numeric-numeric pairs always used Pearson regardless of the requested measure). It now customizes numeric-numeric pairs as documented, and the measure actually used per pair-type is reported via a new `assoc_methods_used` attribute.
-- **modelPrune**: VIF and condition-number computation matched design-matrix columns to predictor names with a prefix-based regex, which could silently collide (e.g. `"x1"` matching the `"x10"` column). Columns are now resolved via the model's own `assign` bookkeeping.
-- **modelPrune**: formulas with a transformed response (e.g. `log(mpg) ~ .`) crashed during formula parsing.
-- **corrSubset**: `which = "best"` on a `CorrCombo` with no subsets raised an uninformative "subscript out of bounds" error instead of a clear message.
-- Internal Rcpp exports (`runELS`, `runBronKerbosch`) now validate `force_in` bounds directly rather than relying solely on the R-level dispatcher.
-- Added duplicate-column-name checks, `force_in`/`by` overlap detection, and a coverage warning when most groups are skipped during grouped aggregation in `corrPrune`.
 - **assocSelect**: `method = "eta"` computed eta (the square root) instead of eta-squared, contradicting its own documentation.
 - **modelPrune**: VIF for a multi-level factor averaged its dummy columns into one number instead of computing a generalized VIF, which could report no collinearity for a factor that was severely collinear. Now uses the standard Fox & Monette GVIF determinant ratio, verified against `car::vif()`.
 - **modelPrune**: refitting a reduced formula with a single random-effect term (e.g. `(1 | group)`) via unparenthesized `term | group` fragments was silently reinterpreted by `lme4`/`glmmTMB` as a random slope instead of a random intercept, and rejected outright for two or more random-effect terms.
@@ -65,11 +52,33 @@
 
 ## Test Coverage Improvements
 
-- Added recovery-style and reference-verified tests for `corrPrune` and `modelPrune`: hand-computed grouped quantile aggregation, exact-value tie-break tests (lexicographic and greedy), a greedy-vs-exact identity check, VIF verified against `car::vif()`, condition-number verified against a manual SVD reference, and seed-repeated recovery tests against simulated ground truth.
-- Fixed five `modelPrune` tests that silently passed a nonexistent `threshold` argument instead of `limit`.
 - Added `test-brute-force-ground-truth.R`: an independent brute-force maximal-subset enumerator, checked against ELS and Bron-Kerbosch (with and without pivoting) across 40 random seeds, plus 25 more under `force_in` constraints -- validating maximality and exhaustiveness simultaneously.
 - Added independent hand-derived reference-value tests for Pearson, Spearman, Kendall, bicor, distance correlation, and maximal information coefficient (previously only eta-squared/Cramer's V had these), and extended brute-force ground truth to near-0/near-1 threshold boundaries and larger `force_in` cases.
 - Extracted the previously duplicated Pearson/Spearman/Kendall/bicor/distance/maximal/eta/Cramer's V logic (independently reimplemented across `corrSelect()`, `assocSelect()`, and both `corrPrune()` branches, with divergent NA/constant-column policies) into shared primitives in `R/assoc-metrics.R`, now the single source of truth for every caller.
+
+---
+
+# corrselect 3.2.3
+
+## Bug Fixes
+
+- **C++ backend**: `runELS()` was a single greedy expansion per seed vertex, not an implementation of Eppstein-Loffler-Strash, and could silently miss valid maximal subsets. Replaced with a genuine ELS implementation (degeneracy ordering + per-vertex bounded expansion), sharing a verified Bron-Kerbosch pivot core with the `"bron-kerbosch"` method. Verified against brute-force enumeration.
+- **Greedy backend**: an undefined (NaN) association was silently treated as compatible (`NaN > threshold` is `false` in C++); NaN now always registers as a threshold violation.
+- **MatSelect**: the symmetry check used exact floating-point equality, inconsistent with the R layer's `1e-8` tolerance, and could reject matrices the R layer had already accepted as symmetric. Added a minimum `ncol >= 2` guard, and `n_rows_used` no longer reports a fabricated row count for matrix input (now `NA`).
+- **corrSelect**: numeric `force_in` indices were checked against the final (filtered) correlation matrix but never remapped from the original data frame's column positions, so a numeric index could silently force the wrong variable into every subset after non-numeric or constant columns were dropped.
+- **corrPrune**: no longer errors on trivially satisfiable inputs (a single predictor, or a set where every pair exceeds the threshold) -- the pairwise constraint holds vacuously for one variable, so one is now retained instead of raising "No valid subsets found".
+- **corrPrune / modelPrune / assocSelect**: undefined (NA) associations were handled inconsistently -- silently treated as zero association, silently passed through the greedy backend, or produced blank/uninformative errors. All undefined associations are now surfaced explicitly with a clear message identifying the affected variable pair(s).
+- **corrPrune**: the `measure` argument had no effect on mixed-type data (numeric-numeric pairs always used Pearson regardless of the requested measure). It now customizes numeric-numeric pairs as documented, and the measure actually used per pair-type is reported via a new `assoc_methods_used` attribute.
+- **modelPrune**: VIF and condition-number computation matched design-matrix columns to predictor names with a prefix-based regex, which could silently collide (e.g. `"x1"` matching the `"x10"` column). Columns are now resolved via the model's own `assign` bookkeeping.
+- **modelPrune**: formulas with a transformed response (e.g. `log(mpg) ~ .`) crashed during formula parsing.
+- **corrSubset**: `which = "best"` on a `CorrCombo` with no subsets raised an uninformative "subscript out of bounds" error instead of a clear message.
+- Internal Rcpp exports (`runELS`, `runBronKerbosch`) now validate `force_in` bounds directly rather than relying solely on the R-level dispatcher.
+- Added duplicate-column-name checks, `force_in`/`by` overlap detection, and a coverage warning when most groups are skipped during grouped aggregation in `corrPrune`.
+
+## Test Coverage Improvements
+
+- Added recovery-style and reference-verified tests for `corrPrune` and `modelPrune`: hand-computed grouped quantile aggregation, exact-value tie-break tests (lexicographic and greedy), a greedy-vs-exact identity check, VIF verified against `car::vif()`, condition-number verified against a manual SVD reference, and seed-repeated recovery tests against simulated ground truth.
+- Fixed five `modelPrune` tests that silently passed a nonexistent `threshold` argument instead of `limit`.
 
 ---
 

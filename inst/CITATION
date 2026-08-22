@@ -14,6 +14,6 @@ bibentry("Article",
 bibentry("Manual",
          title = "corrselect: Correlation-Based Variable Subset Selection",
          author = person("Gilles", "Colling"),
-         year = "2025",
-         note = "R package version 3.2.3",
+         year = "2026",
+         note = sprintf("R package version %s", meta$Version),
          url = "https://github.com/gcol33/corrselect")

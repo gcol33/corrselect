@@ -37,3 +37,7 @@
 ^\.unrot$
 ^dev_notes$
 ^Rplots\.pdf$
+^\.Rprofile$
+^src/.*\.o$
+^src/.*\.so$
+^src/.*\.dll$
