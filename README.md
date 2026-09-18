@@ -56,7 +56,7 @@ res
 corrSubset(res, mtcars, which = "best")   # pull the top-ranked subset back out as a data frame
 ```
 
-## Keeping variables you already trust, across groups
+## Keeping variables in, across groups
 
 `force_in` protects variables that must survive pruning regardless of what else gets
 dropped; `by` requires the threshold to hold separately inside every group:
