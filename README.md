@@ -131,7 +131,7 @@ modelPrune(y ~ x1 + x2, data = df, engine = inla_engine, limit = 0.5)
 Use `corrPrune()` first to cut dimensionality, then `modelPrune()` for final cleanup
 inside a modeling framework.
 
-## Exact where it matters, greedy where it scales
+## Greedy selection
 
 `corrPrune()` picks a search mode for you: exact enumeration up to `max_exact_p`
 predictors (100 by default), and a greedy C++ backend beyond that. Exact mode
