@@ -27,6 +27,15 @@ PAL <- c(blue = "#2E6F9E", red = "#B5342B", green = "#3F7A3D",
          grey = "#5C6166")
 ```
 
+## Installation
+
+```{r, eval = FALSE}
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ## Overview
 
 This vignette presents the mathematical formulation and graph-theoretic foundations underlying **corrselect**. Variable subset selection under correlation constraints is formulated as a maximal independent set problem on threshold graphs, enabling exact enumeration via established algorithms from computational graph theory. The vignette defines the formal problem statement, explains the graph-theoretic representation, details the three implemented algorithms (Bron-Kerbosch, Eppstein-Löffler-Strash, and greedy heuristic), analyzes their computational complexity, and provides comprehensive references to the theoretical literature. For practical usage examples, see `vignette("quickstart")` and `vignette("workflows")`. For algorithmic control and performance tuning, see `vignette("advanced")`.
@@ -1641,4 +1650,3 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 ```{r}
 sessionInfo()
 ```
-

@@ -27,6 +27,15 @@ PAL <- c(blue = "#2E6F9E", red = "#B5342B", green = "#3F7A3D",
          grey = "#5C6166")
 ```
 
+## Installation
+
+```{r, eval = FALSE}
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ## Overview
 
 This vignette covers advanced topics for power users, researchers, and method developers:

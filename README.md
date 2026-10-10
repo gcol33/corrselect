@@ -18,6 +18,17 @@ graph enumeration (Bron–Kerbosch / Eppstein–Löffler–Strash) in C++, and
 returns whichever view you need: a single pruned data frame, or every valid
 subset to choose from.
 
+## Installation
+
+```r
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
+## Quick start
+
 ```r
 library(corrselect)
 
@@ -166,15 +177,6 @@ removal) side by side on the same dataset.
   as data frames.
 - **`assocSelect()`**: mixed-type data (numeric, factor, ordered), with the right
   association metric chosen per pair.
-
-## Installation
-
-```r
-install.packages("corrselect")            # CRAN
-
-install.packages("pak")                   # development version
-pak::pak("gcol33/corrselect")
-```
 
 ## Documentation
 

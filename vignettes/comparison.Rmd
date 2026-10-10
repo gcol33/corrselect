@@ -27,6 +27,15 @@ PAL <- c(blue = "#2E6F9E", red = "#B5342B", green = "#3F7A3D",
          grey = "#5C6166")
 ```
 
+## Installation
+
+```{r, eval = FALSE}
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ## Overview
 
 This vignette compares corrselect's graph-theoretic approach to four established methods for multicollinearity management and variable selection:
@@ -627,4 +636,3 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ```{r}
 sessionInfo()
 ```
-
