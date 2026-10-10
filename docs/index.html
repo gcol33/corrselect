@@ -45,7 +45,7 @@
 
     <a class="navbar-brand me-2" href="index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,19 @@
 <p><a href="https://CRAN.R-project.org/package=corrselect" class="external-link"><img src="https://www.r-pkg.org/badges/version/corrselect" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/corrselect" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/corrselect" alt="Monthly downloads"></a> <a href="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/gcol33/corrselect" class="external-link"><img src="https://codecov.io/gh/gcol33/corrselect/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://doi.org/10.21105/joss.09539" class="external-link"><img src="https://joss.theoj.org/papers/10.21105/joss.09539/status.svg" alt="DOI"></a></p>
 <p><strong>Exact enumeration of maximal predictor sets under a correlation threshold.</strong></p>
 <p>Hand it a data frame and a threshold. <code>corrselect</code> finds every maximal set of predictors whose pairwise correlations all stay under that threshold, by graph enumeration (Bron–Kerbosch / Eppstein–Löffler–Strash) in C++, and returns whichever view you need: a single pruned data frame, or every valid subset to choose from.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"corrselect"</span><span class="op">)</span>            <span class="co"># CRAN</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span>                   <span class="co"># development version</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"gcol33/corrselect"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gillescolling.com/corrselect/">corrselect</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># prune to one low-correlation set, in a single call</span></span>
@@ -103,11 +115,12 @@
 <span></span>
 <span><span class="co"># or enumerate *every* maximal low-correlation set</span></span>
 <span><span class="fu"><a href="reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="every-valid-choice-ranked">Every valid choice, ranked<a class="anchor" aria-label="anchor" href="#every-valid-choice-ranked"></a>
 </h2>
 <p><code><a href="reference/corrSelect.html">corrSelect()</a></code> returns every maximal low-correlation subset, ranked by size then average correlation:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="va">res</span></span>
 <span><span class="co">#&gt; CorrCombo object</span></span>
@@ -130,10 +143,10 @@
 <span><span class="fu"><a href="reference/corrSubset.html">corrSubset</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">mtcars</span>, which <span class="op">=</span> <span class="st">"best"</span><span class="op">)</span>   <span class="co"># pull the top-ranked subset back out as a data frame</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="keeping-variables-you-already-trust-across-groups">Keeping variables you already trust, across groups<a class="anchor" aria-label="anchor" href="#keeping-variables-you-already-trust-across-groups"></a>
+<h2 id="keeping-variables-in-across-groups">Keeping variables in, across groups<a class="anchor" aria-label="anchor" href="#keeping-variables-in-across-groups"></a>
 </h2>
 <p><code>force_in</code> protects variables that must survive pruning regardless of what else gets dropped; <code>by</code> requires the threshold to hold separately inside every group:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># hp and wt are kept no matter what else is removed</span></span>
 <span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, force_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hp"</span>, <span class="st">"wt"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -145,7 +158,7 @@
 <h2 id="mixed-type-data">Mixed-type data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a>
 </h2>
 <p><code><a href="reference/assocSelect.html">assocSelect()</a></code> picks the right association measure for each pair of columns (Pearson for numeric-numeric, the correlation ratio eta for numeric-factor, Cramer’s V for factor-factor), and enumerates maximal subsets under all of them at once:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">170</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">70</span>, <span class="fl">12</span><span class="op">)</span>,</span>
@@ -160,7 +173,7 @@
 <h2 id="model-based-pruning-with-any-engine">Model-based pruning with any engine<a class="anchor" aria-label="anchor" href="#model-based-pruning-with-any-engine"></a>
 </h2>
 <p><code><a href="reference/modelPrune.html">modelPrune()</a></code> removes predictors by VIF or condition number, refitting after each removal. Built-in engines cover <code>lm</code>, <code>glm</code>, <code>lme4</code>, and <code>glmmTMB</code>; anything else plugs in as a two-function engine:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># linear model, VIF threshold</span></span>
 <span><span class="fu"><a href="reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span> <span class="op">+</span> <span class="va">disp</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
@@ -224,13 +237,13 @@
 <p>Use <code><a href="reference/corrPrune.html">corrPrune()</a></code> first to cut dimensionality, then <code><a href="reference/modelPrune.html">modelPrune()</a></code> for final cleanup inside a modeling framework.</p>
 </div>
 <div class="section level2">
-<h2 id="exact-where-it-matters-greedy-where-it-scales">Exact where it matters, greedy where it scales<a class="anchor" aria-label="anchor" href="#exact-where-it-matters-greedy-where-it-scales"></a>
+<h2 id="greedy-selection">Greedy selection<a class="anchor" aria-label="anchor" href="#greedy-selection"></a>
 </h2>
 <p><code><a href="reference/corrPrune.html">corrPrune()</a></code> picks a search mode for you: exact enumeration up to <code>max_exact_p</code> predictors (100 by default), and a greedy C++ backend beyond that. Exact mode guarantees the largest subset satisfying the threshold; greedy mode trades that guarantee for speed on wide data. Both are available directly, so you can pin one explicitly:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span>   <span class="co"># guaranteed-maximal, small/medium p</span></span>
 <span><span class="fu"><a href="reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"greedy"</span><span class="op">)</span>  <span class="co"># fast, approximate, any p</span></span></code></pre></div>
-<p><code><a href="https://rdrr.io/pkg/caret/man/findCorrelation.html" class="external-link">caret::findCorrelation()</a></code> solves this with greedy iterative removal, which is order-dependent and can vary between runs on the same data. <code>corrPrune(mode = "exact")</code> solves the same threshold constraint by maximal-clique enumeration, retaining at least as many variables and returning the same answer every run. The <a href="https://gillescolling.com/corrselect/articles/comparison.html">Comparison vignette</a> walks through this and three other alternatives (Boruta, glmnet, manual VIF removal) side by side on the same dataset.</p>
+<p><code>caret::findCorrelation()</code> solves this with greedy iterative removal, which is order-dependent and can vary between runs on the same data. <code>corrPrune(mode = "exact")</code> solves the same threshold constraint by maximal-clique enumeration, retaining at least as many variables and returning the same answer every run. The <a href="https://gillescolling.com/corrselect/articles/comparison.html">Comparison vignette</a> walks through this and three other alternatives (Boruta, glmnet, manual VIF removal) side by side on the same dataset.</p>
 </div>
 <div class="section level2">
 <h2 id="whats-in-the-box">What’s in the box<a class="anchor" aria-label="anchor" href="#whats-in-the-box"></a>
@@ -247,15 +260,6 @@
 <li>
 <strong><code><a href="reference/assocSelect.html">assocSelect()</a></code></strong>: mixed-type data (numeric, factor, ordered), with the right association metric chosen per pair.</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"corrselect"</span><span class="op">)</span>            <span class="co"># CRAN</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span>                   <span class="co"># development version</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"gcol33/corrselect"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
@@ -351,7 +355,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

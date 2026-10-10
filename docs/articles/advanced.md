@@ -1,5 +1,15 @@
 # Advanced Topics
 
+### Installation
+
+``` r
+
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ### Overview
 
 This vignette covers advanced topics for power users, researchers, and
@@ -187,12 +197,12 @@ print(benchmark)
 #>      p exact_time_ms greedy_time_ms
 #> 1   10             0              0
 #> 2   20             0              0
-#> 3   50             0             10
+#> 3   50             0              0
 #> 4  100            10              0
-#> 5  200            70             20
-#> 6  300           220             20
-#> 7  500           950             50
-#> 8 1000            NA            160
+#> 5  200            20             20
+#> 6  300            30             20
+#> 7  500            90             30
+#> 8 1000            NA            110
 ```
 
 ``` r
@@ -246,7 +256,7 @@ p=100, becoming impractical beyond p=500 (marked by vertical gray dashed
 line). Greedy mode shows linear scaling, remaining fast even at p=1000,
 demonstrating orders-of-magnitude performance advantage for
 high-dimensional
-data.](advanced_files/figure-html/unnamed-chunk-5-1.svg)
+data.](advanced_files/figure-html/unnamed-chunk-6-1.svg)
 
 **Key insight**: The scaling behavior depends heavily on correlation
 structure. For this moderately correlated dataset (ρ = 0.5^\|i-j\|),
@@ -891,11 +901,11 @@ time2_runs <- sapply(1:3, function(i) {
 time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 20.0 ms
+#> Recomputing each time: 0.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
 #> Precomputed matrix: 0.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: Infx faster
+#> Speedup: NaNx faster
 ```
 
 **Use precomputed matrices when**:
@@ -1379,7 +1389,7 @@ lenient (0.9, green) thresholds. Right panel: line plot showing number
 of variables retained versus threshold, demonstrating sensitivity
 analysis with plateau beginning around 0.7, helping identify optimal
 threshold for balancing redundancy reduction and information
-retention.](advanced_files/figure-html/unnamed-chunk-28-1.svg)
+retention.](advanced_files/figure-html/unnamed-chunk-29-1.svg)
 
 The marked thresholds are 0.5 (strict), 0.7 (moderate) and 0.9
 (lenient).
@@ -1653,7 +1663,7 @@ pipeline <- function(data, response) {
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1661,28 +1671,26 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
+#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
+#> [5] LC_TIME=English_Austria.utf8    
 #> 
-#> time zone: Europe/Luxembourg
+#> time zone: Europe/Vienna
 #> tzcode source: internal
 #> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.2.3
+#> [1] corrselect_3.3.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      
-#>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
-#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   
-#> [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0    
-#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0         
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.52        rlang_1.3.0      
+#>  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   
+#> [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-66       fastmap_1.2.0    
+#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.1    fs_2.1.0         
 #> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.0       pkgdown_2.2.0    
+#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.1       pkgdown_2.2.1    
 #> [29] cachem_1.1.0      desc_1.4.3
 ```

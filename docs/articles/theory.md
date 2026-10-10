@@ -1,5 +1,15 @@
 # Theory and Formulation
 
+## Installation
+
+``` r
+
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ## Overview
 
 This vignette presents the mathematical formulation and graph-theoretic
@@ -58,8 +68,8 @@ All other vignettes refer back to these definitions.
 
 ### **Association measure**
 
-A symmetric function\
-\\a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}\\\
+A symmetric function  
+\\a: \mathcal{X} \times \mathcal{X} \to \mathbb{R}\\  
 that quantifies the relationship between two variables.
 
 Common cases:
@@ -86,8 +96,8 @@ enters as a 0/1 numeric column or as a two-level factor, and the same
 ### **Association matrix**
 
 A symmetric \\p \times p\\ matrix \\A\\ whose entry \\a\_{ij}\\ is the
-association between variables \\i\\ and \\j\\.\
-The diagonal satisfies \\a\_{ii} = 1\\.\
+association between variables \\i\\ and \\j\\.  
+The diagonal satisfies \\a\_{ii} = 1\\.  
 For correlation-based analysis, \\A\\ typically comes from
 [`cor()`](https://rdrr.io/r/stats/cor.html).
 
@@ -111,7 +121,7 @@ Common choices:
 
 ### **Valid subset**
 
-A subset \\S \subseteq \\1,\dots,p\\\\ satisfying\
+A subset \\S \subseteq \\1,\dots,p\\\\ satisfying  
 \\\|a\_{ij}\| \le \tau\\ for all distinct \\i, j \in S\\. All pairwise
 associations within \\S\\ remain at or below the threshold.
 
@@ -119,7 +129,7 @@ associations within \\S\\ remain at or below the threshold.
 
 ### **Maximal valid subset**
 
-A valid subset that cannot be enlarged.\
+A valid subset that cannot be enlarged.  
 Formally, no variable \\v \notin S\\ satisfies \\\|a\_{vi}\| \le \tau\\
 for all \\i \in S\\.
 
@@ -142,14 +152,14 @@ Edges therefore connect *compatible* (low-association) variables.
 
 ### **Clique**
 
-A subset of vertices in which every pair is connected by an edge.\
+A subset of vertices in which every pair is connected by an edge.  
 In the threshold graph, cliques correspond to valid subsets.
 
 ------------------------------------------------------------------------
 
 ### **Maximal clique**
 
-A clique that cannot be extended by adding any additional vertex.\
+A clique that cannot be extended by adding any additional vertex.  
 Maximal cliques correspond exactly to maximal valid subsets.
 
 ------------------------------------------------------------------------
@@ -157,14 +167,14 @@ Maximal cliques correspond exactly to maximal valid subsets.
 ### **Forced-in variables** (`force_in`)
 
 A set \\F \subseteq V\\ of variables that must appear in all returned
-solutions.\
+solutions.  
 Only maximal cliques containing all elements of \\F\\ are considered.
 
 ------------------------------------------------------------------------
 
 ### **ELS (Eppstein–Löffler–Strash)**
 
-A degeneracy-based algorithm for maximal clique enumeration.\
+A degeneracy-based algorithm for maximal clique enumeration.  
 Recommended when `force_in` is used.
 
 Complexity: \\O(d \cdot 3^{d/3})\\, where \\d\\ is the graph’s
@@ -175,7 +185,7 @@ degeneracy.
 ### **Bron–Kerbosch**
 
 A classical backtracking algorithm for enumerating maximal cliques,
-optionally with pivoting.\
+optionally with pivoting.  
 Used by default when `force_in` is not specified.
 
 Worst-case complexity: \\O(3^{p/3})\\.
@@ -185,15 +195,15 @@ Worst-case complexity: \\O(3^{p/3})\\.
 ### **Greedy mode**
 
 A fast heuristic that constructs a single maximal clique via greedy
-selection.\
-Runs in \\O(p^2)\\.\
+selection.  
+Runs in \\O(p^2)\\.  
 Does not guarantee the largest possible subset.
 
 ------------------------------------------------------------------------
 
 ### **Exact mode**
 
-Enumerates *all* maximal cliques using ELS or Bron–Kerbosch.\
+Enumerates *all* maximal cliques using ELS or Bron–Kerbosch.  
 Identifies the maximum (largest) valid subset.
 
 ------------------------------------------------------------------------
@@ -449,7 +459,7 @@ listed to the right of the square: {V1,V3}, {V1,V4}, {V2,V3} and
 {V2,V4}, corresponding to maximal subsets where all pairwise
 correlations remain at or below threshold. Each clique in the list
 carries the color of the edge it comes
-from.](theory_files/figure-html/unnamed-chunk-3-1.svg)
+from.](theory_files/figure-html/unnamed-chunk-4-1.svg)
 
 **Graph interpretation**:
 
@@ -538,7 +548,6 @@ if (requireNamespace("igraph", quietly = TRUE)) {
   cat("Adjacency matrix (first 5×5 block):\n")
   print(adj_mat[1:5, 1:5] * 1)
 }
-#> Warning: package 'igraph' was built under R version 4.6.1
 #> 
 #> Attaching package: 'igraph'
 #> The following objects are masked from 'package:stats':
@@ -560,7 +569,7 @@ variables together, revealing the block structure. Variables within
 blocks have few connections (high correlation), while variables across
 blocks have many connections (low correlation), illustrating which
 combinations can form maximal
-cliques.](theory_files/figure-html/unnamed-chunk-4-1.svg)
+cliques.](theory_files/figure-html/unnamed-chunk-5-1.svg)
 
 **Interpretation**:
 
@@ -596,24 +605,24 @@ A **clique** is a group where every pair is connected. In our graph:
 
 **Maximal cliques:** Can any 2-variable clique be extended?
 
-- **{V1, V3}**\
-  Add V2? No (V1–V2 not connected).\
-  Add V4? No (V3–V4 not connected).\
+- **{V1, V3}**  
+  Add V2? No (V1–V2 not connected).  
+  Add V4? No (V3–V4 not connected).  
   **Maximal ✓**
 
-- **{V1, V4}**\
-  Add V2? No (V1–V2 not connected).\
-  Add V3? No (V3–V4 not connected).\
+- **{V1, V4}**  
+  Add V2? No (V1–V2 not connected).  
+  Add V3? No (V3–V4 not connected).  
   **Maximal ✓**
 
-- **{V2, V3}**\
-  Add V1? No (V1–V2 not connected).\
-  Add V4? No (V3–V4 not connected).\
+- **{V2, V3}**  
+  Add V1? No (V1–V2 not connected).  
+  Add V4? No (V3–V4 not connected).  
   **Maximal ✓**
 
-- **{V2, V4}**\
-  Add V1? No (V1–V2 not connected).\
-  Add V3? No (V3–V4 not connected).\
+- **{V2, V4}**  
+  Add V1? No (V1–V2 not connected).  
+  Add V3? No (V3–V4 not connected).  
   **Maximal ✓**
 
 So there are **4 maximal cliques of size 2**, each representing a valid
@@ -895,7 +904,7 @@ abline(v = 3.5, lwd = 2, lty = 2, col = "black")
 overlaid on each cell, and black dashed lines separating the two
 correlation blocks. Variables V1 to V3 form one high-correlation block
 and V4 to V6 another, with low correlations between the
-blocks.](theory_files/figure-html/unnamed-chunk-7-1.svg)
+blocks.](theory_files/figure-html/unnamed-chunk-8-1.svg)
 
 The same structure as a threshold graph, where an edge means the pair
 can coexist:
@@ -965,7 +974,7 @@ and dashed orange edges within one. All nine cross-block pairs have
 edges; the only within-block edges are the three among V4, V5 and V6,
 and V1 to V3 have none among themselves. Maximal cliques therefore
 combine V4, V5 and V6 with one variable from the left
-block.](theory_files/figure-html/unnamed-chunk-8-1.svg)
+block.](theory_files/figure-html/unnamed-chunk-9-1.svg)
 
 **Interpreting the visualization**:
 
@@ -1085,29 +1094,29 @@ Ensures that certain variables appear in every returned subset.
 
 ### **Search type → `mode` and `method` arguments**
 
-- `mode = "exact"`\
+- `mode = "exact"`  
   Enumerates all maximal cliques using ELS or Bron–Kerbosch
-- `mode = "greedy"`\
+- `mode = "greedy"`  
   Constructs a single maximal clique via a greedy heuristic
 - `mode = "auto"` Uses exact mode for \\p \le\\ `max_exact_p` (default
   100), greedy mode for larger \\p\\
 
 Choice of enumeration algorithm:
 
-- `method = "els"`\
+- `method = "els"`  
   Eppstein–Löffler–Strash; recommended when `force_in` is specified
-- `method = "bron-kerbosch"`\
+- `method = "bron-kerbosch"`  
   Bron–Kerbosch with pivoting (default)
 
 ### **Association matrix (\\A\\) → Data input and matrix-based functions**
 
 How the association structure enters the algorithm:
 
-- `corrPrune(data)`\
+- `corrPrune(data)`  
   Computes the correlation matrix internally and finds cliques
-- `MatSelect(cor_matrix)`\
+- `MatSelect(cor_matrix)`  
   Uses a precomputed association matrix directly
-- `assocSelect(data)`\
+- `assocSelect(data)`  
   Computes mixed association measures (Pearson, the correlation ratio
   eta, Cramér’s V) before selection
 
@@ -1115,9 +1124,9 @@ How the association structure enters the algorithm:
 
 Depends directly on the threshold:
 
-- Sparse graphs (low \\\tau\\)\
+- Sparse graphs (low \\\tau\\)  
   Few edges → fast exact enumeration
-- Dense graphs (high \\\tau\\)\
+- Dense graphs (high \\\tau\\)  
   Many edges → potentially exponential growth in maximal cliques
 
 These properties motivate the `auto` mode: exact for small \\p\\, greedy
@@ -1742,10 +1751,10 @@ suffices (e.g., automated pipelines).
 
 **Maximal clique enumeration**
 
-- **Eppstein, D., Löffler, M., & Strash, D. (2010).**\
-  *Listing all maximal cliques in sparse graphs in near-optimal time.*\
+- **Eppstein, D., Löffler, M., & Strash, D. (2010).**  
+  *Listing all maximal cliques in sparse graphs in near-optimal time.*  
   Algorithms and Computation: ISAAC 2010, Lecture Notes in Computer
-  Science 6506, 403–414.\
+  Science 6506, 403–414.  
   [doi:10.1007/978-3-642-17517-6_36](https://doi.org/10.1007/978-3-642-17517-6_36)
   - **Foundation for the ELS algorithm:** degeneracy-based maximal
     clique enumeration
@@ -1753,18 +1762,18 @@ suffices (e.g., automated pipelines).
   - Complexity \\O(d \cdot 3^{d/3})\\, where \\d\\ is graph degeneracy
 
   - Used when `force_in` is specified
-- **Bron, C., & Kerbosch, J. (1973).**\
-  *Algorithm 457: Finding all cliques of an undirected graph.*\
-  Communications of the ACM, 16(9), 575–577.\
+- **Bron, C., & Kerbosch, J. (1973).**  
+  *Algorithm 457: Finding all cliques of an undirected graph.*  
+  Communications of the ACM, 16(9), 575–577.  
   [doi:10.1145/362342.362367](https://doi.org/10.1145/362342.362367)
   - **Foundation for the Bron–Kerbosch algorithm:** classic backtracking
     with pivoting
 
   - Default exact enumeration method
-- **Tomita, E., Tanaka, A., & Takahashi, H. (2006).**\
+- **Tomita, E., Tanaka, A., & Takahashi, H. (2006).**  
   *The worst-case time complexity for generating all maximal cliques and
-  computational experiments.*\
-  Theoretical Computer Science, 363(1), 28–42.\
+  computational experiments.*  
+  Theoretical Computer Science, 363(1), 28–42.  
   [doi:10.1016/j.tcs.2006.06.015](https://doi.org/10.1016/j.tcs.2006.06.015)
   - **Pivoting strategy:** refined pivot rules for Bron–Kerbosch
 
@@ -1979,7 +1988,7 @@ suffices (e.g., automated pipelines).
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1987,28 +1996,26 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
+#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
+#> [5] LC_TIME=English_Austria.utf8    
 #> 
-#> time zone: Europe/Luxembourg
+#> time zone: Europe/Vienna
 #> tzcode source: internal
 #> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] igraph_2.3.3     corrselect_3.2.3
+#> [1] igraph_2.3.3     corrselect_3.3.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      
-#>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
-#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.52        rlang_1.3.0      
+#>  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   
 #> [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      
-#> [17] lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0          pkgconfig_2.0.3  
+#> [17] lifecycle_1.0.5   compiler_4.6.1    fs_2.1.0          pkgconfig_2.0.3  
 #> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.12.0      tools_4.6.0      
-#> [29] pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
+#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.12.0      tools_4.6.1      
+#> [29] pkgdown_2.2.1     cachem_1.1.0      desc_1.4.3
 ```

@@ -1,5 +1,15 @@
 # Comparison with Alternatives
 
+## Installation
+
+``` r
+
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ## Overview
 
 This vignette compares corrselect’s graph-theoretic approach to four
@@ -78,7 +88,7 @@ indicates positive correlations. The heatmap reveals block structure
 with correlations ranging from -0.15 to 0.97, showing strong
 correlations among temperature-related variables and
 precipitation-related
-variables.](comparison_files/figure-html/unnamed-chunk-2-1.svg)
+variables.](comparison_files/figure-html/unnamed-chunk-3-1.svg)
 
 Block structure present: correlations range from -0.15 to 0.97.
 
@@ -113,10 +123,6 @@ if (requireNamespace("caret", quietly = TRUE)) {
   cat("  Variables removed:", length(to_remove_caret), "\n")
   cat("  Removed:", paste(colnames(predictors)[to_remove_caret], collapse = ", "), "\n")
 }
-#> caret results:
-#>   Variables retained: 10 
-#>   Variables removed: 9 
-#>   Removed: BIO8, BIO7, BIO5, BIO4, BIO3, BIO9, BIO1, BIO11, BIO15
 ```
 
 ``` r
@@ -197,15 +203,6 @@ if (requireNamespace("caret", quietly = TRUE)) {
          bg     = "white")
 }
 ```
-
-![Overlaid histogram comparing absolute correlation distributions across
-three methods: original data (gray bars), caret's findCorrelation (red
-bars), and corrselect (blue bars). Black vertical dashed line marks the
-0.7 threshold. All methods successfully reduce correlations below the
-threshold, but corrselect retains more variables than caret while still
-satisfying the constraint, demonstrating the advantage of maximal clique
-enumeration over greedy
-removal.](comparison_files/figure-html/unnamed-chunk-5-1.svg)
 
 ### Comparison
 
@@ -440,7 +437,7 @@ toward zero. Right panel shows corrselect's unbiased OLS coefficients on
 pruned variables with preserved effect sizes. The comparison illustrates
 the tradeoff between prediction-focused shrinkage and
 interpretation-focused hard
-selection.](comparison_files/figure-html/unnamed-chunk-11-1.svg)
+selection.](comparison_files/figure-html/unnamed-chunk-12-1.svg)
 
 Left: L1 penalty shrinks coefficients toward zero (biased). Right: OLS
 on pruned variables (unbiased). glmnet optimizes prediction with
@@ -626,7 +623,7 @@ multicollinearity. After modelPrune(), all retained variables have VIF
 below the threshold, and high-VIF variables are completely removed
 (shown as red-only bars), demonstrating automated and effective
 multicollinearity
-reduction.](comparison_files/figure-html/unnamed-chunk-14-1.svg)
+reduction.](comparison_files/figure-html/unnamed-chunk-15-1.svg)
 
 ### Comparison
 
@@ -739,7 +736,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -747,49 +744,29 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
+#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
+#> [5] LC_TIME=English_Austria.utf8    
 #> 
-#> time zone: Europe/Luxembourg
+#> time zone: Europe/Vienna
 #> tzcode source: internal
 #> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] car_3.1-5        carData_3.0-6    corrselect_3.2.3
+#> [1] car_3.1-5        carData_3.0-6    corrselect_3.3.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1     timeDate_4052.112    dplyr_1.2.1         
-#>  [4] farver_2.1.2         S7_0.2.2             fastmap_1.2.0       
-#>  [7] pROC_1.19.0.1        caret_7.0-1          digest_0.6.39       
-#> [10] rpart_4.1.27         timechange_0.4.0     lifecycle_1.0.5     
-#> [13] survival_3.8-6       magrittr_2.0.5       compiler_4.6.0      
-#> [16] rlang_1.3.0          sass_0.4.10          tools_4.6.0         
-#> [19] yaml_2.3.12          data.table_1.18.4    knitr_1.51          
-#> [22] htmlwidgets_1.6.4    plyr_1.8.9           RColorBrewer_1.1-3  
-#> [25] abind_1.4-8          withr_3.0.3          purrr_1.2.2         
-#> [28] desc_1.4.3           nnet_7.3-20          grid_4.6.0          
-#> [31] stats4_4.6.0         future_1.70.0        ggplot2_4.0.3       
-#> [34] globals_0.19.1       scales_1.4.0         iterators_1.0.14    
-#> [37] MASS_7.3-65          cli_3.6.6            rmarkdown_2.31      
-#> [40] generics_0.1.4       otel_0.2.0           future.apply_1.20.2 
-#> [43] reshape2_1.4.5       cachem_1.1.0         stringr_1.6.0       
-#> [46] splines_4.6.0        parallel_4.6.0       vctrs_0.7.3         
-#> [49] hardhat_1.4.3        glmnet_5.0           Matrix_1.7-5        
-#> [52] jsonlite_2.0.0       Formula_1.2-5        listenv_0.10.1      
-#> [55] systemfonts_1.3.2    foreach_1.5.2        gower_1.0.2         
-#> [58] jquerylib_0.1.4      recipes_1.3.2        glue_1.8.1          
-#> [61] parallelly_1.47.0    pkgdown_2.2.0        codetools_0.2-20    
-#> [64] lubridate_1.9.5      stringi_1.8.7        shape_1.4.6.1       
-#> [67] gtable_0.3.6         tibble_3.3.1         pillar_1.11.1       
-#> [70] htmltools_0.5.9      ipred_0.9-15         lava_1.9.1          
-#> [73] R6_2.6.1             textshaping_1.0.5    evaluate_1.0.5      
-#> [76] lattice_0.22-9       bslib_0.12.0         class_7.3-23        
-#> [79] Rcpp_1.1.2           svglite_2.2.2        nlme_3.1-169        
-#> [82] prodlim_2026.03.11   xfun_0.57            fs_2.1.0            
-#> [85] pkgconfig_2.0.3      ModelMetrics_1.2.2.2
+#>  [1] Matrix_1.7-6      glmnet_5.0        jsonlite_2.0.0    compiler_4.6.1   
+#>  [5] Rcpp_1.1.2        jquerylib_0.1.4   splines_4.6.1     systemfonts_1.3.2
+#>  [9] textshaping_1.0.5 yaml_2.3.12       fastmap_1.2.0     lattice_0.23-1   
+#> [13] R6_2.6.1          shape_1.4.6.1     Formula_1.2-6     knitr_1.52       
+#> [17] iterators_1.0.14  htmlwidgets_1.6.4 desc_1.4.3        svglite_2.2.2    
+#> [21] bslib_0.12.0      rlang_1.3.0       cachem_1.1.0      xfun_0.60        
+#> [25] fs_2.1.0          sass_0.4.10       S7_0.2.2          otel_0.2.0       
+#> [29] cli_3.6.6         pkgdown_2.2.1     digest_0.6.39     foreach_1.5.2    
+#> [33] grid_4.6.1        lifecycle_1.0.5   evaluate_1.0.5    codetools_0.2-20 
+#> [37] survival_3.8-12   abind_1.4-8       rmarkdown_2.32    tools_4.6.1      
+#> [41] htmltools_0.5.9
 ```

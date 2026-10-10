@@ -1,5 +1,15 @@
 # Complete Workflows: Real-World Examples
 
+### Installation
+
+``` r
+
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
 ### Overview
 
 This vignette demonstrates integration of corrselect into complete
@@ -173,7 +183,7 @@ legend("topright",
 ![Histogram showing distribution of absolute correlations before and
 after pruning. Red bars show many correlations exceed 0.7 threshold
 before pruning. Blue bars show all correlations below 0.7 after
-pruning.](workflows_files/figure-html/unnamed-chunk-3-1.svg)
+pruning.](workflows_files/figure-html/unnamed-chunk-4-1.svg)
 
 #### Fit models
 
@@ -346,7 +356,7 @@ y-axis, log scale). As predictors decrease from 19 to 8, adjusted R²
 remains high (above 0.7) while κ drops from over 10000 to below 100,
 demonstrating that pruning dramatically improves numerical stability
 with minimal loss of explanatory
-power.](workflows_files/figure-html/unnamed-chunk-6-1.svg)
+power.](workflows_files/figure-html/unnamed-chunk-7-1.svg)
 
 #### Coefficient stability
 
@@ -428,7 +438,7 @@ legend(
 )
 ```
 
-### ![Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning.](workflows_files/figure-html/unnamed-chunk-7-1.svg)
+### ![Bar chart comparing regression coefficients between full model (19 variables, red bars) and pruned model (8 variables, blue bars). Variables dropped in pruning show only red bars with large magnitudes. Variables retained in both models show overlapping red-blue bars with more consistent effect sizes, demonstrating improved coefficient stability after pruning.](workflows_files/figure-html/unnamed-chunk-8-1.svg)
 
 ## Workflow 2: Survey Data Analysis
 
@@ -593,7 +603,7 @@ and blue bars showing reduced counts after pruning, demonstrating
 balanced retention across all three constructs. Right panel shows total
 variable reduction from 31 to approximately 10 variables using salmon
 and light green
-bars.](workflows_files/figure-html/unnamed-chunk-11-1.svg)
+bars.](workflows_files/figure-html/unnamed-chunk-12-1.svg)
 
 #### Model satisfaction
 
@@ -770,7 +780,7 @@ shows 200 original genes, light blue bar shows approximately 100 genes
 after pruning (50% retained). Text labels display exact counts and
 retention percentage, demonstrating substantial dimensionality reduction
 while maintaining low pairwise
-correlations.](workflows_files/figure-html/unnamed-chunk-16-1.svg)
+correlations.](workflows_files/figure-html/unnamed-chunk-17-1.svg)
 
 #### Exact vs greedy comparison
 
@@ -1152,7 +1162,7 @@ details
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1160,28 +1170,26 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_United States.utf8 
-#> [2] LC_CTYPE=English_United States.utf8   
-#> [3] LC_MONETARY=English_United States.utf8
-#> [4] LC_NUMERIC=C                          
-#> [5] LC_TIME=English_United States.utf8    
+#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
+#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
+#> [5] LC_TIME=English_Austria.utf8    
 #> 
-#> time zone: Europe/Luxembourg
+#> time zone: Europe/Vienna
 #> tzcode source: internal
 #> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] testthat_3.3.2   corrselect_3.2.3
+#> [1] corrselect_3.3.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.2.0      
-#>  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
-#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       brio_1.1.5       
-#> [13] rmarkdown_2.31    evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0    
-#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    codetools_0.2-20 
-#> [21] fs_2.1.0          htmlwidgets_1.6.4 Rcpp_1.1.1-1.1    systemfonts_1.3.2
-#> [25] digest_0.6.39     R6_2.6.1          magrittr_2.0.5    bslib_0.11.0     
-#> [29] tools_4.6.0       pkgdown_2.2.0     cachem_1.1.0      desc_1.4.3
+#>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.52        rlang_1.3.0      
+#>  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   
+#> [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      
+#> [17] lifecycle_1.0.5   compiler_4.6.1    codetools_0.2-20  fs_2.1.0         
+#> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
+#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.1       pkgdown_2.2.1    
+#> [29] cachem_1.1.0      desc_1.4.3
 ```

@@ -41,7 +41,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">corrselect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-08-21</h4>
+            <h4 data-toc-skip class="date">2026-10-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -102,6 +102,15 @@ Colling</h4>
 
     
     
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"corrselect"</span><span class="op">)</span>            <span class="co"># CRAN</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span>                   <span class="co"># development version</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"gcol33/corrselect"</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h3>
@@ -141,7 +150,7 @@ O(d * 3^(d/3)) for ELS (d = degeneracy) - exponential in number of
 predictors, tighter than the naive O(2^p) enumeration bound
 <strong>Guarantee</strong>: Finds the <strong>largest</strong> maximal
 independent set</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Exact mode: guaranteed optimal</span></span>
@@ -163,7 +172,7 @@ default <code>max_exact_p</code>)</p></li>
 <p><strong>Algorithm</strong>: Deterministic iterative removal
 <strong>Complexity</strong>: O(p² × k) where k = iterations
 <strong>Guarantee</strong>: Near-optimal, deterministic</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Greedy mode: fast approximation</span></span>
 <span><span class="va">greedy_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"greedy"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Greedy mode kept:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">greedy_result</span><span class="op">)</span>, <span class="st">"variables\n"</span><span class="op">)</span></span>
@@ -182,7 +191,7 @@ more)</p></li>
 <h4 id="auto-mode-recommended">Auto Mode (Recommended)<a class="anchor" aria-label="anchor" href="#auto-mode-recommended"></a>
 </h4>
 <p>Automatically selects based on p:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Auto mode: smart switching (exact if p &lt;= max_exact_p [default 100], greedy otherwise)</span></span>
 <span><span class="va">auto_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Auto mode kept:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">auto_result</span><span class="op">)</span>, <span class="st">"variables\n"</span><span class="op">)</span></span>
@@ -193,7 +202,7 @@ more)</p></li>
 <h3 id="complexity-analysis-with-benchmarks">1.2 Complexity Analysis with Benchmarks<a class="anchor" aria-label="anchor" href="#complexity-analysis-with-benchmarks"></a>
 </h3>
 <p>Let’s measure runtime scaling:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate datasets with increasing p</span></span>
 <span></span>
 <span><span class="va">benchmark_corrPrune</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p_values</span><span class="op">)</span> <span class="op">{</span></span>
@@ -278,13 +287,13 @@ more)</p></li>
 <span><span class="co">#&gt;      p exact_time_ms greedy_time_ms</span></span>
 <span><span class="co">#&gt; 1   10             0              0</span></span>
 <span><span class="co">#&gt; 2   20             0              0</span></span>
-<span><span class="co">#&gt; 3   50             0             10</span></span>
+<span><span class="co">#&gt; 3   50             0              0</span></span>
 <span><span class="co">#&gt; 4  100            10              0</span></span>
-<span><span class="co">#&gt; 5  200            70             20</span></span>
-<span><span class="co">#&gt; 6  300           220             20</span></span>
-<span><span class="co">#&gt; 7  500           950             50</span></span>
-<span><span class="co">#&gt; 8 1000            NA            160</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; 5  200            20             20</span></span>
+<span><span class="co">#&gt; 6  300            30             20</span></span>
+<span><span class="co">#&gt; 7  500            90             30</span></span>
+<span><span class="co">#&gt; 8 1000            NA            110</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
 <span><span class="va">exact_valid</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time_ms</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">benchmark</span><span class="op">$</span><span class="va">exact_time_ms</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
@@ -325,113 +334,7 @@ more)</p></li>
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>       bty <span class="op">=</span> <span class="st">"o"</span>,</span>
 <span>       bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='468.00pt' height='324.00pt' viewBox='0 0 468.00 324.00' class="r-plt inline-svg" style="width:100%;height:auto;">
-<g class='svglite'>
-<defs>
-  <style type='text/css'><![CDATA[
-    /* theme-aware-processed */
-    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite circle {
-      fill: none;
-      stroke: #3E3F3A;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-miterlimit: 10.00;
-    }
-    .svglite > g > rect {
-      fill: none;
-      stroke: #3E3F3A;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-miterlimit: 10.00;
-    }
-    .svglite text {
-      white-space: pre;
-      fill: #3E3F3A;
-    }
-    .svglite g.glyphgroup path {
-      fill: inherit;
-      stroke: none;
-    }
-  ]]></style>
-</defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
-<defs>
-  <clipPath id='cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA='>
-    <rect x='0.00' y='0.00' width='468.00' height='324.00' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
-</g>
-<defs>
-  <clipPath id='cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg=='>
-    <rect x='68.88' y='68.88' width='363.84' height='169.44' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
-<line x1='103.87' y1='210.90' x2='139.10' y2='198.27' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='155.41' y1='195.43' x2='172.64' y2='195.43' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='188.95' y1='192.62' x2='241.18' y2='174.04' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='257.36' y1='169.74' x2='410.98' y2='142.00' style='stroke-width: 1.50; stroke: #3380CC;' />
-<circle cx='95.97' cy='213.74' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='147.01' cy='195.43' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='181.04' cy='195.43' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='249.10' cy='171.23' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='419.24' cy='140.51' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-</g>
-<g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
-<line x1='78.95' y1='238.32' x2='419.24' y2='238.32' style='stroke-width: 0.75;' />
-<line x1='78.95' y1='238.32' x2='78.95' y2='246.72' style='stroke-width: 0.75;' />
-<line x1='147.01' y1='238.32' x2='147.01' y2='246.72' style='stroke-width: 0.75;' />
-<line x1='215.07' y1='238.32' x2='215.07' y2='246.72' style='stroke-width: 0.75;' />
-<line x1='283.13' y1='238.32' x2='283.13' y2='246.72' style='stroke-width: 0.75;' />
-<line x1='351.19' y1='238.32' x2='351.19' y2='246.72' style='stroke-width: 0.75;' />
-<line x1='419.24' y1='238.32' x2='419.24' y2='246.72' style='stroke-width: 0.75;' />
-<text x='78.95' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0</text>
-<text x='147.01' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>200</text>
-<text x='215.07' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>400</text>
-<text x='283.13' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>600</text>
-<text x='351.19' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>800</text>
-<text x='419.24' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>1000</text>
-<line x1='68.88' y1='232.04' x2='68.88' y2='73.80' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='232.04' x2='60.48' y2='232.04' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='213.74' x2='60.48' y2='213.74' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='195.43' x2='60.48' y2='195.43' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='171.23' x2='60.48' y2='171.23' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='152.92' x2='60.48' y2='152.92' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='134.62' x2='60.48' y2='134.62' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='110.41' x2='60.48' y2='110.41' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='92.11' x2='60.48' y2='92.11' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='73.80' x2='60.48' y2='73.80' style='stroke-width: 0.75;' />
-<text transform='translate(48.72,232.04) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>5</text>
-<text transform='translate(48.72,195.43) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>20</text>
-<text transform='translate(48.72,152.92) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>100</text>
-<text transform='translate(48.72,110.41) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>500</text>
-<polygon points='68.88,238.32 432.72,238.32 432.72,68.88 68.88,68.88 ' style='stroke-width: 0.75;' />
-<text x='250.80' y='40.46' text-anchor='middle' style='font-size: 1.68em; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact vs Greedy Scaling</text>
-<text x='250.80' y='302.16' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Number of Predictors (p)</text>
-<text transform='translate(15.12,153.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Time (milliseconds, log scale)</text>
-</g>
-<g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
-<line x1='117.62' y1='206.73' x2='142.37' y2='169.35' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='153.29' y1='156.76' x2='174.76' y2='137.68' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='188.35' y1='127.95' x2='241.79' y2='97.61' style='stroke-width: 1.50; stroke: #CC3333;' />
-<circle cx='112.98' cy='213.74' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='147.01' cy='162.34' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='181.04' cy='132.10' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='249.10' cy='93.46' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<line x1='249.10' y1='238.32' x2='249.10' y2='68.88' style='stroke-width: 0.75; stroke: #7F7F7F; stroke-dasharray: 4.00,4.00;' />
-<text x='257.50' y='96.80' style='font-size: 1.4em;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact mode limit</text>
-<rect rx='4' x='68.88' y='68.88' width='93.77' height='50.40' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
-<line x1='72.66' y1='85.68' x2='97.86' y2='85.68' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='72.66' y1='102.48' x2='97.86' y2='102.48' style='stroke-width: 1.50; stroke: #3380CC;' />
-<circle cx='85.26' cy='85.68' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='85.26' cy='102.48' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<text x='110.46' y='90.69' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact</text>
-<text x='110.46' y='107.49' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Greedy</text>
-</g>
-</g>
-</svg></div></p>
+<p><img src="advanced_files/figure-html/unnamed-chunk-6-1.svg" class="r-plt" alt="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data." width="624"></p>
 <p><strong>Key insight</strong>: The scaling behavior depends heavily on
 correlation structure. For this moderately correlated dataset (ρ =
 0.5^|i-j|), exact mode remains practical up to p ≈ 500, while greedy
@@ -445,7 +348,7 @@ near-optimal results in most practical scenarios.</p>
 </h3>
 <p>When multiple variables have identical correlation profiles,
 corrselect uses deterministic tie-breaking:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create data with identical correlations</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
@@ -493,7 +396,7 @@ conditions, species, sites), grouped pruning computes associations
 <div class="section level4">
 <h4 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
 </h4>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create data with grouping variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
@@ -584,7 +487,7 @@ the directions that carry its coefficient variance. The score runs from
 1 up to the overall condition number, so <code>limit</code> sits on the
 condition-index scale and the same numeric value means something
 different under <code>criterion = "vif"</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using condition number instead of VIF</span></span>
 <span><span class="va">result_cn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelPrune.html">modelPrune</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, criterion <span class="op">=</span> <span class="st">"condition_number"</span>, limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result_cn</span>, <span class="st">"selected_vars"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -615,7 +518,7 @@ handles the iteration logic.</p>
 <h4 id="engine-structure-requirements">Engine Structure Requirements<a class="anchor" aria-label="anchor" href="#engine-structure-requirements"></a>
 </h4>
 <p>A custom engine is a named list with two required functions:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Required: How to fit the model</span></span>
 <span>  fit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
@@ -655,7 +558,7 @@ model.</p>
 <div class="section level4">
 <h4 id="implementation">Implementation<a class="anchor" aria-label="anchor" href="#implementation"></a>
 </h4>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom engine for INLA</span></span>
 <span><span class="va">inla_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"inla"</span>,</span>
@@ -723,7 +626,7 @@ that model non-linear patterns.</p>
 <div class="section level4">
 <h4 id="implementation-1">Implementation<a class="anchor" aria-label="anchor" href="#implementation-1"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom engine for mgcv GAMs</span></span>
 <span><span class="va">mgcv_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"mgcv_gam"</span>,</span>
@@ -786,7 +689,7 @@ AIC.</p>
 <div class="section level4">
 <h4 id="implementation-2">Implementation<a class="anchor" aria-label="anchor" href="#implementation-2"></a>
 </h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># AIC-based pruning engine</span></span>
 <span><span class="va">aic_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"aic_pruner"</span>,</span>
@@ -853,7 +756,7 @@ criterion.</p>
 </h4>
 <p><code><a href="../reference/modelPrune.html">modelPrune()</a></code> automatically validates custom engines to
 catch common errors early:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Invalid engine: missing 'diagnostics'</span></span>
 <span><span class="va">bad_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  fit <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
@@ -893,7 +796,7 @@ for more problematic predictors</p></li>
 <h4 id="debugging-tips">Debugging Tips<a class="anchor" aria-label="anchor" href="#debugging-tips"></a>
 </h4>
 <p>If your custom engine fails, check:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Test your fit function in isolation</span></span>
 <span><span class="va">test_model</span> <span class="op">&lt;-</span> <span class="va">my_engine</span><span class="op">$</span><span class="fu">fit</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">my_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">test_model</span><span class="op">)</span>  <span class="co"># Does it work?</span></span>
@@ -916,7 +819,7 @@ for more problematic predictors</p></li>
 </h3>
 <p><code><a href="../reference/corrPrune.html">corrPrune()</a></code> returns a <strong>single</strong> subset.
 Sometimes you want <strong>all</strong> maximal subsets:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># corrPrune: Single subset</span></span>
 <span><span class="va">single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"corrPrune returned:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">single</span><span class="op">)</span>, <span class="st">"variables\n"</span><span class="op">)</span></span>
@@ -944,7 +847,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <h3 id="exploring-multiple-subsets">3.2 Exploring Multiple Subsets<a class="anchor" aria-label="anchor" href="#exploring-multiple-subsets"></a>
 </h3>
 <p>When multiple maximal subsets exist, you can explore them:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Display first few subsets</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"First few maximal subsets:\n"</span><span class="op">)</span></span>
@@ -983,7 +886,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 <div class="section level3">
 <h3 id="extracting-specific-subsets">3.3 Extracting Specific Subsets<a class="anchor" aria-label="anchor" href="#extracting-specific-subsets"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Extract subset with lowest average correlation</span></span>
 <span>  <span class="va">best_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">avg_corr</span><span class="op">)</span></span>
@@ -1013,7 +916,7 @@ Sometimes you want <strong>all</strong> maximal subsets:</p>
 </h3>
 <p>You can define custom criteria for choosing among multiple
 subsets:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_subsets</span><span class="op">@</span><span class="va">subset_list</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Custom criterion: Prefer subsets with specific variables</span></span>
 <span>  <span class="va">preferred_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mpg"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span><span class="op">)</span></span>
@@ -1054,7 +957,7 @@ subsets:</p>
 </h3>
 <p>For repeated pruning with different thresholds, precompute the
 correlation matrix:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create larger dataset for meaningful timing comparison</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">large_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="fl">50</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
@@ -1081,11 +984,11 @@ correlation matrix:</p>
 <span><span class="va">time2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">time2_runs</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span>  <span class="co"># seconds -&gt; milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 20.0 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 0.0 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Precomputed matrix: 0.0 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: Infx faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: NaNx faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li><p>Testing multiple thresholds</p></li>
@@ -1100,7 +1003,7 @@ correlation matrix:</p>
 <div class="section level4">
 <h4 id="memory-efficient-correlation-computation">Memory-Efficient Correlation Computation<a class="anchor" aria-label="anchor" href="#memory-efficient-correlation-computation"></a>
 </h4>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Standard (memory-intensive for large n)</span></span>
 <span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">large_data</span><span class="op">)</span></span>
 <span></span>
@@ -1118,9 +1021,9 @@ correlation matrix:</p>
 <h4 id="sparse-correlation-matrices">Sparse Correlation Matrices<a class="anchor" aria-label="anchor" href="#sparse-correlation-matrices"></a>
 </h4>
 <p>If most correlations are low, consider sparse storage:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to sparse format (requires Matrix package)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://codeberg.org/jaganmn/Matrix" class="external-link">Matrix</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute correlation</span></span>
 <span><span class="va">cor_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
@@ -1139,7 +1042,7 @@ correlation matrix:</p>
 <h3 id="parallel-processing-strategies">4.3 Parallel Processing Strategies<a class="anchor" aria-label="anchor" href="#parallel-processing-strategies"></a>
 </h3>
 <p>For multiple independent pruning operations:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create cluster</span></span>
@@ -1180,7 +1083,7 @@ p &gt; max_exact_p:  Use "greedy" (exact becomes slow; raise max_exact_p to push
 </h4>
 <p><strong>Cause</strong>: Threshold too strict - all variables exceed
 it</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: All correlations &gt; 0.9</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
@@ -1301,7 +1204,7 @@ it</p>
 <li><p>Use <code>force_in</code> to keep at least one variable</p></li>
 <li><p>Check data for near-duplicates</p></li>
 </ol>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Solution 1: Increase threshold</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
@@ -1317,7 +1220,7 @@ it</p>
 </h4>
 <p><strong>Cause</strong>: Variables in <code>force_in</code> have
 |correlation| &gt; threshold</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># x1 and x2 are highly correlated</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">high_cor_data</span>, threshold <span class="op">=</span> <span class="fl">0.5</span>, force_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span><span class="op">)</span><span class="op">)</span></span>
@@ -1332,7 +1235,7 @@ it</p>
 <h4 id="error-vif-computation-fails-in-modelprune">Error: VIF computation fails in modelPrune()<a class="anchor" aria-label="anchor" href="#error-vif-computation-fails-in-modelprune"></a>
 </h4>
 <p><strong>Cause</strong>: Perfect multicollinearity (R² = 1)</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create perfect multicollinearity</span></span>
 <span><span class="va">perfect_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
@@ -1449,7 +1352,7 @@ it</p>
 <span><span class="co">#&gt; 100 -0.35454240  0.55215771  1.85991086</span></span></code></pre></div>
 <p><strong>Solution</strong>: Use <code><a href="../reference/corrPrune.html">corrPrune()</a></code> first to
 remove perfect collinearity:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Two-step approach</span></span>
 <span><span class="va">step1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">perfect_data</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, threshold <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span></span>
 <span><span class="va">step2_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">perfect_data</span><span class="op">$</span><span class="va">y</span>, <span class="va">step1</span><span class="op">)</span></span>
@@ -1505,7 +1408,7 @@ retention</p></li>
 <div class="section level4">
 <h4 id="empirical-approach-visualize-first">Empirical Approach: Visualize First<a class="anchor" aria-label="anchor" href="#empirical-approach-visualize-first"></a>
 </h4>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize correlation distribution</span></span>
@@ -1545,166 +1448,7 @@ retention</p></li>
 <span>     col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, <span class="st">"Original"</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='324.00pt' viewBox='0 0 648.00 324.00' class="r-plt inline-svg" style="width:100%;height:auto;">
-<g class='svglite'>
-<defs>
-  <style type='text/css'><![CDATA[
-    /* theme-aware-processed */
-    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite circle {
-      fill: none;
-      stroke: #3E3F3A;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-miterlimit: 10.00;
-    }
-    .svglite > g > rect {
-      fill: none;
-      stroke: #3E3F3A;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-miterlimit: 10.00;
-    }
-    .svglite text {
-      white-space: pre;
-      fill: #3E3F3A;
-    }
-    .svglite g.glyphgroup path {
-      fill: inherit;
-      stroke: none;
-    }
-  ]]></style>
-</defs>
-<rect class='svg-bg' width='100%' height='100%' style='stroke: none; fill: #F5F6F8;'/>
-<defs>
-  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA='>
-    <rect x='0.00' y='0.00' width='648.00' height='324.00' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=)'>
-</g>
-<defs>
-  <clipPath id='cpMC4wMHwzMjQuMDB8MC4wMHwzMjQuMDA='>
-    <rect x='0.00' y='0.00' width='324.00' height='324.00' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpMC4wMHwzMjQuMDB8MC4wMHwzMjQuMDA=)'>
-<text x='184.80' y='54.90' text-anchor='middle' style='font-size: 2.28em; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Correlations</text>
-<text x='184.80' y='294.36' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>|Correlation|</text>
-<text transform='translate(20.52,150.60) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Frequency</text>
-</g>
-<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=)'>
-<line x1='128.43' y1='207.72' x2='241.17' y2='207.72' style='stroke-width: 0.75;' />
-<line x1='128.43' y1='207.72' x2='128.43' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='166.01' y1='207.72' x2='166.01' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='203.59' y1='207.72' x2='203.59' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='241.17' y1='207.72' x2='241.17' y2='219.12' style='stroke-width: 0.75;' />
-<text x='128.43' y='248.76' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.2</text>
-<text x='203.59' y='248.76' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.6</text>
-<line x1='93.48' y1='203.49' x2='93.48' y2='105.55' style='stroke-width: 0.75;' />
-<line x1='93.48' y1='203.49' x2='82.08' y2='203.49' style='stroke-width: 0.75;' />
-<line x1='93.48' y1='183.90' x2='82.08' y2='183.90' style='stroke-width: 0.75;' />
-<line x1='93.48' y1='164.31' x2='82.08' y2='164.31' style='stroke-width: 0.75;' />
-<line x1='93.48' y1='144.72' x2='82.08' y2='144.72' style='stroke-width: 0.75;' />
-<line x1='93.48' y1='125.13' x2='82.08' y2='125.13' style='stroke-width: 0.75;' />
-<line x1='93.48' y1='105.55' x2='82.08' y2='105.55' style='stroke-width: 0.75;' />
-<text transform='translate(66.12,203.49) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0</text>
-<text transform='translate(66.12,164.31) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>4</text>
-<text transform='translate(66.12,125.13) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>8</text>
-</g>
-<defs>
-  <clipPath id='cpOTMuNDh8Mjc2LjEyfDkzLjQ4fDIwNy43Mg=='>
-    <rect x='93.48' y='93.48' width='182.64' height='114.24' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpOTMuNDh8Mjc2LjEyfDkzLjQ4fDIwNy43Mg==)'>
-<rect x='100.24' y='174.11' width='9.40' height='29.38' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='109.64' y='193.69' width='9.40' height='9.79' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='119.03' y='183.90' width='9.40' height='19.59' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='128.43' y='164.31' width='9.40' height='39.18' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='137.82' y='193.69' width='9.40' height='9.79' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='147.22' y='203.49' width='9.40' height='0.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='156.61' y='193.69' width='9.40' height='9.79' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='166.01' y='154.52' width='9.40' height='48.97' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='175.40' y='183.90' width='9.40' height='19.59' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='184.80' y='183.90' width='9.40' height='19.59' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='194.20' y='125.13' width='9.40' height='78.35' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='203.59' y='203.49' width='9.40' height='0.00' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='212.99' y='134.93' width='9.40' height='68.56' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='222.38' y='125.13' width='9.40' height='78.35' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='231.78' y='164.31' width='9.40' height='39.18' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='241.17' y='174.11' width='9.40' height='29.38' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='250.57' y='174.11' width='9.40' height='29.38' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<rect x='259.96' y='193.69' width='9.40' height='9.79' style='stroke-width: 0.75; fill: #ADD8E6;' />
-<line x1='184.80' y1='203.49' x2='184.80' y2='121.22' style='stroke-width: 1.50; stroke: #FF0000; stroke-dasharray: 8.00,8.00;' />
-<line x1='222.38' y1='203.49' x2='222.38' y2='121.22' style='stroke-width: 1.50; stroke: #0000FF; stroke-dasharray: 8.00,8.00;' />
-<line x1='259.96' y1='203.49' x2='259.96' y2='121.22' style='stroke-width: 1.50; stroke: #00FF00; stroke-dasharray: 8.00,8.00;' />
-<text x='184.80' y='115.73' text-anchor='middle' style='font-size: 1.9em;fill: #FF0000; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.5</text>
-<text x='222.38' y='115.73' text-anchor='middle' style='font-size: 1.9em;fill: #0000FF; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.7</text>
-<text x='259.96' y='115.73' text-anchor='middle' style='font-size: 1.9em;fill: #00FF00; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.9</text>
-</g>
-<defs>
-  <clipPath id='cpNDE3LjQ4fDYwMC4xMnw5My40OHwyMDcuNzI='>
-    <rect x='417.48' y='93.48' width='182.64' height='114.24' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpNDE3LjQ4fDYwMC4xMnw5My40OHwyMDcuNzI=)'>
-<line x1='533.83' y1='158.26' x2='535.80' y2='154.70' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='424.24' cy='203.49' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='437.25' cy='203.49' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='450.26' cy='203.49' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='463.27' cy='203.49' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='476.28' cy='191.74' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='489.29' cy='191.74' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='502.30' cy='179.98' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='515.30' cy='179.98' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='528.31' cy='168.23' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='541.32' cy='144.72' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='554.33' cy='132.97' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='567.34' cy='121.22' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='580.35' cy='109.46' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-<circle cx='593.36' cy='97.71' r='4.27' style='stroke-width: 1.50; stroke: #0000FF;' />
-</g>
-<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=)'>
-<line x1='424.24' y1='207.72' x2='580.35' y2='207.72' style='stroke-width: 0.75;' />
-<line x1='424.24' y1='207.72' x2='424.24' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='450.26' y1='207.72' x2='450.26' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='476.28' y1='207.72' x2='476.28' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='502.30' y1='207.72' x2='502.30' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='528.31' y1='207.72' x2='528.31' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='554.33' y1='207.72' x2='554.33' y2='219.12' style='stroke-width: 0.75;' />
-<line x1='580.35' y1='207.72' x2='580.35' y2='219.12' style='stroke-width: 0.75;' />
-<text x='424.24' y='248.76' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.3</text>
-<text x='476.28' y='248.76' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.5</text>
-<text x='528.31' y='248.76' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.7</text>
-<text x='580.35' y='248.76' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>0.9</text>
-<line x1='417.48' y1='203.49' x2='417.48' y2='109.46' style='stroke-width: 0.75;' />
-<line x1='417.48' y1='203.49' x2='406.08' y2='203.49' style='stroke-width: 0.75;' />
-<line x1='417.48' y1='179.98' x2='406.08' y2='179.98' style='stroke-width: 0.75;' />
-<line x1='417.48' y1='156.48' x2='406.08' y2='156.48' style='stroke-width: 0.75;' />
-<line x1='417.48' y1='132.97' x2='406.08' y2='132.97' style='stroke-width: 0.75;' />
-<line x1='417.48' y1='109.46' x2='406.08' y2='109.46' style='stroke-width: 0.75;' />
-<text transform='translate(390.12,203.49) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>2</text>
-<text transform='translate(390.12,156.48) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>6</text>
-<text transform='translate(390.12,109.46) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>10</text>
-<polygon points='417.48,207.72 600.12,207.72 600.12,93.48 417.48,93.48 ' style='stroke-width: 0.75;' />
-</g>
-<defs>
-  <clipPath id='cpMzI0LjAwfDY0OC4wMHwwLjAwfDMyNC4wMA=='>
-    <rect x='324.00' y='0.00' width='324.00' height='324.00' />
-  </clipPath>
-</defs>
-<g clip-path='url(#cpMzI0LjAwfDY0OC4wMHwwLjAwfDMyNC4wMA==)'>
-<text x='508.80' y='54.90' text-anchor='middle' style='font-size: 2.28em; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Threshold sensitivity</text>
-<text x='508.80' y='294.36' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Threshold</text>
-<text transform='translate(344.52,150.60) rotate(-90)' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Variables kept</text>
-</g>
-<g clip-path='url(#cpNDE3LjQ4fDYwMC4xMnw5My40OHwyMDcuNzI=)'>
-<line x1='417.48' y1='97.71' x2='600.12' y2='97.71' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 4.00,4.00;' />
-<text x='424.24' y='86.31' text-anchor='middle' style='font-size: 1.9em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Original</text>
-</g>
-</g>
-</svg></div></p>
+<p><img src="advanced_files/figure-html/unnamed-chunk-29-1.svg" class="r-plt" alt="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention." width="864"></p>
 <p>The marked thresholds are 0.5 (strict), 0.7 (moderate) and 0.9
 (lenient).</p>
 <p><strong>Strategy</strong>: Choose threshold where curve begins to
@@ -1717,7 +1461,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="single-predictor-after-pruning">Single Predictor After Pruning<a class="anchor" aria-label="anchor" href="#single-predictor-after-pruning"></a>
 </h4>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Very strict threshold may leave only 1 variable</span></span>
 <span><span class="va">strict_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Variables remaining:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">strict_result</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -1733,7 +1477,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="all-variables-removed">All Variables Removed<a class="anchor" aria-label="anchor" href="#all-variables-removed"></a>
 </h4>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Impossible threshold</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">mtcars</span>, threshold <span class="op">=</span> <span class="fl">0.0</span><span class="op">)</span></span>
@@ -1777,7 +1521,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="mixed-type-data">Mixed-Type Data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a>
 </h4>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create mixed data</span></span>
 <span><span class="va">mixed_data</span> <span class="op">&lt;-</span> <span class="va">mtcars</span></span>
 <span><span class="va">mixed_data</span><span class="op">$</span><span class="va">cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">mixed_data</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span></span>
@@ -1819,7 +1563,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="for-exploratory-analysis">For Exploratory Analysis<a class="anchor" aria-label="anchor" href="#for-exploratory-analysis"></a>
 </h4>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Visualize correlations</span></span>
 <span><span class="fu">corrplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"circle"</span><span class="op">)</span></span>
 <span></span>
@@ -1837,7 +1581,7 @@ plateau.</p>
 <div class="section level4">
 <h4 id="for-publication-quality-analysis">For Publication-Quality Analysis<a class="anchor" aria-label="anchor" href="#for-publication-quality-analysis"></a>
 </h4>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Use exact mode for reproducibility and optimality</span></span>
 <span><span class="va">data_pruned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrPrune.html">corrPrune</a></span><span class="op">(</span><span class="va">data</span>, threshold <span class="op">=</span> <span class="fl">0.7</span>, mode <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span>
 <span></span>
@@ -1856,7 +1600,7 @@ plateau.</p>
 <div class="section level3">
 <h3 id="combining-with-other-methods">6.2 Combining with Other Methods<a class="anchor" aria-label="anchor" href="#combining-with-other-methods"></a>
 </h3>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Comprehensive variable selection pipeline</span></span>
 <span><span class="va">pipeline</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">response</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Step 1: Remove correlations</span></span>
@@ -1977,9 +1721,9 @@ exact methods</p></li>
 <div class="section level3">
 <h3 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h3>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.6.0 (2026-04-24 ucrt)</span></span>
+<span><span class="co">#&gt; R version 4.6.1 (2026-06-24 ucrt)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
 <span><span class="co">#&gt; Running under: Windows 11 x64 (build 26200)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1987,29 +1731,27 @@ exact methods</p></li>
 <span><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; locale:</span></span>
-<span><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
-<span><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
-<span><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
-<span><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
-<span><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   </span></span>
+<span><span class="co">#&gt; [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    </span></span>
+<span><span class="co">#&gt; [5] LC_TIME=English_Austria.utf8    </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; time zone: Europe/Luxembourg</span></span>
+<span><span class="co">#&gt; time zone: Europe/Vienna</span></span>
 <span><span class="co">#&gt; tzcode source: internal</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attached base packages:</span></span>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] corrselect_3.2.3</span></span>
+<span><span class="co">#&gt; [1] corrselect_3.3.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.6         knitr_1.51        rlang_1.3.0      </span></span>
-<span><span class="co">#&gt;  [5] xfun_0.57         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         </span></span>
-<span><span class="co">#&gt;  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.31   </span></span>
-<span><span class="co">#&gt; [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-65       fastmap_1.2.0    </span></span>
-<span><span class="co">#&gt; [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0         </span></span>
+<span><span class="co">#&gt;  [1] svglite_2.2.2     cli_3.6.6         knitr_1.52        rlang_1.3.0      </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         </span></span>
+<span><span class="co">#&gt;  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   </span></span>
+<span><span class="co">#&gt; [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-66       fastmap_1.2.0    </span></span>
+<span><span class="co">#&gt; [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.1    fs_2.1.0         </span></span>
 <span><span class="co">#&gt; [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    </span></span>
-<span><span class="co">#&gt; [25] R6_2.6.1          bslib_0.12.0      tools_4.6.0       pkgdown_2.2.0    </span></span>
+<span><span class="co">#&gt; [25] R6_2.6.1          bslib_0.12.0      tools_4.6.1       pkgdown_2.2.1    </span></span>
 <span><span class="co">#&gt; [29] cachem_1.1.0      desc_1.4.3</span></span></code></pre></div>
 </div>
 </div>
@@ -2024,7 +1766,7 @@ exact methods</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
@@ -2034,83 +1776,5 @@ exact methods</p></li>
 
 
 
-  <script>
-/* SVG Copy Button Functionality */
-(function() {
-  "use strict";
-
-  // Initialize SVG copy buttons after DOM is ready
-  document.addEventListener("DOMContentLoaded", function() {
-    if (typeof ClipboardJS === "undefined") {
-      console.warn("ClipboardJS not loaded - SVG copy buttons disabled");
-      return;
-    }
-
-    // Initialize clipboard for SVG copy buttons
-    var svgClipboard = new ClipboardJS(".btn-copy-svg", {
-      text: function(trigger) {
-        var container = trigger.closest(".svg-container");
-        if (!container) return "";
-
-        var svg = container.querySelector("svg");
-        if (!svg) return "";
-
-        // Clone SVG to avoid modifying the original
-        var clone = svg.cloneNode(true);
-
-        // Remove inline-svg class (not needed in copied version)
-        clone.classList.remove("inline-svg");
-
-        // Add XML declaration and serialize
-        var serializer = new XMLSerializer();
-        var svgString = serializer.serializeToString(clone);
-
-        // Add XML declaration if not present
-        if (!svgString.startsWith("<?xml")) {
-          svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgString;
-        }
-
-        return svgString;
-      }
-    });
-
-    // Handle success
-    svgClipboard.on("success", function(e) {
-      var btn = e.trigger;
-      var originalTitle = btn.getAttribute("data-bs-original-title") || btn.getAttribute("title");
-
-      // Update tooltip to show "Copied!"
-      btn.setAttribute("data-bs-original-title", "Copied!");
-      var tooltip = bootstrap.Tooltip.getInstance(btn);
-      if (tooltip) {
-        tooltip.show();
-      }
-
-      // Reset after delay
-      setTimeout(function() {
-        btn.setAttribute("data-bs-original-title", originalTitle);
-      }, 1500);
-
-      e.clearSelection();
-    });
-
-    // Handle error
-    svgClipboard.on("error", function(e) {
-      var btn = e.trigger;
-      btn.setAttribute("data-bs-original-title", "Press Ctrl+C to copy");
-      var tooltip = bootstrap.Tooltip.getInstance(btn);
-      if (tooltip) {
-        tooltip.show();
-      }
-    });
-
-    // Initialize tooltips for SVG copy buttons
-    var svgCopyButtons = document.querySelectorAll(".btn-copy-svg");
-    svgCopyButtons.forEach(function(btn) {
-      new bootstrap.Tooltip(btn, { container: "body" });
-    });
-  });
-})();
-</script>
-</body>
+  </body>
 </html>
