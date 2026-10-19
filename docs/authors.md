@@ -28,14 +28,14 @@ data analysis and modeling.” *Journal of Open Source Software*,
       url = {https://joss.theoj.org/papers/10.21105/joss.09539},
     }
 
-Colling G (2025). *corrselect: Correlation-Based Variable Subset
-Selection*. R package version 3.2.3,
+Colling G (2026). *corrselect: Correlation-Based Variable Subset
+Selection*. R package version 3.3.0,
 <https://github.com/gcol33/corrselect>.
 
     @Manual{,
       title = {corrselect: Correlation-Based Variable Subset Selection},
       author = {Gilles Colling},
-      year = {2025},
-      note = {R package version 3.2.3},
+      year = {2026},
+      note = {R package version 3.3.0},
       url = {https://github.com/gcol33/corrselect},
     }

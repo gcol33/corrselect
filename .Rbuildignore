@@ -41,3 +41,4 @@
 ^src/.*\.o$
 ^src/.*\.so$
 ^src/.*\.dll$
+^CITATION\.cff$

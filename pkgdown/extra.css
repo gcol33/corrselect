@@ -46,6 +46,24 @@ figure {
   }
 }
 
+/* Mobile: page title on one line beside the logo */
+/* Headings inherit hyphens: auto, which split a package name mid-word next to
+   the floated logo. A smaller logo and a viewport-scaled title keep a
+   one-word name on one line down to 320 px; a longer title wraps at spaces
+   only, and a word that still does not fit moves below the logo whole. */
+@media (max-width: 575.98px) {
+  .page-header img.logo {
+    width: 90px;
+    margin-left: 16px;
+  }
+  .page-header h1 {
+    font-size: min(1.75rem, 6.2vw);
+    hyphens: manual;
+    -webkit-hyphens: manual;
+    overflow-wrap: normal;
+  }
+}
+
 /* Mobile: match code block full-width behavior */
 /* Code blocks use negative margins to expand on mobile - plots should too */
 /* Use :has() to target the parent <p> that contains an SVG/img */
@@ -108,6 +126,16 @@ figure {
 [data-bs-theme="dark"] img.figure-img,
 [data-bs-theme="dark"] svg.inline-svg {
   border-color: #495057;
+}
+
+/* pkgdown inverts figures and widgets in dark mode, which turns the white plot */
+/* background black and flips every colour of a raster map. SVG figures are */
+/* inlined and themed below; raster figures and widgets are shown as drawn. */
+[data-bs-theme="dark"] img.r-plt,
+[data-bs-theme="dark"] pre .r-plt.img img,
+[data-bs-theme="dark"] .cell-output-display img,
+[data-bs-theme="dark"] .html-widget {
+  filter: none;
 }
 
 /* Dark mode colors for inline SVG elements (base R svg format) */
@@ -228,7 +256,9 @@ svg.inline-svg .svglite polyline[style*="stroke: #ffffff"] {
 [data-bs-theme="dark"] svg.inline-svg .svglite line[style*="stroke: #EBEBEB"],
 [data-bs-theme="dark"] svg.inline-svg .svglite line[style*="stroke: #ebebeb"],
 [data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #EBEBEB"],
-[data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #ebebeb"] {
+[data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #ebebeb"],
+[data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #DFD7CA"],
+[data-bs-theme="dark"] svg.inline-svg .svglite polyline[style*="stroke: #dfd7ca"] {
   stroke: #495057 !important;
 }
 
@@ -296,6 +326,15 @@ mjx-container:not([display="true"]),
   max-width: 100%;
   overflow-x: auto;
   vertical-align: middle;
+}
+
+/* Wide tables scroll inside their own box on phones */
+@media (max-width: 767px) {
+  .contents table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 
 /* Figure text scale */

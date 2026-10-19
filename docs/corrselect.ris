@@ -1,0 +1,20 @@
+TY  - JOUR
+AU  - Colling, Gilles
+TI  - corrselect: Fast and flexible predictor pruning for data analysis and modeling
+PY  - 2026
+JO  - Journal of Open Source Software
+VL  - 11
+IS  - 118
+SP  - 9539
+DO  - 10.21105/joss.09539
+UR  - https://joss.theoj.org/papers/10.21105/joss.09539
+ER  - 
+
+TY  - COMP
+AU  - Colling, Gilles
+TI  - corrselect: Correlation-Based Variable Subset Selection
+PY  - 2026
+UR  - https://github.com/gcol33/corrselect
+N1  - R package version 3.3.0
+ER  - 
+

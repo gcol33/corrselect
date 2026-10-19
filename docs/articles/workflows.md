@@ -752,7 +752,7 @@ cat(sprintf("Reduced from %d → %d genes (%.1f ms)\n",
             ncol(gene_expr),
             ncol(genes_pruned),
             greedy_ms))
-#> Reduced from 200 → 177 genes (20.0 ms)
+#> Reduced from 200 → 177 genes (10.0 ms)
 ```
 
 The greedy algorithm completed in milliseconds while ensuring all
@@ -1162,7 +1162,7 @@ details
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1170,26 +1170,28 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
-#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
-#> [5] LC_TIME=English_Austria.utf8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
-#> time zone: Europe/Vienna
+#> time zone: Europe/Luxembourg
 #> tzcode source: internal
 #> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] corrselect_3.3.0
+#> [1] testthat_3.3.2   corrselect_3.3.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] svglite_2.2.2     cli_3.6.6         knitr_1.52        rlang_1.3.0      
 #>  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
-#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   
-#> [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      
-#> [17] lifecycle_1.0.5   compiler_4.6.1    codetools_0.2-20  fs_2.1.0         
-#> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.1       pkgdown_2.2.1    
-#> [29] cachem_1.1.0      desc_1.4.3
+#>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       brio_1.1.5       
+#> [13] rmarkdown_2.32    evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0    
+#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    codetools_0.2-20 
+#> [21] fs_2.1.0          htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2
+#> [25] digest_0.6.39     R6_2.6.1          magrittr_2.0.5    bslib_0.12.0     
+#> [29] tools_4.6.0       pkgdown_2.2.1     cachem_1.1.0      desc_1.4.3
 ```

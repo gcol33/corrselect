@@ -24,6 +24,18 @@ threshold, by graph enumeration (Bron–Kerbosch /
 Eppstein–Löffler–Strash) in C++, and returns whichever view you need: a
 single pruned data frame, or every valid subset to choose from.
 
+## Installation
+
+``` r
+
+install.packages("corrselect")            # CRAN
+
+install.packages("pak")                   # development version
+pak::pak("gcol33/corrselect")
+```
+
+## Quick start
+
 ``` r
 
 library(corrselect)
@@ -65,7 +77,7 @@ res
 corrSubset(res, mtcars, which = "best")   # pull the top-ranked subset back out as a data frame
 ```
 
-## Keeping variables you already trust, across groups
+## Keeping variables in, across groups
 
 `force_in` protects variables that must survive pruning regardless of
 what else gets dropped; `by` requires the threshold to hold separately
@@ -151,7 +163,7 @@ first to cut dimensionality, then
 [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md)
 for final cleanup inside a modeling framework.
 
-## Exact where it matters, greedy where it scales
+## Greedy selection
 
 [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md)
 picks a search mode for you: exact enumeration up to `max_exact_p`
@@ -196,16 +208,6 @@ VIF removal) side by side on the same dataset.
 - **[`assocSelect()`](https://gillescolling.com/corrselect/reference/assocSelect.md)**:
   mixed-type data (numeric, factor, ordered), with the right association
   metric chosen per pair.
-
-## Installation
-
-``` r
-
-install.packages("corrselect")            # CRAN
-
-install.packages("pak")                   # development version
-pak::pak("gcol33/corrselect")
-```
 
 ## Documentation
 

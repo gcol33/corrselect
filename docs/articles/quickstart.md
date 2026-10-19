@@ -464,7 +464,7 @@ Section 5.
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -472,11 +472,13 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
-#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
-#> [5] LC_TIME=English_Austria.utf8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
-#> time zone: Europe/Vienna
+#> time zone: Europe/Luxembourg
 #> tzcode source: internal
 #> 
 #> attached base packages:
@@ -490,7 +492,7 @@ sessionInfo()
 #>  [5] xfun_0.60         cachem_1.1.0      knitr_1.52        htmltools_0.5.9  
 #>  [9] rmarkdown_2.32    lifecycle_1.0.5   cli_3.6.6         S7_0.2.2         
 #> [13] svglite_2.2.2     sass_0.4.10       pkgdown_2.2.1     textshaping_1.0.5
-#> [17] jquerylib_0.1.4   systemfonts_1.3.2 compiler_4.6.1    tools_4.6.1      
+#> [17] jquerylib_0.1.4   systemfonts_1.3.2 compiler_4.6.0    tools_4.6.0      
 #> [21] bslib_0.12.0      evaluate_1.0.5    Rcpp_1.1.2        yaml_2.3.12      
 #> [25] otel_0.2.0        jsonlite_2.0.0    rlang_1.3.0       fs_2.1.0         
 #> [29] htmlwidgets_1.6.4

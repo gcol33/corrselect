@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+type: software
+title: 'corrselect: Correlation-Based and Model-Based Predictor Pruning'
+version: 3.3.0
+authors:
+- family-names: Colling
+  given-names: Gilles
+  orcid: https://orcid.org/0000-0003-3070-6066
+license: MIT
+url: https://gillescolling.com/corrselect/
+preferred-citation:
+  type: article
+  title: 'corrselect: Fast and flexible predictor pruning for data analysis and modeling'
+  authors:
+  - family-names: Colling
+    given-names: Gilles
+  year: 2026
+  journal: Journal of Open Source Software
+  volume: '11'
+  issue: '118'
+  start: '9539'
+  doi: 10.21105/joss.09539
+  url: https://joss.theoj.org/papers/10.21105/joss.09539
+references:
+- type: software
+  title: 'corrselect: Correlation-Based Variable Subset Selection'
+  authors:
+  - family-names: Colling
+    given-names: Gilles
+  year: 2026
+  url: https://github.com/gcol33/corrselect
+  notes: R package version 3.3.0

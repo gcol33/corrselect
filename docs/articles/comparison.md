@@ -123,6 +123,10 @@ if (requireNamespace("caret", quietly = TRUE)) {
   cat("  Variables removed:", length(to_remove_caret), "\n")
   cat("  Removed:", paste(colnames(predictors)[to_remove_caret], collapse = ", "), "\n")
 }
+#> caret results:
+#>   Variables retained: 10 
+#>   Variables removed: 9 
+#>   Removed: BIO8, BIO7, BIO5, BIO4, BIO3, BIO9, BIO1, BIO11, BIO15
 ```
 
 ``` r
@@ -204,6 +208,15 @@ if (requireNamespace("caret", quietly = TRUE)) {
 }
 ```
 
+![Overlaid histogram comparing absolute correlation distributions across
+three methods: original data (gray bars), caret's findCorrelation (red
+bars), and corrselect (blue bars). Black vertical dashed line marks the
+0.7 threshold. All methods successfully reduce correlations below the
+threshold, but corrselect retains more variables than caret while still
+satisfying the constraint, demonstrating the advantage of maximal clique
+enumeration over greedy
+removal.](comparison_files/figure-html/unnamed-chunk-6-1.svg)
+
 ### Comparison
 
 | Feature | caret | corrselect |
@@ -272,6 +285,13 @@ if (requireNamespace("Boruta", quietly = TRUE) &&
   cat("\n  Confirmed predictors:", length(important_vars), "\n")
   cat(" ", paste(important_vars, collapse = ", "), "\n")
 }
+#> Boruta variable importance screening:
+#> 
+#> Tentative Confirmed  Rejected 
+#>         0         6        13 
+#> 
+#>   Confirmed predictors: 6 
+#>   BIO12, BIO13, BIO14, BIO15, BIO16, BIO17
 ```
 
 ``` r
@@ -534,7 +554,9 @@ if (requireNamespace("car", quietly = TRUE)) {
 }
 #> Manual VIF removal (iterative):
 #> Loading required package: car
+#> Warning: package 'car' was built under R version 4.6.1
 #> Loading required package: carData
+#> Warning: package 'carData' was built under R version 4.6.1
 #> Iteration 1 : Removing BIO2 (VIF = 5.83 )
 #> Iteration 2 : Removing BIO7 (VIF = 5.66 )
 #> Iteration 3 : Removing BIO5 (VIF = 5.03 )
@@ -736,7 +758,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24 ucrt)
+#> R version 4.6.0 (2026-04-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -744,11 +766,13 @@ sessionInfo()
 #>   LAPACK version 3.12.1
 #> 
 #> locale:
-#> [1] LC_COLLATE=English_Austria.utf8  LC_CTYPE=English_Austria.utf8   
-#> [3] LC_MONETARY=English_Austria.utf8 LC_NUMERIC=C                    
-#> [5] LC_TIME=English_Austria.utf8    
+#> [1] LC_COLLATE=English_United States.utf8 
+#> [2] LC_CTYPE=English_United States.utf8   
+#> [3] LC_MONETARY=English_United States.utf8
+#> [4] LC_NUMERIC=C                          
+#> [5] LC_TIME=English_United States.utf8    
 #> 
-#> time zone: Europe/Vienna
+#> time zone: Europe/Luxembourg
 #> tzcode source: internal
 #> 
 #> attached base packages:
@@ -758,15 +782,34 @@ sessionInfo()
 #> [1] car_3.1-5        carData_3.0-6    corrselect_3.3.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] Matrix_1.7-6      glmnet_5.0        jsonlite_2.0.0    compiler_4.6.1   
-#>  [5] Rcpp_1.1.2        jquerylib_0.1.4   splines_4.6.1     systemfonts_1.3.2
-#>  [9] textshaping_1.0.5 yaml_2.3.12       fastmap_1.2.0     lattice_0.23-1   
-#> [13] R6_2.6.1          shape_1.4.6.1     Formula_1.2-6     knitr_1.52       
-#> [17] iterators_1.0.14  htmlwidgets_1.6.4 desc_1.4.3        svglite_2.2.2    
-#> [21] bslib_0.12.0      rlang_1.3.0       cachem_1.1.0      xfun_0.60        
-#> [25] fs_2.1.0          sass_0.4.10       S7_0.2.2          otel_0.2.0       
-#> [29] cli_3.6.6         pkgdown_2.2.1     digest_0.6.39     foreach_1.5.2    
-#> [33] grid_4.6.1        lifecycle_1.0.5   evaluate_1.0.5    codetools_0.2-20 
-#> [37] survival_3.8-12   abind_1.4-8       rmarkdown_2.32    tools_4.6.1      
-#> [41] htmltools_0.5.9
+#>  [1] tidyselect_1.2.1     timeDate_4052.112    dplyr_1.2.1         
+#>  [4] farver_2.1.2         S7_0.2.2             fastmap_1.2.0       
+#>  [7] pROC_1.19.1          caret_7.0-1          digest_0.6.39       
+#> [10] rpart_4.1.27         timechange_0.4.0     lifecycle_1.0.5     
+#> [13] survival_3.8-12      magrittr_2.0.5       compiler_4.6.0      
+#> [16] rlang_1.3.0          sass_0.4.10          tools_4.6.0         
+#> [19] yaml_2.3.12          Boruta_10.0.0        data.table_1.18.6.1 
+#> [22] knitr_1.52           htmlwidgets_1.6.4    plyr_1.8.9          
+#> [25] RColorBrewer_1.1-3   abind_1.4-8          withr_3.0.3         
+#> [28] purrr_1.2.2          desc_1.4.3           nnet_7.3-21         
+#> [31] grid_4.6.0           stats4_4.6.0         future_1.75.0       
+#> [34] ggplot2_4.0.3        globals_0.19.1       scales_1.4.0        
+#> [37] iterators_1.0.14     MASS_7.3-66          cli_3.6.6           
+#> [40] rmarkdown_2.32       generics_0.1.4       otel_0.2.0          
+#> [43] future.apply_1.20.2  reshape2_1.4.5       cachem_1.1.0        
+#> [46] stringr_1.6.0        splines_4.6.0        parallel_4.6.0      
+#> [49] vctrs_0.7.3          hardhat_1.4.3        glmnet_5.0          
+#> [52] Matrix_1.7-6         jsonlite_2.0.0       Formula_1.2-6       
+#> [55] listenv_1.0.0        systemfonts_1.3.2    foreach_1.5.2       
+#> [58] gower_1.0.2          jquerylib_0.1.4      recipes_1.4.0       
+#> [61] glue_1.8.1           parallelly_1.48.0    pkgdown_2.2.1       
+#> [64] codetools_0.2-20     lubridate_1.9.5      stringi_1.8.9       
+#> [67] shape_1.4.6.1        gtable_0.3.6         tibble_3.3.1        
+#> [70] pillar_1.11.1        htmltools_0.5.9      ipred_0.9-16        
+#> [73] lava_1.9.3           R6_2.6.1             textshaping_1.0.5   
+#> [76] evaluate_1.0.5       lattice_0.23-1       bslib_0.12.0        
+#> [79] class_7.3-24         Rcpp_1.1.2           svglite_2.2.2       
+#> [82] nlme_3.1-171         prodlim_2026.03.11   ranger_0.18.0       
+#> [85] xfun_0.60            fs_2.1.0             pkgconfig_2.0.3     
+#> [88] ModelMetrics_1.2.2.2
 ```
