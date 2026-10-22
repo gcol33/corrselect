@@ -42,3 +42,6 @@
 ^src/.*\.so$
 ^src/.*\.dll$
 ^CITATION\.cff$
+^README\.Rmd$
+^sidecars$
+^\.run.*$

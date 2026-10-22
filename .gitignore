@@ -51,3 +51,6 @@ cookies.txt
 figure/
 Rplots.pdf
 paper/paper.crossref
+
+# Local run scripts
+.run*

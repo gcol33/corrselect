@@ -1,19 +1,26 @@
-citHeader("To cite the corrselect package in publications use:")
+citHeader("If you use corrselect, please cite the article in the Journal of Open Source Software and the package version you used.")
 
-bibentry("Article",
-         title   = "corrselect: Fast and flexible predictor pruning for data analysis and modeling",
-         author  = person("Gilles", "Colling"),
-         journal = "Journal of Open Source Software",
-         year    = "2026",
-         volume  = "11",
-         number  = "118",
-         pages   = "9539",
-         doi     = "10.21105/joss.09539",
-         url     = "https://joss.theoj.org/papers/10.21105/joss.09539")
+bibentry(
+  bibtype = "Article",
+  key     = "colling2026corrselectjoss",
+  title   = "corrselect: Fast and flexible predictor pruning for data analysis and modeling",
+  author  = person("Gilles", "Colling", comment = c(ORCID = "0000-0003-3070-6066")),
+  journal = "Journal of Open Source Software",
+  year    = "2026",
+  volume  = "11",
+  number  = "118",
+  pages   = "9539",
+  doi     = "10.21105/joss.09539",
+  url     = "https://joss.theoj.org/papers/10.21105/joss.09539"
+)
 
-bibentry("Manual",
-         title = "corrselect: Correlation-Based Variable Subset Selection",
-         author = person("Gilles", "Colling"),
-         year = "2026",
-         note = sprintf("R package version %s", meta$Version),
-         url = "https://github.com/gcol33/corrselect")
+bibentry(
+  bibtype = "Manual",
+  key     = "colling2026corrselect",
+  title   = paste0("corrselect: ", meta$Title),
+  author  = person("Gilles", "Colling", comment = c(ORCID = "0000-0003-3070-6066")),
+  year    = "2026",
+  note    = paste("R package version", meta$Version),
+  doi     = "10.32614/CRAN.package.corrselect",
+  url     = "https://gillescolling.com/corrselect/"
+)

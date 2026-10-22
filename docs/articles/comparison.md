@@ -554,9 +554,7 @@ if (requireNamespace("car", quietly = TRUE)) {
 }
 #> Manual VIF removal (iterative):
 #> Loading required package: car
-#> Warning: package 'car' was built under R version 4.6.1
 #> Loading required package: carData
-#> Warning: package 'carData' was built under R version 4.6.1
 #> Iteration 1 : Removing BIO2 (VIF = 5.83 )
 #> Iteration 2 : Removing BIO7 (VIF = 5.66 )
 #> Iteration 3 : Removing BIO5 (VIF = 5.03 )
@@ -758,7 +756,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -786,18 +784,18 @@ sessionInfo()
 #>  [4] farver_2.1.2         S7_0.2.2             fastmap_1.2.0       
 #>  [7] pROC_1.19.1          caret_7.0-1          digest_0.6.39       
 #> [10] rpart_4.1.27         timechange_0.4.0     lifecycle_1.0.5     
-#> [13] survival_3.8-12      magrittr_2.0.5       compiler_4.6.0      
-#> [16] rlang_1.3.0          sass_0.4.10          tools_4.6.0         
+#> [13] survival_3.8-12      magrittr_2.0.5       compiler_4.6.1      
+#> [16] rlang_1.3.0          sass_0.4.10          tools_4.6.1         
 #> [19] yaml_2.3.12          Boruta_10.0.0        data.table_1.18.6.1 
 #> [22] knitr_1.52           htmlwidgets_1.6.4    plyr_1.8.9          
 #> [25] RColorBrewer_1.1-3   abind_1.4-8          withr_3.0.3         
 #> [28] purrr_1.2.2          desc_1.4.3           nnet_7.3-21         
-#> [31] grid_4.6.0           stats4_4.6.0         future_1.75.0       
+#> [31] grid_4.6.1           stats4_4.6.1         future_1.75.0       
 #> [34] ggplot2_4.0.3        globals_0.19.1       scales_1.4.0        
 #> [37] iterators_1.0.14     MASS_7.3-66          cli_3.6.6           
 #> [40] rmarkdown_2.32       generics_0.1.4       otel_0.2.0          
 #> [43] future.apply_1.20.2  reshape2_1.4.5       cachem_1.1.0        
-#> [46] stringr_1.6.0        splines_4.6.0        parallel_4.6.0      
+#> [46] stringr_1.6.0        splines_4.6.1        parallel_4.6.1      
 #> [49] vctrs_0.7.3          hardhat_1.4.3        glmnet_5.0          
 #> [52] Matrix_1.7-6         jsonlite_2.0.0       Formula_1.2-6       
 #> [55] listenv_1.0.0        systemfonts_1.3.2    foreach_1.5.2       

@@ -16,7 +16,7 @@ data analysis and modeling.” *Journal of Open Source Software*,
 [doi:10.21105/joss.09539](https://doi.org/10.21105/joss.09539).
 <https://joss.theoj.org/papers/10.21105/joss.09539>.
 
-    @Article{,
+    @Article{colling2026corrselectjoss,
       title = {corrselect: Fast and flexible predictor pruning for data analysis and modeling},
       author = {Gilles Colling},
       journal = {Journal of Open Source Software},
@@ -28,14 +28,16 @@ data analysis and modeling.” *Journal of Open Source Software*,
       url = {https://joss.theoj.org/papers/10.21105/joss.09539},
     }
 
-Colling G (2026). *corrselect: Correlation-Based Variable Subset
-Selection*. R package version 3.3.0,
-<https://github.com/gcol33/corrselect>.
+Colling G (2026). *corrselect: Correlation-Based and Model-Based
+Predictor Pruning*.
+[doi:10.32614/CRAN.package.corrselect](https://doi.org/10.32614/CRAN.package.corrselect).
+R package version 3.3.0, <https://gillescolling.com/corrselect/>.
 
-    @Manual{,
-      title = {corrselect: Correlation-Based Variable Subset Selection},
+    @Manual{colling2026corrselect,
+      title = {corrselect: Correlation-Based and Model-Based Predictor Pruning},
       author = {Gilles Colling},
       year = {2026},
       note = {R package version 3.3.0},
-      url = {https://github.com/gcol33/corrselect},
+      doi = {10.32614/CRAN.package.corrselect},
+      url = {https://gillescolling.com/corrselect/},
     }

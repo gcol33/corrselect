@@ -548,7 +548,6 @@ if (requireNamespace("igraph", quietly = TRUE)) {
   cat("Adjacency matrix (first 5×5 block):\n")
   print(adj_mat[1:5, 1:5] * 1)
 }
-#> Warning: package 'igraph' was built under R version 4.6.1
 #> 
 #> Attaching package: 'igraph'
 #> The following objects are masked from 'package:stats':
@@ -1989,7 +1988,7 @@ suffices (e.g., automated pipelines).
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -2017,8 +2016,8 @@ sessionInfo()
 #>  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
 #>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   
 #> [13] evaluate_1.0.5    jquerylib_0.1.4   fastmap_1.2.0     yaml_2.3.12      
-#> [17] lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0          pkgconfig_2.0.3  
+#> [17] lifecycle_1.0.5   compiler_4.6.1    fs_2.1.0          pkgconfig_2.0.3  
 #> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.12.0      tools_4.6.0      
+#> [25] R6_2.6.1          magrittr_2.0.5    bslib_0.12.0      tools_4.6.1      
 #> [29] pkgdown_2.2.1     cachem_1.1.0      desc_1.4.3
 ```

@@ -198,11 +198,11 @@ print(benchmark)
 #> 1   10             0              0
 #> 2   20             0              0
 #> 3   50             0              0
-#> 4  100             0              0
-#> 5  200            30              0
-#> 6  300           110             10
-#> 7  500           910             30
-#> 8 1000            NA            140
+#> 4  100             0             20
+#> 5  200            60             20
+#> 6  300           200             20
+#> 7  500           900             40
+#> 8 1000            NA            160
 ```
 
 ``` r
@@ -901,11 +901,11 @@ time2_runs <- sapply(1:3, function(i) {
 time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 20.0 ms
+#> Recomputing each time: 10.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 0.0 ms
+#> Precomputed matrix: 20.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: Infx faster
+#> Speedup: 0.5x faster
 ```
 
 **Use precomputed matrices when**:
@@ -1663,7 +1663,7 @@ pipeline <- function(data, response) {
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24 ucrt)
+#> R version 4.6.1 (2026-06-24 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
 #> Running under: Windows 11 x64 (build 26200)
 #> 
@@ -1691,8 +1691,8 @@ sessionInfo()
 #>  [5] xfun_0.60         otel_0.2.0        textshaping_1.0.5 S7_0.2.2         
 #>  [9] jsonlite_2.0.0    htmltools_0.5.9   sass_0.4.10       rmarkdown_2.32   
 #> [13] evaluate_1.0.5    jquerylib_0.1.4   MASS_7.3-66       fastmap_1.2.0    
-#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.0    fs_2.1.0         
+#> [17] yaml_2.3.12       lifecycle_1.0.5   compiler_4.6.1    fs_2.1.0         
 #> [21] htmlwidgets_1.6.4 Rcpp_1.1.2        systemfonts_1.3.2 digest_0.6.39    
-#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.0       pkgdown_2.2.1    
+#> [25] R6_2.6.1          bslib_0.12.0      tools_4.6.1       pkgdown_2.2.1    
 #> [29] cachem_1.1.0      desc_1.4.3
 ```

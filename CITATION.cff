@@ -15,6 +15,7 @@ preferred-citation:
   authors:
   - family-names: Colling
     given-names: Gilles
+    orcid: https://orcid.org/0000-0003-3070-6066
   year: 2026
   journal: Journal of Open Source Software
   volume: '11'
@@ -24,10 +25,12 @@ preferred-citation:
   url: https://joss.theoj.org/papers/10.21105/joss.09539
 references:
 - type: software
-  title: 'corrselect: Correlation-Based Variable Subset Selection'
+  title: 'corrselect: Correlation-Based and Model-Based Predictor Pruning'
   authors:
   - family-names: Colling
     given-names: Gilles
+    orcid: https://orcid.org/0000-0003-3070-6066
   year: 2026
-  url: https://github.com/gcol33/corrselect
+  doi: 10.32614/CRAN.package.corrselect
+  url: https://gillescolling.com/corrselect/
   notes: R package version 3.3.0

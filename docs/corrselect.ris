@@ -8,13 +8,16 @@ IS  - 118
 SP  - 9539
 DO  - 10.21105/joss.09539
 UR  - https://joss.theoj.org/papers/10.21105/joss.09539
+ID  - colling2026corrselectjoss
 ER  - 
 
 TY  - COMP
 AU  - Colling, Gilles
-TI  - corrselect: Correlation-Based Variable Subset Selection
+TI  - corrselect: Correlation-Based and Model-Based Predictor Pruning
 PY  - 2026
-UR  - https://github.com/gcol33/corrselect
+DO  - 10.32614/CRAN.package.corrselect
+UR  - https://gillescolling.com/corrselect/
 N1  - R package version 3.3.0
+ID  - colling2026corrselect
 ER  - 
 
