@@ -288,11 +288,11 @@ more)</p></li>
 <span><span class="co">#&gt; 1   10             0              0</span></span>
 <span><span class="co">#&gt; 2   20             0              0</span></span>
 <span><span class="co">#&gt; 3   50             0              0</span></span>
-<span><span class="co">#&gt; 4  100             0              0</span></span>
-<span><span class="co">#&gt; 5  200            30              0</span></span>
+<span><span class="co">#&gt; 4  100            10              0</span></span>
+<span><span class="co">#&gt; 5  200            30             20</span></span>
 <span><span class="co">#&gt; 6  300           110             10</span></span>
 <span><span class="co">#&gt; 7  500           880             50</span></span>
-<span><span class="co">#&gt; 8 1000            NA            140</span></span></code></pre></div>
+<span><span class="co">#&gt; 8 1000            NA            130</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -335,7 +335,7 @@ more)</p></li>
 <span>       bty <span class="op">=</span> <span class="st">"o"</span>,</span>
 <span>       bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
 <p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='468.00pt' height='324.00pt' viewBox='0 0 468.00 324.00' class="r-plt inline-svg" style="width:100%;height:auto;">
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='468.00pt' height='324.00pt' viewBox='0 0 468.00 324.00' class="r-plt inline-svg" style="width:100%;height:auto;" role="img" aria-label="Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data."><title>Log-scale plot showing runtime (milliseconds) versus number of predictors for exact mode (red line) and greedy mode (blue line). Exact mode shows exponential growth with runtime increasing sharply after p=100, becoming impractical beyond p=500 (marked by vertical gray dashed line). Greedy mode shows linear scaling, remaining fast even at p=1000, demonstrating orders-of-magnitude performance advantage for high-dimensional data.</title>
 <g class='svglite'>
 <defs>
   <style type='text/css'><![CDATA[
@@ -378,11 +378,13 @@ more)</p></li>
   </clipPath>
 </defs>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
+<line x1='154.39' y1='198.97' x2='173.66' y2='209.48' style='stroke-width: 1.50; stroke: #3380CC;' />
 <line x1='188.14' y1='209.01' x2='242.00' y2='174.93' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='257.39' y1='169.09' x2='410.95' y2='144.23' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='257.41' y1='169.19' x2='410.94' y2='146.12' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='147.01' cy='194.95' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 <circle cx='181.04' cy='213.50' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 <circle cx='249.10' cy='170.44' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='419.24' cy='142.89' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='419.24' cy='144.87' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
 <line x1='78.95' y1='238.32' x2='419.24' y2='238.32' style='stroke-width: 0.75;' />
@@ -418,8 +420,10 @@ more)</p></li>
 <text transform='translate(15.12,153.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Time (milliseconds, log scale)</text>
 </g>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
+<line x1='119.34' y1='208.01' x2='140.65' y2='189.59' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='152.89' y1='178.10' x2='175.16' y2='155.34' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='187.54' y1='144.02' x2='242.60' y2='99.02' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='112.98' cy='213.50' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <circle cx='147.01' cy='184.10' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <circle cx='181.04' cy='149.34' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <circle cx='249.10' cy='93.70' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
@@ -1549,7 +1553,7 @@ retention</p></li>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>, <span class="st">"Original"</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><div class="svg-container"><button type="button" class="btn btn-primary btn-copy-svg" title="Copy SVG to clipboard" aria-label="Copy SVG to clipboard" data-bs-toggle="tooltip" data-bs-placement="left"><i class="fa fa-copy"></i></button>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='324.00pt' viewBox='0 0 648.00 324.00' class="r-plt inline-svg" style="width:100%;height:auto;">
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='324.00pt' viewBox='0 0 648.00 324.00' class="r-plt inline-svg" style="width:100%;height:auto;" role="img" aria-label="Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention."><title>Two side-by-side plots for threshold selection guidance. Left panel: histogram of absolute correlations in mtcars showing distribution with vertical lines marking strict (0.5, red), moderate (0.7, blue), and lenient (0.9, green) thresholds. Right panel: line plot showing number of variables retained versus threshold, demonstrating sensitivity analysis with plateau beginning around 0.7, helping identify optimal threshold for balancing redundancy reduction and information retention.</title>
 <g class='svglite'>
 <defs>
   <style type='text/css'><![CDATA[

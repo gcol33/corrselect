@@ -42,11 +42,13 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
+<line x1='154.39' y1='198.97' x2='173.66' y2='209.48' style='stroke-width: 1.50; stroke: #3380CC;' />
 <line x1='188.14' y1='209.01' x2='242.00' y2='174.93' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='257.39' y1='169.09' x2='410.95' y2='144.23' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='257.41' y1='169.19' x2='410.94' y2='146.12' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='147.01' cy='194.95' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 <circle cx='181.04' cy='213.50' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 <circle cx='249.10' cy='170.44' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='419.24' cy='142.89' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='419.24' cy='144.87' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
 <line x1='78.95' y1='238.32' x2='419.24' y2='238.32' style='stroke-width: 0.75;' />
@@ -82,8 +84,10 @@
 <text transform='translate(15.12,153.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Time (milliseconds, log scale)</text>
 </g>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
+<line x1='119.34' y1='208.01' x2='140.65' y2='189.59' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='152.89' y1='178.10' x2='175.16' y2='155.34' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='187.54' y1='144.02' x2='242.60' y2='99.02' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='112.98' cy='213.50' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <circle cx='147.01' cy='184.10' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <circle cx='181.04' cy='149.34' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <circle cx='249.10' cy='93.70' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
