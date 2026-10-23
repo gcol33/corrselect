@@ -198,11 +198,11 @@ print(benchmark)
 #> 1   10             0              0
 #> 2   20             0              0
 #> 3   50             0              0
-#> 4  100             0             20
-#> 5  200            60             20
-#> 6  300           200             20
-#> 7  500           900             40
-#> 8 1000            NA            160
+#> 4  100             0              0
+#> 5  200            30              0
+#> 6  300           110             10
+#> 7  500           880             50
+#> 8 1000            NA            140
 ```
 
 ``` r
@@ -903,9 +903,9 @@ time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
 #> Recomputing each time: 10.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
-#> Precomputed matrix: 20.0 ms
+#> Precomputed matrix: 0.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: 0.5x faster
+#> Speedup: Infx faster
 ```
 
 **Use precomputed matrices when**:
