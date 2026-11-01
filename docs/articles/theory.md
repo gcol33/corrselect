@@ -20,8 +20,8 @@ algorithms from computational graph theory. The vignette defines the
 formal problem statement, explains the graph-theoretic representation,
 details the three implemented algorithms (Bron-Kerbosch,
 Eppstein-Löffler-Strash, and greedy heuristic), analyzes their
-computational complexity, and provides comprehensive references to the
-theoretical literature. For practical usage examples, see
+computational complexity, and lists references to the theoretical
+literature. For practical usage examples, see
 [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
 and
 [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md).
@@ -1736,7 +1736,7 @@ suffices (e.g., automated pipelines).
 >   just the globally largest
 > - **Hard threshold**: Simple, interpretable guarantee vs. soft penalty
 >   optimization
-> - **Graph algorithms**: Leverage decades of research; proven
+> - **Graph algorithms**: Build on decades of research; proven
 >   correctness and complexity bounds
 > - **Pairwise only**: Computational tractability, clear interpretation,
 >   robustness
@@ -1912,8 +1912,7 @@ suffices (e.g., automated pipelines).
   Vol. 56.
   [doi:10.1016/S0167-5060(13)71063-X](https://doi.org/10.1016/S0167-5060(13)71063-X)
 
-  - **Comprehensive reference**: Mathematical properties of threshold
-    graphs
+  - **Reference**: Mathematical properties of threshold graphs
 
   - Theoretical foundation for threshold-based graph construction
 

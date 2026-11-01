@@ -38,7 +38,7 @@ pak::pak("gcol33/corrselect")
 
 ## Overview
 
-This vignette presents the mathematical formulation and graph-theoretic foundations underlying **corrselect**. Variable subset selection under correlation constraints is formulated as a maximal independent set problem on threshold graphs, enabling exact enumeration via established algorithms from computational graph theory. The vignette defines the formal problem statement, explains the graph-theoretic representation, details the three implemented algorithms (Bron-Kerbosch, Eppstein-Löffler-Strash, and greedy heuristic), analyzes their computational complexity, and provides comprehensive references to the theoretical literature. For practical usage examples, see `vignette("quickstart")` and `vignette("workflows")`. For algorithmic control and performance tuning, see `vignette("advanced")`.
+This vignette presents the mathematical formulation and graph-theoretic foundations underlying **corrselect**. Variable subset selection under correlation constraints is formulated as a maximal independent set problem on threshold graphs, enabling exact enumeration via established algorithms from computational graph theory. The vignette defines the formal problem statement, explains the graph-theoretic representation, details the three implemented algorithms (Bron-Kerbosch, Eppstein-Löffler-Strash, and greedy heuristic), analyzes their computational complexity, and lists references to the theoretical literature. For practical usage examples, see `vignette("quickstart")` and `vignette("workflows")`. For algorithmic control and performance tuning, see `vignette("advanced")`.
 
 ### Contents
 
@@ -1463,7 +1463,7 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 >
 > - **Maximal not maximum**: All locally optimal subsets enumerated, not just the globally largest
 > - **Hard threshold**: Simple, interpretable guarantee vs. soft penalty optimization
-> - **Graph algorithms**: Leverage decades of research; proven correctness and complexity bounds
+> - **Graph algorithms**: Build on decades of research; proven correctness and complexity bounds
 > - **Pairwise only**: Computational tractability, clear interpretation, robustness
 > - **Enumerate all**: Preserves information for downstream choice; greedy available when speed critical
 
@@ -1593,7 +1593,7 @@ Many correlation-pruning tools (e.g., caret::findCorrelation) return a single su
 
 - Mahadev, N. V. R., & Peled, U. N. (1995). *Threshold Graphs and Related Topics*. Amsterdam: Elsevier, Annals of Discrete Mathematics, Vol. 56. [doi:10.1016/S0167-5060(13)71063-X](https://doi.org/10.1016/S0167-5060(13)71063-X)
 
-  - **Comprehensive reference**: Mathematical properties of threshold graphs
+  - **Reference**: Mathematical properties of threshold graphs
 
   - Theoretical foundation for threshold-based graph construction
 

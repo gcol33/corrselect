@@ -434,7 +434,7 @@ large p
 
 - Solution: Use `mode = "greedy"` for p \> 25
 
-For comprehensive troubleshooting with code examples, see
+For troubleshooting with code examples, see
 [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md),
 Section 5.
 

@@ -198,10 +198,10 @@ print(benchmark)
 #> 1   10             0              0
 #> 2   20             0              0
 #> 3   50             0              0
-#> 4  100            10              0
+#> 4  100             0              0
 #> 5  200            30              0
-#> 6  300           110              0
-#> 7  500           460             30
+#> 6  300            90             20
+#> 7  500           470             30
 #> 8 1000            NA             80
 ```
 
@@ -901,11 +901,11 @@ time2_runs <- sapply(1:3, function(i) {
 time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 20.0 ms
+#> Recomputing each time: 0.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
 #> Precomputed matrix: 0.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: Infx faster
+#> Speedup: NaNx faster
 ```
 
 **Use precomputed matrices when**:

@@ -368,7 +368,7 @@ corrSubset(res, df, which = "best", keepExtra = FALSE)
 
 - Solution: Use `mode = "greedy"` for p > 25
 
-For comprehensive troubleshooting with code examples, see `vignette("advanced")`, Section 5.
+For troubleshooting with code examples, see `vignette("advanced")`, Section 5.
 
 ## See Also
 
