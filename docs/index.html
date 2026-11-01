@@ -54,16 +54,21 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="articles/quickstart.html">Get Started</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/quickstart.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/quickstart.html">Quick Start</a></li>
-    <li><a class="dropdown-item" href="articles/workflows.html">Workflows</a></li>
-    <li><a class="dropdown-item" href="articles/comparison.html">Comparison</a></li>
-    <li><a class="dropdown-item" href="articles/advanced.html">Advanced</a></li>
-    <li><a class="dropdown-item" href="articles/theory.html">Theory</a></li>
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Practical guides</h6></li>
+    <li><a class="dropdown-item" href="articles/workflows.html">Complete Workflows: Real-World Examples</a></li>
+    <li><a class="dropdown-item" href="articles/comparison.html">Comparison with Alternatives</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced</h6></li>
+    <li><a class="dropdown-item" href="articles/advanced.html">Advanced Topics</a></li>
+    <li><a class="dropdown-item" href="articles/theory.html">Theory and Formulation</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="articles/index.html">More articles...</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -72,6 +77,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/gcol33/corrselect" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -80,7 +86,6 @@
     <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
   </ul>
 </li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/gcol33/corrselect" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -107,7 +112,7 @@
 <li>
 <strong>Fixed variables and grouped data.</strong> <code>force_in</code> keeps named predictors in every result, and <code>by</code> requires the threshold to hold within each group.</li>
 <li>
-<strong>Model-based pruning.</strong> <a href="https://gillescolling.com/corrselect/reference/modelPrune.html"><code>modelPrune()</code></a> refits a model after each removal, by VIF or condition number, with built-in engines for <code>lm</code>, <code>glm</code>, <a href="https://github.com/lme4/lme4/" class="external-link">lme4</a> and <a href="https://github.com/glmmTMB/glmmTMB" class="external-link">glmmTMB</a> and custom engines for any other modelling package.</li>
+<strong>Model-based pruning.</strong> <a href="https://gillescolling.com/corrselect/reference/modelPrune.html"><code>modelPrune()</code></a> refits a model after each removal, by VIF or condition number, with built-in engines for linear models, generalized linear models, <a href="https://github.com/lme4/lme4/" class="external-link">lme4</a> and <a href="https://github.com/glmmTMB/glmmTMB" class="external-link">glmmTMB</a>, and custom engines for any other modelling package.</li>
 </ul>
 <p>In exact mode the result is the same on every run, and the largest subset it returns keeps at least as many predictors as any greedy removal at the same threshold. <a href="https://gillescolling.com/corrselect/articles/theory.html">Theory and Formulation</a> defines the threshold graph and the algorithms.</p>
 <div class="section level2">
@@ -150,7 +155,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"gcol33/corrselect"</span><span class="op">)</span></span></code></pre></div>
-<p>corrselect needs no system libraries beyond the compiler. Its C++ code links only to Rcpp, which is installed from CRAN with the package.</p>
+<p>corrselect needs no system libraries beyond the compiler. Its C++ code links only to <a href="https://cran.r-project.org/package=Rcpp" class="external-link">Rcpp</a>, which is installed from CRAN with the package.</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -168,7 +173,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pruned</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "mpg"  "drat" "qsec" "gear" "carb"</span></span></code></pre></div>
 <p>Five of the eleven columns of <code>mtcars</code> remain, and no pair of them has a correlation above 0.7. With eleven predictors the search is exact.</p>
-<p>Several subsets usually satisfy the same threshold. <code><a href="reference/corrSelect.html">corrSelect()</a></code> lists all maximal ones, and <code><a href="reference/corrSubset.html">corrSubset()</a></code> returns one of them, the top-ranked by default:</p>
+<p>Several subsets usually satisfy the same threshold. <code><a href="reference/corrSelect.html">corrSelect()</a></code> lists all maximal ones. <code><a href="reference/corrSubset.html">corrSubset()</a></code> returns one of them, the top-ranked by default:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/corrSelect.html">corrSelect</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="va">res</span></span>
@@ -234,7 +239,7 @@
 <div class="section level2">
 <h2 id="pruning-with-other-modelling-packages">Pruning with other modelling packages<a class="anchor" aria-label="anchor" href="#pruning-with-other-modelling-packages"></a>
 </h2>
-<p><code><a href="reference/modelPrune.html">modelPrune()</a></code> has built-in engines for <code>lm</code>, <code>glm</code>, lme4 and glmmTMB. With lme4 and glmmTMB only the fixed effects are candidates for removal. Any other package plugs in as a custom engine, a list of two functions: one that fits the model and one that returns a score per fixed effect. <a href="https://gillescolling.com/corrselect/articles/advanced.html#custom-engines-for-modelprune">Advanced Topics</a> builds engines for <a href="https://www.r-inla.org" class="external-link">INLA</a> and <a href="https://cran.r-project.org/package=mgcv" class="external-link">mgcv</a>.</p>
+<p><code><a href="reference/modelPrune.html">modelPrune()</a></code> has built-in engines for linear models, generalized linear models, lme4 and glmmTMB. With lme4 and glmmTMB only the fixed effects are candidates for removal. Any other package plugs in as a custom engine, a list of two functions: one that fits the model and one that returns a score per fixed effect. <a href="https://gillescolling.com/corrselect/articles/advanced.html#custom-engines-for-modelprune">Advanced Topics</a> builds engines for <a href="https://www.r-inla.org" class="external-link">INLA</a> and <a href="https://cran.r-project.org/package=mgcv" class="external-link">mgcv</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="corrprune-or-modelprune">corrPrune or modelPrune?<a class="anchor" aria-label="anchor" href="#corrprune-or-modelprune"></a>
@@ -426,6 +431,8 @@ Predictor Pruning_. doi:10.32614/CRAN.package.corrselect
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=corrselect" class="external-link"><img src="https://www.r-pkg.org/badges/version/corrselect" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/corrselect" alt="CRAN downloads"></a></li>
+<li><a href="https://cran.r-project.org/package=corrselect" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/corrselect" alt="Monthly downloads"></a></li>
 <li><a href="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/gcol33/corrselect/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/gcol33/corrselect" class="external-link"><img src="https://codecov.io/gh/gcol33/corrselect/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>

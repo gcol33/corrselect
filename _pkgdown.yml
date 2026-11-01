@@ -40,25 +40,12 @@ navbar:
     - news
     right:
     - search
-    - lightswitch
     - github
+    - lightswitch
   components:
     intro:
-      text: Get Started
+      text: Get started
       href: articles/quickstart.html
-    articles:
-      text: Articles
-      menu:
-      - text: Quick Start
-        href: articles/quickstart.html
-      - text: Workflows
-        href: articles/workflows.html
-      - text: Comparison
-        href: articles/comparison.html
-      - text: Advanced
-        href: articles/advanced.html
-      - text: Theory
-        href: articles/theory.html
     github:
       icon: fab fa-github
       href: https://github.com/gcol33/corrselect
@@ -91,16 +78,16 @@ reference:
   - longitudinal_example
   - cor_example
 articles:
-- title: Getting Started
-  navbar: ~
-  contents: quickstart
-- title: Practical Guides
-  navbar: ~
+- title: Get started
+  contents:
+  - quickstart
+- title: Practical guides
+  navbar: Practical guides
   contents:
   - workflows
   - comparison
 - title: Advanced
-  navbar: ~
+  navbar: Advanced
   contents:
   - advanced
   - theory

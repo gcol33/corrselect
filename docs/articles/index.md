@@ -1,11 +1,11 @@
 # Articles
 
-### Getting Started
+### Get started
 
 - [Quick
   Start](https://gillescolling.com/corrselect/articles/quickstart.md):
 
-### Practical Guides
+### Practical guides
 
 - [Complete Workflows: Real-World
   Examples](https://gillescolling.com/corrselect/articles/workflows.md):
