@@ -31,7 +31,7 @@ corrselect supports:
 - **Choosing among every valid subset.** [`corrSelect()`](https://gillescolling.com/corrselect/reference/corrSelect.html) returns every maximal subset, ranked by size and then by average correlation.
 - **Mixed-type data.** Numeric, factor and ordered columns are compared with a measure suited to each pair: Pearson correlation for two numeric columns, the correlation ratio eta for a numeric column and a factor, and Cramér's V for two factors.
 - **Fixed variables and grouped data.** `force_in` keeps named predictors in every result, and `by` requires the threshold to hold within each group.
-- **Model-based pruning.** [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.html) refits a model after each removal, by VIF or condition number, with built-in engines for `lm`, `glm`, [lme4](https://github.com/lme4/lme4/) and [glmmTMB](https://github.com/glmmTMB/glmmTMB) and custom engines for any other modelling package.
+- **Model-based pruning.** [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.html) refits a model after each removal, by VIF or condition number, with built-in engines for linear models, generalized linear models, [lme4](https://github.com/lme4/lme4/) and [glmmTMB](https://github.com/glmmTMB/glmmTMB), and custom engines for any other modelling package.
 
 In exact mode the result is the same on every run, and the largest subset it returns keeps at least as many predictors as any greedy removal at the same threshold. [Theory and Formulation](https://gillescolling.com/corrselect/articles/theory.html) defines the threshold graph and the algorithms.
 
@@ -64,7 +64,7 @@ Then install corrselect from GitHub:
 pak::pak("gcol33/corrselect")
 ```
 
-corrselect needs no system libraries beyond the compiler. Its C++ code links only to Rcpp, which is installed from CRAN with the package.
+corrselect needs no system libraries beyond the compiler. Its C++ code links only to [Rcpp](https://cran.r-project.org/package=Rcpp), which is installed from CRAN with the package.
 
 ## Usage
 
@@ -83,7 +83,7 @@ names(pruned)
 
 Five of the eleven columns of `mtcars` remain, and no pair of them has a correlation above 0.7. With eleven predictors the search is exact.
 
-Several subsets usually satisfy the same threshold. `corrSelect()` lists all maximal ones, and `corrSubset()` returns one of them, the top-ranked by default:
+Several subsets usually satisfy the same threshold. `corrSelect()` lists all maximal ones. `corrSubset()` returns one of them, the top-ranked by default:
 
 ```{r select}
 res <- corrSelect(mtcars)
@@ -135,7 +135,7 @@ assocSelect(df, threshold = 0.6)
 
 ## Pruning with other modelling packages
 
-`modelPrune()` has built-in engines for `lm`, `glm`, lme4 and glmmTMB. With lme4 and glmmTMB only the fixed effects are candidates for removal. Any other package plugs in as a custom engine, a list of two functions: one that fits the model and one that returns a score per fixed effect. [Advanced Topics](https://gillescolling.com/corrselect/articles/advanced.html#custom-engines-for-modelprune) builds engines for [INLA](https://www.r-inla.org) and [mgcv](https://cran.r-project.org/package=mgcv).
+`modelPrune()` has built-in engines for linear models, generalized linear models, lme4 and glmmTMB. With lme4 and glmmTMB only the fixed effects are candidates for removal. Any other package plugs in as a custom engine, a list of two functions: one that fits the model and one that returns a score per fixed effect. [Advanced Topics](https://gillescolling.com/corrselect/articles/advanced.html#custom-engines-for-modelprune) builds engines for [INLA](https://www.r-inla.org) and [mgcv](https://cran.r-project.org/package=mgcv).
 
 ## corrPrune or modelPrune?
 

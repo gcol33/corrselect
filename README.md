@@ -53,9 +53,9 @@ corrselect supports:
 - **Model-based pruning.**
   [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.html)
   refits a model after each removal, by VIF or condition number, with
-  built-in engines for `lm`, `glm`,
+  built-in engines for linear models, generalized linear models,
   [lme4](https://github.com/lme4/lme4/) and
-  [glmmTMB](https://github.com/glmmTMB/glmmTMB) and custom engines for
+  [glmmTMB](https://github.com/glmmTMB/glmmTMB), and custom engines for
   any other modelling package.
 
 In exact mode the result is the same on every run, and the largest
@@ -96,7 +96,8 @@ pak::pak("gcol33/corrselect")
 ```
 
 corrselect needs no system libraries beyond the compiler. Its C++ code
-links only to Rcpp, which is installed from CRAN with the package.
+links only to [Rcpp](https://cran.r-project.org/package=Rcpp), which is
+installed from CRAN with the package.
 
 ## Usage
 
@@ -123,8 +124,8 @@ Five of the eleven columns of `mtcars` remain, and no pair of them has a
 correlation above 0.7. With eleven predictors the search is exact.
 
 Several subsets usually satisfy the same threshold. `corrSelect()` lists
-all maximal ones, and `corrSubset()` returns one of them, the top-ranked
-by default:
+all maximal ones. `corrSubset()` returns one of them, the top-ranked by
+default:
 
 ``` r
 res <- corrSelect(mtcars)
@@ -210,11 +211,11 @@ lists them.
 
 ## Pruning with other modelling packages
 
-`modelPrune()` has built-in engines for `lm`, `glm`, lme4 and glmmTMB.
-With lme4 and glmmTMB only the fixed effects are candidates for removal.
-Any other package plugs in as a custom engine, a list of two functions:
-one that fits the model and one that returns a score per fixed effect.
-[Advanced
+`modelPrune()` has built-in engines for linear models, generalized
+linear models, lme4 and glmmTMB. With lme4 and glmmTMB only the fixed
+effects are candidates for removal. Any other package plugs in as a
+custom engine, a list of two functions: one that fits the model and one
+that returns a score per fixed effect. [Advanced
 Topics](https://gillescolling.com/corrselect/articles/advanced.html#custom-engines-for-modelprune)
 builds engines for [INLA](https://www.r-inla.org) and
 [mgcv](https://cran.r-project.org/package=mgcv).
