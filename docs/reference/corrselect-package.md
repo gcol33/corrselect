@@ -63,7 +63,7 @@ The exact enumeration functions (`corrSelect`, `assocSelect`,
 ## See also
 
 Vignettes:
-[`vignette("quickstart", package = "corrselect")`](https://gillescolling.com/corrselect/articles/quickstart.md),
+[`vignette("corrselect", package = "corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md),
 [`vignette("advanced", package = "corrselect")`](https://gillescolling.com/corrselect/articles/advanced.md)
 
 ## Author

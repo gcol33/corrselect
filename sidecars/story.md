@@ -15,8 +15,8 @@ Analysts fitting regression or species distribution models with many correlated 
 ### A1 One pruned data frame in one call
 - question: which predictors do I keep?
 - answer: corrPrune() returns one data frame whose pairwise correlations stay at or below the threshold
-- evidence: tests/testthat, vignettes/quickstart.Rmd
-- home: vignettes/quickstart.Rmd
+- evidence: tests/testthat, vignettes/corrselect.Rmd
+- home: vignettes/corrselect.Rmd
 - also: README (Usage), DESCRIPTION
 
 ### A2 Every valid subset, not only one

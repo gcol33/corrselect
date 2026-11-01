@@ -198,11 +198,11 @@ print(benchmark)
 #> 1   10             0              0
 #> 2   20             0              0
 #> 3   50             0              0
-#> 4  100             0              0
-#> 5  200            30              0
-#> 6  300            90             20
-#> 7  500           470             30
-#> 8 1000            NA             80
+#> 4  100             0             20
+#> 5  200            30             10
+#> 6  300           120             20
+#> 7  500           610             30
+#> 8 1000            NA            110
 ```
 
 ``` r
@@ -901,11 +901,11 @@ time2_runs <- sapply(1:3, function(i) {
 time2 <- median(time2_runs) * 1000  # seconds -> milliseconds
 
 cat(sprintf("Recomputing each time: %.1f ms\n", time1))
-#> Recomputing each time: 0.0 ms
+#> Recomputing each time: 20.0 ms
 cat(sprintf("Precomputed matrix: %.1f ms\n", time2))
 #> Precomputed matrix: 0.0 ms
 cat(sprintf("Speedup: %.1fx faster\n", time1 / time2))
-#> Speedup: NaNx faster
+#> Speedup: Infx faster
 ```
 
 **Use precomputed matrices when**:
@@ -1637,7 +1637,7 @@ pipeline <- function(data, response) {
 
 ### See Also
 
-- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
+- [`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md) -
   5-minute introduction
 
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -

@@ -50,9 +50,9 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/quickstart.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/corrselect.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
@@ -63,8 +63,6 @@
     <li><h6 class="dropdown-header" data-toc-skip>Advanced</h6></li>
     <li><a class="dropdown-item" href="../articles/advanced.html">Advanced Topics</a></li>
     <li><a class="dropdown-item" href="../articles/theory.html">Theory and Formulation</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -99,7 +97,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-11-01</h4>
+            <h4 data-toc-skip class="date">2026-11-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/gcol33/corrselect/blob/HEAD/vignettes/advanced.Rmd" class="external-link"><code>vignettes/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
@@ -293,11 +291,11 @@ more)</p></li>
 <span><span class="co">#&gt; 1   10             0              0</span></span>
 <span><span class="co">#&gt; 2   20             0              0</span></span>
 <span><span class="co">#&gt; 3   50             0              0</span></span>
-<span><span class="co">#&gt; 4  100             0              0</span></span>
-<span><span class="co">#&gt; 5  200            30              0</span></span>
-<span><span class="co">#&gt; 6  300            90             20</span></span>
-<span><span class="co">#&gt; 7  500           470             30</span></span>
-<span><span class="co">#&gt; 8 1000            NA             80</span></span></code></pre></div>
+<span><span class="co">#&gt; 4  100             0             20</span></span>
+<span><span class="co">#&gt; 5  200            30             10</span></span>
+<span><span class="co">#&gt; 6  300           120             20</span></span>
+<span><span class="co">#&gt; 7  500           610             30</span></span>
+<span><span class="co">#&gt; 8 1000            NA            110</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize scaling</span></span>
 <span><span class="co"># Separate data for exact mode (only where available) and greedy mode (all points)</span></span>
@@ -383,11 +381,15 @@ more)</p></li>
   </clipPath>
 </defs>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
-<line x1='189.27' y1='206.42' x2='240.87' y2='195.80' style='stroke-width: 1.50; stroke: #3380CC;' />
-<line x1='257.34' y1='192.47' x2='411.01' y2='161.88' style='stroke-width: 1.50; stroke: #3380CC;' />
-<circle cx='181.04' cy='208.11' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='249.10' cy='194.11' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
-<circle cx='419.24' cy='160.24' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<line x1='120.24' y1='196.70' x2='139.75' y2='208.04' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='154.27' y1='208.04' x2='173.78' y2='196.70' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='189.32' y1='191.07' x2='240.82' y2='182.32' style='stroke-width: 1.50; stroke: #3380CC;' />
+<line x1='257.31' y1='179.12' x2='411.04' y2='145.61' style='stroke-width: 1.50; stroke: #3380CC;' />
+<circle cx='112.98' cy='192.48' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='147.01' cy='212.26' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='181.04' cy='192.48' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='249.10' cy='180.91' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
+<circle cx='419.24' cy='143.83' r='3.15' style='stroke-width: 1.50; stroke: #3380CC; fill: #3380CC;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwzMjQuMDA=)'>
 <line x1='78.95' y1='238.32' x2='419.24' y2='238.32' style='stroke-width: 0.75;' />
@@ -403,31 +405,32 @@ more)</p></li>
 <text x='283.13' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>600</text>
 <text x='351.19' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>800</text>
 <text x='419.24' y='268.56' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>1000</text>
-<line x1='68.88' y1='232.04' x2='68.88' y2='73.02' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='232.04' x2='68.88' y2='80.83' style='stroke-width: 0.75;' />
 <line x1='68.88' y1='232.04' x2='60.48' y2='232.04' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='208.11' x2='60.48' y2='208.11' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='176.47' x2='60.48' y2='176.47' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='152.53' x2='60.48' y2='152.53' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='128.60' x2='60.48' y2='128.60' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='96.95' x2='60.48' y2='96.95' style='stroke-width: 0.75;' />
-<line x1='68.88' y1='73.02' x2='60.48' y2='73.02' style='stroke-width: 0.75;' />
-<text transform='translate(48.72,232.04) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>10</text>
-<text transform='translate(48.72,176.47) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>50</text>
-<text transform='translate(48.72,128.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>200</text>
-<text transform='translate(48.72,73.02) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>1000</text>
+<line x1='68.88' y1='212.26' x2='60.48' y2='212.26' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='192.48' x2='60.48' y2='192.48' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='166.33' x2='60.48' y2='166.33' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='146.55' x2='60.48' y2='146.55' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='126.76' x2='60.48' y2='126.76' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='100.61' x2='60.48' y2='100.61' style='stroke-width: 0.75;' />
+<line x1='68.88' y1='80.83' x2='60.48' y2='80.83' style='stroke-width: 0.75;' />
+<text transform='translate(48.72,232.04) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>5</text>
+<text transform='translate(48.72,192.48) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>20</text>
+<text transform='translate(48.72,146.55) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>100</text>
+<text transform='translate(48.72,100.61) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>500</text>
 <polygon points='68.88,238.32 432.72,238.32 432.72,68.88 68.88,68.88 ' style='stroke-width: 0.75;' />
 <text x='250.80' y='40.46' text-anchor='middle' style='font-size: 1.68em; font-weight: bold; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact vs Greedy Scaling</text>
 <text x='250.80' y='302.16' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Number of Predictors (p)</text>
 <text transform='translate(15.12,153.60) rotate(-90)' text-anchor='middle' style='font-size: 1.4em; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Time (milliseconds, log scale)</text>
 </g>
 <g clip-path='url(#cpNjguODh8NDMyLjcyfDY4Ljg4fDIzOC4zMg==)'>
-<line x1='152.62' y1='187.85' x2='175.43' y2='162.42' style='stroke-width: 1.50; stroke: #CC3333;' />
-<line x1='187.48' y1='150.77' x2='242.66' y2='104.49' style='stroke-width: 1.50; stroke: #CC3333;' />
-<circle cx='147.01' cy='194.11' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='181.04' cy='156.17' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
-<circle cx='249.10' cy='99.09' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<line x1='152.49' y1='174.54' x2='175.56' y2='147.71' style='stroke-width: 1.50; stroke: #CC3333;' />
+<line x1='187.98' y1='136.61' x2='242.16' y2='99.67' style='stroke-width: 1.50; stroke: #CC3333;' />
+<circle cx='147.01' cy='180.91' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='181.04' cy='141.34' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
+<circle cx='249.10' cy='94.94' r='3.15' style='stroke-width: 1.50; stroke: #CC3333; fill: #CC3333;' />
 <line x1='249.10' y1='238.32' x2='249.10' y2='68.88' style='stroke-width: 0.75; stroke: #7F7F7F; stroke-dasharray: 4.00,4.00;' />
-<text x='257.50' y='102.43' style='font-size: 1.4em;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact mode limit</text>
+<text x='257.50' y='98.28' style='font-size: 1.4em;fill: #4D4D4D; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;'>Exact mode limit</text>
 <rect rx='4' x='68.88' y='68.88' width='93.77' height='50.40' style='stroke-width: 0.75; stroke: #DFD7CA; fill: #F5F6F8;' />
 <line x1='72.66' y1='85.68' x2='97.86' y2='85.68' style='stroke-width: 1.50; stroke: #CC3333;' />
 <line x1='72.66' y1='102.48' x2='97.86' y2='102.48' style='stroke-width: 1.50; stroke: #3380CC;' />
@@ -1087,11 +1090,11 @@ correlation matrix:</p>
 <span><span class="va">time2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">time2_runs</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span>  <span class="co"># seconds -&gt; milliseconds</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Recomputing each time: %.1f ms\n"</span>, <span class="va">time1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Recomputing each time: 0.0 ms</span></span>
+<span><span class="co">#&gt; Recomputing each time: 20.0 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Precomputed matrix: %.1f ms\n"</span>, <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Precomputed matrix: 0.0 ms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Speedup: %.1fx faster\n"</span>, <span class="va">time1</span> <span class="op">/</span> <span class="va">time2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Speedup: NaNx faster</span></span></code></pre></div>
+<span><span class="co">#&gt; Speedup: Infx faster</span></span></code></pre></div>
 <p><strong>Use precomputed matrices when</strong>:</p>
 <ul>
 <li><p>Testing multiple thresholds</p></li>
@@ -1968,7 +1971,7 @@ Introduction with R</em> (2nd ed.). Chapman and Hall/CRC.</p></li>
 <h3 id="see-also">See Also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h3>
 <ul>
-<li><p><code><a href="../articles/quickstart.html">vignette("quickstart")</a></code> - 5-minute
+<li><p><code><a href="../articles/corrselect.html">vignette("corrselect")</a></code> - 5-minute
 introduction</p></li>
 <li><p><code><a href="../articles/workflows.html">vignette("workflows")</a></code> - Real-world examples</p></li>
 <li><p><code><a href="../articles/comparison.html">vignette("comparison")</a></code> - vs caret, Boruta,

@@ -43,9 +43,6 @@ navbar:
     - github
     - lightswitch
   components:
-    intro:
-      text: Get started
-      href: articles/quickstart.html
     github:
       icon: fab fa-github
       href: https://github.com/gcol33/corrselect
@@ -78,9 +75,6 @@ reference:
   - longitudinal_example
   - cor_example
 articles:
-- title: Get started
-  contents:
-  - quickstart
 - title: Practical guides
   navbar: Practical guides
   contents:
@@ -95,3 +89,5 @@ footer:
   structure:
     left: developed_by
     right: built_with
+redirects:
+- ["articles/quickstart.html", "articles/corrselect.html"]

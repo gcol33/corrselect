@@ -22,7 +22,7 @@ details the three implemented algorithms (Bron-Kerbosch,
 Eppstein-Löffler-Strash, and greedy heuristic), analyzes their
 computational complexity, and lists references to the theoretical
 literature. For practical usage examples, see
-[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
+[`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md)
 and
 [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md).
 For algorithmic control and performance tuning, see
@@ -1970,7 +1970,7 @@ suffices (e.g., automated pipelines).
 
 ## See Also
 
-- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
+- [`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md) -
   Interface overview and examples
 
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -

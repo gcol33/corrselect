@@ -39,9 +39,9 @@ pak::pak("gcol33/corrselect")
 
 ## Overview
 
-This vignette demonstrates integration of corrselect into complete modeling workflows, from raw predictors to final models under correlation constraints. Four applied settings illustrate interface selection and workflow composition. See `vignette("quickstart")` for interface descriptions and `vignette("theory")` for mathematical foundations.
+This vignette demonstrates integration of corrselect into complete modeling workflows, from raw predictors to final models under correlation constraints. Four applied settings illustrate interface selection and workflow composition. See `vignette("corrselect")` for interface descriptions and `vignette("theory")` for mathematical foundations.
 
-**Functions used**: `corrPrune()`, `modelPrune()`, see `vignette("quickstart")` for full signatures and parameter details.
+**Functions used**: `corrPrune()`, `modelPrune()`, see `vignette("corrselect")` for full signatures and parameter details.
 
 Each workflow showcases different aspects of the package:
 
@@ -895,7 +895,7 @@ These four workflows demonstrate how **corrselect** integrates into diverse anal
 
 # See Also
 
-- `vignette("quickstart")` - Interface overview
+- `vignette("corrselect")` - Interface overview
 
 - `vignette("advanced")` - Custom engines and algorithmic control
 

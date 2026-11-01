@@ -174,7 +174,7 @@ names(exact)
 
 ## Documentation
 
-Start with [Quick Start](https://gillescolling.com/corrselect/articles/quickstart.html): each function on a small example, with its main arguments.
+Start with [Quick Start](https://gillescolling.com/corrselect/articles/corrselect.html): each function on a small example, with its main arguments.
 
 - [Complete Workflows: Real-World Examples](https://gillescolling.com/corrselect/articles/workflows.html): ecological, survey, high-dimensional and mixed-model data pruned and modelled end to end.
 - [Comparison with Alternatives](https://gillescolling.com/corrselect/articles/comparison.html): corrselect beside caret, Boruta, glmnet and manual VIF removal on the same data.

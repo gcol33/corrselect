@@ -32,7 +32,7 @@ characteristics, and appropriate use cases. Evaluations use the
 See
 [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
 for mathematical foundations. See
-[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
+[`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md)
 for usage examples.
 
 ------------------------------------------------------------------------
@@ -739,7 +739,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 
 ## See Also
 
-- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
+- [`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md) -
   Interface overview and usage examples
 
 - [`vignette("workflows")`](https://gillescolling.com/corrselect/articles/workflows.md) -

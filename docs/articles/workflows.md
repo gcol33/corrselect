@@ -16,7 +16,7 @@ This vignette demonstrates integration of corrselect into complete
 modeling workflows, from raw predictors to final models under
 correlation constraints. Four applied settings illustrate interface
 selection and workflow composition. See
-[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
+[`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md)
 for interface descriptions and
 [`vignette("theory")`](https://gillescolling.com/corrselect/articles/theory.md)
 for mathematical foundations.
@@ -25,7 +25,7 @@ for mathematical foundations.
 [`corrPrune()`](https://gillescolling.com/corrselect/reference/corrPrune.md),
 [`modelPrune()`](https://gillescolling.com/corrselect/reference/modelPrune.md),
 see
-[`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md)
+[`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md)
 for full signatures and parameter details.
 
 Each workflow showcases different aspects of the package:
@@ -1132,7 +1132,7 @@ diverse analytical pipelines:
 
 ## See Also
 
-- [`vignette("quickstart")`](https://gillescolling.com/corrselect/articles/quickstart.md) -
+- [`vignette("corrselect")`](https://gillescolling.com/corrselect/articles/corrselect.md) -
   Interface overview
 
 - [`vignette("advanced")`](https://gillescolling.com/corrselect/articles/advanced.md) -

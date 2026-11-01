@@ -279,7 +279,7 @@ runs both on a larger dataset and sets corrselect beside
 ## Documentation
 
 Start with [Quick
-Start](https://gillescolling.com/corrselect/articles/quickstart.html):
+Start](https://gillescolling.com/corrselect/articles/corrselect.html):
 each function on a small example, with its main arguments.
 
 - [Complete Workflows: Real-World

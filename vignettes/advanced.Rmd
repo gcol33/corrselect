@@ -1160,7 +1160,7 @@ pipeline <- function(data, response) {
 
 ## See Also
 
-- `vignette("quickstart")` - 5-minute introduction
+- `vignette("corrselect")` - 5-minute introduction
 
 - `vignette("workflows")` - Real-world examples
 

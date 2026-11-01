@@ -50,7 +50,7 @@ This vignette compares corrselect's graph-theoretic approach to four established
 
 Each comparison examines algorithmic differences, performance characteristics, and appropriate use cases. Evaluations use the `bioclim_example` dataset (19 bioclimatic variables, $n = 100$).
 
-See `vignette("theory")` for mathematical foundations. See `vignette("quickstart")` for usage examples.
+See `vignette("theory")` for mathematical foundations. See `vignette("corrselect")` for usage examples.
 
 ---
 
@@ -623,7 +623,7 @@ final_model <- lm(response ~ ., data = model_data[, c("response", important_vars
 
 ## See Also
 
-- `vignette("quickstart")` - Interface overview and usage examples
+- `vignette("corrselect")` - Interface overview and usage examples
 
 - `vignette("workflows")` - Domain-specific workflows (genomics, ecology, surveys)
 

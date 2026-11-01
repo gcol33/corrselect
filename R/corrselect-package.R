@@ -37,7 +37,7 @@
 #' }
 #'
 #' @seealso
-#' Vignettes: \code{vignette("quickstart", package = "corrselect")},
+#' Vignettes: \code{vignette("corrselect", package = "corrselect")},
 #' \code{vignette("advanced", package = "corrselect")}
 #'
 #' @docType package
